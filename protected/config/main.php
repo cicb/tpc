@@ -55,19 +55,21 @@ return array(
 			),
 		),
 		*/
-		'db'=>array(
-			'connectionString' => 'sqlite:'.dirname(__FILE__).'/../data/testdrive.db',
-		),
-		// uncomment the following to use a MySQL database
 		/*
+		 *'db'=>array(
+		 *    'connectionString' => 'sqlite:'.dirname(__FILE__).'/../data/testdrive.db',
+		 *),
+		 */
+		// uncomment the following to use a MySQL database
+		
 		'db'=>array(
-			'connectionString' => 'mysql:host=localhost;dbname=testdrive',
+			'connectionString' => 'mysql:host=localhost;dbname=taquilla_zero',//'mysql:host=192.168.1.66;dbname=taquilla_ver3',//'mysql:host=taquillacero.com;dbname=taquilla_ver3',
 			'emulatePrepare' => true,
-			'username' => 'root',
-			'password' => '',
+			'username' => 'Developer',
+			'password' => 'Magmedia1545',
 			'charset' => 'utf8',
 		),
-		*/
+		
 		'errorHandler'=>array(
 			// use 'site/error' action to display errors
 			'errorAction'=>'site/error',

@@ -52,21 +52,7 @@
 	<br />
 	<br />
 	<br />
-<div class='span3'>
-<?php $this->widget('bootstrap.widgets.TbNav', array(
-    'type' => TbHtml::NAV_TYPE_TABS,
-    'stacked' => true,
-	'items'=>array(
-	        array('label' => 'Reporte de ventas', 'url' => '#'),
-	        array('label' => 'Ventas por internet', 'url' => '#'),
-	), 
-)); ?>
-</div>
-<div class='span8'>
 	<?php echo $content; ?>
-
-</div>
-
 
 	<div class="clear"></div>
 
