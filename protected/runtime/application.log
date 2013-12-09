@@ -909,3 +909,5 @@ Stack trace:
 #15 {main}
 REQUEST_URI=/tpc/index.php?r=reportes
 ---
+2013/12/09 09:40:06 [error] [system.db.CDbCommand] CDbCommand::fetchAll() failed: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'taquilla_zero.ReportesFlexForm' doesn't exist. The SQL statement executed was: SHOW FULL COLUMNS FROM `ReportesFlexForm`.
+in C:\xampp\htdocs\tpc\index.php (13)
