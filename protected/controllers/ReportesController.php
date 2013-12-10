@@ -2,10 +2,72 @@
 
 class ReportesController extends Controller
 {
+	public function actionCortesDiarios()
+	{
+		$this->render('cortesDiarios');
+	}
+
+	public function actionDesgloseVentas()
+	{
+		$this->render('desgloseVentas');
+	}
+
 	public function actionIndex()
 	{
-	   $model = Ventas::model()->findAll();
-		$this->render('index',array('model'=>$model));
+		$this->layout="reportes";	
+		$this->render('index');
+	}
+
+	public function actionLugares()
+	{
+			$this->layout="reportes";
+			$this->render('lugares');
+	}
+
+	public function actionLugaresVendidos()
+	{
+
+			$this->layout="reportes";
+			$this->render('lugaresVendidos');
+	}
+
+	public function actionReservacionesFarmatodo()
+	{
+			$this->layout="reportes";
+ 
+		$this->render('reservacionesFarmatodo');
+	}
+
+	public function actionVentasConCargo()
+	{
+			$this->layout="reportes";
+ 
+		$this->render('ventasConCargo');
+	}
+
+	public function actionVentasDiarias()
+	{
+			$this->layout="reportes";
+		$this->render('ventasDiarias');
+	}
+
+	public function actionVentasFarmatodo()
+	{
+			$this->layout="reportes";
+		$this->render('ventasFarmatodo');
+	}
+
+	public function actionVentasSinCargo()
+	{
+			$this->layout="reportes";
+		$this->render('ventasSinCargo');
+	}
+
+	public function actionVentasWeb()
+	{
+			$this->layout="reportes";
+ 
+		$this->render('ventasWeb');
 	}
 
 	// Uncomment the following methods and override them if needed

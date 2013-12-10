@@ -1,0 +1,41 @@
+// LESS
+@primario:#266088;
+@secundario:#ebebeb;
+@amarillo:#E0D53B;
+@sombra: darken(@secundario,20%);
+.left-bar{
+		margin:0px;
+		padding:0px;
+		height:100%;
+		background:@sombra;
+}
+#pagina{
+	margin:0px;padding:0px !important;
+	background:#FFF;
+	height:100%;
+}
+.navbar-inner{ }
+.navbar-taquilla .navbar-inner{
+	background:@primario !important ;
+	color:#fff;
+}
+#sidebar{background:@secundario; }
+.navbar .nav > li > a,.navbar .nav > li > a:link{color:#fff;text-shadow:0 0px 0 #aaa; }
+.navbar .nav > li > a:hover{color:#fff;text-shadow:0 0px 0 #aaa; }
+
+a.brand{color:@amarillo !important ;
+text-shadow:0 1px 0 #6A6631 !important;
+}
+#wrap{min-height:100%;height:auto !important;height:100%;margin: 0 auto -60px;}
+#footer{background:@secundario;color:#555;text-align:center}
+#push,#footer{height:60px;}
+ html,
+ body {
+        height: 100%;
+        background:@secundario
+        /* The html and body elements cannot have any padding or margin. */
+ }
+
+
+
+    
