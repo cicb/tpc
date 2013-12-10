@@ -9,15 +9,15 @@ $this->widget('bootstrap.widgets.TbNav', array(
 		'items' => array(
 				array('label' => 'Tipos de reportes', 'active'=>true),
 				array('label' => 'Lugares', 				'url' =>  $this->createUrl('reportes/lugares')),
-				array('label' => 'Lugares vendidos', 		'url' =>  $this->createUrl('reportes/lugares')),
-				array('label' => 'Cortes diarios', 			'url' =>  $this->createUrl('reportes/lugares')),
-				array('label' => 'Reservaciones Farmatodo', 'url' =>  $this->createUrl('reportes/lugares')),
-				array('label' => 'Ventas por Web', 			'url' =>  $this->createUrl('reportes/lugares')),
+				array('label' => 'Lugares vendidos', 		'url' =>  $this->createUrl('reportes/lugaresVendidos')),
+				array('label' => 'Cortes diarios', 			'url' =>  $this->createUrl('reportes/cortesDiarios')),
+				array('label' => 'Reservaciones Farmatodo', 'url' =>  $this->createUrl('reportes/reservacionesFarmatodo')),
+				array('label' => 'Ventas por Web', 			'url' =>  $this->createUrl('reportes/ventasWeb')),
 				array('label' => 'Ventas sin cargo',		'url' =>  $this->createUrl('reportes/ventasSinCargo')),
 				array('label' => 'Ventas con cargo',		'url' =>  $this->createUrl('reportes/ventasConCargo')),
 				array('label' => 'Ventas de Farmatodo', 	'url' =>  $this->createUrl('reportes/ventasFarmatodo')),
 				array('label' => 'Ventas por Call Center', 	'url' =>  $this->createUrl('reportes/ventasCallCenter')), 
-				array('label' => 'Desglose de ventas', 	'url' =>  $this->createUrl('reportes/ventasCallCenter')), 
+				array('label' => 'Desglose de ventas', 	'url' =>  $this->createUrl('reportes/desgloseVentas')), 
 				TbHtml::menuDivider(),
 
 				array('label' => 'Reportes PHP', 'url' => '#'),
@@ -29,7 +29,7 @@ $this->widget('bootstrap.widgets.TbNav', array(
 ));
 ?>
 </div>
-<div class="span9">
+<div class="span10 area">
 	<div id="content">
 		<?php echo $content; ?>
 	</div><!-- content -->

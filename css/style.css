@@ -1,12 +1,12 @@
 .left-bar {
-  margin: 0px;
-  padding: 0px;
+  padding: 0;
+  margin: 0;
   height: 100%;
   background: #b8b8b8;
 }
 #pagina {
-  margin: 0px;
-  padding: 0px !important;
+  padding: 0;
+  margin: 0;
   background: #FFF;
   height: 100%;
 }
@@ -47,6 +47,17 @@ a.brand {
 }
 html,
 body {
+  color: #333;
   height: 100%;
   background: #ebebeb /* The html and body elements cannot have any padding or margin. */;
+}
+.marquesina {
+  background: #4896cc;
+  color: #FFF;
+}
+.controles {
+  background: #ebebeb;
+  height: 100%;
+  margin: 0px;
+  width: 100%;
 }
