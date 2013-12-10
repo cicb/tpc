@@ -1,0 +1,48 @@
+// LESS
+@primario:#266088;
+@secundario:#ebebeb;
+@amarillo:#E0D53B;
+@sombra: darken(@secundario,20%);
+
+.area-0(){padding:0;margin:0;}
+.area{}
+.left-bar{
+		.area-0;
+		height:100%;
+		background:@sombra;
+}
+#pagina{
+	.area-0;
+	background:#FFF;
+	height:100%;
+}
+.navbar-inner{ }
+.navbar-taquilla .navbar-inner{
+	background:@primario !important ;
+	color:#fff;
+}
+#sidebar{background:@secundario; }
+.navbar .nav > li > a,.navbar .nav > li > a:link{color:#fff;text-shadow:0 0px 0 #aaa; }
+.navbar .nav > li > a:hover{color:#fff;text-shadow:0 0px 0 #aaa; }
+a.brand{color:@amarillo !important ;
+text-shadow:0 1px 0 #6A6631 !important;
+}
+#wrap{min-height:100%;height:auto !important;height:100%;margin: 0 auto -60px;}
+#footer{background:@secundario;color:#555;text-align:center}
+#push,#footer{height:60px;}
+ html,
+ body {
+		color:#333;
+        height: 100%;
+        background:@secundario
+        /* The html and body elements cannot have any padding or margin. */
+ }
+ .marquesina{
+	background:lighten(@primario,20%);
+	color:#FFF;
+ }
+ .controles{background:@secundario; height:100%;margin:0px;width:100%}
+
+
+
+    

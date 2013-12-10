@@ -1,0 +1,63 @@
+.left-bar {
+  padding: 0;
+  margin: 0;
+  height: 100%;
+  background: #b8b8b8;
+}
+#pagina {
+  padding: 0;
+  margin: 0;
+  background: #FFF;
+  height: 100%;
+}
+.navbar-taquilla .navbar-inner {
+  background: #266088 !important;
+  color: #fff;
+}
+#sidebar {
+  background: #ebebeb;
+}
+.navbar .nav > li > a,
+.navbar .nav > li > a:link {
+  color: #fff;
+  text-shadow: 0 0px 0 #aaa;
+}
+.navbar .nav > li > a:hover {
+  color: #fff;
+  text-shadow: 0 0px 0 #aaa;
+}
+a.brand {
+  color: #e0d53b !important;
+  text-shadow: 0 1px 0 #6A6631 !important;
+}
+#wrap {
+  min-height: 100%;
+  height: auto !important;
+  height: 100%;
+  margin: 0 auto -60px;
+}
+#footer {
+  background: #ebebeb;
+  color: #555;
+  text-align: center;
+}
+#push,
+#footer {
+  height: 60px;
+}
+html,
+body {
+  color: #333;
+  height: 100%;
+  background: #ebebeb /* The html and body elements cannot have any padding or margin. */;
+}
+.marquesina {
+  background: #4896cc;
+  color: #FFF;
+}
+.controles {
+  background: #ebebeb;
+  height: 100%;
+  margin: 0px;
+  width: 100%;
+}

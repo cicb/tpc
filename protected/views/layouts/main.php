@@ -4,10 +4,8 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="language" content="en" />
-
 	<!-- blueprint CSS framework -->
-	<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/screen.css" media="screen, projection" />
-	<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/print.css" media="print" />
+<!--	<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/screen.css" media="screen, projection" />-->
 	<!--[if lt IE 8]>
 	<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/ie.css" media="screen, projection" />
 	<![endif]-->
@@ -31,7 +29,7 @@
 				array(
 						'class' => 'bootstrap.widgets.TbNav',
 						'items' => array(
-								array('label' => 'Reportes', 	'url' => '#', 'active' => true),
+								array('label' => 'Reportes', 	'url' => $this->createUrl('reportes/index'), 'active' => true),
 								array('label' => 'Descuentos', 	'url' => '#'),
 								array('label' => 'Eventos', 	'url' => '#'),
 								array('label' => 'Boletos', 	'url' => '#'),
@@ -42,42 +40,27 @@
 )); ?>
 
 	</div><!-- mainmenu -->
-<div class="container-fuid" id="page">
-		
-	<?php if(isset($this->breadcrumbs)):?>
-		<?php $this->widget('zii.widgets.CBreadcrumbs', array(
-			'links'=>$this->breadcrumbs,
-		)); ?><!-- breadcrumbs -->
-	<?php endif?>
-	<br />
-	<br />
-	<br />
-<div class='span3'>
-<?php $this->widget('bootstrap.widgets.TbNav', array(
-    'type' => TbHtml::NAV_TYPE_TABS,
-    'stacked' => true,
-	'items'=>array(
-	        array('label' => 'Reporte de ventas', 'url' => '#'),
-	        array('label' => 'Ventas por internet', 'url' => '#'),
-	), 
-)); ?>
+<div id='wrap'>
+		<div class="container-fluid" id="pagina">
+		<br />
+		<br />
+		<?php echo $content; ?>
+
+		<div class="clear"></div>
+
+		</div><!-- page -->
+		<div id='push'></div>
 </div>
-<div class='span8'>
-	<?php echo $content; ?>
-
-</div>
-
-
-	<div class="clear"></div>
-
 	<div id="footer">
-		Copyright &copy; <?php echo date('Y'); ?> por Globaloxs.<br/>
-		All Rights Reserved.<br/>
-		<?php echo Yii::powered(); ?>
+		<div class='container'>
+				Copyright &copy; <?php echo date('Y'); ?> por Globaloxs.<br/>
+				Reservados todos los derechos.<br/>
+		</div>
 	</div><!-- footer -->
 
-</div><!-- page -->
 
+<?php Yii::app()->clientScript->registerCssFile(Yii::app()->request->baseUrl."/css/style.css",CClientScript::POS_END); ?>
 	<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/custom.css"  />
+	<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/style.css"  />
 </body>
 </html>
