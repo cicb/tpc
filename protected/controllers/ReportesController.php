@@ -20,9 +20,8 @@ class ReportesController extends Controller
 
 	public function actionLugares()
 	{
-			$this->layout="reportes";
 			$model=new Lugares;
-			$data=new CActiveDataProvider('Lugares');
+			$data=null;
 			if(isset($_POST['Lugares']))
 			{
 					$evento = $_POST['evento_id'];
@@ -73,8 +72,10 @@ class ReportesController extends Controller
 											'limit'=>'150'),
 							'pagination'=>false));    
 			}
-			else
+			else{
 					$evento = '******';
+					$this->layout="reportes";
+			}
 			$this->render('lugares',array('model'=>$model, 'dataProvider'=>$data));
 
 
@@ -85,15 +86,212 @@ class ReportesController extends Controller
 	public function actionLugaresVendidos()
 	{
 
-			$this->layout="reportes";
-			$this->render('lugaresVendidos');
+			$model=new Lugares;
+
+			//if(Yii::app()->user->isGuest)
+					//$this->redirect(Yii::app()->request->baseUrl);
+
+			$dataProvider = null; 
+			if(isset($_POST['Lugares']))
+			{
+					$evento = $_POST['evento_id'];
+					$funcion = $_POST['funcion_id'];
+					$zona = $_POST['zona_id'];
+					$fila = $_POST['Lugares']['filas'];
+					$asiento = $_POST['Lugares']['lugares'];
+					$zonaCondicion = '';
+					if($zona)
+					{
+							$zonaCondicion = "lugares.ZonasId = '".$zona."' AND";
+					}
+
+
+			$dataProvider = new CActiveDataProvider('Lugares', 
+					array('criteria'=>array('select'   =>"evento.EventoNom,
+					funciones.funcionesTexto,
+					zonas.ZonasAli as Zona,
+					filas.FilasAli as Fila,
+					lugares.LugaresLug as Asiento,
+					ventaslevel1.LugaresNumBol as Barras,
+					ventaslevel1.VentasSta as Estatus,
+					ventas.VentasFecHor as FechaVenta,
+					ventas.VentasId,
+					ventas.VentasNumRef,
+					ventas.VentasTip as TipoVenta,
+					ventaslevel1.VentasBolTip as TipoBoleto,
+					descuentos.DescuentosDes as Descuento,
+					puntosventa.PuntosventaId,
+					puntosventa.PuntosventaNom as PuntoVenta,
+					ventas.UsuariosId,
+					IF(ventas.TempLugaresTipUsr = 'usuarios',
+					(SELECT usuarios.UsuariosNom FROM usuarios 
+					WHERE UsuariosId = ventas.UsuariosId),
+					(SELECT clientes.ClientesNom FROM clientes 
+					WHERE ClientesId = ventas.UsuariosId)) AS QuienVende,
+					ventas.VentasNomDerTar AS NombreTarjeta,
+					ventas.VentasNumTar AS NumeroTarjeta,
+					IF(ventaslevel1.CancelUsuarioId > 0,
+					(SELECT usuarios.UsuariosNom FROM usuarios 
+					WHERE UsuariosId = ventaslevel1.CancelUsuarioId), '') AS QuienCancelo,
+					ventaslevel1.CancelFecHor AS FechaCancelacion,
+					(SELECT COUNT(reimpresiones.ReimpresionesId)
+					FROM  reimpresiones
+					WHERE reimpresiones.EventoId = ventaslevel1.EventoId AND 
+					reimpresiones.FuncionesId = ventaslevel1.FuncionesId AND
+					reimpresiones.ZonasId =  ventaslevel1.ZonasId AND
+					reimpresiones.SubzonaId = ventaslevel1.SubzonaId AND
+					reimpresiones.FilasId = ventaslevel1.FilasId AND
+					reimpresiones.LugaresId = ventaslevel1.LugaresId) as VecesImpreso,
+					ventaslevel1.EventoId,
+					ventaslevel1.FuncionesId,
+					ventaslevel1.ZonasId,
+					ventaslevel1.SubzonaId,
+					ventaslevel1.FilasId,
+					ventaslevel1.LugaresId", 
+					'alias'=>'lugares',
+					'join'=>"INNER JOIN filas ON (filas.EventoId = lugares.EventoId)
+					AND (filas.FuncionesId = lugares.FuncionesId)
+					AND (filas.ZonasId = lugares.ZonasId)
+					AND (filas.SubzonaId = lugares.SubzonaId)
+					AND (filas.FilasId = lugares.FilasId)
+					INNER JOIN zonas ON (zonas.EventoId = filas.EventoId)
+					AND (zonas.FuncionesId = filas.FuncionesId)
+					AND (zonas.ZonasId = filas.ZonasId)
+					INNER JOIN ventaslevel1 ON (lugares.EventoId = ventaslevel1.EventoId)
+					AND (lugares.FuncionesId = ventaslevel1.FuncionesId)
+					AND (lugares.ZonasId = ventaslevel1.ZonasId)
+					AND (lugares.SubzonaId = ventaslevel1.SubzonaId)
+					AND (lugares.FilasId = ventaslevel1.FilasId)
+					AND (lugares.LugaresId = ventaslevel1.LugaresId)
+					INNER JOIN funciones ON (funciones.FuncionesId = zonas.FuncionesId)
+					AND (funciones.EventoId = zonas.EventoId)
+					INNER JOIN ventas ON (ventaslevel1.VentasId = ventas.VentasId)
+					INNER JOIN descuentos ON (ventaslevel1.DescuentosId = descuentos.DescuentosId)
+					INNER JOIN puntosventa ON (ventas.PuntosventaId = puntosventa.PuntosventaId)
+					INNER JOIN evento ON (funciones.EventoId = evento.EventoId)",
+							'condition'=>"lugares.EventoId = '$evento' AND 
+							lugares.FuncionesId = '$funcion' AND
+							".$zonaCondicion." 
+							FilasAli LIKE '%$fila%' AND 
+							LugaresLug LIKE '%$asiento%'",
+							'order'=>'lugares.ZonasId,lugares.FilasId, lugares.LugaresLug, ventas.VentasFecHor',
+							'limit'=>'1500'),
+					'pagination'=>false));	
+			} 
+			else{
+					$evento = '******';
+					$this->layout="reportes";
+			}
+			$this->render('lugaresVendidos',array('model'=>$model, 'dataProvider'=>$dataProvider));	
+
+
 	}
 
 	public function actionReservacionesFarmatodo()
 	{
-			$this->layout="reportes";
- 
-		$this->render('reservacionesFarmatodo');
+		$this->layout="reportes";
+		$model=new Templugares;
+		
+		
+		$count=0;
+		if(!empty($_POST['Templugares']['buscar'])){
+			
+			$venta = $_POST['Templugares']['buscar'];
+			
+
+				$count = Yii::app()->db->createCommand("select 
+                ventas.ventasId as id,
+                ventas.VentasNumRef,
+                ventas.VentasFecHor Fecha, 
+                ventas.VentasNumRef Referencia, 
+                puntosventa.PuntosventaId, 
+                puntosventa.PuntosventaNom Venta, 
+                evento.EventoNom Evento, 
+                funciones.funcionesTexto Funcion, 
+                zonas.ZonasAli Zona,
+                filas.FilasAli Fila, 
+                lugares.LugaresLug Asiento,
+                ventaslevel1.VentasSta Estatus,
+                ventaslevel1.LugaresId Lug
+                from templugares
+				LEFT JOIN ventas ON ventas.VentasNumRef = templugares.tempLugaresNumRef
+                inner join ventaslevel1 on ventas.VentasId=ventaslevel1.VentasId
+                inner join lugares on lugares.EventoId=ventaslevel1.EventoId and lugares.FuncionesId=ventaslevel1.FuncionesId and lugares.ZonasId=ventaslevel1.ZonasId and lugares.SubzonaId=ventaslevel1.SubzonaId and lugares.FilasId=ventaslevel1.FilasId and lugares.LugaresId=ventaslevel1.LugaresId
+                inner join evento on evento.EventoId=ventaslevel1.EventoId
+                inner join funciones on funciones.EventoId=ventaslevel1.EventoId and funciones.FuncionesId=ventaslevel1.FuncionesId
+                inner join zonas on zonas.EventoId=ventaslevel1.EventoId and zonas.FuncionesId=ventaslevel1.FuncionesId and zonas.ZonasId=ventaslevel1.ZonasId
+                inner join subzona on subzona.EventoId=ventaslevel1.EventoId and subzona.FuncionesId=ventaslevel1.FuncionesId and subzona.ZonasId=ventaslevel1.ZonasId and subzona.SubzonaId=ventaslevel1.SubzonaId
+                inner join filas on filas.EventoId=ventaslevel1.EventoId and filas.FuncionesId=ventaslevel1.FuncionesId and filas.ZonasId=ventaslevel1.ZonasId and filas.SubzonaId=ventaslevel1.SubzonaId and filas.FilasId=ventaslevel1.FilasId
+                inner join puntosventa on puntosventa.PuntosVentaId=ventas.PuntosVentaId
+                where tempLugaresNumRef='$venta' GROUP BY Asiento")->execute();
+                if($count>0){
+                    $query = "select 
+                    ventas.ventasId as id,
+                    ventas.VentasNumRef,
+                    ventas.VentasFecHor Fecha, 
+                    ventas.VentasNumRef Referencia, 
+                    puntosventa.PuntosventaId, 
+                    puntosventa.PuntosventaNom Venta, 
+                    evento.EventoNom Evento, 
+                    funciones.funcionesTexto Funcion, 
+                    zonas.ZonasAli Zona,
+                    filas.FilasAli Fila, 
+                    lugares.LugaresLug Asiento,
+                    ventaslevel1.VentasSta Estatus,
+                    ventaslevel1.LugaresId Lug
+                    from templugares
+    				LEFT JOIN ventas ON ventas.VentasNumRef = templugares.tempLugaresNumRef
+                    inner join ventaslevel1 on ventas.VentasId=ventaslevel1.VentasId
+                    inner join lugares on lugares.EventoId=ventaslevel1.EventoId and lugares.FuncionesId=ventaslevel1.FuncionesId and lugares.ZonasId=ventaslevel1.ZonasId and lugares.SubzonaId=ventaslevel1.SubzonaId and lugares.FilasId=ventaslevel1.FilasId and lugares.LugaresId=ventaslevel1.LugaresId
+                    inner join evento on evento.EventoId=ventaslevel1.EventoId
+                    inner join funciones on funciones.EventoId=ventaslevel1.EventoId and funciones.FuncionesId=ventaslevel1.FuncionesId
+                    inner join zonas on zonas.EventoId=ventaslevel1.EventoId and zonas.FuncionesId=ventaslevel1.FuncionesId and zonas.ZonasId=ventaslevel1.ZonasId
+                    inner join subzona on subzona.EventoId=ventaslevel1.EventoId and subzona.FuncionesId=ventaslevel1.FuncionesId and subzona.ZonasId=ventaslevel1.ZonasId and subzona.SubzonaId=ventaslevel1.SubzonaId
+                    inner join filas on filas.EventoId=ventaslevel1.EventoId and filas.FuncionesId=ventaslevel1.FuncionesId and filas.ZonasId=ventaslevel1.ZonasId and filas.SubzonaId=ventaslevel1.SubzonaId and filas.FilasId=ventaslevel1.FilasId
+                    inner join puntosventa on puntosventa.PuntosVentaId=ventas.PuntosVentaId
+                    where tempLugaresNumRef='$venta' GROUP BY Asiento" ;    
+                }else{
+                    $query ="select 
+                    ventas.ventasId as id,
+                    ventas.VentasNumRef,
+                    ventas.VentasFecHor Fecha, 
+                    ventas.VentasNumRef Referencia, 
+                    puntosventa.PuntosventaId, 
+                    puntosventa.PuntosventaNom Venta, 
+                    evento.EventoNom Evento, 
+                    funciones.funcionesTexto Funcion, 
+                    zonas.ZonasAli Zona,
+                    filas.FilasAli Fila, 
+                    lugares.LugaresLug Asiento,
+                    ventaslevel1.VentasSta Estatus,
+                    ventaslevel1.LugaresId Lug
+                    from ventas
+                    inner join ventaslevel1 on ventas.VentasId=ventaslevel1.VentasId
+                    inner join lugares on lugares.EventoId=ventaslevel1.EventoId and lugares.FuncionesId=ventaslevel1.FuncionesId and lugares.ZonasId=ventaslevel1.ZonasId and lugares.SubzonaId=ventaslevel1.SubzonaId and lugares.FilasId=ventaslevel1.FilasId and lugares.LugaresId=ventaslevel1.LugaresId
+                    inner join evento on evento.EventoId=ventaslevel1.EventoId
+                    inner join funciones on funciones.EventoId=ventaslevel1.EventoId and funciones.FuncionesId=ventaslevel1.FuncionesId
+                    inner join zonas on zonas.EventoId=ventaslevel1.EventoId and zonas.FuncionesId=ventaslevel1.FuncionesId and zonas.ZonasId=ventaslevel1.ZonasId
+                    inner join subzona on subzona.EventoId=ventaslevel1.EventoId and subzona.FuncionesId=ventaslevel1.FuncionesId and subzona.ZonasId=ventaslevel1.ZonasId and subzona.SubzonaId=ventaslevel1.SubzonaId
+                    inner join filas on filas.EventoId=ventaslevel1.EventoId and filas.FuncionesId=ventaslevel1.FuncionesId and filas.ZonasId=ventaslevel1.ZonasId and filas.SubzonaId=ventaslevel1.SubzonaId and filas.FilasId=ventaslevel1.FilasId
+                    inner join puntosventa on puntosventa.PuntosVentaId=ventas.PuntosVentaId
+                    where ventas.VentasNumRef = '$venta'
+				    GROUP BY Asiento";
+                }
+					
+				
+					
+		}else{
+			$query = "SELECT  '' as id,'' as Evento , '' as Funcion, '' as Zona, '' as Fila, '' Asiento,
+						      ''  as Venta, '' as Fecha, '' as Referencia";
+			}
+					$dataProvider=new CSqlDataProvider($query, array(
+							'totalItemCount'=>$count,//$count,	
+							'pagination'=>false,
+					));
+					
+					
+		$this->render('reservacionesFarmatodo',array('model'=>$model, 'dataProvider'=>$dataProvider)); 
+		//$this->render('reservacionesFarmatodo');
 	}
 
 	public function actionVentasConCargo()
@@ -124,9 +322,182 @@ class ReportesController extends Controller
 	public function actionVentasWeb()
 	{
 			$this->layout="reportes";
- 
-		$this->render('ventasWeb');
+			$download ="";
+			//if(Yii::app()->user->isGuest)
+			//$this->redirect(Yii::app()->request->baseUrl);
+			$venta = "";
+			$model=new Ventaslevel1;
+
+
+			$count = 0;
+			if(!empty($_POST['Ventaslevel1'])){
+					if(!empty($_POST['Ventaslevel1']['funcion']) && $_POST['Ventaslevel1']['funcion']!=0 ):
+							$funcion = " lugares.FuncionesId=".$_POST['Ventaslevel1']['funcion']." AND ";
+					else:
+							$funcion = " lugares.FuncionesId in(1,2,3,4,5,6,7,8,9,10) AND ";
+						endif;
+						$venta = $_POST['Ventaslevel1']['buscar'];
+						$query = "(SELECT  ventas.VentasId as id, ventas.PuntosventaId, funciones.funcionesTexto as fnc,
+								puntosventa.PuntosventaNom, ventas.VentasFecHor, zonas.ZonasAli,
+								filas.FilasAli, lugares.LugaresLug,  subzona.SubzonaAcc,
+								ventaslevel1.LugaresNumBol, ventaslevel1.VentasCon,clientes.ClientesEma,
+								ventas.VentasNumRef
+								FROM
+								lugares
+								INNER JOIN funciones ON funciones.FuncionesId = lugares.FuncionesId AND funciones.EventoId = lugares.EventoId	
+								INNER JOIN ventaslevel1 ON (lugares.EventoId=ventaslevel1.EventoId)
+								AND (lugares.FuncionesId=ventaslevel1.FuncionesId)
+								AND (lugares.ZonasId=ventaslevel1.ZonasId)
+								AND (lugares.SubzonaId=ventaslevel1.SubzonaId)
+								AND (lugares.FilasId=ventaslevel1.FilasId)
+								AND (lugares.LugaresId=ventaslevel1.LugaresId)
+								INNER JOIN filas ON (filas.EventoId=lugares.EventoId)
+								AND (filas.FuncionesId=lugares.FuncionesId)
+								AND (filas.ZonasId=lugares.ZonasId)
+								AND (filas.SubzonaId=lugares.SubzonaId)
+								AND (filas.FilasId=lugares.FilasId)
+								INNER JOIN zonas ON (zonas.EventoId=filas.EventoId)
+								AND (zonas.FuncionesId=filas.FuncionesId)
+								AND (zonas.ZonasId=filas.ZonasId)
+								INNER JOIN ventas ON (ventas.VentasId=ventaslevel1.VentasId)
+								INNER JOIN puntosventa ON (puntosventa.PuntosventaId=ventas.PuntosventaId)
+								INNER JOIN subzona ON (subzona.EventoId=filas.EventoId)
+								AND (subzona.FuncionesId=filas.FuncionesId)
+								AND (subzona.ZonasId=filas.ZonasId)
+								AND (subzona.SubzonaId=filas.SubzonaId)
+								AND (zonas.EventoId=subzona.EventoId)
+								AND (zonas.FuncionesId=subzona.FuncionesId)
+								AND (zonas.ZonasId=subzona.ZonasId)
+								INNER JOIN clientes ON (clientes.ClientesId=ventas.UsuariosId)
+								WHERE
+								(lugares.EventoId = $venta) AND
+								$funcion
+								((puntosventa.PuntosventaId = '102')) AND
+								NOT (ventas.VentasNumRef = ''))
+
+								UNION
+
+								(SELECT  ventas.VentasId as id, ventas.PuntosventaId, funciones.funcionesTexto as fnc,
+								puntosventa.PuntosventaNom, ventas.VentasFecHor, zonas.ZonasAli,
+								filas.FilasAli, lugares.LugaresLug,  subzona.SubzonaAcc,
+								ventaslevel1.LugaresNumBol, ventaslevel1.VentasCon,cruge_user.email,
+								ventas.VentasNumRef
+								FROM
+								lugares
+								INNER JOIN funciones ON funciones.FuncionesId = lugares.FuncionesId AND funciones.EventoId = lugares.EventoId
+								INNER JOIN ventaslevel1 ON (lugares.EventoId=ventaslevel1.EventoId)
+								AND (lugares.FuncionesId=ventaslevel1.FuncionesId)
+								AND (lugares.ZonasId=ventaslevel1.ZonasId)
+								AND (lugares.SubzonaId=ventaslevel1.SubzonaId)
+								AND (lugares.FilasId=ventaslevel1.FilasId)
+								AND (lugares.LugaresId=ventaslevel1.LugaresId)
+								INNER JOIN filas ON (filas.EventoId=lugares.EventoId)
+								AND (filas.FuncionesId=lugares.FuncionesId)
+								AND (filas.ZonasId=lugares.ZonasId)
+								AND (filas.SubzonaId=lugares.SubzonaId)
+								AND (filas.FilasId=lugares.FilasId)
+								INNER JOIN zonas ON (zonas.EventoId=filas.EventoId)
+								AND (zonas.FuncionesId=filas.FuncionesId)
+								AND (zonas.ZonasId=filas.ZonasId)
+								INNER JOIN ventas ON (ventas.VentasId=ventaslevel1.VentasId)
+								INNER JOIN puntosventa ON (puntosventa.PuntosventaId=ventas.PuntosventaId)
+								INNER JOIN subzona ON (subzona.EventoId=filas.EventoId)
+								AND (subzona.FuncionesId=filas.FuncionesId)
+								AND (subzona.ZonasId=filas.ZonasId)
+								AND (subzona.SubzonaId=filas.SubzonaId)
+								AND (zonas.EventoId=subzona.EventoId)
+								AND (zonas.FuncionesId=subzona.FuncionesId)
+								AND (zonas.ZonasId=subzona.ZonasId)
+								INNER JOIN cruge_user ON (cruge_user.iduser=ventas.UsuariosId)
+								WHERE
+								(lugares.EventoId = $venta) AND
+								$funcion
+								((puntosventa.PuntosventaId = '101')) AND
+								NOT (ventas.VentasNumRef = ''))
+								ORDER BY  fnc ,ZonasAli,filasAli,LugaresLug;";
+
+
+
+								}else{//$count=0;
+								$query = "SELECT '' as id, '' as VentasId , '' as PuntosventaId, '' as PuntosventaNom, '' as VentasFecHor, '' ZonasAli,
+										''  as FilasAli, '' as LugaresLug, '' as LugaresNumBol, 
+										'' as VentasCon, '' as VentasNumRef";
+								}
+
+								$dataProvider = new CSqlDataProvider($query, array(
+										'totalItemCount'=>count($query),	
+										'pagination'=>false,
+								));
+
+
+								if(!empty($_POST['Ventaslevel1']['excel'])){  
+										$EventoNombre = Evento::model()->findAll("EventoId=".$_POST['Ventaslevel1']['buscar']);
+										$dir_file = Yii::app()->request->scriptFile."doctos/";
+										$delete_file = scandir(str_replace('index.php','',$dir_file));
+										if(!empty($delete_file[2])){
+												unlink(str_replace('index.php','',$dir_file).$delete_file[2]);
+										}
+										$phpExcelPath = Yii::getPathOfAlias('ext.phpexcel.Classes');
+										spl_autoload_unregister(array('YiiBase','autoload'));
+										include($phpExcelPath . DIRECTORY_SEPARATOR . 'PHPExcel.php');
+										$objPHPExcel = new PHPExcel();
+										$objPHPExcel->setActiveSheetIndex(0);
+										$objPHPExcel->getActiveSheet()->setCellValue('A1', 'Función');
+										$objPHPExcel->getActiveSheet()->setCellValue('B1', 'Punto de Venta');
+										$objPHPExcel->getActiveSheet()->setCellValue('C1', 'Ventas Fecha y Hora');
+										$objPHPExcel->getActiveSheet()->setCellValue('D1', 'Zona');
+										$objPHPExcel->getActiveSheet()->setCellValue('E1', 'Fila');
+										$objPHPExcel->getActiveSheet()->setCellValue('F1', 'Lugar');
+										$objPHPExcel->getActiveSheet()->setCellValue('G1', 'Referencia');
+										$objPHPExcel->getActiveSheet()->setCellValue('H1', 'Clientes Email');
+										$objPHPExcel->getActiveSheet()->setCellValue('I1', 'Reimpresiones');
+										spl_autoload_register(array('YiiBase','autoload'));
+										foreach($dataProvider->getData() as $key => $datos):
+												$fila = $key+2;
+										$objPHPExcel->getActiveSheet()->setCellValue("A$fila", $datos['fnc']);
+										$objPHPExcel->getActiveSheet()->setCellValue("B$fila", $datos['PuntosventaNom']);
+										$objPHPExcel->getActiveSheet()->setCellValue("C$fila", $datos['VentasFecHor']);
+										$objPHPExcel->getActiveSheet()->setCellValue("D$fila", $datos['ZonasAli']);
+										$objPHPExcel->getActiveSheet()->setCellValue("E$fila", $datos['FilasAli']);
+										$objPHPExcel->getActiveSheet()->setCellValue("F$fila", $datos['LugaresLug']);
+										$objPHPExcel->getActiveSheet()->setCellValue("G$fila", $datos['VentasNumRef']);
+										$objPHPExcel->getActiveSheet()->setCellValue("H$fila", $datos['ClientesEma']);
+										$string = $datos['VentasCon'];
+										if(!empty($string)):
+												$len = strlen($string);
+										$num = substr($string ,$len -2);
+										if(is_numeric($num)):
+												$reimp = $num + 1;
+										else:
+												$num = substr($string ,$len -1);
+										$reimp = $num + 1;
+						endif;
+						else:
+								$reimp = "0";
+						endif;
+						$objPHPExcel->getActiveSheet()->setCellValue("I$fila", $reimp);
+						endforeach;
+						$objPHPExcel->getActiveSheet()->setTitle('Concentrados');
+						$objPHPExcel->setActiveSheetIndex(0);
+						$name =  date('d_m_Y');
+						//$file=str_replace('index.php','',$dir_file)."reporte_web_".str_replace(array('Á','á','É','é','Í','í','Ó','ó','Ú','ú','Ñ','ñ',' '),array('A','a','E','e','I','i','O','o','U','u','N','n','_'),$EventoNombre[0]->EventoNom)."_$name.xls";
+
+						$file=Yii::app()->request->baseUrl."/doctos/reporte_web_".str_replace(array('Á','á','É','é','Í','í','Ó','ó','Ú','ú','Ñ','ñ',' '),array('A','a','E','e','I','i','O','o','U','u','N','n','_'),$EventoNombre[0]->EventoNom)."_$name.xls";
+						$download =$file;
+						$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
+						header('Content-type: application/vnd.ms-excel');
+						// It will be called file.xls
+						header('Content-Disposition: attachment; filename="reporte_web_'.str_replace(array('Á','á','É','é','Í','í','Ó','ó','Ú','ú','Ñ','ñ',' '),array('A','a','E','e','I','i','O','o','U','u','N','n','_'),$EventoNombre[0]->EventoNom).'_'.$name.'.xls"');
+						// Write file to the browser
+						$objWriter->save('php://output');
+						//$objWriter->save('..'.$file); 
+
+						}      
+
+
+			$this->render('ventasWeb',array('model'=>$model,'itemselected' => $venta, 'dataProvider'=>$dataProvider,'download'=>$download));
 	}
+ 
 
 	// Uncomment the following methods and override them if needed
 	/*

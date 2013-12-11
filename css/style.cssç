@@ -1,6 +1,3 @@
-body {
-  font: normal 9pt "Verdana";
-}
 .left-bar {
   padding: 0;
   margin: 0;
@@ -12,7 +9,7 @@ body {
   margin: 0;
   background: #FFF;
   height: 100%;
-  padding-top: 22px;
+  padding-top: 12px;
 }
 .navbar-taquilla .navbar-inner {
   background: #fce300;
@@ -30,21 +27,13 @@ body {
   color: #266088;
   text-shadow: 0 0px 0 #aaa;
 }
-.dropdown-menu a:hover {
-  color: #fff !important;
-}
-.brand {
-  text-shadow: 1px 1px 2px #707070 !important;
-  color: #fff !important;
-  font-weight: bolder;
-}
-.brand a {
+brand a {
   color: #000 !important;
   text-shadow: 0 1px 0 #6A6631 !important;
+  font-weight: bolder;
 }
 #sidebar {
   background: #ebebeb;
-  margin-top: 5px;
 }
 #wrap {
   min-height: 100%;
@@ -65,8 +54,7 @@ html,
 body {
   color: #333;
   height: 100%;
-  background: #fff;
-  /* The html and body elements cannot have any padding or margin. */
+  background: #ebebeb /* The html and body elements cannot have any padding or margin. */;
 }
 .marquesina {
   background: #4896cc;
@@ -85,8 +73,4 @@ thead {
 }
 .grid-view .table th > .sort-link {
   color: #ffffff !important;
-}
-.flash-success {
-  border-radius: 0px 0px 4px 4px;
-  -moz-border-radius: 0px 0px 4px 4px;
 }

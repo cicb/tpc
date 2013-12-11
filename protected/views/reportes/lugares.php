@@ -76,7 +76,7 @@ echo CHtml::dropDownList('zona_id','',array(),array('prompt'=>'Seleccione una Zo
 		</div>
 </div>
        <div class=" buttons">
-        <?php echo CHtml::submitButton('Buscar'); ?>
+        <?php echo CHtml::submitButton('Buscar',array('class'=>'btn btn-primary btn-medium','style'=>'margin:auto;display:block')); ?>
     </div>
     
 
@@ -92,8 +92,9 @@ echo CHtml::dropDownList('zona_id','',array(),array('prompt'=>'Seleccione una Zo
         background-color:#FFCECE;}
 </style>
 </div>
-<div id="Contenido" style="width:900px; overflow:auto;">
-    <?php $this->widget('zii.widgets.grid.CGridView', array(
+<?php if(( isset($dataProvider) and !is_null($dataProvider))): ?>
+<div id="Contenido" style=" overflow:auto;">
+    <?php $this->widget('bootstrap.widgets.TbGridView', array(
         'id'=>'evento-grid',
         'dataProvider'=>$dataProvider,
         'columns'=>array(
@@ -121,28 +122,28 @@ echo CHtml::dropDownList('zona_id','',array(),array('prompt'=>'Seleccione una Zo
              array(
                 'name'=>'quienvende',
             ),
-             array(
-                'name'=>'EventoId',
-            ),
-             array(
-                'name'=>'FuncionesId',
-            ),
-             array(
-                'name'=>'ZonasId',
-            ),
-             array(
-                'name'=>'SubzonaId',
-            ),
-             array(
-                'name'=>'FilasId',
-            ),
-             array(
-                'name'=>'LugaresId',
-            )
+			 array(
+				'name'=>'EventoId',
+			),
+			 array(
+				'name'=>'FuncionesId',
+			),
+			 array(
+				'name'=>'ZonasId',
+			),
+			 array(
+				'name'=>'SubzonaId',
+			),
+			 array(
+				'name'=>'FilasId',
+			),
+			 array(
+				'name'=>'LugaresId',
+			)
         ),
     )); ?>
 </div>
-
+<?php endif;?>
 <?php $this->widget('application.extensions.fancybox.EFancyBox', array(
         'target'=>'a#inline',
         'config'=>array(
