@@ -194,9 +194,9 @@ class ReportesController extends Controller
 		
 		
 		$count=0;
-		if(!empty($_POST['Templugares']['buscar'])){
+		if(!empty($_POST['Templugares']['evento_id'])){
 			
-			$venta = $_POST['Templugares']['buscar'];
+			$venta = $_POST['Templugares']['evento_id'];
 			
 
 				$count = Yii::app()->db->createCommand("select 
@@ -310,8 +310,169 @@ class ReportesController extends Controller
 	public function actionVentasFarmatodo()
 	{
 			$this->layout="reportes";
-		$this->render('ventasFarmatodo');
+        //if(Yii::app()->user->isGuest)
+            //$this->redirect(Yii::app()->request->baseUrl);
+        $totalventa         = '';
+        $totaltransacciones = '';
+        $totalboleto        = '';
+        $order              = '';
+		if (sizeof($_POST)>0) {
+				if(isset($_POST['totalventa'] ) and $_POST['totalventa'] !='todo')
+						$order = $totalventa = $_POST['totalventa'];
+
+				if(isset($_POST['totaltransacciones'] ) and $_POST['totaltransacciones'] != 'todo')
+				{
+						if($order !='')
+								$order.= ",".$totaltransacciones = $_POST['totaltransacciones'];    
+						else
+								$order = $totaltransacciones = $_POST['totaltransacciones'];
+
+				}
+
+				if(isset($_POST['totalboleto'] ) and $_POST['totalboleto'] != 'todo')
+				{
+						if($order!= '')
+								$order.=",".$totalboleto = $_POST['totalboleto'];
+						else
+								$order = $totalboleto = $_POST['totalboleto'];
+				}
+
+				$dia[]=31;
+				$dia[]=28;
+				$dia[]=31;
+				$dia[]=30;
+				$dia[]=31;
+				$dia[]=30;
+				$dia[]=31;
+				$dia[]=31;
+				$dia[]=30;
+				$dia[]=31;
+				$dia[]=30;
+				$dia[]=31;
+
+				$model = new Ventaslevel1;
+				$hora = '';
+				if(isset($_POST['mes']) && ($_POST['mes']!= 'todo') && ($_POST['turno'] != 'todo') && isset($_POST['turno']))
+				{
+						$turno = explode("-",$_POST['turno']); 
+						$mesInicio = $_POST['mes']." ".$turno[0];
+						$fecha =  explode('-',$mesInicio);
+
+						if($fecha[1] == 12)
+						{
+								$mes =$fecha[1];
+								$dias = $dia[$fecha[1]-1];     
+						}
+						else
+						{
+								$mes =$fecha[1];   
+								$dias = $dia[$fecha[1]-1];
+						}
+
+						$mesFin = date("Y-$mes-$dias");
+
+						$hora = " AND TIME(ventas.VentasFecHor) BETWEEN '".$turno[0]."' AND '".$turno[1]."'";
+
+				}
+				if(($_POST['mes'] != 'todo') && ($_POST['turno'] == 'todo'))
+				{
+						$mesInicio  = $_POST['mes'];
+						$fecha =  explode('-',$mesInicio);
+
+						if($fecha[1] == 12)
+						{
+								$mes =$fecha[1];
+								$dias = $dia[$fecha[1]-1];     
+						}
+						else
+						{
+								$mes =$fecha[1];   
+								$dias = $dia[$fecha[1]-1];
+						}
+
+						$mesFin = date("Y-$mes-$dias");   
+
+				}
+
+				if(($_POST['mes'] == 'todo') && $_POST['turno'] != 'todo')
+				{
+
+						$turno = explode("-",$_POST['turno']);
+						$mesInicio  = "2011-01-01";
+						$fecha =  explode('-',$mesInicio);
+
+						if($fecha[1] == 12)
+						{
+								$mes =$fecha[1];
+								$dias = $dia[$fecha[1]-1];     
+						}
+						else
+						{
+								$mes =$fecha[1];   
+								$dias = $dia[$fecha[1]-1];
+						}
+
+						$mesFin = date("Y-12-$dias");
+
+						$hora = " AND TIME(ventas.VentasFecHor) BETWEEN '".$turno[0]."' AND '".$turno[1]."'";
+				}
+
+				if(isset($_POST['mes']) && ($_POST['mes']!= 'todo') || ($_POST['turno'] != 'todo') && isset($_POST['turno']))
+				{
+
+						$dataproviderReporte = new CActiveDataProvider('Ventaslevel1',array(
+								'criteria'=>array(
+										'select'=>"puntosventa.PuntosventaNom,
+										SUM(ventaslevel1.VentasCosBol) + SUM(ventaslevel1.VentasCarSer) AS total_de_venta_en_pesos, 
+										(SELECT COUNT(VentasId) FROM ventas WHERE PuntosventaId = puntosventa.PuntosventaId AND DATE(VentasFecHor) BETWEEN '$mesInicio' AND  '$mesFin'  AND VentasFecHor != '0000-00-00 00:00:00' $hora)AS total_transacciones,
+										puntosventa.PuntosventaId,
+										ventas.VentasFecHor,
+										COUNT(ventaslevel1.VentasCosBol) AS total_de_boletos",
+										'join'=>"INNER JOIN ventas ON (ventas.VentasId = ventaslevel1.VentasId)
+										INNER JOIN puntosventa ON (ventas.PuntosventaId = puntosventa.PuntosventaId)",
+												'alias'=>'ventaslevel1',                                                                                                                                
+												'condition'=>"ventas.VentasSec = 'FARMATODO' AND DATE(ventas.VentasFecHor) BETWEEN '$mesInicio' AND '$mesFin' AND VentasFecHor != '0000-00-00 00:00:00' $hora",
+												'order'=>$order,
+												'group'=>"puntosventa.PuntosventaNom",
+										),
+										'pagination'=>array(
+												'pageSize'=>40,
+										),
+								));    
+				}
+				else
+				{
+						$dataproviderReporte = new CActiveDataProvider('Ventaslevel1',array(
+								'criteria'=>array(
+										'select'=>"puntosventa.PuntosventaNom,
+										SUM(ventaslevel1.VentasCosBol) + SUM(ventaslevel1.VentasCarSer) AS total_de_venta_en_pesos, 
+										(SELECT COUNT(VentasId) FROM ventas WHERE PuntosventaId = puntosventa.PuntosventaId AND VentasFecHor != '0000-00-00 00:00:00')AS total_transacciones,
+										puntosventa.PuntosventaId,
+										ventas.VentasFecHor,
+										COUNT(ventaslevel1.VentasCosBol) AS total_de_boletos",
+										'join'=>"INNER JOIN ventas ON (ventas.VentasId = ventaslevel1.VentasId)
+										INNER JOIN puntosventa ON (ventas.PuntosventaId = puntosventa.PuntosventaId)",
+												'alias'=>'ventaslevel1',
+												'condition'=>"ventas.VentasSec = 'FARMATODO' AND VentasFecHor != '0000-00-00 00:00:00'",
+												'order'=>$order,
+												'group'=>"puntosventa.PuntosventaNom",
+										),
+										'pagination'=>array(
+												'pageSize'=>40,
+										),
+								));
+				}
+				$this->render('ventasFarmatodo',array('dataproviderReporte'=>$dataproviderReporte,
+						'indice'=>$_POST['mes'],
+						'indiceTurno'=>$_POST['turno'],
+						'indiceventa'=>$_POST['totalventa'],
+						'indicetransaccion'=>$_POST['totaltransacciones'],
+						'indiceboleto'=>$_POST['totalboleto']));
+		}
+		else 
+				$this->render('ventasFarmatodo');
 	}
+
 
 	public function actionVentasSinCargo()
 	{
@@ -336,86 +497,87 @@ class ReportesController extends Controller
 					else:
 							$funcion = " lugares.FuncionesId in(1,2,3,4,5,6,7,8,9,10) AND ";
 						endif;
-						$venta = $_POST['Ventaslevel1']['buscar'];
-						$query = "(SELECT  ventas.VentasId as id, ventas.PuntosventaId, funciones.funcionesTexto as fnc,
-								puntosventa.PuntosventaNom, ventas.VentasFecHor, zonas.ZonasAli,
-								filas.FilasAli, lugares.LugaresLug,  subzona.SubzonaAcc,
-								ventaslevel1.LugaresNumBol, ventaslevel1.VentasCon,clientes.ClientesEma,
-								ventas.VentasNumRef
-								FROM
-								lugares
-								INNER JOIN funciones ON funciones.FuncionesId = lugares.FuncionesId AND funciones.EventoId = lugares.EventoId	
-								INNER JOIN ventaslevel1 ON (lugares.EventoId=ventaslevel1.EventoId)
-								AND (lugares.FuncionesId=ventaslevel1.FuncionesId)
-								AND (lugares.ZonasId=ventaslevel1.ZonasId)
-								AND (lugares.SubzonaId=ventaslevel1.SubzonaId)
-								AND (lugares.FilasId=ventaslevel1.FilasId)
-								AND (lugares.LugaresId=ventaslevel1.LugaresId)
-								INNER JOIN filas ON (filas.EventoId=lugares.EventoId)
-								AND (filas.FuncionesId=lugares.FuncionesId)
-								AND (filas.ZonasId=lugares.ZonasId)
-								AND (filas.SubzonaId=lugares.SubzonaId)
-								AND (filas.FilasId=lugares.FilasId)
-								INNER JOIN zonas ON (zonas.EventoId=filas.EventoId)
-								AND (zonas.FuncionesId=filas.FuncionesId)
-								AND (zonas.ZonasId=filas.ZonasId)
-								INNER JOIN ventas ON (ventas.VentasId=ventaslevel1.VentasId)
-								INNER JOIN puntosventa ON (puntosventa.PuntosventaId=ventas.PuntosventaId)
-								INNER JOIN subzona ON (subzona.EventoId=filas.EventoId)
-								AND (subzona.FuncionesId=filas.FuncionesId)
-								AND (subzona.ZonasId=filas.ZonasId)
-								AND (subzona.SubzonaId=filas.SubzonaId)
-								AND (zonas.EventoId=subzona.EventoId)
-								AND (zonas.FuncionesId=subzona.FuncionesId)
-								AND (zonas.ZonasId=subzona.ZonasId)
-								INNER JOIN clientes ON (clientes.ClientesId=ventas.UsuariosId)
-								WHERE
-								(lugares.EventoId = $venta) AND
-								$funcion
-								((puntosventa.PuntosventaId = '102')) AND
-								NOT (ventas.VentasNumRef = ''))
+						$venta = $_POST['evento_id'];
+						if ($venta>0){
+								$query = "(SELECT  ventas.VentasId as id, ventas.PuntosventaId, funciones.funcionesTexto as fnc,
+										puntosventa.PuntosventaNom, ventas.VentasFecHor, zonas.ZonasAli,
+										filas.FilasAli, lugares.LugaresLug,  subzona.SubzonaAcc,
+										ventaslevel1.LugaresNumBol, ventaslevel1.VentasCon,clientes.ClientesEma,
+										ventas.VentasNumRef
+										FROM
+										lugares
+										INNER JOIN funciones ON funciones.FuncionesId = lugares.FuncionesId AND funciones.EventoId = lugares.EventoId	
+										INNER JOIN ventaslevel1 ON (lugares.EventoId=ventaslevel1.EventoId)
+										AND (lugares.FuncionesId=ventaslevel1.FuncionesId)
+										AND (lugares.ZonasId=ventaslevel1.ZonasId)
+										AND (lugares.SubzonaId=ventaslevel1.SubzonaId)
+										AND (lugares.FilasId=ventaslevel1.FilasId)
+										AND (lugares.LugaresId=ventaslevel1.LugaresId)
+										INNER JOIN filas ON (filas.EventoId=lugares.EventoId)
+										AND (filas.FuncionesId=lugares.FuncionesId)
+										AND (filas.ZonasId=lugares.ZonasId)
+										AND (filas.SubzonaId=lugares.SubzonaId)
+										AND (filas.FilasId=lugares.FilasId)
+										INNER JOIN zonas ON (zonas.EventoId=filas.EventoId)
+										AND (zonas.FuncionesId=filas.FuncionesId)
+										AND (zonas.ZonasId=filas.ZonasId)
+										INNER JOIN ventas ON (ventas.VentasId=ventaslevel1.VentasId)
+										INNER JOIN puntosventa ON (puntosventa.PuntosventaId=ventas.PuntosventaId)
+										INNER JOIN subzona ON (subzona.EventoId=filas.EventoId)
+										AND (subzona.FuncionesId=filas.FuncionesId)
+										AND (subzona.ZonasId=filas.ZonasId)
+										AND (subzona.SubzonaId=filas.SubzonaId)
+										AND (zonas.EventoId=subzona.EventoId)
+										AND (zonas.FuncionesId=subzona.FuncionesId)
+										AND (zonas.ZonasId=subzona.ZonasId)
+										INNER JOIN clientes ON (clientes.ClientesId=ventas.UsuariosId)
+										WHERE
+										(lugares.EventoId = $venta) AND
+										$funcion
+										((puntosventa.PuntosventaId = '102')) AND
+										NOT (ventas.VentasNumRef = ''))
 
-								UNION
+										UNION
 
-								(SELECT  ventas.VentasId as id, ventas.PuntosventaId, funciones.funcionesTexto as fnc,
-								puntosventa.PuntosventaNom, ventas.VentasFecHor, zonas.ZonasAli,
-								filas.FilasAli, lugares.LugaresLug,  subzona.SubzonaAcc,
-								ventaslevel1.LugaresNumBol, ventaslevel1.VentasCon,cruge_user.email,
-								ventas.VentasNumRef
-								FROM
-								lugares
-								INNER JOIN funciones ON funciones.FuncionesId = lugares.FuncionesId AND funciones.EventoId = lugares.EventoId
-								INNER JOIN ventaslevel1 ON (lugares.EventoId=ventaslevel1.EventoId)
-								AND (lugares.FuncionesId=ventaslevel1.FuncionesId)
-								AND (lugares.ZonasId=ventaslevel1.ZonasId)
-								AND (lugares.SubzonaId=ventaslevel1.SubzonaId)
-								AND (lugares.FilasId=ventaslevel1.FilasId)
-								AND (lugares.LugaresId=ventaslevel1.LugaresId)
-								INNER JOIN filas ON (filas.EventoId=lugares.EventoId)
-								AND (filas.FuncionesId=lugares.FuncionesId)
-								AND (filas.ZonasId=lugares.ZonasId)
-								AND (filas.SubzonaId=lugares.SubzonaId)
-								AND (filas.FilasId=lugares.FilasId)
-								INNER JOIN zonas ON (zonas.EventoId=filas.EventoId)
-								AND (zonas.FuncionesId=filas.FuncionesId)
-								AND (zonas.ZonasId=filas.ZonasId)
-								INNER JOIN ventas ON (ventas.VentasId=ventaslevel1.VentasId)
-								INNER JOIN puntosventa ON (puntosventa.PuntosventaId=ventas.PuntosventaId)
-								INNER JOIN subzona ON (subzona.EventoId=filas.EventoId)
-								AND (subzona.FuncionesId=filas.FuncionesId)
-								AND (subzona.ZonasId=filas.ZonasId)
-								AND (subzona.SubzonaId=filas.SubzonaId)
-								AND (zonas.EventoId=subzona.EventoId)
-								AND (zonas.FuncionesId=subzona.FuncionesId)
-								AND (zonas.ZonasId=subzona.ZonasId)
-								INNER JOIN cruge_user ON (cruge_user.iduser=ventas.UsuariosId)
-								WHERE
-								(lugares.EventoId = $venta) AND
-								$funcion
-								((puntosventa.PuntosventaId = '101')) AND
-								NOT (ventas.VentasNumRef = ''))
-								ORDER BY  fnc ,ZonasAli,filasAli,LugaresLug;";
-
+										(SELECT  ventas.VentasId as id, ventas.PuntosventaId, funciones.funcionesTexto as fnc,
+										puntosventa.PuntosventaNom, ventas.VentasFecHor, zonas.ZonasAli,
+										filas.FilasAli, lugares.LugaresLug,  subzona.SubzonaAcc,
+										ventaslevel1.LugaresNumBol, ventaslevel1.VentasCon,cruge_user.email,
+										ventas.VentasNumRef
+										FROM
+										lugares
+										INNER JOIN funciones ON funciones.FuncionesId = lugares.FuncionesId AND funciones.EventoId = lugares.EventoId
+										INNER JOIN ventaslevel1 ON (lugares.EventoId=ventaslevel1.EventoId)
+										AND (lugares.FuncionesId=ventaslevel1.FuncionesId)
+										AND (lugares.ZonasId=ventaslevel1.ZonasId)
+										AND (lugares.SubzonaId=ventaslevel1.SubzonaId)
+										AND (lugares.FilasId=ventaslevel1.FilasId)
+										AND (lugares.LugaresId=ventaslevel1.LugaresId)
+										INNER JOIN filas ON (filas.EventoId=lugares.EventoId)
+										AND (filas.FuncionesId=lugares.FuncionesId)
+										AND (filas.ZonasId=lugares.ZonasId)
+										AND (filas.SubzonaId=lugares.SubzonaId)
+										AND (filas.FilasId=lugares.FilasId)
+										INNER JOIN zonas ON (zonas.EventoId=filas.EventoId)
+										AND (zonas.FuncionesId=filas.FuncionesId)
+										AND (zonas.ZonasId=filas.ZonasId)
+										INNER JOIN ventas ON (ventas.VentasId=ventaslevel1.VentasId)
+										INNER JOIN puntosventa ON (puntosventa.PuntosventaId=ventas.PuntosventaId)
+										INNER JOIN subzona ON (subzona.EventoId=filas.EventoId)
+										AND (subzona.FuncionesId=filas.FuncionesId)
+										AND (subzona.ZonasId=filas.ZonasId)
+										AND (subzona.SubzonaId=filas.SubzonaId)
+										AND (zonas.EventoId=subzona.EventoId)
+										AND (zonas.FuncionesId=subzona.FuncionesId)
+										AND (zonas.ZonasId=subzona.ZonasId)
+										INNER JOIN cruge_user ON (cruge_user.iduser=ventas.UsuariosId)
+										WHERE
+										(lugares.EventoId = $venta) AND
+										$funcion
+										((puntosventa.PuntosventaId = '101')) AND
+										NOT (ventas.VentasNumRef = ''))
+										ORDER BY  fnc ,ZonasAli,filasAli,LugaresLug;";
+						}
 
 
 								}else{//$count=0;
@@ -431,7 +593,7 @@ class ReportesController extends Controller
 
 
 								if(!empty($_POST['Ventaslevel1']['excel'])){  
-										$EventoNombre = Evento::model()->findAll("EventoId=".$_POST['Ventaslevel1']['buscar']);
+										$EventoNombre = Evento::model()->findAll("EventoId=".$_POST['Ventaslevel1']['evento_id']);
 										$dir_file = Yii::app()->request->scriptFile."doctos/";
 										$delete_file = scandir(str_replace('index.php','',$dir_file));
 										if(!empty($delete_file[2])){

@@ -20,14 +20,14 @@ $list = CHtml::listData($models, 'EventoId', 'EventoNom');
 echo CHtml::label('Evento','evento_id', array('style'=>'width:70px; display:inline-table;'));
 $modeloEvento = Evento::model()->findAll(array('condition' => 'EventoSta = "ALTA"','order'=>'EventoNom'));
 $list = CHtml::listData($modeloEvento,'EventoId','EventoNom');
-echo CHtml::dropDownList('buscar','',$list,
+echo CHtml::dropDownList('evento_id','',$list,
 		array(
 				'ajax' => array(
 						'type' => 'POST',
 						'url' => CController::createUrl('funciones/cargarFunciones'),
 						'beforeSend' => 'function() { $("#cargador").addClass("loading");}',
 						'complete'   => 'function() { $("#cargador").removeClass("loading");}',
-						'update' => '#Ventaslevel1[funcion]',
+						'update' => '#Ventaslevel1_funcion',
 				),'prompt' => 'Seleccione un Evento...'
 		));
 ?>
@@ -53,7 +53,7 @@ echo CHtml::dropDownList('Ventaslevel1[funcion]','',array(),
             <?php
             endif;
         ?>                                                                             
-		<?php echo $form->error($model,'buscar'); ?>
+		<?php echo $form->error($model,'evento_id'); ?>
 	</div>
 
 
@@ -80,7 +80,6 @@ $('.search-form form').submit(function(){
 ");
 ?>
 
-</div>
 
 <?php /*
 $this->widget('zii.widgets.grid.CGridView', array(
@@ -105,19 +104,16 @@ $this->widget('zii.widgets.grid.CGridView', array(
         )
 	),
 )); */?>
-<style>
-.even{
-    background-color: #D7FDF6;
-}
-</style>
+
 <?php
 $datos = $dataProvider->getData();
 //print_r($dataProvider->getData());
 if(!empty($datos[0]['id'])):
-echo "Total ".count($dataProvider->getData())." Result(s)" ;
+echo "Se muestran ".count($dataProvider->getData())." resultados(s)" ;
 ?>
-<div id="evento-grid" class="grid-view">
-    <table class="items">
+
+</div>
+    <table class="items table table-condensed table-striped table-hover">
         <thead>
         <th>Función</th>
         <th>Punto venta</th>
@@ -167,133 +163,11 @@ echo "Total ".count($dataProvider->getData())." Result(s)" ;
        
         </tbody>    
     </table>
-</div>
 <?php
 elseif(!empty($itemselected)):
     echo "No hay informacion para Ventas en Web y Call Center";
 endif;
 ?> 
 
-<style>
-.grid-view
-{
-	padding: 15px 0;
-}
 
-.grid-view table.items
-{
-	background: white;
-	border-collapse: collapse;
-	width: 100%;
-	border: 1px #D0E3EF solid;
-}
-
-.grid-view table.items th, .grid-view table.items td
-{
-	font-size: 0.9em;
-	border: 1px white solid;
-	padding: 0.3em;
-}
-
-.grid-view table.items th
-{
-	color: white;
-	background-color:#65BAFA ;
-	text-align: center;
-}
-
-.grid-view table.items th a
-{
-	color: #EEE;
-	font-weight: bold;
-	text-decoration: none;
-}
-
-.grid-view table.items th a:hover
-{
-	color: #FFF;
-}
-
-.grid-view table.items th a.asc
-{
-	background:url(up.gif) right center no-repeat;
-	padding-right: 10px;
-}
-
-.grid-view table.items th a.desc
-{
-	background:url(down.gif) right center no-repeat;
-	padding-right: 10px;
-}
-
-.grid-view table.items tr.even
-{
-	background: #F8F8F8;
-}
-
-.grid-view table.items tr.odd
-{
-	background: #E5F1F4;
-}
-
-.grid-view table.items tr.selected
-{
-	background: #BCE774;
-}
-
-.grid-view table.items tr:hover.selected
-{
-	background: #CCFF66;
-}
-
-.grid-view table.items tbody tr:hover
-{
-	background: #ECFBD4;
-}
-
-.grid-view .link-column img
-{
-	border: 0;
-}
-
-.grid-view .button-column
-{
-	text-align: center;
-	width: 60px;
-}
-
-.grid-view .button-column img
-{
-	border: 0;
-}
-
-.grid-view .checkbox-column
-{
-	width: 15px;
-}
-
-.grid-view .summary
-{
-	margin: 0 0 5px 0;
-	text-align: right;
-}
-
-.grid-view .pager
-{
-	margin: 5px 0 0 0;
-	text-align: right;
-}
-
-.grid-view .empty
-{
-	font-style: italic;
-}
-
-.grid-view .filters input,
-.grid-view .filters select
-{
-	width: 100%;
-	border: 1px solid #ccc;
-}
-</style>
 
