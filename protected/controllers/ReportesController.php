@@ -9,7 +9,37 @@ class ReportesController extends Controller
 
 	public function actionDesgloseVentas()
 	{
-		$this->render('desgloseVentas');
+	   $this->layout ="reportes";
+	   $model=new Ventas;
+       $flex = new ReportesFlex;
+        
+       if(!empty($_POST)){
+            $eventoId = $_POST['evento_id'];
+            $funcionesId = empty($_POST['funcio_id'])?"TODAS":$_POST['funcio_id'];
+            $data = $flex->getDesglose($eventoId,$funcionesId);
+            
+            $this->render('desgloseVentas',array('model'=>$model,'data'=>$data));
+       }else{
+            $this->render('desgloseVentas',array('model'=>$model,'data'=>null));
+       }
+		
+	}
+    public function actionVentasCallCenter()
+	{
+	   $this->layout ="reportes";
+	   $model=new Ventas;
+       $flex = new ReportesFlex;
+        
+       if(!empty($_POST)){
+            $eventoId = $_POST['evento_id'];
+            $funcionesId = empty($_POST['funcio_id'])?"TODAS":$_POST['funcio_id'];
+            $data = $flex->getCallCenter($eventoId,$funcionesId);
+            
+            $this->render('ventasCallCenter',array('model'=>$model,'data'=>$data));
+       }else{
+            $this->render('ventasCallCenter',array('model'=>$model,'data'=>null));
+       }
+		
 	}
 
 	public function actionIndex()

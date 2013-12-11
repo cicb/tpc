@@ -171,7 +171,7 @@ class ReportesFlex extends CFormModel
 					  (ventas.PuntosventaId = '102' $cadenaFuncion) 
 					  ORDER BY ZonasAli, FilasAli, LugaresLug")->execute();
 			
-			$query = "SELECT 
+			$query = "SELECT '' as id,
 					  evento.EventoNom,
 					  funciones.funcionesTexto,
 					  zonas.ZonasAli,

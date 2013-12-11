@@ -8,3 +8,4 @@ protected/data/*.db
 themes/classic/views/
 *.log
 protected/runtime/*
+protected/runtime/application.log
