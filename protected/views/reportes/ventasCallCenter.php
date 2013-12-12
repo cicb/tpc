@@ -1,5 +1,5 @@
 <div class="controles">
-<h1>Desglose de Ventas</h1>
+<h1>Ventas Call Center</h1>
 <div id="cargador"  style="position:absolute; width:40px; height:40px;left:30%; top:150px; border:0px; margin-left:-40px; margin-top:-40px;" >
 </div>
 <div class="form">
@@ -17,23 +17,22 @@ $form=$this->beginWidget('CActiveForm', array(
 <div class='row' style="margin-left:30px">
 		<div class='span4'>
 	<div class="row">
-<?php
-echo CHtml::label('Evento','evento_id', array('style'=>'width:70px; display:inline-table;'));
-$modeloEvento = Evento::model()->findAll(array('condition' => 'EventoSta = "ALTA"','order'=>'EventoNom'));
-$list = CHtml::listData($modeloEvento,'EventoId','EventoNom');
-echo CHtml::dropDownList('evento_id','',$list,
-		array(
-				'ajax' => array(
-						'type' => 'POST',
-						'url' => CController::createUrl('funciones/cargarFunciones'),
-						'beforeSend' => 'function() { $("#cargador").addClass("loading");}',
-						'complete'   => 'function() { $("#cargador").removeClass("loading");}',
-						'update' => '#funcion_id',
-				),'prompt' => 'Seleccione un Evento...'
-		));
-?>
+        <?php
+        echo CHtml::label('Evento','evento_id', array('style'=>'width:70px; display:inline-table;'));
+        $modeloEvento = Evento::model()->findAll(array('condition' => 'EventoSta = "ALTA"','order'=>'EventoNom'));
+        $list = CHtml::listData($modeloEvento,'EventoId','EventoNom');
+        echo CHtml::dropDownList('evento_id','',$list,
+        		array(
+        				'ajax' => array(
+        						'type' => 'POST',
+        						'url' => CController::createUrl('funciones/cargarFunciones'),
+        						'beforeSend' => 'function() { $("#cargador").addClass("loading");}',
+        						'complete'   => 'function() { $("#cargador").removeClass("loading");}',
+        						'update' => '#funcion_id',
+        				),'prompt' => 'Seleccione un Evento...'
+        		));
+        ?>
 	</div>
-
     <div class="row">
         <?php
         echo CHtml::label('Funcion','funcion_id', array('style'=>'width:70px; display:inline-table;'));
@@ -55,8 +54,9 @@ echo CHtml::dropDownList('evento_id','',$list,
         <?php echo CHtml::submitButton('Buscar',array('class'=>'btn btn-primary btn-medium','style'=>'margin:auto;display:block')); ?>
     </div>
     
-    
-
+ </div>   
+</div>
+</div>
 
 <?php $this->endWidget(); ?>
 
@@ -66,6 +66,13 @@ table.items{
     min-width: 900px !important;
 }
 </style>
+ 
+  <style>
+.CANCELADO{
+        background-color:#FFCECE;}
+</style>
+</div>
+
 <?php
 //print_r($data->getData());
 if(!empty($data)){
@@ -106,9 +113,4 @@ if(!empty($data)){
 }
 
 ?>
-                    
-  <style>
-.CANCELADO{
-        background-color:#FFCECE;}
-</style>
-</div>
+                   

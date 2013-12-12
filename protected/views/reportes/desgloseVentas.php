@@ -54,7 +54,9 @@ echo CHtml::dropDownList('evento_id','',$list,
        <div class=" buttons">
         <?php echo CHtml::submitButton('Buscar',array('class'=>'btn btn-primary btn-medium','style'=>'margin:auto;display:block')); ?>
     </div>
-    
+   </div>
+   </div>
+   </div> 
     
 
 
@@ -66,6 +68,13 @@ table.items{
     min-width: 900px !important;
 }
 </style>
+
+                    
+  <style>
+.CANCELADO{
+        background-color:#FFCECE;}
+</style>
+</div>
 <?php
 //print_r($data->getData());
 if(!empty($data)){
@@ -121,9 +130,3 @@ if(!empty($data)){
 }
 
 ?>
-                    
-  <style>
-.CANCELADO{
-        background-color:#FFCECE;}
-</style>
-</div>
