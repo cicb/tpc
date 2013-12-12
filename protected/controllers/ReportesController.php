@@ -4,6 +4,7 @@ class ReportesController extends Controller
 {
 	public function actionCortesDiarios()
 	{
+	   $this->layout ="reportes";
 		$this->render('cortesDiarios');
 	}
 
