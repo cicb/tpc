@@ -346,7 +346,7 @@ class ReportesController extends Controller
         $totaltransacciones = '';
         $totalboleto        = '';
         $order              = '';
-		if (sizeof($_POST)>0) {
+		if (isset($_POST) and sizeof($_POST)>0) {
 				if(isset($_POST['totalventa'] ) and $_POST['totalventa'] !='todo')
 						$order = $totalventa = $_POST['totalventa'];
 
@@ -500,7 +500,12 @@ class ReportesController extends Controller
 						'indiceboleto'=>$_POST['totalboleto']));
 		}
 		else 
-				$this->render('ventasFarmatodo');
+				$this->render('ventasFarmatodo',array('dataproviderReporte'=>null,
+						'indice'=>0,
+						'indiceTurno'=>0,
+						'indiceventa'=>0,
+						'indicetransaccion'=>0,
+						'indiceboleto'=>0));
 	}
 
 
@@ -608,7 +613,6 @@ class ReportesController extends Controller
 										NOT (ventas.VentasNumRef = ''))
 										ORDER BY  fnc ,ZonasAli,filasAli,LugaresLug;";
 						}
-
 
 								}else{//$count=0;
 								$query = "SELECT '' as id, '' as VentasId , '' as PuntosventaId, '' as PuntosventaNom, '' as VentasFecHor, '' ZonasAli,
