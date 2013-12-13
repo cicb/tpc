@@ -13,6 +13,9 @@ body {
   background: #FFF;
   height: 100%;
 }
+.navbar-inner {
+  height: 39px;
+}
 .navbar-taquilla .navbar-inner {
   background: #fce300;
   background: -moz-linear-gradient(top, #fce300 0%, #e8b500 100%);

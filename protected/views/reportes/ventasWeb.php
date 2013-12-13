@@ -44,8 +44,7 @@ echo CHtml::dropDownList('Ventaslevel1[funcion]','',array(),
 ?>
 	</div>
 	<div class='row'>
-	<?php echo CHtml::checkBox('Ventaslevel1[excel]', '', array()); ?>
-        <?php echo CHtml::label('Exportar a Excel',false,array()); ?>                          
+	<?php echo CHtml::hiddenField('grid_mode', 'view'); ?>
         <?php
             if(!empty($download)):
             ?>
@@ -58,7 +57,9 @@ echo CHtml::dropDownList('Ventaslevel1[funcion]','',array(),
 
 
 	<div class="row buttons">
-		<?php echo CHtml::submitButton('Buscar',array('class'=>'btn btn-primary')); ?>
+		<?php echo CHtml::submitButton('Ver reporte',array('class'=>'btn btn-primary')); ?>
+		<?php echo CHtml::submitButton('Exportar',array('class'=>'btn btn-medium','onclick'=>'$("#grid_mode").val("export");')) ;
+		 ?>
 	</div>
 
 <?php $this->endWidget(); ?>
@@ -106,9 +107,9 @@ $this->widget('zii.widgets.grid.CGridView', array(
 )); */?>
 
 <?php
-$datos = $dataProvider->getData();
 //print_r($dataProvider->getData());
-if(!empty($datos[0]['id'])):
+if(isset($dataProvider) and !is_null($dataProvider) ):
+		$datos = $dataProvider->getData();
 echo "Se muestran ".count($dataProvider->getData())." resultados(s)" ;
 ?>
 
@@ -167,7 +168,8 @@ echo "Se muestran ".count($dataProvider->getData())." resultados(s)" ;
 elseif(!empty($itemselected)):
     echo "No hay informacion para Ventas en Web y Call Center";
 endif;
-?> 
+?>
+</div> 
 
 
 

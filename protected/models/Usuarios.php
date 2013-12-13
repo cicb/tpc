@@ -128,4 +128,28 @@ class Usuarios extends CActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
+	public function getUsuarios()
+	{
+		// Devuelve la lista de usuarios a los que tiene permitido ver sus operaciones
+// 		$sql="select distinct(usuarios.UsuariosId), usuarios.UsuariosNom
+// from usuarios
+// inner join ventas on ventas.UsuariosId=usuarios.UsuariosId
+// inner join usrval on usrval.UsuarioId=:logeado
+// and usrval.UsrTipId=2 and usrval.UsrSubTipId=2 and usrval.UsrValIdRef='SI'
+// where usuarios.UsuariosStatus like '%ALTA%'
+// union
+
+// select distinct(usuarios.UsuariosId), usuarios.UsuariosNom
+// from usuarios
+// inner join ventas on ventas.UsuariosId=usuarios.UsuariosId
+// inner join usrval on usrval.UsuarioId=:logeado and usrval.UsrValIdRef=usuarios.UsuariosId and usrval.UsrTipId=2 and usrval.UsrSubTipId=1
+// where usuarios.UsuariosStatus like '%ALTA%'";
+		$criteria=new CDbCriteria;
+		$criteria->join="INNER JOIN ventas ON ventas.UsuariosId=t.UsuariosId ";
+		$criteria->join="INNER JOIN usrval ON usrval.UsuariosId=:logeado ";
+		// $criteria->join="INNER JOIN ventas ON ventas.UsuariosId=t.UsuariosId ";
+		$criteria->addCondition("usrval.UsrTipId=2 and usrval.UsrSubTipId=2 and usrval.UsrValIdRef='SI'");
+		$criteria->params['logeado']=17;
+		$usuarios=self::findAll($criteria);
+	}
 }

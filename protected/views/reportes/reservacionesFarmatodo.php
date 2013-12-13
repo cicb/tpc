@@ -10,16 +10,16 @@
 		),
 		)); ?>
 
-		<div class="row">
+		<div class="row form-search">
 				<?//php echo $form->labelEx($model,'buscar'); ?>
 				
 				<?php echo $form->textField($model,'buscar',array('placeholder'=>'Número de reservación','required'=>'required')); ?>
+				<?php echo CHtml::submitButton('Buscar', array('class'=>'btn btn-primary')); ?>
 				<?php echo $form->error($model,'buscar'); ?>
 		</div>
 
 
 		<div class="row buttons">
-				<?php echo CHtml::submitButton('Buscar', array('class'=>'btn btn-primary')); ?>
 		</div>
 
 		<?php $this->endWidget(); ?>
