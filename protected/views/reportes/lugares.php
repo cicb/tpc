@@ -18,7 +18,7 @@ $form=$this->beginWidget('CActiveForm', array(
 		<div class='span4'>
 	<div class="row">
 <?php
-echo CHtml::label('Evento','evento_id', array('style'=>'width:70px; display:inline-table;'));
+echo CHtml::label('Evento','', array('style'=>'width:70px; display:inline-table;'));
 $modeloEvento = Evento::model()->findAll(array('condition' => 'EventoSta = "ALTA"','order'=>'EventoNom'));
 $list = CHtml::listData($modeloEvento,'EventoId','EventoNom');
 echo CHtml::dropDownList('evento_id','',$list,

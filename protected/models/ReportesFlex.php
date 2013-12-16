@@ -303,8 +303,8 @@ class ReportesFlex extends CFormModel
 					  INNER JOIN descuentos ON (descuentos.DescuentosId=ventaslevel1.DescuentosId)
 					  WHERE  (lugares.EventoId = '$EventoId') AND NOT (ventaslevel1.VentasSta = 'CANCELADO') $cadenaFuncion";
          return new CSqlDataProvider($query, array(
-							'totalItemCount'=>$count,//$count,	
-							'pagination'=>array('pageSize'=>15),
+							// 'totalItemCount'=>$count,//$count,	
+							'pagination'=>false,
 					));             
     }
     public function getInternet($EventoId, $FuncionesId, $pv){
@@ -413,7 +413,56 @@ class ReportesFlex extends CFormModel
 							'pagination'=>array('pageSize'=>15),
 					)); 
 		}
-	
+	public function getReporte($evento,$funcion="TODAS",$desde="",$hasta="", $cargo=false){	
+		//regresa el reporte de ventas con y sin cargo , minimamente se requiere del id del evento
+		if ($evento>0) {
+			$cargo=$cargo?" + t2.VentasCarSer ":'';
+			$rango="";
+			if (strlen($desde.$hasta)>2) {
+				$rango=" AND DATE(t.VentasFecHor) BETWEEN '$desde'  AND '$hasta' ";
+			}
+			$funcion=(strcasecmp($funcion,"TODAS")==0 and $funcion>0)?'':" AND t2.FuncionesId=$funcion "; 
+				# En el caso de que no se indique la funcion, no se filtran
+				$sql="SELECT DISTINCT t.PuntosventaId as id,
+					 CASE t.PuntosventaId 
+						WHEN 101 THEN 'Ventas por internet'
+						WHEN 102 THEN 'Ventas telefonicas'
+						ELSE 'Puntos de venta' END AS puntos , 
+					COUNT(t2.LugaresId) AS 'cantidad', 
+					SUM(t2.VentasCosBol $cargo) AS 'total'
+				FROM ventas AS t
+				INNER JOIN ventaslevel1	AS t2	ON	t.VentasId=t2.VentasId 
+				INNER JOIN funciones 	AS t3	ON	t2.EventoId=t3.EventoId AND t2.FuncionesId=t3.FuncionesId
+				WHERE t2.EventoId=$evento AND t2.VentasSta <> 'CANCELADO'AND t2.VentasBolTip='NORMAL'
+				 $funcion $rango
+				GROUP BY puntos;";
+			return new CSqlDataProvider($sql,array('pagination'=>false));
+		}
+	}
+
+	public function getReporteTaquilla($evento,$funcion="TODAS",$desde="",$hasta="", $cargo=false){	
+		//regresa el reporte de ventas con y sin cargo , minimamente se requiere del id del evento
+		if ($evento>0) {
+			$cargo=$cargo?" + t2.VentasCarSer ":'';
+			$rango="";
+			if (strlen($desde.$hasta)>2) {
+				$rango=" AND DATE(t.VentasFecHor) BETWEEN '$desde'  AND '$hasta' ";
+			}
+			$funcion=(strcasecmp($funcion,"TODAS")==0 and $funcion>0)?'':" AND t2.FuncionesId=$funcion "; 
+				# En el caso de que no se indique la funcion, no se filtran
+				$sql="SELECT DISTINCT t2.DescuentosId as id,
+					 IF (t2.DescuentosId>0,'Taquilla descuentos','Taquilla') as descuento,
+				COUNT(t2.LugaresId) AS 'cantidad', 
+				SUM(t2.VentasCosBol $cargo) AS 'total'
+				FROM ventas AS t
+				INNER JOIN ventaslevel1	AS t2	ON	t.VentasId=t2.VentasId 
+				INNER JOIN funciones 	AS t3	ON	t2.EventoId=t3.EventoId AND t2.FuncionesId=t3.FuncionesId and t3.FuncPuntosventaId=t.PuntosventaId
+				WHERE t2.EventoId=$evento AND t2.VentasSta <> 'CANCELADO'AND t2.VentasBolTip='NORMAL'  
+				 $funcion $rango
+				GROUP BY descuento";
+			return new CSqlDataProvider($sql,array('pagination'=>false));
+		}
+	}
 	public function getReporteSinCargo($EventoId, $FuncionesId, $fecha1, $fecha2, $cargo) {
 				
 		if($cargo == 'SI')
@@ -460,30 +509,30 @@ class ReportesFlex extends CFormModel
 				funciones.funcionesTexto,  evento.EventoFecIni";
 			
 			}else{
-		        $count = Yii::app()->db->createCommand("SELECT   zonas.ZonasAli,  ventaslevel1.VentasBolTip,  COUNT(ventaslevel1.LugaresId) AS cantidad,
-				zonas.ZonasCosBol,  SUM(ventaslevel1.VentasCosBol - ventaslevel1.VentasMonDes $extra) AS total,
-				evento.EventoNom,  ventas.PuntosventaId,  funciones.funcionesTexto,  evento.EventoFecIni, evento.PuntosventaId AS PuntosventaIdEvento
-					FROM ventas
-					 INNER JOIN ventaslevel1 ON (ventas.VentasId=ventaslevel1.VentasId)
-					 INNER JOIN zonas ON (ventaslevel1.EventoId=zonas.EventoId)
-					  AND (ventaslevel1.FuncionesId=zonas.FuncionesId)
-					  AND (ventaslevel1.ZonasId=zonas.ZonasId)
-					 INNER JOIN evento ON (evento.EventoId=zonas.EventoId)
-					 INNER JOIN funciones ON (funciones.FuncionesId=zonas.FuncionesId)
-					  AND (funciones.EventoId=zonas.EventoId)
-					  AND (evento.EventoId=funciones.EventoId)
-					WHERE
-					  (ventaslevel1.EventoId = '$EventoId') AND 
-					  (ventaslevel1.FuncionesId = '$FuncionesId') AND
-					   NOT (ventaslevel1.VentasSta = 'CANCELADO') $rango
-					GROUP BY
-					  zonas.ZonasAli,
-					  ventaslevel1.VentasBolTip,
-					  zonas.ZonasCosBol,
-					  evento.EventoNom,
-					  ventas.PuntosventaId,
-					  funciones.funcionesTexto,
-					  evento.EventoFecIni")->execute();
+		  //       $count = Yii::app()->db->createCommand("SELECT   zonas.ZonasAli,  ventaslevel1.VentasBolTip,  COUNT(ventaslevel1.LugaresId) AS cantidad,
+				// zonas.ZonasCosBol,  SUM(ventaslevel1.VentasCosBol - ventaslevel1.VentasMonDes $extra) AS total,
+				// evento.EventoNom,  ventas.PuntosventaId,  funciones.funcionesTexto,  evento.EventoFecIni, evento.PuntosventaId AS PuntosventaIdEvento
+				// 	FROM ventas
+				// 	 INNER JOIN ventaslevel1 ON (ventas.VentasId=ventaslevel1.VentasId)
+				// 	 INNER JOIN zonas ON (ventaslevel1.EventoId=zonas.EventoId)
+				// 	  AND (ventaslevel1.FuncionesId=zonas.FuncionesId)
+				// 	  AND (ventaslevel1.ZonasId=zonas.ZonasId)
+				// 	 INNER JOIN evento ON (evento.EventoId=zonas.EventoId)
+				// 	 INNER JOIN funciones ON (funciones.FuncionesId=zonas.FuncionesId)
+				// 	  AND (funciones.EventoId=zonas.EventoId)
+				// 	  AND (evento.EventoId=funciones.EventoId)
+				// 	WHERE
+				// 	  (ventaslevel1.EventoId = '$EventoId') AND 
+				// 	  (ventaslevel1.FuncionesId = '$FuncionesId') AND
+				// 	   NOT (ventaslevel1.VentasSta = 'CANCELADO') $rango
+				// 	GROUP BY
+				// 	  zonas.ZonasAli,
+				// 	  ventaslevel1.VentasBolTip,
+				// 	  zonas.ZonasCosBol,
+				// 	  evento.EventoNom,
+				// 	  ventas.PuntosventaId,
+				// 	  funciones.funcionesTexto,
+				// 	  evento.EventoFecIni")->execute();
                       
 				$query = "SELECT  '' as id,  zonas.ZonasAli,  ventaslevel1.VentasBolTip,  COUNT(ventaslevel1.LugaresId) AS cantidad,
 				zonas.ZonasCosBol,  SUM(ventaslevel1.VentasCosBol - ventaslevel1.VentasMonDes $extra) AS total,
@@ -511,8 +560,8 @@ class ReportesFlex extends CFormModel
 					  evento.EventoFecIni";
 			}	
             return new CSqlDataProvider($query, array(
-							'totalItemCount'=>$count,//$count,	
-							'pagination'=>array('pageSize'=>15),
+							//'totalItemCount'=>$count,//$count,	
+							'pagination'=>false,
 					));
 		
 	}
