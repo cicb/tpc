@@ -435,7 +435,7 @@ class ReportesFlex extends CFormModel
 				INNER JOIN funciones 	AS t3	ON	t2.EventoId=t3.EventoId AND t2.FuncionesId=t3.FuncionesId
 				WHERE t2.EventoId=$evento AND t2.VentasSta <> 'CANCELADO'AND t2.VentasBolTip='NORMAL'
 				 $funcion $rango
-				GROUP BY puntos;";
+				GROUP BY puntos ORDER BY puntos desc;";
 			return new CSqlDataProvider($sql,array('pagination'=>false));
 		}
 	}
@@ -459,7 +459,7 @@ class ReportesFlex extends CFormModel
 				INNER JOIN funciones 	AS t3	ON	t2.EventoId=t3.EventoId AND t2.FuncionesId=t3.FuncionesId and t3.FuncPuntosventaId=t.PuntosventaId
 				WHERE t2.EventoId=$evento AND t2.VentasSta <> 'CANCELADO'AND t2.VentasBolTip='NORMAL'  
 				 $funcion $rango
-				GROUP BY descuento";
+				GROUP BY descuento  " ;
 			return new CSqlDataProvider($sql,array('pagination'=>false));
 		}
 	}

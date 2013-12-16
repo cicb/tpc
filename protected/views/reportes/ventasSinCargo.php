@@ -23,8 +23,8 @@ $form=$this->beginWidget('CActiveForm', array(
         				'ajax' => array(
         						'type' => 'POST',
         						'url' => CController::createUrl('funciones/cargarFunciones'),
-        						'beforeSend' => 'function() { $("#funciones").addClass("loading");}',
-        						'complete'   => 'function() { $("#funciones").removeClass("loading");}',
+        						'beforeSend' => 'function() { $("#fspin").addClass("fa fa-spinner fa-spin");}',
+        						'complete'   => 'function() { $("#fspin").removeClass("fa fa-spinner fa-spin");}',
         						'update' => '#funcion_id',
         				),'prompt' => 'Seleccione un Evento...'
         		));
@@ -37,6 +37,7 @@ $form=$this->beginWidget('CActiveForm', array(
 		echo CHtml::hiddenField('grid_mode','view');
 		echo CHtml::hiddenField('funcion','');
         ?>
+        <li id="fspin" class="fa"></li>
 		</div>
 	</div>
 	<div class='span4'>
@@ -112,7 +113,10 @@ $form=$this->beginWidget('CActiveForm', array(
 
 
 </div>
-
+<div class="span4 remark" style="float:right">
+    <div class="panel-head">
+        Resumen del evento
+    </div>
 <?php $this->endWidget(); ?>
 <?php
     if (isset($eventoId) and $eventoId>0) {
@@ -120,7 +124,7 @@ $form=$this->beginWidget('CActiveForm', array(
         'id'=>'evento-grid',
         'emptyText'=>'No se encontraron coincidencias',
         'dataProvider'=>$model->getReporteTaquilla($eventoId,$funcionesId,$desde,$hasta,$cargo='NO'),
-        'summaryText'=>'Mostrando {start}-{end} de {end} resultados',
+        'summaryText'=>'',
         'columns'=>array(
             array(
                 'header'=>'Canales de venta.',
@@ -152,7 +156,8 @@ $form=$this->beginWidget('CActiveForm', array(
         'id'=>'evento-grid',
         'emptyText'=>'No se encontraron coincidencias',
         'dataProvider'=>$model->getReporte($eventoId,$funcionesId,$desde,$hasta,$cargo='NO'),
-        'summaryText'=>'Mostrando {start}-{end} de {end} resultados',
+        'summaryText'=>'',
+        // 'htmlOptions'=>array('class'=>'span4'),
         'columns'=>array(
             array(
                 'header'=>'Canales de venta.',
@@ -178,3 +183,4 @@ $form=$this->beginWidget('CActiveForm', array(
     )); 
     }
 ?>
+</div>
