@@ -5,12 +5,7 @@ class ReportesController extends Controller
 	//public	$layout="reportes";
 	public function actionCortesDiarios()
 	{
-<<<<<<< HEAD
-	   $this->layout ="reportes";
-=======
-		$this->layout="reportes";
 
->>>>>>> c52a81de0ec64d54466d14a8bf16872eac11decc
 		$this->render('cortesDiarios');
 	}
 

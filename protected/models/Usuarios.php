@@ -152,4 +152,23 @@ class Usuarios extends CActiveRecord
 		$criteria->params['logeado']=17;
 		$usuarios=self::findAll($criteria);
 	}
+    public function validatePassword($password){
+        return $this->hashPassword($password)===$this->UsuariosPass;
+    }
+    public function hashPassword($password){
+        //return md5($password);
+        return $password;
+    }
+    public function Accesos(){
+        $model = Usrval::model()->with('usrsubtip')->findAll(array('condition'=>"UsuarioId=$this->UsuariosId",'select'=>'t.UsrTipId,t.UsrSubTipId','distinct'=>true));
+        $data = array();
+        if(!empty($model)){
+            foreach($model as $key => $usrval):
+                if (!in_array($usrval->usrsubtip->UsrSubTipDes, $data)) {
+                    $data[] = $usrval->usrsubtip->UsrSubTipDes;
+                }
+            endforeach;
+        }
+        return $data;
+    }
 }

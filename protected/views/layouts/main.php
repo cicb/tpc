@@ -20,6 +20,9 @@
 <body>
 
 	<div id="mainmenu">
+<?php
+$accesos = Yii::app()->user->getState("accesos");
+?>    
 <?php $this->widget('bootstrap.widgets.TbNavbar',array(
 		'color'=> 'taquilla',
 		'fluid'=>true,
@@ -30,25 +33,27 @@
 				array(
 						'class' => 'bootstrap.widgets.TbNav',
 						'items' => array(
-								array('label' => 'Reportes', 	'url' => $this->createUrl('reportes/index'), 'active' => true,
+								array('label' => 'Reportes', 	'url' => $this->createUrl('reportes/index'), 'active' => true,'visible'=>!Yii::app()->user->isGuest,
 								'items'=>array(
 										array('label' => 'Tipos de reportes', 'active'=>true),
-										array('label' => 'Lugares', 				'url' =>  $this->createUrl('reportes/lugares')),
-										array('label' => 'Lugares vendidos', 		'url' =>  $this->createUrl('reportes/lugaresVendidos')),
-										array('label' => 'Cortes diarios', 			'url' =>  $this->createUrl('reportes/cortesDiarios')),
-										array('label' => 'Reservaciones Farmatodo', 'url' =>  $this->createUrl('reportes/reservacionesFarmatodo')),
-										array('label' => 'Ventas por Web', 			'url' =>  $this->createUrl('reportes/ventasWeb')),
-										array('label' => 'Ventas sin cargo',		'url' =>  $this->createUrl('reportes/ventasSinCargo')),
-										array('label' => 'Ventas con cargo',		'url' =>  $this->createUrl('reportes/ventasConCargo')),
-										array('label' => 'Ventas de Farmatodo', 	'url' =>  $this->createUrl('reportes/ventasFarmatodo')),
-										array('label' => 'Ventas por Call Center', 	'url' =>  $this->createUrl('reportes/ventasCallCenter')), 
-										array('label' => 'Desglose de ventas', 	'url' =>  $this->createUrl('reportes/desgloseVentas')), 
-								),
+										array('label' => 'Lugares', 				'url' =>  $this->createUrl('reportes/lugares'),'visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
+										array('label' => 'Lugares vendidos', 		'url' =>  $this->createUrl('reportes/lugaresVendidos'),'visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
+										array('label' => 'Cortes diarios', 			'url' =>  $this->createUrl('reportes/cortesDiarios'),'visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
+										array('label' => 'Reservaciones Farmatodo', 'url' =>  $this->createUrl('reportes/reservacionesFarmatodo'),'visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
+										array('label' => 'Ventas por Web', 			'url' =>  $this->createUrl('reportes/ventasWeb'),'visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
+										array('label' => 'Ventas sin cargo',		'url' =>  $this->createUrl('reportes/ventasSinCargo'),'visible' => !Yii::app()->user->isGuest AND (Yii::app()->user->getState("Admin") OR Yii::app()->user->getState("TipUsrId")=="2")?true:false),
+										array('label' => 'Ventas con cargo',		'url' =>  $this->createUrl('reportes/ventasConCargo'),'visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
+										array('label' => 'Ventas de Farmatodo', 	'url' =>  $this->createUrl('reportes/ventasFarmatodo'),'visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
+										array('label' => 'Ventas por Call Center', 	'url' =>  $this->createUrl('reportes/ventasCallCenter'),'visible' => !Yii::app()->user->isGuest AND (Yii::app()->user->getState("Admin"))?true:false), 
+										array('label' => 'Desglose de ventas', 	'url' =>  $this->createUrl('reportes/desgloseVentas'),'visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false), 
+        ),
 						),
-						array('label' => 'Descuentos', 	'url' => '#'),
-						array('label' => 'Eventos', 	'url' => '#'),
-						array('label' => 'Boletos', 	'url' => '#'),
-						array('label' => 'Usuarios', 	'url' => '#'),
+						array('label' => 'Descuentos', 	'url' => '#','visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
+						array('label' => 'Eventos', 	'url' => '#','visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
+						array('label' => 'Boletos', 	'url' => '#','visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
+						array('label' => 'Usuarios', 	'url' => '#','visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
+                        array('label'=>'Login', 'url'=>array('/site/login'), 'visible'=>Yii::app()->user->isGuest),
+				        array('label'=>'Logout ('.Yii::app()->user->name.')', 'url'=>array('/site/logout'), 'visible'=>!Yii::app()->user->isGuest)
 				),
 		),
 ),
@@ -62,7 +67,23 @@
 		<?php echo $content; ?>
 
 		<div class="clear"></div>
+<?php
+//echo Yii::app()->user->name;
+//echo Yii::app()->user->id;
+//echo Yii::app()->user->getState("UsuariosStatus");
+//echo Yii::app()->user->getState("UsuariosId");
 
+
+//if(!empty($accesos) AND in_array('Eventos',$accesos) ){
+   
+//}
+//print_r($accesos);
+//print_r($accesos);
+//echo Yii::app()->user->UsuariosNom;
+
+
+
+?>
 		</div><!-- page -->
 		<div id='push'></div>
 </div>
@@ -74,7 +95,7 @@
 	</div><!-- footer -->
 
 
-<?//php Yii::app()->clientScript->registerCssFile(Yii::app()->request->baseUrl."/css/style.less",CClientScript::POS_END); ?>
+<?php //Yii::app()->clientScript->registerCssFile(Yii::app()->request->baseUrl."/css/style.less",CClientScript::POS_END); ?>
 <?php Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl."/js/less.min.js",CClientScript::POS_HEAD); ?>
 	<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/custom.css"  />
 	<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/font-awesome.min.css"  />
