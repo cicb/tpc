@@ -116,8 +116,8 @@ class ReportesFlex extends CFormModel
 					
 			}
             return new CSqlDataProvider($query, array(
-							'totalItemCount'=>$count,//$count,	
-							'pagination'=>array('pageSize'=>15),
+							//'totalItemCount'=>$count,//$count,	
+							'pagination'=>false,
 					));
     }
     public function getCallCenter($EventoId, $FuncionesId){
@@ -413,43 +413,21 @@ class ReportesFlex extends CFormModel
 							'pagination'=>array('pageSize'=>15),
 					)); 
 		}
-	public function getReporte($evento,$funcion="TODAS",$desde="",$hasta="", $cargo=false){	
-		//regresa el reporte de ventas con y sin cargo , minimamente se requiere del id del evento
-		if ($evento>0) {
-			$cargo=$cargo?" + t2.VentasCarSer ":'';
-			$rango="";
-			if (strlen($desde.$hasta)>2) {
-				$rango=" AND DATE(t.VentasFecHor) BETWEEN '$desde'  AND '$hasta' ";
-			}
-			$funcion=(strcasecmp($funcion,"TODAS")==0 and $funcion>0)?'':" AND t2.FuncionesId=$funcion "; 
-				# En el caso de que no se indique la funcion, no se filtran
-				$sql="SELECT DISTINCT t.PuntosventaId as id,
-					 CASE t.PuntosventaId 
-						WHEN 101 THEN 'Ventas por internet'
-						WHEN 102 THEN 'Ventas telefonicas'
-						ELSE 'Puntos de venta' END AS puntos , 
-					COUNT(t2.LugaresId) AS 'cantidad', 
-					SUM(t2.VentasCosBol $cargo) AS 'total'
-				FROM ventas AS t
-				INNER JOIN ventaslevel1	AS t2	ON	t.VentasId=t2.VentasId 
-				INNER JOIN funciones 	AS t3	ON	t2.EventoId=t3.EventoId AND t2.FuncionesId=t3.FuncionesId
-				WHERE t2.EventoId=$evento AND t2.VentasSta <> 'CANCELADO'AND t2.VentasBolTip='NORMAL'
-				 $funcion $rango
-				GROUP BY puntos ORDER BY puntos desc;";
-			return new CSqlDataProvider($sql,array('pagination'=>false));
-		}
-	}
 
 	public function getReporteTaquilla($evento,$funcion="TODAS",$desde="",$hasta="", $cargo=false){	
-		//regresa el reporte de ventas con y sin cargo , minimamente se requiere del id del evento
+		//*********************************************************************************
+		//Regresa el REPORTE DE VENTAS CON Y SIN CARGO DE VENTAS EN TAQUILLA CON Y SIN DESCUENTOS, 
+		//						minimamente se requiere del id del evento
+		//*********************************************************************************
+
 		if ($evento>0) {
 			$cargo=$cargo?" + t2.VentasCarSer ":'';
 			$rango="";
 			if (strlen($desde.$hasta)>2) {
 				$rango=" AND DATE(t.VentasFecHor) BETWEEN '$desde'  AND '$hasta' ";
 			}
-			$funcion=(strcasecmp($funcion,"TODAS")==0 and $funcion>0)?'':" AND t2.FuncionesId=$funcion "; 
-				# En el caso de que no se indique la funcion, no se filtran
+			if ($funcion>0) $funcion=" AND t2.FuncionesId=$funcion ";
+			else $funcion='';
 				$sql="SELECT DISTINCT t2.DescuentosId as id,
 					 IF (t2.DescuentosId>0,'Taquilla descuentos','Taquilla') as descuento,
 				COUNT(t2.LugaresId) AS 'cantidad', 
@@ -463,6 +441,43 @@ class ReportesFlex extends CFormModel
 			return new CSqlDataProvider($sql,array('pagination'=>false));
 		}
 	}
+	public function getReporte($evento,$funcion="TODAS",$desde="",$hasta="", $cargo=false, $tipoBoleto='NORMAL',$where='', $group_by='puntos'){	
+		//*********************************************************************************
+		//				Regresa el REPORTE DE VENTAS CON Y SIN CARGO POR PV, 
+		//					minimamente se requiere del id del evento
+		//***********************************************************************************
+		if ($evento>0) {
+			$cargo=$cargo?" + t2.VentasCarSer ":'';
+			$rango="";
+			if (strlen($desde.$hasta)>2) {
+				$rango=" AND DATE(t.VentasFecHor) BETWEEN '$desde'  AND '$hasta' ";
+			}
+			$tipoBoleto="('".implode(explode(',',$tipoBoleto),'\',\'')."')";
+			if ($funcion>0) $funcion=" AND t2.FuncionesId=$funcion ";
+			else $funcion='';
+				# En el caso de que no se indique la funcion, no se filtran
+				$sql="SELECT DISTINCT t.PuntosventaId as id,
+					 CASE t.PuntosventaId 
+						WHEN 101 THEN 'Ventas por internet'
+						WHEN 102 THEN 'Ventas telefonicas'
+						ELSE 'Puntos de venta' END AS puntos , 
+					COUNT(t2.LugaresId) AS 'cantidad', 
+					SUM(t2.VentasCosBol $cargo) AS 'total',
+					t2.VentasBolTip,
+					t2.DescuentosId,
+					t2.VentasMonDes
+				FROM ventas AS t
+				INNER JOIN ventaslevel1	AS t2	ON	t.VentasId=t2.VentasId 
+				INNER JOIN funciones 	AS t3	ON	t2.EventoId=t3.EventoId AND t2.FuncionesId=t3.FuncionesId
+				WHERE t2.EventoId=$evento AND t2.VentasSta <> 'CANCELADO'AND t2.VentasBolTip IN $tipoBoleto
+				 $funcion $rango $where 
+				GROUP BY $group_by ORDER BY $group_by desc;";
+			return new CSqlDataProvider($sql,array('pagination'=>false));
+		}
+	}	
+
+
+
 	public function getReporteSinCargo($EventoId, $FuncionesId, $fecha1, $fecha2, $cargo) {
 				
 		if($cargo == 'SI')
