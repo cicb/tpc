@@ -111,17 +111,86 @@ $form=$this->beginWidget('CActiveForm', array(
 		 ?>
 	 </div>   
 
+<?php $this->endWidget(); ?>
 
 </div>
-<div class="span4 remark" style="float:right">
+<div class="row-fluid">
+<?php  if (isset($eventoId) and $eventoId>0): 
+    $evento=Evento::model()->findByPk($eventoId);
+    $funcion="TODAS";
+    if (isset($funcionesId) and $funcionesId>0){
+        $funcion=Funciones::findByPk(array('EventoId'=>$eventoId,'FuncionesId'=>$funcionesId));
+        if(is_object($funcion))
+            $funcion=$funcion->funcionesTexto;
+    }
+
+?>
+<?php  if (is_object($evento)): ?>
+
+    <div class="span7">
+    <br/>
+        <div class="well">
+            <small>Evento:</small>
+            <h3><?php echo $evento->EventoNom ?></h3>
+            <small>Funcion (es):</small>
+            <h4><?php echo $funcion ?></h4>
+            <small>A la venta desde:</small>
+            <strong><?php echo "$desde";?> </strong>
+        </div>
+        <?php
+        foreach ($evento->funciones as $funcion) {
+            foreach ($funcion->zonas as $zona) {
+                echo "<div class='panel-head'>".$zona->ZonasAli."</div>";
+                $this->widget('bootstrap.widgets.TbGridView', array(
+                    'id'=>'taquilla-grid',
+                    'emptyText'=>'No se encontraron coincidencias',
+                    'dataProvider'=>$model->getDetallesZonasCargo($eventoId,$funcionesId,$zona->ZonasId,$desde,$hasta,$cargo='NO'),
+                    'summaryText'=>'',
+                    'htmlOptions'=>array('class'=>'normal'),
+                    'columns'=>array(
+                        array(
+                            'header'=>'Tipo de boleto',
+                            'type'  =>'row',
+                            'value' => 'data[\'VentasBolTip\']'
+                            ),
+                        array(
+                            'header'=>'Boletos vendidos.',
+                            'name'=>'cantidad',
+                            'htmlOptions'=>array(
+                                'style'=>'text-align:right;'
+                                )
+                            ), 
+                        array(
+                            'header'=>'Precio Boleto.',
+                            'name'=>'VentasCosBol',
+                            'htmlOptions'=>array(
+                                'style'=>'text-align:right;'
+                                )
+                            ),
+                        array(
+                            'header'=>'Sub-Totales de venta',
+                            'value'=>'"$".number_format($data[\'total\'],2)',
+                            'type'=>'raw',
+                            'htmlOptions'=>array(
+                                'style'=>'text-align:right;'
+                                )
+                            ),
+
+                        ),
+                    )); 
+            }
+            break;
+        }
+?>
+    </div>
+<?php endif; ?>
+<div class="span5 remark" style="float:right">
     <div class="panel-head">
         Resumen del evento
     </div>
-<?php $this->endWidget(); ?>
 <?php
-    if (isset($eventoId) and $eventoId>0) {
-    $this->widget('bootstrap.widgets.TbGridView', array(
-        'id'=>'evento-grid',
+    $taquillas=$this->widget('bootstrap.widgets.TbGridView', array(
+        'id'=>'taquilla-grid',
         'emptyText'=>'No se encontraron coincidencias',
         'dataProvider'=>$model->getReporteTaquilla($eventoId,$funcionesId,$desde,$hasta,$cargo='NO'),
         'summaryText'=>'',
@@ -148,12 +217,10 @@ $form=$this->beginWidget('CActiveForm', array(
 
         ),
     )); 
-    }
 ?>
     <?php 
-    if (isset($eventoId) and $eventoId>0) {
-    $this->widget('bootstrap.widgets.TbGridView', array(
-        'id'=>'evento-grid',
+    $puntos=$this->widget('bootstrap.widgets.TbGridView', array(
+        'id'=>'canales-venta-grid',
         'emptyText'=>'No se encontraron coincidencias',
         'dataProvider'=>$model->getReporte($eventoId,$funcionesId,$desde,$hasta,$cargo='NO'),
         'summaryText'=>'',
@@ -181,6 +248,95 @@ $form=$this->beginWidget('CActiveForm', array(
 
         ),
     )); 
+
+    $especiales=$this->widget('bootstrap.widgets.TbGridView', array(
+        'id'=>'boletos-especiales-grid',
+        'emptyText'=>'No se encontraron boletos duros o cortesias',
+        'dataProvider'=>$model->getReporte($eventoId,$funcionesId,$desde,$hasta,$cargo='NO',
+            'CORTESIA,BOLETO DURO','','VentasBolTip'),
+        'summaryText'=>'',
+        // 'htmlOptions'=>array('class'=>'span4'),
+        'columns'=>array(
+            array(
+                'header'=>'Tipo de boleto.',
+                'name'=>'VentasBolTip',
+                ),
+            array(
+                'header'=>'Boletos vendidos.',
+                'name'=>'cantidad',
+                'htmlOptions'=>array(
+                    'style'=>'text-align:right;'
+                    )
+                ),
+            array(
+                'header'=>'Total',
+                'value'=>'"$".number_format($data[\'total\'],2)',
+                'type'=>'raw',
+                'htmlOptions'=>array(
+                    'style'=>'text-align:right;'
+                    )
+                ),
+
+        ),
+    )); 
+    echo "<div class='panel-head'>Descuentos</div>";
+        $descuentos=$this->widget('bootstrap.widgets.TbGridView', array(
+        'id'=>'descuentos-grid',
+        'emptyText'=>'No se encontraron ventas con descuentos',
+        'dataProvider'=>$model->getReporte($eventoId,$funcionesId,$desde,$hasta,$cargo='NO',
+            'NORMAL','AND t2.DescuentosId>0','DescuentosId'),
+        'summaryText'=>'',
+        'htmlOptions'=>array('class'=>'normal'),
+        'columns'=>array(
+            array(
+                'header'=>'Descuento.',
+                'name'=>'DescuentosId',
+                ),
+            array(
+                'header'=>'Boletos vendidos.',
+                'name'=>'cantidad',
+                'htmlOptions'=>array(
+                    'style'=>'text-align:right;'
+                    )
+                ),
+            array(
+                'header'=>'Total',
+                'value'=>'"$".number_format($data[\'total\'],2)',
+                'type'=>'raw',
+                'htmlOptions'=>array(
+                    'style'=>'text-align:right;'
+                    )
+                ),
+
+        ),
+    )); 
+    // SUMATORIAS-------------------------------------------------------------------------------------
+    $vendidos=array('taquilla'=>0,'puntos'=>0,'especiales'=>0);
+    $subtotal=array('taquilla'=>0,'puntos'=>0,'especiales'=>0);
+    foreach ($puntos->dataProvider->getData() as $punto) {
+        # Sumariza los totales
+        $vendidos['puntos']+=$punto['cantidad'];
+        $subtotal['puntos']+=$punto['total'];
     }
+    foreach ($taquillas->dataProvider->getData() as $taquilla) {
+        # Sumariza los totales de taquilla y taquilla con descuento
+        $vendidos['taquilla']+=$taquilla['cantidad'];
+        $subtotal['taquilla']+=$taquilla['total'];
+    }
+    foreach ($especiales->dataProvider->getData() as $especial) {
+        # Sumariza los totales de taquilla y taquilla con descuento
+        $vendidos['especiales']+=$especial['cantidad'];
+        $subtotal['especiales']+=$especial['total'];
+    }
+    Yii::app()->clientScript->registerScript('sumatorias',"
+        $('#canales-venta-grid table').append('<tr> <td >Sub-Total T.C. </td> <td style=\"text-align:right\">".$vendidos['puntos']."</td><td style=\"text-align:right\">$".number_format($subtotal['puntos'],2)."</td> ');
+        $('#canales-venta-grid table').append('<tr class=\'panel-head\'><td colspan=\'3\' ></td></tr><tr> <td ><b>Subtotales. </b></td> <td style=\"text-align:right\">".($vendidos['taquilla']+$vendidos['puntos'])."</td><td style=\"text-align:right\">$".number_format($subtotal['taquilla']+$subtotal['puntos'],2)."</td> ')
+
+        $('#boletos-especiales-grid table').append('<tr class=\'panel-head\'><td colspan=\'3\' style=\'text-align:center\'>TOTAL</td></tr><tr class=\' \'> <td ><b>Total: </b></td> <td style=\"text-align:right\">".(array_sum($vendidos))."</td><td style=\"text-align:right\">$".number_format(array_sum($subtotal),2)."</td> ')
+        "
+        ,CClientScript::POS_LOAD);
 ?>
+<?php endif; ?>
 </div>
+</div>
+

@@ -5,7 +5,8 @@
 @sombra: darken(@secundario,20%);
 @belize:#2980b9;
 @clouds:#ecf0f1;
-
+@silver:#bdc3c7;
+@midnight:#2c3e50;
 .gamarillo(){
 background: #fce300;
 background: -moz-linear-gradient(top,  #fce300 0%, #e8b500 100%);
@@ -21,6 +22,11 @@ color:#333;
 .principal(){
 	background:@belize; color:#fff;
 }
+.normal(){
+ background: rgb(236,236,236);color:rgb(96, 106, 112);
+}
+
+
 .area-0(){padding:0;margin:0;}
 .area{}
 body{font:normal 9pt "Verdana";}
@@ -70,10 +76,16 @@ body{font:normal 9pt "Verdana";}
  .controles{background:@secundario; height:100%;margin:0px;width:100%;text-align:center;
 	h2,h1{ margin-top:0 !important;}
  }
+
 thead {background:@belize;color:@clouds}
+.normal table thead{.normal;text-transform: uppercase; font-size: 80%;}
 .grid-view .table th > .sort-link{color:#fff !important}
 
 .flash-success{@radius:0px 0px 4px 4px;border-radius:@radius;-moz-border-radius:@radius}
     
 .remark{background: @secundario;}
-.panel-head{.principal;font-weight: 800; text-align: center; text-transform: uppercase; font-size: 90%;}
+.nero{background: #222;color:#fff;}
+.panel-principal{.principal}
+.panel-normal{.normal}
+.panel-head{.normal;font-weight: 800; text-align: center; text-transform: uppercase; font-size: 90%;}
+.panel-foot{background:@midnight;color:#fff;}
