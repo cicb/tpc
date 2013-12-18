@@ -8,10 +8,15 @@ class ReportesController extends Controller
 
 		$this->render('cortesDiarios');
 	}
-
+    public function perfil(){
+        if(Yii::app()->user->isGuest OR !Yii::app()->user->getState("Admin")){
+	       $this->redirect(array("site/logout"));
+	    }
+    }
 	public function actionDesgloseVentas()
 	{
-	   
+	   $this->perfil();
+
 	   $model=new Ventas;
        $flex = new ReportesFlex;
         
@@ -28,7 +33,7 @@ class ReportesController extends Controller
 	}
     public function actionVentasCallCenter()
 	{
-	   
+	   $this->perfil();
 	   $model=new Ventas;
        $flex = new ReportesFlex;
 	   //if (isset($_GET['grid_mode'],$_GET['evento'],$_GET['funcion']) and $_GET['grid_mode']=='export'){
@@ -83,11 +88,13 @@ class ReportesController extends Controller
 
 	public function actionIndex()
 	{
-		$this->render('index');
+	   $this->perfil();
+	   $this->render('index');
 	}
 
 	public function actionLugares()
 	{
+	       $this->perfil();
 			$model=new Lugares;
 			$data=null;
 			if(isset($_POST['Lugares']))
@@ -153,7 +160,7 @@ class ReportesController extends Controller
 
 	public function actionLugaresVendidos()
 	{
-
+            $this->perfil();
 			$model=new Lugares;
 
 			//if(Yii::app()->user->isGuest)
@@ -257,8 +264,9 @@ class ReportesController extends Controller
 
 	public function actionReservacionesFarmatodo()
 	{
-		
-		$model=new Templugares;
+
+	  $this->perfil();
+	  $model=new Templugares;
 		
 		
 		$count=0;
@@ -363,15 +371,18 @@ class ReportesController extends Controller
 	}
 
 
+			
+
 	public function actionVentasDiarias()
 	{
-			
+	   $this->perfil();
 		$this->render('ventasDiarias');
 	}
 
 	public function actionVentasFarmatodo()
 	{
-			
+	   $this->perfil();
+			$this->layout="reportes";
         //if(Yii::app()->user->isGuest)
             //$this->redirect(Yii::app()->request->baseUrl);
         $totalventa         = '';
@@ -543,7 +554,11 @@ class ReportesController extends Controller
 
 	public function actionVentasSinCargo()
 	{
-			
+
+	        if(Yii::app()->user->isGuest){
+    	       $this->redirect(array("site/logout"));
+    	    }
+
 			$model=new ReportesFlex;
 			$eventoId=isset($_POST['evento_id'])?$_POST['evento_id']:0;
 			$funcionesId=isset($_POST['funcion_id'])?$_POST['funcion_id']:0;
@@ -569,7 +584,9 @@ class ReportesController extends Controller
 	}
 	public function actionVentasWeb()
 	{
-			
+
+	       $this->perfil();
+
 			$download ="";
 			//if(Yii::app()->user->isGuest)
 			//$this->redirect(Yii::app()->request->baseUrl);

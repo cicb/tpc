@@ -19,7 +19,7 @@ class UserIdentity extends CUserIdentity
 	   private $_id;
     public function authenticate(){
         $username=strtolower($this->username);
-        $user = Usuarios::model()->findAll(array('condition'=>"UsuariosNick= '$this->username' AND UsuariosPass='$this->password' AND UsuariosStatus='ALTA'"));
+        $user = Usuarios::model()->findAll(array('condition'=>"UsuariosNick= '$this->username' AND UsuariosPass='$this->password' AND UsuariosStatus='ALTA' AND TipUsrId IN(1,2)"));
         if(empty($user))
             $this->errorCode=self::ERROR_USERNAME_INVALID;
         /*else if($user->UsuariosPass!==$this->password)

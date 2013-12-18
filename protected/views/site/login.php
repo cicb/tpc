@@ -30,7 +30,11 @@ $this->breadcrumbs=array(
 	),
 )); ?>
 
-	<p class="note">Los campos con <span class="required">*</span> son requeridos.</p>
+	<p class="note">Los campos con <span class="required">*</span> son
+requeridos.</p>
+	<p class="note">Lo campos con <span class="required">*</span> son
+requeridos.</p>
+
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'username'); ?>
@@ -42,6 +46,7 @@ $this->breadcrumbs=array(
 		<?php echo $form->labelEx($model,'password'); ?>
 		<?php echo $form->passwordField($model,'password'); ?>
 		<?php echo $form->error($model,'password'); ?>
+	</div>
 
 	</div>
 
