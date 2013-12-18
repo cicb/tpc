@@ -119,7 +119,7 @@ $form=$this->beginWidget('CActiveForm', array(
     $evento=Evento::model()->findByPk($eventoId);
     $funcion="TODAS";
     if (isset($funcionesId) and $funcionesId>0){
-        $funcion=Funciones::findByPk(array('EventoId'=>$eventoId,'FuncionesId'=>$funcionesId));
+        $funcion=Funciones::model()->findByPk(array('EventoId'=>$eventoId,'FuncionesId'=>$funcionesId));
         if(is_object($funcion))
             $funcion=$funcion->funcionesTexto;
     }
@@ -150,8 +150,8 @@ $form=$this->beginWidget('CActiveForm', array(
                     'columns'=>array(
                         array(
                             'header'=>'Tipo de boleto',
-                            'type'  =>'row',
-                            'value' => 'data[\'VentasBolTip\']'
+                            'type'  =>'raw',
+                            'value' => '$data[\'VentasBolTip\']'
                             ),
                         array(
                             'header'=>'Boletos vendidos.',
@@ -182,6 +182,29 @@ $form=$this->beginWidget('CActiveForm', array(
             break;
         }
 ?>
+<div class='panel-head'>Boletos vendidos por día</div>
+<?php $data=$model->getDatosGraficaPorDia($eventoId,$funcionesId,$desde,$hasta);
+        $this->widget(
+            'chartjs.widgets.ChLine', 
+            array(
+                'width' => 790,
+                'height' => 500,
+                'htmlOptions' => array(),
+                'labels' => $data['x'],
+
+                'datasets' => array(
+                    array(
+                        "fillColor" => "rgba(220,220,220,0.5)",
+                        "strokeColor" => "rgba(220,220,220,1)",
+                        "pointColor" => "rgba(220,220,220,1)",
+                        "pointStrokeColor" => "#ffffff",
+                        "data" => $data['y'],
+                    ),
+   
+                ),
+                'options' => array('scaleSteps'=>2,'scaleOverlay'=>true,)
+            )
+        );  ?>
     </div>
 <?php endif; ?>
 <div class="span5 remark" style="float:right">
@@ -311,8 +334,8 @@ $form=$this->beginWidget('CActiveForm', array(
         ),
     )); 
     // SUMATORIAS-------------------------------------------------------------------------------------
-    $vendidos=array('taquilla'=>0,'puntos'=>0,'especiales'=>0);
-    $subtotal=array('taquilla'=>0,'puntos'=>0,'especiales'=>0);
+    $vendidos=array('taquilla'=>0,'puntos'=>0,'especiales'=>0,'descuentos'=>0);
+    $subtotal=array('taquilla'=>0,'puntos'=>0,'especiales'=>0,'descuentos'=>0);
     foreach ($puntos->dataProvider->getData() as $punto) {
         # Sumariza los totales
         $vendidos['puntos']+=$punto['cantidad'];
@@ -327,7 +350,8 @@ $form=$this->beginWidget('CActiveForm', array(
         # Sumariza los totales de taquilla y taquilla con descuento
         $vendidos['especiales']+=$especial['cantidad'];
         $subtotal['especiales']+=$especial['total'];
-    }
+    }    
+
     Yii::app()->clientScript->registerScript('sumatorias',"
         $('#canales-venta-grid table').append('<tr> <td >Sub-Total T.C. </td> <td style=\"text-align:right\">".$vendidos['puntos']."</td><td style=\"text-align:right\">$".number_format($subtotal['puntos'],2)."</td> ');
         $('#canales-venta-grid table').append('<tr class=\'panel-head\'><td colspan=\'3\' ></td></tr><tr> <td ><b>Subtotales. </b></td> <td style=\"text-align:right\">".($vendidos['taquilla']+$vendidos['puntos'])."</td><td style=\"text-align:right\">$".number_format($subtotal['taquilla']+$subtotal['puntos'],2)."</td> ')
@@ -335,8 +359,63 @@ $form=$this->beginWidget('CActiveForm', array(
         $('#boletos-especiales-grid table').append('<tr class=\'panel-head\'><td colspan=\'3\' style=\'text-align:center\'>TOTAL</td></tr><tr class=\' \'> <td ><b>Total: </b></td> <td style=\"text-align:right\">".(array_sum($vendidos))."</td><td style=\"text-align:right\">$".number_format(array_sum($subtotal),2)."</td> ')
         "
         ,CClientScript::POS_LOAD);
+    foreach ($descuentos->dataProvider->getData() as $descuento) {
+        # Sumariza los totales de taquilla y taquilla con descuento
+        $vendidos['descuentos']+=$descuento['cantidad'];
+        $subtotal['descuentos']+=$descuento['total'];
+    }
 ?>
+<?php 
+        $this->widget(
+            'chartjs.widgets.ChDoughnut', 
+            array(
+                'width' => 200,
+                'height' => 300,
+                'htmlOptions' => array('style'=>'color:#555;'),
+                'drawLabels' => true,
+                'datasets' => array(
+                    array(
+                        "value" => $subtotal['especiales'],
+                        "color" => "#F7464A",
+                        "label" => "Boletos duros y cortesias"
+                    ),
+                    array(
+                        "value" => $subtotal['taquilla'],
+                        "color" => "#E2EAE9",
+                        "label" => "Taquilla"
+                    ),
+                    array(
+                        "value" => $subtotal['puntos'],
+                        "color" => "#D4CCC5",
+                        "label" => "Puntos venta"
+                    ),
+                    array(
+                        "value" => $subtotal['descuentos'],
+                        "color" => "#949FB1",
+                        "label" => "Descuentos"
+                    )
+                ),
+                'options' => array()
+            )
+        ); 
+    ?>
 <?php endif; ?>
 </div>
 </div>
+<?php 
+
+$r = new YiiReport();
+$r->load(array(
+            'id'=>'product',
+            'data'=>array(
+                        array('Some product',23.99),
+                        array('Other product',5.25),
+                        array('Third product',0.20)
+                )
+            )
+        );
+echo $r->render();
+
+
+ ?>
 

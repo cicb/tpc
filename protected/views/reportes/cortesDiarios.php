@@ -1,5 +1,5 @@
 <div class="controles">
-<<<<<<< HEAD
+
 <h1>Ventas Call Center</h1>
 <div id="cargador"  style="position:absolute; width:40px; height:40px;left:30%; top:150px; border:0px; margin-left:-40px; margin-top:-40px;" >
 </div>
@@ -56,7 +56,7 @@ table.items{
         background-color:#FFCECE;}
 </style>
 </div>
-=======
+
 	<h2>Cortes diarios</h2>
 	<div class="row-fluid">
 		<div class="span9" style="text-align:right">
@@ -116,4 +116,4 @@ table.items{
 			});
 			");
 		 ?>
->>>>>>> c52a81de0ec64d54466d14a8bf16872eac11decc
+

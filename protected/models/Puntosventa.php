@@ -15,7 +15,7 @@
 class Puntosventa extends CActiveRecord
 {
 	/**
-<<<<<<< HEAD
+
 	 * Returns the static model of the specified AR class.
 	 * @param string $className active record class name.
 	 * @return Puntosventa the static model class
@@ -26,8 +26,8 @@ class Puntosventa extends CActiveRecord
 	}
 
 	/**
-=======
->>>>>>> c52a81de0ec64d54466d14a8bf16872eac11decc
+
+
 	 * @return string the associated database table name
 	 */
 	public function tableName()
@@ -48,11 +48,11 @@ class Puntosventa extends CActiveRecord
 			array('tipoid, PuntosventaId, PuntosventaIdeTra, PuntosventaSta', 'length', 'max'=>20),
 			array('PuntosventaNom', 'length', 'max'=>75),
 			// The following rule is used by search().
-<<<<<<< HEAD
+
 			// Please remove those attributes that should not be searched.
-=======
+
 			// @todo Please remove those attributes that should not be searched.
->>>>>>> c52a81de0ec64d54466d14a8bf16872eac11decc
+
 			array('tipoid, PuntosventaId, PuntosventaNom, puntosventaTipoId, PuntosventaInf, PuntosventaIdeTra, PuntosventaSta', 'safe', 'on'=>'search'),
 		);
 	}
@@ -64,14 +64,14 @@ class Puntosventa extends CActiveRecord
 	{
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
-<<<<<<< HEAD
+
 		return array(
-=======
+
 
 		return array(
 			'ventas' => array(self::HAS_MANY, 'Ventas', 'PuntosventaId'),
 
->>>>>>> c52a81de0ec64d54466d14a8bf16872eac11decc
+
 		);
 	}
 
@@ -93,14 +93,14 @@ class Puntosventa extends CActiveRecord
 
 	/**
 	 * Retrieves a list of models based on the current search/filter conditions.
-<<<<<<< HEAD
+
 	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
 	 */
 	public function search()
 	{
 		// Warning: Please modify the following code to remove attributes that
 		// should not be searched.
-=======
+
 	 *
 	 * Typical usecase:
 	 * - Initialize the model fields with values from filter form.
@@ -114,7 +114,7 @@ class Puntosventa extends CActiveRecord
 	public function search()
 	{
 		// @todo Please modify the following code to remove attributes that should not be searched.
->>>>>>> c52a81de0ec64d54466d14a8bf16872eac11decc
+
 
 		$criteria=new CDbCriteria;
 
@@ -130,9 +130,9 @@ class Puntosventa extends CActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
-<<<<<<< HEAD
+
 }
-=======
+
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -145,4 +145,4 @@ class Puntosventa extends CActiveRecord
 		return parent::model($className);
 	}
 }
->>>>>>> c52a81de0ec64d54466d14a8bf16872eac11decc
+

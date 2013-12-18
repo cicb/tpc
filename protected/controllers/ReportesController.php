@@ -11,7 +11,7 @@ class ReportesController extends Controller
 
 	public function actionDesgloseVentas()
 	{
-	   $this->layout ="reportes";
+	   
 	   $model=new Ventas;
        $flex = new ReportesFlex;
         
@@ -28,7 +28,7 @@ class ReportesController extends Controller
 	}
     public function actionVentasCallCenter()
 	{
-	   $this->layout ="reportes";
+	   
 	   $model=new Ventas;
        $flex = new ReportesFlex;
 	   //if (isset($_GET['grid_mode'],$_GET['evento'],$_GET['funcion']) and $_GET['grid_mode']=='export'){
@@ -83,7 +83,6 @@ class ReportesController extends Controller
 
 	public function actionIndex()
 	{
-		$this->layout="reportes";	
 		$this->render('index');
 	}
 
@@ -143,7 +142,7 @@ class ReportesController extends Controller
 			}
 			else{
 					$evento = '******';
-					$this->layout="reportes";
+					
 			}
 			$this->render('lugares',array('model'=>$model, 'dataProvider'=>$data));
 
@@ -249,7 +248,7 @@ class ReportesController extends Controller
 			} 
 			else{
 					$evento = '******';
-					$this->layout="reportes";
+					
 			}
 			$this->render('lugaresVendidos',array('model'=>$model, 'dataProvider'=>$dataProvider));	
 
@@ -258,7 +257,7 @@ class ReportesController extends Controller
 
 	public function actionReservacionesFarmatodo()
 	{
-		$this->layout="reportes";
+		
 		$model=new Templugares;
 		
 		
@@ -363,22 +362,16 @@ class ReportesController extends Controller
 		//$this->render('reservacionesFarmatodo');
 	}
 
-	public function actionVentasConCargo()
-	{
-			$this->layout="reportes";
- 
-		$this->render('ventasConCargo');
-	}
 
 	public function actionVentasDiarias()
 	{
-			$this->layout="reportes";
+			
 		$this->render('ventasDiarias');
 	}
 
 	public function actionVentasFarmatodo()
 	{
-			$this->layout="reportes";
+			
         //if(Yii::app()->user->isGuest)
             //$this->redirect(Yii::app()->request->baseUrl);
         $totalventa         = '';
@@ -550,7 +543,7 @@ class ReportesController extends Controller
 
 	public function actionVentasSinCargo()
 	{
-			$this->layout="reportes";
+			
 			$model=new ReportesFlex;
 			$eventoId=isset($_POST['evento_id'])?$_POST['evento_id']:0;
 			$funcionesId=isset($_POST['funcion_id'])?$_POST['funcion_id']:0;
@@ -561,10 +554,22 @@ class ReportesController extends Controller
 				'eventoId'=>$eventoId,'funcionesId'=>$funcionesId,
 				'desde'=>$desde,'hasta'=>$hasta));
 	}
-
+	public function actionVentasConCargo()
+	{
+			
+			$model=new ReportesFlex;
+			$eventoId=isset($_POST['evento_id'])?$_POST['evento_id']:0;
+			$funcionesId=isset($_POST['funcion_id'])?$_POST['funcion_id']:0;
+			$desde=isset($_POST['desde'])?$_POST['desde']:0;
+			$hasta=isset($_POST['hasta'])?$_POST['hasta']:0;
+			$this->render('ventasConCargo',array(
+				'model'=>$model,
+				'eventoId'=>$eventoId,'funcionesId'=>$funcionesId,
+				'desde'=>$desde,'hasta'=>$hasta));
+	}
 	public function actionVentasWeb()
 	{
-			$this->layout="reportes";
+			
 			$download ="";
 			//if(Yii::app()->user->isGuest)
 			//$this->redirect(Yii::app()->request->baseUrl);
@@ -731,7 +736,8 @@ class ReportesController extends Controller
 
 			$this->render('ventasWeb',
 					array('model'=>$model,'itemselected' => $venta, 'dataProvider'=>$dataProvider,'download'=>$download));
-			}
+			} 
+			else
 			$this->render('ventasWeb',array('model'=>$model));
 	}
  
