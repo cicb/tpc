@@ -13,7 +13,7 @@
 
 
 	<?php Yii::app()->bootstrap->register(); ?>
-	<?//php Yii::app()->clientScript->registerCssFile(Yii::app()->request->baseUrl."/css/custom.css",CClientScript::POS_END);?>
+	<?php //Yii::app()->clientScript->registerCssFile(Yii::app()->request->baseUrl."/css/custom.css",CClientScript::POS_END);?>
 	<title><?php echo CHtml::encode($this->pageTitle); ?></title>
 </head>
 
@@ -51,11 +51,11 @@ $accesos = Yii::app()->user->getState("accesos");
                         				array('label' => 'Reportes PHP', 'url' => '#','visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
                         				array('label' => 'Reportes PHP', 'url' => '#','visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
                         				array('label' => 'Reportes PHP', 'url' => '#','visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
-        ),
+                                    ),
 						),
 						array('label' => 'Descuentos', 	'url' => '#','visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
 						array('label' => 'Eventos', 	'url' => '#','visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
-						array('label' => 'Boletos', 	'url' => '#','visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
+						array('label' => 'Boletos', 	'url' => $this->createUrl('ventas/ReimpresionBoletos'),'visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
 						array('label' => 'Usuarios', 	'url' => '#','visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
                         array('label'=>'Login', 'url'=>array('/site/login'), 'visible'=>Yii::app()->user->isGuest),
 				        array('label'=>'Logout ('.Yii::app()->user->name.')', 'url'=>array('/site/logout'), 'visible'=>!Yii::app()->user->isGuest)

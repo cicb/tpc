@@ -20,7 +20,7 @@ $list = CHtml::listData($models, 'EventoId', 'EventoNom');
 echo CHtml::label('Evento','evento_id', array('style'=>'width:70px; display:inline-table;'));
 $modeloEvento = Evento::model()->findAll(array('condition' => 'EventoSta = "ALTA"','order'=>'EventoNom'));
 $list = CHtml::listData($modeloEvento,'EventoId','EventoNom');
-echo CHtml::dropDownList('evento_id','',$list,
+echo CHtml::dropDownList('evento_id',$itemselected,$list,
 		array(
 				'ajax' => array(
 						'type' => 'POST',
@@ -36,8 +36,7 @@ echo CHtml::dropDownList('evento_id','',$list,
 	<div class="row">
 <?php
 echo CHtml::label('Funcion','funcion_id', array('style'=>'width:70px; display:inline-table;'));
-
-echo CHtml::dropDownList('Ventaslevel1[funcion]','',array(),
+echo CHtml::dropDownList('Ventaslevel1[funcion]',"",array(),
 		array(
 				'prompt' => 'Seleccione una Funcion...'
 		));
@@ -138,7 +137,7 @@ echo "Se muestran ".count($dataProvider->getData())." resultados(s)" ;
             <td><?php echo $data['FilasAli']; ?></td>
             <td><?php echo $data['LugaresLug']; ?></td>
             <td><?php echo $data['VentasNumRef']; ?></td>
-            <td><?php echo $data['ClientesEma'];//.$data['VentasCon']; ?></td>
+            <td><?php echo $data['email'];//.$data['VentasCon']; ?></td>
             <td>
             <?php 
                 $string = $data['VentasCon'];
@@ -164,6 +163,9 @@ echo "Se muestran ".count($dataProvider->getData())." resultados(s)" ;
        
         </tbody>    
     </table>
+<?php
+
+?>    
 <?php
 elseif(!empty($itemselected)):
     echo "No hay informacion para Ventas en Web y Call Center";

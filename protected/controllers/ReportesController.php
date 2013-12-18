@@ -580,6 +580,7 @@ class ReportesController extends Controller
 	public function actionVentasWeb()
 	{
 	       $this->perfil();
+           $region = null;
 			$this->layout="reportes";
 			$download ="";
 			//if(Yii::app()->user->isGuest)
@@ -597,7 +598,7 @@ class ReportesController extends Controller
 					''  as FilasAli, '' as LugaresLug, '' as LugaresNumBol, 
 					'' as VentasCon, '' as VentasNumRef";
 					if ($venta>0){
-							$query = "(SELECT  ventas.VentasId as id, ventas.PuntosventaId, funciones.funcionesTexto as fnc,
+							 /*"(SELECT  ventas.VentasId as id, ventas.PuntosventaId, funciones.funcionesTexto as fnc,
 									puntosventa.PuntosventaNom, ventas.VentasFecHor, zonas.ZonasAli,
 									filas.FilasAli, lugares.LugaresLug,  subzona.SubzonaAcc,
 									ventaslevel1.LugaresNumBol, ventaslevel1.VentasCon,clientes.ClientesEma,
@@ -635,9 +636,9 @@ class ReportesController extends Controller
 									((puntosventa.PuntosventaId = '102')) AND
 									NOT (ventas.VentasNumRef = ''))
 
-									UNION
+									UNION"*/
 
-									(SELECT  ventas.VentasId as id, ventas.PuntosventaId, funciones.funcionesTexto as fnc,
+								$query ="(SELECT  ventas.VentasId as id, ventas.PuntosventaId, funciones.funcionesTexto as fnc,
 									puntosventa.PuntosventaNom, ventas.VentasFecHor, zonas.ZonasAli,
 									filas.FilasAli, lugares.LugaresLug,  subzona.SubzonaAcc,
 									ventaslevel1.LugaresNumBol, ventaslevel1.VentasCon,cruge_user.email,
@@ -748,7 +749,7 @@ class ReportesController extends Controller
 			$this->render('ventasWeb',
 					array('model'=>$model,'itemselected' => $venta, 'dataProvider'=>$dataProvider,'download'=>$download));
 			}
-			$this->render('ventasWeb',array('model'=>$model));
+			$this->render('ventasWeb',array('model'=>$model,'itemselected' => $venta));
 	}
  
 
