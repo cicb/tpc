@@ -769,11 +769,9 @@ class ReportesController extends Controller
                 $todos = "  ventaslevel1.VentasCon='' AND ";
             }
             $data=array();
-            $query ="(SELECT  ventas.VentasId as id,subzona.SubzonaAcc, ventas.PuntosventaId, funciones.funcionesTexto as fnc,
-									puntosventa.PuntosventaNom, ventas.VentasFecHor, zonas.ZonasAli,
-									filas.FilasAli, lugares.LugaresLug,  subzona.SubzonaAcc,
-									ventaslevel1.LugaresNumBol, ventaslevel1.VentasCon,cruge_user.email,
-									ventas.VentasNumRef
+            $query ="(SELECT  ventas.VentasId as id, ventas.PuntosventaId, funciones.funcionesTexto as fnc,
+									puntosventa.PuntosventaNom, ventas.VentasFecHor, 
+                                     zonas.ZonasAli,subzona.SubzonaAcc,evento.EventoDesBol,evento.EventoNom,foro.ForoNom,ventaslevel1.VentasBolTip,ventaslevel1.VentasCon,(ventaslevel1.VentasCosBol-ventaslevel1.VentasMonDes) as cosBol 
 									FROM
 									lugares
 									INNER JOIN funciones ON funciones.FuncionesId = lugares.FuncionesId AND funciones.EventoId = lugares.EventoId
@@ -783,6 +781,8 @@ class ReportesController extends Controller
 									AND (lugares.SubzonaId=ventaslevel1.SubzonaId)
 									AND (lugares.FilasId=ventaslevel1.FilasId)
 									AND (lugares.LugaresId=ventaslevel1.LugaresId)
+                                    INNER JOIN evento ON evento.EventoId = ventaslevel1.EventoId
+                                    INNER JOIN foro ON foro.ForoId = evento.ForoId
 									INNER JOIN filas ON (filas.EventoId=lugares.EventoId)
 									AND (filas.FuncionesId=lugares.FuncionesId)
 									AND (filas.ZonasId=lugares.ZonasId)
