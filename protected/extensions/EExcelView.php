@@ -32,6 +32,7 @@
 		public $exportButtonsCSS = 'summary';
 		public $exportButtons = array('Excel2007');
 		public $exportText = 'Export to: ';
+		public $type;
 
 		//callbacks
 		public $onRenderHeaderCell = null;
@@ -96,8 +97,27 @@
 				$this->objPHPExcel->getProperties()->setSubject($this->subject);
 				$this->objPHPExcel->getProperties()->setDescription($this->description);
 				$this->objPHPExcel->getProperties()->setCategory($this->category);
-			} else
+			} else{
+				$classes = array('table');
+				if (isset($this->type) && !empty($this->type)) {
+				    if (is_string($this->type)) {
+				        $this->type = explode(' ', $this->type);
+				    }
+
+				    foreach ($this->type as $type) {
+				        $classes[] = 'table-' . $type;
+				    }
+				}
+				if (!empty($classes)) {
+				    $classes = implode(' ', $classes);
+				    if (isset($this->itemsCssClass)) {
+				        $this->itemsCssClass .= ' ' . $classes;
+				    } else {
+				        $this->itemsCssClass = $classes;
+				    }
+				}
 				parent::init();
+			}
 		}
 
 		public function renderHeader()

@@ -5,21 +5,18 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="language" content="en" />
 	<!-- blueprint CSS framework -->
-<!--	<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/screen.css" media="screen, projection" />-->
+	<!--	<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/screen.css" media="screen, projection" />-->
 	<!--[if lt IE 8]>
 	<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/ie.css" media="screen, projection" />
 	<![endif]-->
 	<link rel="stylesheet/less" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/style.less"  />
-
-
 	<?php Yii::app()->bootstrap->register(); ?>
 	<?php //Yii::app()->clientScript->registerCssFile(Yii::app()->request->baseUrl."/css/custom.css",CClientScript::POS_END);?>
 	<title><?php echo CHtml::encode($this->pageTitle); ?></title>
 </head>
-
 <body>
-
 	<div id="mainmenu">
+
 <?php
 $accesos = Yii::app()->user->getState("accesos");  
 $this->widget('bootstrap.widgets.TbNavbar',array(
@@ -32,26 +29,37 @@ $this->widget('bootstrap.widgets.TbNavbar',array(
 		array(
 			'class' => 'bootstrap.widgets.TbNav',
 			'items' => array(
-				array('label' => 'Reportes', 	'url' => $this->createUrl('reportes/index'), 'active' => true,'visible'=>!Yii::app()->user->isGuest,
-					'items'=>array(
-						array('label' => 'Tipos de reportes', 'active'=>true),
-						array('label' => 'Lugares', 				'url' =>  $this->createUrl('reportes/lugares'),'visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
-						array('label' => 'Lugares vendidos', 		'url' =>  $this->createUrl('reportes/lugaresVendidos'),'visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
+				array(
+					'class' => 'bootstrap.widgets.TbNav',
+					'items' => array(
+						array('label' => 'Reportes',
+							'url' => $this->createUrl('reportes/index'),
+
+
+							'active' => true,'visible'=>!Yii::app()->user->isGuest,
+							'items'=>array(
+								array('label' => 'Tipos de reportes', 'active'=>true),
+								array('label' => 'Lugares', 				'url' =>  $this->createUrl('reportes/lugares'),'visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
+								array('label' => 'Lugares vendidos', 		'url' =>  $this->createUrl('reportes/lugaresVendidos'),'visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
 										// array('label' => 'Cortes diarios', 			'url' =>  $this->createUrl('reportes/cortesDiarios'),'visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
-						array('label' => 'Reservaciones Farmatodo', 'url' =>  $this->createUrl('reportes/reservacionesFarmatodo'),'visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
-						array('label' => 'Ventas por Web', 			'url' =>  $this->createUrl('reportes/ventasWeb'),'visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
-						array('label' => 'Ventas sin cargo',		'url' =>  $this->createUrl('reportes/ventasSinCargo'),'visible' => !Yii::app()->user->isGuest AND (Yii::app()->user->getState("Admin") OR Yii::app()->user->getState("TipUsrId")=="2")?true:false),
-						array('label' => 'Ventas con cargo',		'url' =>  $this->createUrl('reportes/ventasConCargo'),'visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
-						array('label' => 'Ventas de Farmatodo', 	'url' =>  $this->createUrl('reportes/ventasFarmatodo'),'visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
-						array('label' => 'Ventas por Call Center', 	'url' =>  $this->createUrl('reportes/ventasCallCenter'),'visible' => !Yii::app()->user->isGuest AND (Yii::app()->user->getState("Admin"))?true:false), 
-						array('label' => 'Desglose de
-ventas', 	'url' =>  $this->createUrl('reportes/desgloseVentas'),'visible'
-=> !Yii::app()->user->isGuest AND
-Yii::app()->user->getState("Admin")?true:false),
-						),
+								array('label' => 'Reservaciones Farmatodo', 'url' =>  $this->createUrl('reportes/reservacionesFarmatodo'),'visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
+								array('label' => 'Ventas por Web', 			'url' =>  $this->createUrl('reportes/ventasWeb'),'visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
+								array('label' => 'Ventas sin cargo',		'url' =>  $this->createUrl('reportes/ventasSinCargo'),'visible' => !Yii::app()->user->isGuest AND (Yii::app()->user->getState("Admin") OR Yii::app()->user->getState("TipUsrId")=="2")?true:false),
+								array('label' => 'Ventas con cargo',		'url' =>  $this->createUrl('reportes/ventasConCargo'),'visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
+								array('label' => 'Ventas de Farmatodo', 	'url' =>  $this->createUrl('reportes/ventasFarmatodo'),'visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
+								array('label' => 'Ventas por Call Center', 	'url' =>  $this->createUrl('reportes/ventasCallCenter'),'visible' => !Yii::app()->user->isGuest AND (Yii::app()->user->getState("Admin"))?true:false), 
+								array('label' => 'Desglose de
+									ventas', 	'url' =>  $this->createUrl('reportes/desgloseVentas'),'visible'
+									=> !Yii::app()->user->isGuest AND
+									Yii::app()->user->getState("Admin")?true:false),
+								),
 ),
 array('label' => 'Descuentos', 	'url' => '#','visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
-array('label' => 'Eventos', 	'url' => '#','visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
+array('label' => 'Eventos', 
+	'items'=>array(
+		array('label'=>'Configurador de accesos', 'url'=>$this->createUrl('accesos/index')),
+		),
+	'url' => '#','visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
 array('label' => 'Boletos', 	'url' => '#','visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
 array('label' => 'Usuarios', 	'url' => '#','visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
 ),
@@ -69,13 +77,13 @@ array(
 )); 
 ?>
 
-	</div><!-- mainmenu -->
+</div><!-- mainmenu -->
 <div id='wrap'>
-		<div class="container-fluid" id="pagina">	
+	<div class="container-fluid" id="pagina">	
 		<?php echo $content; ?>
 
 		<div class="clear"></div>
-<?php
+		<?php
 //echo Yii::app()->user->name;
 //echo Yii::app()->user->id;
 //echo Yii::app()->user->getState("UsuariosStatus");
@@ -83,7 +91,7 @@ array(
 
 
 //if(!empty($accesos) AND in_array('Eventos',$accesos) ){
-   
+		
 //}
 //print_r($accesos);
 //print_r($accesos);
@@ -91,21 +99,21 @@ array(
 
 
 
-?>
-		</div><!-- page -->
-		<div id='push'></div>
+		?>
+	</div><!-- page -->
+	<div id='push'></div>
 </div>
-	<div id="footer">
-		<div class='container'>
-				Copyright &copy; <?php echo date('Y'); ?> por Globaloxs.<br/>
-				Reservados todos los derechos.<br/>
-		</div>
-	</div><!-- footer -->
+<div id="footer">
+	<div class='container'>
+		Copyright &copy; <?php echo date('Y'); ?> por Globaloxs.<br/>
+		Reservados todos los derechos.<br/>
+	</div>
+</div><!-- footer -->
 
 
 <?php //Yii::app()->clientScript->registerCssFile(Yii::app()->request->baseUrl."/css/style.less",CClientScript::POS_END); ?>
 <?php Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl."/js/less.min.js",CClientScript::POS_HEAD); ?>
-	<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/custom.css"  />
-	<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/font-awesome.min.css"  />
+<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/custom.css"  />
+<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/font-awesome.min.css"  />
 </body>
 </html>

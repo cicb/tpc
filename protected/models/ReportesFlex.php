@@ -309,66 +309,23 @@ class ReportesFlex extends CFormModel
     }
     public function getInternet($EventoId, $FuncionesId, $pv){
 		
-		if($FuncionesId == 'TODAS')
-			$cadenaFuncion = "";
+		if(isset($FuncionesId) and !is_null($FuncionesId) and $FuncionesId >0)
+			$cadenaFuncion = " AND lugares.FuncionesId = '$FuncionesId'";	
 		else
-			$cadenaFuncion = " AND lugares.FuncionesId = '$FuncionesId'";
-		
-		$count = Yii::app()->db->createCommand("SELECT 
-					  evento.EventoNom,
-					  funciones.funcionesTexto,
-					  zonas.ZonasAli,
-					  filas.FilasAli,
-					  lugares.LugaresLug,
-					  ventas.VentasNumRef,
-					  ventas.VentasFecHor,
-					  (SELECT (COUNT(reimpresiones.ReimpresionesId)) AS vecesImpreso 
-					  FROM reimpresiones
-					   WHERE (reimpresiones.EventoId = ventaslevel1.EventoId) AND 
-					   (reimpresiones.FuncionesId = ventaslevel1.FuncionesId) AND 
-					   (reimpresiones.ZonasId = ventaslevel1.ZonasId) AND 
-					   (reimpresiones.SubzonaId = ventaslevel1.SubzonaId) AND 
-					   (reimpresiones.FilasId = ventaslevel1.FilasId) AND 
-					   (reimpresiones.LugaresId = ventaslevel1.LugaresId) 
-					   GROUP BY reimpresiones.EventoId, reimpresiones.FuncionesId, 
-					   reimpresiones.ZonasId, reimpresiones.SubzonaId, 
-					   reimpresiones.FilasId, reimpresiones.LugaresId) AS vecesImpreso,
-					  clientes.ClientesEma
-					FROM
-					  ventaslevel1
-					  INNER JOIN lugares ON (ventaslevel1.EventoId = lugares.EventoId)
-					  AND (ventaslevel1.FuncionesId = lugares.FuncionesId)
-					  AND (ventaslevel1.ZonasId = lugares.ZonasId)
-					  AND (ventaslevel1.SubzonaId = lugares.SubzonaId)
-					  AND (ventaslevel1.FilasId = lugares.FilasId)
-					  AND (ventaslevel1.LugaresId = lugares.LugaresId)
-					  INNER JOIN filas ON (lugares.EventoId = filas.EventoId)
-					  AND (lugares.FuncionesId = filas.FuncionesId)
-					  AND (lugares.ZonasId = filas.ZonasId)
-					  AND (lugares.SubzonaId = filas.SubzonaId)
-					  AND (lugares.FilasId = filas.FilasId)
-					  INNER JOIN zonas ON (filas.ZonasId = zonas.ZonasId)
-					  AND (filas.FuncionesId = zonas.FuncionesId)
-					  AND (filas.EventoId = zonas.EventoId)
-					  INNER JOIN funciones ON (zonas.EventoId = funciones.EventoId)
-					  AND (zonas.FuncionesId = funciones.FuncionesId)
-					  INNER JOIN evento ON (funciones.EventoId = evento.EventoId)
-					  INNER JOIN ventas ON (ventaslevel1.VentasId = ventas.VentasId)
-					  INNER JOIN clientes ON (ventas.UsuariosId = clientes.ClientesId)
-					WHERE
-					  (lugares.EventoId = '$EventoId') AND 
-					  (NOT (ventaslevel1.VentasSta = 'CANCELADO')) AND 
-					  (ventas.PuntosventaId = '$pv' $cadenaFuncion)
-					  ORDER BY ZonasAli, FilasAli, LugaresLug")->execute();	
-			
+			$cadenaFuncion = "";
+
             $query = "SELECT '' as id,
 					  evento.EventoNom,
 					  funciones.funcionesTexto,
+					  funciones.FuncionesId,
 					  zonas.ZonasAli,
 					  filas.FilasAli,
 					  lugares.LugaresLug,
 					  ventas.VentasNumRef,
 					  ventas.VentasFecHor,
+					  cruge_user.email,
+					  -- clientes.ClientesEma,
+					  ventas.UsuariosId,
 					  (SELECT (COUNT(reimpresiones.ReimpresionesId)) AS vecesImpreso 
 					  FROM reimpresiones
 					   WHERE (reimpresiones.EventoId = ventaslevel1.EventoId) AND 
@@ -379,8 +336,7 @@ class ReportesFlex extends CFormModel
 					   (reimpresiones.LugaresId = ventaslevel1.LugaresId) 
 					   GROUP BY reimpresiones.EventoId, reimpresiones.FuncionesId, 
 					   reimpresiones.ZonasId, reimpresiones.SubzonaId, 
-					   reimpresiones.FilasId, reimpresiones.LugaresId) AS vecesImpreso,
-					  clientes.ClientesEma
+					   reimpresiones.FilasId, reimpresiones.LugaresId) AS vecesImpreso
 					FROM
 					  ventaslevel1
 					  INNER JOIN lugares ON (ventaslevel1.EventoId = lugares.EventoId)
@@ -401,16 +357,19 @@ class ReportesFlex extends CFormModel
 					  AND (zonas.FuncionesId = funciones.FuncionesId)
 					  INNER JOIN evento ON (funciones.EventoId = evento.EventoId)
 					  INNER JOIN ventas ON (ventaslevel1.VentasId = ventas.VentasId)
-					  INNER JOIN clientes ON (ventas.UsuariosId = clientes.ClientesId)
+					  INNER JOIN cruge_user ON (cruge_user.iduser=ventas.UsuariosId)
+
+					  -- left JOIN clientes ON (ventas.UsuariosId = clientes.ClientesId)
 					WHERE
-					  (lugares.EventoId = '$EventoId') AND 
-					  (NOT (ventaslevel1.VentasSta = 'CANCELADO')) AND 
-					  (ventas.PuntosventaId = '$pv' $cadenaFuncion)
+					  lugares.EventoId = '$EventoId' 
+					  AND ventaslevel1.VentasSta <> 'CANCELADO'
+					  AND  (ventas.PuntosventaId = '$pv')
+					  	$cadenaFuncion
 					  ORDER BY ZonasAli, FilasAli, LugaresLug";
 		
 		  return new CSqlDataProvider($query, array(
-							'totalItemCount'=>$count,//$count,	
-							'pagination'=>array('pageSize'=>15),
+							// 'totalItemCount'=>$count,//$count,	
+							'pagination'=>false,
 					)); 
 		}
 
@@ -462,7 +421,7 @@ class ReportesFlex extends CFormModel
 						WHEN 102 THEN 'Ventas telefonicas'
 						ELSE 'Puntos de venta' END AS puntos , 
 					COUNT(t2.LugaresId) AS 'cantidad', 
-					SUM(t2.VentasCosBol $cargo) AS 'total',
+					SUM(t2.VentasCosBol - t2.VentasMonDes $cargo) AS 'total',
 					t2.VentasBolTip,
 					t2.DescuentosId,
 					t2.VentasMonDes
@@ -1100,7 +1059,6 @@ class ReportesFlex extends CFormModel
 			$rango = " AND ventas.VentasFecHor BETWEEN '$fecha1 00:00:00' AND '$fecha2 23:59:59' ";
 		else
 			$rango = "";
-		
 			if ($FuncionesId>0) $funcion=" AND ventaslevel1.FuncionesId=$FuncionesId ";
 			else $funcion=''; 
 			$query = "SELECT   COUNT(ventaslevel1.LugaresId) as ventas,   DATE(ventas.VentasFecHor) AS fecha
