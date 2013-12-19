@@ -7,6 +7,8 @@
 @clouds:#ecf0f1;
 @silver:#bdc3c7;
 @midnight:#2c3e50;
+@esmeralda:#2ecc71;
+@belize:#2980b9;
 .gamarillo(){
 background: #fce300;
 background: -moz-linear-gradient(top,  #fce300 0%, #e8b500 100%);
@@ -25,7 +27,9 @@ color:#333;
 .normal(){
  background: rgb(236,236,236);color:rgb(96, 106, 112);
 }
-
+.texturizado(){
+	background:@secundario;background-image:url('../images/sos.png');
+}
 
 .area-0(){padding:0;margin:0;}
 .area{}
@@ -61,7 +65,7 @@ body{font:normal 9pt "Verdana";}
 #mainmenu{height:40px;}
 #sidebar{background:@secundario; margin-top:5px}
 #wrap{min-height:100%;height:auto !important;height:100%;margin: 0 auto -60px;}
-#footer{background:@secundario;color:#555;text-align:center}
+#footer{background:@secundario;color:#555;text-align:center;.texturizado;}
 #push,#footer{height:60px;}
  html,
  body {
@@ -74,12 +78,13 @@ body{font:normal 9pt "Verdana";}
 	background:lighten(@primario,20%);
 	color:#FFF;
  }
- .controles{background:@secundario;background-image:url('../images/sos.png'); height:100%;margin:0px;width:100%;text-align:center;
+ .controles,.summary{.texturizado;height:100%;margin:0px;width:100%;text-align:center;
 	h2,h1{ margin-top:0 !important;}
  }
 
 thead {background:@belize;color:@clouds}
 .normal table thead{.normal;text-transform: uppercase; font-size: 80%;}
+.principal table thead{.principal;text-transform: uppercase; font-size: 80%;}
 .grid-view .table th > .sort-link{color:#fff !important}
 
 .flash-success{@radius:0px 0px 4px 4px;border-radius:@radius;-moz-border-radius:@radius}
@@ -88,7 +93,7 @@ thead {background:@belize;color:@clouds}
 .nero{background: #222;color:#fff;}
 .panel-principal{.principal}
 .panel-normal{.normal}
-.panel-head{.normal;font-weight: 800; text-align: center; text-transform: uppercase; font-size: 90%;}
+.panel-head{.normal;font-weight: 800; text-align: center; text-transform: uppercase; font-size: 110%;}
 .panel-foot{background:@midnight;color:#fff;}
 
 .navbar .nav > li > a{color:#fff!important; text-shadow:0 1px 0 @midnight !important;}

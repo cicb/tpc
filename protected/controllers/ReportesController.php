@@ -582,10 +582,45 @@ class ReportesController extends Controller
 				'eventoId'=>$eventoId,'funcionesId'=>$funcionesId,
 				'desde'=>$desde,'hasta'=>$hasta));
 	}
+
 	public function actionVentasWeb()
 	{
+		$this->perfil();
+		if(Yii::app()->user->isGuest)
+			$this->redirect(Yii::app()->request->baseUrl);
 
-	       $this->perfil();
+		$model=new ReportesFlex;
+		$grid_mode='show';
+		$funcionesId=0;
+		$eventoId=0;
+
+		if(!empty($_POST['Ventaslevel1']) and isset($_POST['evento_id']) )
+		{
+			// Si recibe parametros del post
+			// Si recibe un parametro de exportacion 
+			$grid_mode=isset($_POST['grid_mode'])?$_POST['grid_mode']:'show';
+			$eventoId=$_POST['evento_id']>0?$_POST['evento_id']:0;
+			if (isset($_POST['Ventaslevel1']['funcion'])
+				and !is_null($_POST['Ventaslevel1']['funcion'])
+				and $_POST['Ventaslevel1']['funcion']>0 )
+				$funcionesId=$_POST['Ventaslevel1']['funcion'];
+
+			else if (isset($_POST['funcion_id'])
+				and !is_null($_POST['funcion_id'])
+				and $_POST['funcion_id']>0 )
+				$funcionesId=$_POST['funcion_id'];
+		}
+
+		$this->render('ventasWeb',
+				array('model'=>$model,
+					'eventoId'=>$eventoId,
+					'funcionesId'=>$funcionesId,
+					'grid_mode'=>$grid_mode));
+	}	
+	public function actionVentasInternet()
+	{
+
+
 
 			$download ="";
 			//if(Yii::app()->user->isGuest)
