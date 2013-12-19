@@ -11,22 +11,23 @@
 	<![endif]-->
 	<link rel="stylesheet/less" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/style.less"  />
 	<?php Yii::app()->bootstrap->register(); ?>
-	<?//php Yii::app()->clientScript->registerCssFile(Yii::app()->request->baseUrl."/css/custom.css",CClientScript::POS_END);?>
+	<?php //Yii::app()->clientScript->registerCssFile(Yii::app()->request->baseUrl."/css/custom.css",CClientScript::POS_END);?>
 	<title><?php echo CHtml::encode($this->pageTitle); ?></title>
 </head>
 <body>
 	<div id="mainmenu">
-		<?php
-		$accesos = Yii::app()->user->getState("accesos");
-		?>   
 
-		<?php 
-		$this->widget('bootstrap.widgets.TbNavbar',array(
-			'color'=> 'taquilla',
-			'fluid'=>true,
-			'brandLabel'=>  "<i class=\"fa fa-th-large\"></i> ".CHtml::encode(Yii::app()->name),
-			'collapse'=>true,
-			'display'=>TbHtml::NAVBAR_DISPLAY_FIXEDTOP,
+<?php
+$accesos = Yii::app()->user->getState("accesos");  
+$this->widget('bootstrap.widgets.TbNavbar',array(
+	'color'=> 'taquilla',
+	'fluid'=>true,
+	'brandLabel'=>  "<i class=\"fa fa-th-large\"></i> ".CHtml::encode(Yii::app()->name),
+	'collapse'=>true,
+	'display'=>TbHtml::NAVBAR_DISPLAY_FIXEDTOP,
+	'items' => array(
+		array(
+			'class' => 'bootstrap.widgets.TbNav',
 			'items' => array(
 				array(
 					'class' => 'bootstrap.widgets.TbNav',
