@@ -8,12 +8,19 @@ $this->breadcrumbs=array(
 	'Login',
 );
 ?>
-
-<style>
-.form{
-    margin-left: 40% !important;
-}
+<style type="text/css">
+	.row{margin: 3px}
 </style>
+<div class="row-fluid">
+	<div class="span6" style="margin:15px">
+		<?php echo CHtml::image('images/t0-logo.jpg'); ?>
+	</div>
+<div class="span4" style="margin:auto;float:right">
+	
+<h1>Login</h1>
+
+<p>Por favor llene el formulario con sus datos de usuario:</p>
+
 <div class="form">
 <?php $form=$this->beginWidget('CActiveForm', array(
 	'id'=>'login-form',
@@ -23,7 +30,11 @@ $this->breadcrumbs=array(
 	),
 )); ?>
 
-	<p class="note">Lo campos con <span class="required">*</span> son requeridos.</p>
+	<p class="note">Los campos con <span class="required">*</span> son
+requeridos.</p>
+	<p class="note">Lo campos con <span class="required">*</span> son
+requeridos.</p>
+
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'username'); ?>
@@ -37,15 +48,16 @@ $this->breadcrumbs=array(
 		<?php echo $form->error($model,'password'); ?>
 	</div>
 
-	<div class="row rememberMe">
-		<?php echo $form->checkBox($model,'rememberMe'); ?>
-		<?php echo $form->label($model,'rememberMe'); ?>
-		<?php echo $form->error($model,'rememberMe'); ?>
 	</div>
 
+
+
 	<div class="row buttons">
-		<?php echo CHtml::submitButton('Login'); ?>
+		<?php echo CHtml::submitButton('Login',array('class'=>'btn btn-primary')); ?>
 	</div>
 
 <?php $this->endWidget(); ?>
 </div><!-- form -->
+</div>
+
+</div>

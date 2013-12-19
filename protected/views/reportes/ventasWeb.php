@@ -79,32 +79,7 @@ $('.search-form form').submit(function(){
 });
 ");
 ?>
-
-
-<?php /*
-$this->widget('zii.widgets.grid.CGridView', array(
-	'id'=>'evento-grid',
-	'dataProvider'=>$dataProvider,
-	'columns'=>array(
-        'fnc',
-		'PuntosventaNom',
-		'VentasFecHor',
-		'ZonasAli',
-		'FilasAli',
-		'LugaresLug',
-		'VentasCon',
-		'VentasNumRef',
-		'ClientesEma',
-        array(
-            'name'=>'id',
-            'value'=>'
-                !empty($data["VentasCon"])?is_numeric(substr($data["VentasCon"] ,strlen($data["VentasCon"])-2))+1?:substr($data["VentasCon"] ,strlen($data["VentasCon"])-1)+1:"" 
-                
-            '
-        )
-	),
-)); */?>
-
+</div>
 <?php
 //print_r($dataProvider->getData());
 if(isset($dataProvider) and !is_null($dataProvider) ):
@@ -112,7 +87,6 @@ if(isset($dataProvider) and !is_null($dataProvider) ):
 echo "Se muestran ".count($dataProvider->getData())." resultados(s)" ;
 ?>
 
-</div>
     <table class="items table table-condensed table-striped table-hover">
         <thead>
         <th>Función</th>
@@ -142,7 +116,7 @@ echo "Se muestran ".count($dataProvider->getData())." resultados(s)" ;
             <?php 
                 $string = $data['VentasCon'];
 
-                if(!empty($string)):
+                if($string!=""):
                     $len = strlen($string);
                     $num = substr($string ,$len -2);
                     if(is_numeric($num)):
@@ -165,13 +139,106 @@ echo "Se muestran ".count($dataProvider->getData())." resultados(s)" ;
     </table>
 <?php
 
-?>    
+?>  
+<table style="width: 100%;">
+    <tr>
+        <td style="text-align: left;">
+        <button class="btn btn-success" id="imprimir-boletos-no-impresos">
+            <i class="icon-print icon-white"></i>&nbsp;Imprimir Boletos NO Impresos
+        </button>
+        </td>
+        <td style="text-align: right;">
+        <button class="btn btn-success" id="imprimir-todos-boletos" >
+            <i class="icon-print icon-white"></i>&nbsp;Imprimir TODOS los Boletos
+        </button>
+        </td>
+    </tr>
+</table>
+<br />
+<div id="formatos">
+<?php
+
+    $img_formato = Formatosimpresion::model()->findAll("FormatoSta='ALTA'");
+    $selected_formato = !empty($region)?$region:"1";
+    foreach($img_formato as $key => $formato):
+        echo CHtml::radioButton('impresion',($formato->FormatoId==$selected_formato?true:false),array('value'=>$formato->FormatoId,'id'=>"formato_".$formato->FormatoId,'style'=>'margin:0 5px;'));
+        ?>
+            <label style="display: inline-block;" for="formato_<?php echo $formato->FormatoId;?>"><img src="https://taquillacero.com/imagesbd/<?php echo $formato->FormatoIma;?>" style="width: 75px;height: 160px;"  /></label>
+        <?php
+        
+    endforeach;
+?> 
+</div> 
 <?php
 elseif(!empty($itemselected)):
     echo "No hay informacion para Ventas en Web y Call Center";
 endif;
 ?>
-</div> 
+
+ 
+<div id="wrapper" style="display: none;"><div class="area_impresion"></div></div>
+<style type="text/css" media="print">
+@media print {
+#parte1 {display:none;}
+#parte2 {display:none;}
+.controles {display:none;}
+#footer {display:none;}
+.container-fluid{display:none;}
+}
+</style>
+<script>
+$("#imprimir-boletos-no-impresos").click(function(){
+    var formatoId = $("#formatos input[type=radio]:checked").val();
+    var EventoId  = $("#evento_id option:selected").val();
+    var FuncionId  = $("#Ventaslevel1_funcion option:selected").val();
+    if(EventoId==""){
+        alert("Necesitas seleccionar un Evento");
+    }else if(FuncionId==""){
+        alert("Necesitas seleccionar una Funcion");
+    }else{
+        $.ajax({
+            type: "POST",
+            url:'<?php echo $this->createUrl('reportes/ImpresionBoletosAjax') ?>',
+            data:"formatoId="+formatoId+"&tipo_impresion=no_impresos"+"&EventoId="+EventoId+"&FuncionId="+FuncionId,
+            success:function(data){
+                $(".area_impresion").html(data);
+                imprSelec('wrapper');
+            }
+        });
+    }
+    
+});
+$("#imprimir-todos-boletos").click(function(){
+    var formatoId = $("#formatos input[type=radio]:checked").val();
+    var EventoId  = $("#evento_id option:selected").val();
+    var FuncionId  = $("#Ventaslevel1_funcion option:selected").val();
+    if(EventoId==""){
+        alert("Necesitas seleccionar un Evento");
+    }else if(FuncionId==""){
+        alert("Necesitas seleccionar una Funcion");
+    }else{
+        $.ajax({
+            type: "POST",
+            url:'<?php echo $this->createUrl('reportes/ImpresionBoletosAjax') ?>',
+            data:"formatoId="+formatoId+"&tipo_impresion=todos"+"&EventoId="+EventoId+"&FuncionId="+FuncionId,
+            success:function(data){
+                $(".area_impresion").html(data);
+                imprSelec('wrapper');
+            }
+        });
+    }
+    
+});
+function imprSelec(nombre){
+      
+      var ficha = document.getElementById(nombre);
+      var ventimp = window.open('', 'popimpr');
+      ventimp.document.write( ficha.innerHTML );
+      ventimp.document.close();
+      ventimp.print( );
+      ventimp.close();
+} 
+</script>
 
 
 

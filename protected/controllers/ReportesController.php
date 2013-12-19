@@ -16,7 +16,7 @@ class ReportesController extends Controller
 	public function actionDesgloseVentas()
 	{
 	   $this->perfil();
-	   $this->layout ="reportes";
+
 	   $model=new Ventas;
        $flex = new ReportesFlex;
         
@@ -34,7 +34,6 @@ class ReportesController extends Controller
     public function actionVentasCallCenter()
 	{
 	   $this->perfil();
-	   $this->layout ="reportes";
 	   $model=new Ventas;
        $flex = new ReportesFlex;
 	   //if (isset($_GET['grid_mode'],$_GET['evento'],$_GET['funcion']) and $_GET['grid_mode']=='export'){
@@ -90,8 +89,7 @@ class ReportesController extends Controller
 	public function actionIndex()
 	{
 	   $this->perfil();
-		$this->layout="reportes";	
-		$this->render('index');
+	   $this->render('index');
 	}
 
 	public function actionLugares()
@@ -151,7 +149,7 @@ class ReportesController extends Controller
 			}
 			else{
 					$evento = '******';
-					$this->layout="reportes";
+					
 			}
 			$this->render('lugares',array('model'=>$model, 'dataProvider'=>$data));
 
@@ -257,7 +255,7 @@ class ReportesController extends Controller
 			} 
 			else{
 					$evento = '******';
-					$this->layout="reportes";
+					
 			}
 			$this->render('lugaresVendidos',array('model'=>$model, 'dataProvider'=>$dataProvider));	
 
@@ -266,9 +264,9 @@ class ReportesController extends Controller
 
 	public function actionReservacionesFarmatodo()
 	{
-	   $this->perfil();
-		$this->layout="reportes";
-		$model=new Templugares;
+
+	  $this->perfil();
+	  $model=new Templugares;
 		
 		
 		$count=0;
@@ -372,18 +370,12 @@ class ReportesController extends Controller
 		//$this->render('reservacionesFarmatodo');
 	}
 
-	public function actionVentasConCargo()
-	{
-	        $this->perfil();
-			$this->layout="reportes";
- 
-		$this->render('ventasConCargo');
-	}
+
+			
 
 	public function actionVentasDiarias()
 	{
 	   $this->perfil();
-			$this->layout="reportes";
 		$this->render('ventasDiarias');
 	}
 
@@ -562,10 +554,11 @@ class ReportesController extends Controller
 
 	public function actionVentasSinCargo()
 	{
+
 	        if(Yii::app()->user->isGuest){
     	       $this->redirect(array("site/logout"));
     	    }
-			$this->layout="reportes";
+
 			$model=new ReportesFlex;
 			$eventoId=isset($_POST['evento_id'])?$_POST['evento_id']:0;
 			$funcionesId=isset($_POST['funcion_id'])?$_POST['funcion_id']:0;
@@ -576,13 +569,25 @@ class ReportesController extends Controller
 				'eventoId'=>$eventoId,'funcionesId'=>$funcionesId,
 				'desde'=>$desde,'hasta'=>$hasta));
 	}
-
+	public function actionVentasConCargo()
+	{
+			
+			$model=new ReportesFlex;
+			$eventoId=isset($_POST['evento_id'])?$_POST['evento_id']:0;
+			$funcionesId=isset($_POST['funcion_id'])?$_POST['funcion_id']:0;
+			$desde=isset($_POST['desde'])?$_POST['desde']:0;
+			$hasta=isset($_POST['hasta'])?$_POST['hasta']:0;
+			$this->render('ventasConCargo',array(
+				'model'=>$model,
+				'eventoId'=>$eventoId,'funcionesId'=>$funcionesId,
+				'desde'=>$desde,'hasta'=>$hasta));
+	}
 	public function actionVentasWeb()
 	{
 	       $this->perfil();
-           $region = null;
-			$this->layout="reportes";
-			$download ="";
+           $user = Usuarios::model()->findByAttributes(array('UsuariosId'=>Yii::app()->user->id));
+           $region = $user->UsuariosRegion;
+           $download ="";
 			//if(Yii::app()->user->isGuest)
 			//$this->redirect(Yii::app()->request->baseUrl);
 			$venta = "";
@@ -747,12 +752,72 @@ class ReportesController extends Controller
 						}      
 
 			$this->render('ventasWeb',
-					array('model'=>$model,'itemselected' => $venta, 'dataProvider'=>$dataProvider,'download'=>$download));
-			}
-			$this->render('ventasWeb',array('model'=>$model,'itemselected' => $venta));
+					array('model'=>$model,'itemselected' => $venta, 'dataProvider'=>$dataProvider,'download'=>$download,'region'=>$region));
+
+			} 
+			else
+			$this->render('ventasWeb',array('model'=>$model,'itemselected' => $venta,'region'=>$region));
 	}
  
-
+    public function actionImpresionBoletosAjax()
+    {
+        if(!empty($_POST['formatoId'])){
+            $EventoId = $_POST['EventoId'];
+            $FuncionId = $_POST['FuncionId'];
+            $todos = "";
+            if($_POST['tipo_impresion']=="no_impresos"){
+                $todos = "  ventaslevel1.VentasCon='' AND ";
+            }
+            $data=array();
+            $query ="(SELECT  ventas.VentasId as id,subzona.SubzonaAcc, ventas.PuntosventaId, funciones.funcionesTexto as fnc,
+									puntosventa.PuntosventaNom, ventas.VentasFecHor, zonas.ZonasAli,
+									filas.FilasAli, lugares.LugaresLug,  subzona.SubzonaAcc,
+									ventaslevel1.LugaresNumBol, ventaslevel1.VentasCon,cruge_user.email,
+									ventas.VentasNumRef
+									FROM
+									lugares
+									INNER JOIN funciones ON funciones.FuncionesId = lugares.FuncionesId AND funciones.EventoId = lugares.EventoId
+									INNER JOIN ventaslevel1 ON (lugares.EventoId=ventaslevel1.EventoId)
+									AND (lugares.FuncionesId=ventaslevel1.FuncionesId)
+									AND (lugares.ZonasId=ventaslevel1.ZonasId)
+									AND (lugares.SubzonaId=ventaslevel1.SubzonaId)
+									AND (lugares.FilasId=ventaslevel1.FilasId)
+									AND (lugares.LugaresId=ventaslevel1.LugaresId)
+									INNER JOIN filas ON (filas.EventoId=lugares.EventoId)
+									AND (filas.FuncionesId=lugares.FuncionesId)
+									AND (filas.ZonasId=lugares.ZonasId)
+									AND (filas.SubzonaId=lugares.SubzonaId)
+									AND (filas.FilasId=lugares.FilasId)
+									INNER JOIN zonas ON (zonas.EventoId=filas.EventoId)
+									AND (zonas.FuncionesId=filas.FuncionesId)
+									AND (zonas.ZonasId=filas.ZonasId)
+									INNER JOIN ventas ON (ventas.VentasId=ventaslevel1.VentasId)
+									INNER JOIN puntosventa ON (puntosventa.PuntosventaId=ventas.PuntosventaId)
+									INNER JOIN subzona ON (subzona.EventoId=filas.EventoId)
+									AND (subzona.FuncionesId=filas.FuncionesId)
+									AND (subzona.ZonasId=filas.ZonasId)
+									AND (subzona.SubzonaId=filas.SubzonaId)
+									AND (zonas.EventoId=subzona.EventoId)
+									AND (zonas.FuncionesId=subzona.FuncionesId)
+									AND (zonas.ZonasId=subzona.ZonasId)
+									INNER JOIN cruge_user ON (cruge_user.iduser=ventas.UsuariosId)
+									WHERE
+                                    $todos 
+                                    ventaslevel1.VentasSta not like '%CANCELADO%' AND 
+									(lugares.EventoId = $EventoId ) AND 
+									(lugares.FuncionesId = $FuncionId ) AND
+									((puntosventa.PuntosventaId = '101')) AND 
+									NOT (ventas.VentasNumRef = ''))
+									ORDER BY  fnc ,ZonasAli,filasAli,LugaresLug;";
+            $data = new CSqlDataProvider($query, array(
+							//'totalItemCount'=>$count,//$count,	
+							'pagination'=>false,
+					));                        
+            $formato = Formatosimpresionlevel1::model()->findAll(array('condition'=>'FormatoId='.$_POST['formatoId']));
+            $this->renderPartial('_impresionBoletosAjax', array('formato'=>$formato,'data'=>$data->getData(),'FormatoId'=>$_POST['formatoId']), false, true);
+        }
+        
+    }
 	// Uncomment the following methods and override them if needed
 	/*
 	public function filters()

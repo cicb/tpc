@@ -1101,39 +1101,45 @@ class ReportesFlex extends CFormModel
 		else
 			$rango = "";
 		
-		if($FuncionesId == 'TODAS'){
-			$count = Yii::app()->db->createCommand("SELECT   COUNT(ventaslevel1.LugaresId) as ventas,   DATE(ventas.VentasFecHor) AS fecha
-						FROM ventaslevel1 INNER JOIN ventas ON (ventaslevel1.VentasId=ventas.VentasId)
-						WHERE ventaslevel1.EventoId = '$EventoId'  AND ventaslevel1.VentasSta = 'VENDIDO' 
-						AND ventaslevel1.VentasBolTip = 'NORMAL'
-						$rango
-						GROUP BY DATE(ventas.VentasFecHor) ")->execute();
-                                  
+			if ($FuncionesId>0) $funcion=" AND ventaslevel1.FuncionesId=$FuncionesId ";
+			else $funcion=''; 
 			$query = "SELECT   COUNT(ventaslevel1.LugaresId) as ventas,   DATE(ventas.VentasFecHor) AS fecha
 						FROM ventaslevel1 INNER JOIN ventas ON (ventaslevel1.VentasId=ventas.VentasId)
-						WHERE ventaslevel1.EventoId = '$EventoId'  AND ventaslevel1.VentasSta = 'VENDIDO' 
-						AND ventaslevel1.VentasBolTip = 'NORMAL'
-						$rango
-						GROUP BY DATE(ventas.VentasFecHor) ";
-		}else{
-			$count = Yii::app()->db->createCommand("SELECT   COUNT(ventaslevel1.LugaresId) as ventas,   DATE(ventas.VentasFecHor) AS fecha
-						FROM ventaslevel1 INNER JOIN ventas ON (ventaslevel1.VentasId=ventas.VentasId)
-						WHERE ventaslevel1.EventoId = '$EventoId' AND ventaslevel1.FuncionesId = '$FuncionesId'
+						WHERE ventaslevel1.EventoId = '$EventoId' $funcion 
 						AND ventaslevel1.VentasSta = 'VENDIDO' AND ventaslevel1.VentasBolTip = 'NORMAL'
 						$rango
-						GROUP BY DATE(ventas.VentasFecHor) ")->execute();
-                        
-			$query = "SELECT   COUNT(ventaslevel1.LugaresId) as ventas,   DATE(ventas.VentasFecHor) AS fecha
-						FROM ventaslevel1 INNER JOIN ventas ON (ventaslevel1.VentasId=ventas.VentasId)
-						WHERE ventaslevel1.EventoId = '$EventoId' AND ventaslevel1.FuncionesId = '$FuncionesId'
-						AND ventaslevel1.VentasSta = 'VENDIDO' AND ventaslevel1.VentasBolTip = 'NORMAL'
-						$rango
-						GROUP BY DATE(ventas.VentasFecHor) ";
-			}	
-		
+						GROUP BY DATE(ventas.VentasFecHor) ";	
 		      return new CSqlDataProvider($query, array(
-							'totalItemCount'=>$count,//$count,	
-							'pagination'=>array('pageSize'=>15),
+							//'totalItemCount'=>$count,//$count,	
+							'pagination'=>false,
 			));   
 		}	
+
+		public function getDatosGraficaPorDia($EventoId, $FuncionesId, $fecha1, $fecha2){
+			$datos=$this->graficaFechas($EventoId, $FuncionesId, $fecha1, $fecha2);
+			$x=array();$y=array();
+			foreach ($datos->getData() as $value) {
+				$x[]=date_format(date_create($value['fecha']),'d/M');
+				$y[]=$value['ventas'];
+			}
+			return array('x'=>$x,'y'=>$y);
+			// $rows='';
+			// foreach ($datos->getData() as $value) 
+			// 	$rows.="['". $value['fecha']."',".$value['ventas']."],\n";
+			// return "[['Dia','Ventas'],\n$rows]";
+			// $cols=array(
+			// 	array('id'=> 'fecha', 'label'=> 'Fechas', 'type'=> 'string'),
+			// 	array('id'=> 'ventas', 'label'=> 'Ventas', 'type'=> 'string'),
+			// 	);
+			// $rows=array();
+			// foreach ($datos->getData() as $value) {
+			// 	$rows[]=array(
+			// 		'c'=>array(
+			// 			array('v'=>$value['fecha'],'f'=>date_format(date_create($value['fecha']),'d/m/Y')),
+			// 			array('v'=>$value['ventas'],'f'=>number_format($value['ventas'],2)),
+			// 			)
+			// 		);
+			// }
+			// return CJSON::encode(array('cols'=>$cols,'rows'=>$rows));
+		}
 }
