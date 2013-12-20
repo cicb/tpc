@@ -119,24 +119,12 @@ class ReportesFlex extends CFormModel
 							'pagination'=>false,
 					));             
     }
-<<<<<<< HEAD
 
     public function getVendidosPor($EventoId, $FuncionesId, $pv){
 		//*********************************************************************************
 		//Regresa el REPORTE DE VENTAS EN WEB O CALL CENTER, dependiendo el punto de venta $pv
 		//						minimamente se requiere del id del eventos
 		//*********************************************************************************
-=======
-    public function getInternet($EventoId, $FuncionesId, $pv){
-		
-        if($pv=="101"){
-            $mail = "cruge_user.email as email,";
-            $join = "INNER JOIN cruge_user ON (cruge_user.iduser=ventas.UsuariosId)";
-        }else{
-            $mail = "clientes.ClientesEma as email,";
-            $join = "left JOIN clientes ON (ventas.UsuariosId = clientes.ClientesId)";
-        }
->>>>>>> d4ca969cd4cac51518e862f4f0fb69337e5efe3b
 		if(isset($FuncionesId) and !is_null($FuncionesId) and $FuncionesId >0)
 			$cadenaFuncion = " AND lugares.FuncionesId = '$FuncionesId'";	
 		else
@@ -152,12 +140,7 @@ class ReportesFlex extends CFormModel
 					  lugares.LugaresLug,
 					  ventas.VentasNumRef,
 					  ventas.VentasFecHor,
-<<<<<<< HEAD
 					  COALESCE(clientes.ClientesEma,cruge_user.email) AS email,
-=======
-                      ventaslevel1.VentasCon,
-					  $mail
->>>>>>> d4ca969cd4cac51518e862f4f0fb69337e5efe3b
 					  ventas.UsuariosId,
 					  (SELECT (COUNT(reimpresiones.ReimpresionesId)) AS vecesImpreso 
 					  FROM reimpresiones
@@ -190,12 +173,8 @@ class ReportesFlex extends CFormModel
 					  AND (zonas.FuncionesId = funciones.FuncionesId)
 					  INNER JOIN evento ON (funciones.EventoId = evento.EventoId)
 					  INNER JOIN ventas ON (ventaslevel1.VentasId = ventas.VentasId)
-<<<<<<< HEAD
 					  LEFT JOIN cruge_user ON (cruge_user.iduser=ventas.UsuariosId)
 					  LEFT JOIN clientes ON (ventas.UsuariosId = clientes.ClientesId)
-=======
-					  $join
->>>>>>> d4ca969cd4cac51518e862f4f0fb69337e5efe3b
 					WHERE
 					  lugares.EventoId = '$EventoId' 
 					  AND ventaslevel1.VentasSta <> 'CANCELADO'
