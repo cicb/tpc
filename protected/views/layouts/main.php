@@ -19,7 +19,6 @@
 		<?php
 		$accesos = Yii::app()->user->getState("accesos");
 		?>   
-
 		<?php 
 		$this->widget('bootstrap.widgets.TbNavbar',array(
 			'color'=> 'taquilla',
@@ -46,7 +45,7 @@
 								array('label' => 'Ventas sin cargo',		'url' =>  $this->createUrl('reportes/ventasSinCargo'),'visible' => !Yii::app()->user->isGuest AND (Yii::app()->user->getState("Admin") OR Yii::app()->user->getState("TipUsrId")=="2")?true:false),
 								array('label' => 'Ventas con cargo',		'url' =>  $this->createUrl('reportes/ventasConCargo'),'visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
 								array('label' => 'Ventas de Farmatodo', 	'url' =>  $this->createUrl('reportes/ventasFarmatodo'),'visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
-								array('label' => 'Ventas diarias', 	'url' =>  $this->createUrl('reportes/ventasDiarias'),'visible' => !Yii::app()->user->isGuest AND (Yii::app()->user->getState("Admin"))?true:false), 
+								array('label' => 'Ventas por Call Center', 	'url' =>  $this->createUrl('reportes/ventasCallCenter'),'visible' => !Yii::app()->user->isGuest AND (Yii::app()->user->getState("Admin"))?true:false), 
 								array('label' => 'Desglose de
 									ventas', 	'url' =>  $this->createUrl('reportes/desgloseVentas'),'visible'
 									=> !Yii::app()->user->isGuest AND
@@ -73,32 +72,14 @@ array(
 		)
 	),	
 ),
-)))); 
+)); 
 ?>
 
 </div><!-- mainmenu -->
 <div id='wrap'>
 	<div class="container-fluid" id="pagina">	
 		<?php echo $content; ?>
-
 		<div class="clear"></div>
-		<?php
-//echo Yii::app()->user->name;
-//echo Yii::app()->user->id;
-//echo Yii::app()->user->getState("UsuariosStatus");
-//echo Yii::app()->user->getState("UsuariosId");
-
-
-//if(!empty($accesos) AND in_array('Eventos',$accesos) ){
-		
-//}
-//print_r($accesos);
-//print_r($accesos);
-//echo Yii::app()->user->UsuariosNom;
-
-
-
-		?>
 	</div><!-- page -->
 	<div id='push'></div>
 </div>
