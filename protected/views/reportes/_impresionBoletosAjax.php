@@ -2,7 +2,7 @@
 foreach($data as $key => $boleto):
  //print_r($boleto);
     ?>
-        <div style="position:relative;border:solid 1px black;width: 75mm;height: 160mm; font-size: 7pt;">
+        <div style="position:relative;border:solid 1px black;width: 75mm;height: 159mm; font-size: 7pt;margin-bottom: 10px;">
             <div style=" position: absolute;top:<?php echo $formato[0]->FormatoY; ?>px ;left:<?php echo $formato[0]->FormatoX;?>px ;<?php echo $formato[0]->FormatoVisible=="true"?"":"display:none;"; ?>"> <?php echo $boleto['SubzonaAcc']; ?></div> 
             <div style=" position: absolute;top:<?php echo $formato[1]->FormatoY; ?>px ;left:<?php echo $formato[1]->FormatoX;?>px ;<?php echo $formato[1]->FormatoVisible=="true"?"":"display:none;"; ?>"> <?php echo $boleto['EventoDesBol']; ?></div>
             <div style=" position: absolute;top:<?php echo $formato[2]->FormatoY; ?>px ;left:<?php echo $formato[2]->FormatoX;?>px ;<?php echo $formato[2]->FormatoVisible=="true"?"":"display:none;"; ?>"> <?php echo $boleto['EventoNom']; ?></div>
