@@ -70,41 +70,13 @@ $('.search-form form').submit(function(){
 });
 ");
 ?>
-<<<<<<< HEAD
-
-
-<?php /*
-$this->widget('zii.widgets.grid.CGridView', array(
-	'id'=>'evento-grid',
-	'dataProvider'=>$dataProvider,
-	'columns'=>array(
-        'fnc',
-		'PuntosventaNom',
-		'VentasFecHor',
-		'ZonasAli',
-		'FilasAli',
-		'LugaresLug',
-		'VentasCon',
-		'VentasNumRef',
-		'ClientesEma',
-        array(
-            'name'=>'id',
-            'value'=>'
-                !empty($data["VentasCon"])?is_numeric(substr($data["VentasCon"] ,strlen($data["VentasCon"])-2))+1?:substr($data["VentasCon"] ,strlen($data["VentasCon"])-1)+1:"" 
-                
-            '
-        )
-	),
-)); */?>
-
-
 
 </div>
 
 <?php
 if(isset($eventoId,$funcionesId) and $eventoId>0):
 $this->widget('application.extensions.EExcelView', array(
- 'dataProvider'=> $model->getInternet($eventoId,$funcionesId,101),
+ 'dataProvider'=> $model->getVendidosPor($eventoId,$funcionesId,101),
  'grid_mode'=>$grid_mode,
  'htmlOptions'=>array('class'=>'principal'),
  'type'=>'condensed',

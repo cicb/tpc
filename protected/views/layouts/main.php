@@ -11,23 +11,22 @@
 	<![endif]-->
 	<link rel="stylesheet/less" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/style.less"  />
 	<?php Yii::app()->bootstrap->register(); ?>
-	<?php //Yii::app()->clientScript->registerCssFile(Yii::app()->request->baseUrl."/css/custom.css",CClientScript::POS_END);?>
+	<?//php Yii::app()->clientScript->registerCssFile(Yii::app()->request->baseUrl."/css/custom.css",CClientScript::POS_END);?>
 	<title><?php echo CHtml::encode($this->pageTitle); ?></title>
 </head>
 <body>
 	<div id="mainmenu">
+		<?php
+		$accesos = Yii::app()->user->getState("accesos");
+		?>   
 
-<?php
-$accesos = Yii::app()->user->getState("accesos");  
-$this->widget('bootstrap.widgets.TbNavbar',array(
-	'color'=> 'taquilla',
-	'fluid'=>true,
-	'brandLabel'=>  "<i class=\"fa fa-th-large\"></i> ".CHtml::encode(Yii::app()->name),
-	'collapse'=>true,
-	'display'=>TbHtml::NAVBAR_DISPLAY_FIXEDTOP,
-	'items' => array(
-		array(
-			'class' => 'bootstrap.widgets.TbNav',
+		<?php 
+		$this->widget('bootstrap.widgets.TbNavbar',array(
+			'color'=> 'taquilla',
+			'fluid'=>true,
+			'brandLabel'=>  "<i class=\"fa fa-th-large\"></i> ".CHtml::encode(Yii::app()->name),
+			'collapse'=>true,
+			'display'=>TbHtml::NAVBAR_DISPLAY_FIXEDTOP,
 			'items' => array(
 				array(
 					'class' => 'bootstrap.widgets.TbNav',
@@ -47,7 +46,7 @@ $this->widget('bootstrap.widgets.TbNavbar',array(
 								array('label' => 'Ventas sin cargo',		'url' =>  $this->createUrl('reportes/ventasSinCargo'),'visible' => !Yii::app()->user->isGuest AND (Yii::app()->user->getState("Admin") OR Yii::app()->user->getState("TipUsrId")=="2")?true:false),
 								array('label' => 'Ventas con cargo',		'url' =>  $this->createUrl('reportes/ventasConCargo'),'visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
 								array('label' => 'Ventas de Farmatodo', 	'url' =>  $this->createUrl('reportes/ventasFarmatodo'),'visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
-								array('label' => 'Ventas por Call Center', 	'url' =>  $this->createUrl('reportes/ventasCallCenter'),'visible' => !Yii::app()->user->isGuest AND (Yii::app()->user->getState("Admin"))?true:false), 
+								array('label' => 'Ventas diarias', 	'url' =>  $this->createUrl('reportes/ventasDiarias'),'visible' => !Yii::app()->user->isGuest AND (Yii::app()->user->getState("Admin"))?true:false), 
 								array('label' => 'Desglose de
 									ventas', 	'url' =>  $this->createUrl('reportes/desgloseVentas'),'visible'
 									=> !Yii::app()->user->isGuest AND
