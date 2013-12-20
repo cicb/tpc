@@ -592,7 +592,8 @@ class ReportesController extends Controller
 		$this->perfil();
 		if(Yii::app()->user->isGuest)
 			$this->redirect(Yii::app()->request->baseUrl);
-
+        $user = Usuarios::model()->findByAttributes(array('UsuariosId'=>Yii::app()->user->id));
+        $region = $user->UsuariosRegion;
 		$model=new ReportesFlex;
 		$grid_mode='show';
 		$funcionesId=0;
@@ -619,14 +620,15 @@ class ReportesController extends Controller
 				array('model'=>$model,
 					'eventoId'=>$eventoId,
 					'funcionesId'=>$funcionesId,
-					'grid_mode'=>$grid_mode));
+					'grid_mode'=>$grid_mode,
+                    'region'=>$region));
 	}	
 	public function actionVentasInternet()
 	{
 
 
 
-			$download ="";
+		   $download ="";
 	       $this->perfil();
            $user = Usuarios::model()->findByAttributes(array('UsuariosId'=>Yii::app()->user->id));
            $region = $user->UsuariosRegion;
@@ -805,6 +807,7 @@ class ReportesController extends Controller
     public function actionImpresionBoletosAjax()
     {
         if(!empty($_POST['formatoId'])){
+            $pv = $_POST['pv'];
             $EventoId = $_POST['EventoId'];
             $FuncionId = $_POST['FuncionId'];
             $todos = "";
@@ -812,11 +815,21 @@ class ReportesController extends Controller
                 $todos = "  ventaslevel1.VentasCon='' AND ";
             }
             $data=array();
-            $query ="(SELECT  ventas.VentasId as id,subzona.SubzonaAcc, ventas.PuntosventaId, funciones.funcionesTexto as fnc,
-									puntosventa.PuntosventaNom, ventas.VentasFecHor, zonas.ZonasAli,
-									filas.FilasAli, lugares.LugaresLug,  subzona.SubzonaAcc,
-									ventaslevel1.LugaresNumBol, ventaslevel1.VentasCon,cruge_user.email,
-									ventas.VentasNumRef
+            $query ="(SELECT  ventas.VentasId as id, 
+                                    funciones.funcionesTexto as fnc, 
+                                    lugares.LugaresLug,
+                                    filas.FilasAli,
+                                    zonas.ZonasAli,
+                                    subzona.SubzonaAcc,
+                                    evento.EventoDesBol,
+                                    evento.EventoNom,
+                                    evento.EventoImaBol,
+                                    foro.ForoNom,
+                                    ventaslevel1.VentasBolTip,
+                                    ventaslevel1.VentasCon,
+                                    ventaslevel1.VentasCarSer,
+                                    ventaslevel1.LugaresNumBol,
+                                    (ventaslevel1.VentasCosBol-ventaslevel1.VentasMonDes) as cosBol 
 									FROM
 									lugares
 									INNER JOIN funciones ON funciones.FuncionesId = lugares.FuncionesId AND funciones.EventoId = lugares.EventoId
@@ -826,6 +839,8 @@ class ReportesController extends Controller
 									AND (lugares.SubzonaId=ventaslevel1.SubzonaId)
 									AND (lugares.FilasId=ventaslevel1.FilasId)
 									AND (lugares.LugaresId=ventaslevel1.LugaresId)
+                                    INNER JOIN evento ON evento.EventoId = ventaslevel1.EventoId
+                                    INNER JOIN foro ON foro.ForoId = evento.ForoId
 									INNER JOIN filas ON (filas.EventoId=lugares.EventoId)
 									AND (filas.FuncionesId=lugares.FuncionesId)
 									AND (filas.ZonasId=lugares.ZonasId)
@@ -849,7 +864,7 @@ class ReportesController extends Controller
                                     ventaslevel1.VentasSta not like '%CANCELADO%' AND 
 									(lugares.EventoId = $EventoId ) AND 
 									(lugares.FuncionesId = $FuncionId ) AND
-									((puntosventa.PuntosventaId = '101')) AND 
+									((puntosventa.PuntosventaId = '$pv')) AND 
 									NOT (ventas.VentasNumRef = ''))
 									ORDER BY  fnc ,ZonasAli,filasAli,LugaresLug;";
             $data = new CSqlDataProvider($query, array(
@@ -860,6 +875,14 @@ class ReportesController extends Controller
             $this->renderPartial('_impresionBoletosAjax', array('formato'=>$formato,'data'=>$data->getData(),'FormatoId'=>$_POST['formatoId']), false, true);
         }
         
+    }
+    public function actionActualizarRegion(){
+        if(!empty($_POST['region_id'])){
+            $user = Usuarios::model()->findByAttributes(array('UsuariosId'=>Yii::app()->user->id));
+            $user->UsuariosRegion = $_POST['region_id'];
+            $user->update();
+            //echo "ok".$user->UsuariosId.$_POST['region_id']; 
+        }
     }
 	// Uncomment the following methods and override them if needed
 	/*
