@@ -11,23 +11,21 @@
 	<![endif]-->
 	<link rel="stylesheet/less" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/style.less"  />
 	<?php Yii::app()->bootstrap->register(); ?>
-	<?php //Yii::app()->clientScript->registerCssFile(Yii::app()->request->baseUrl."/css/custom.css",CClientScript::POS_END);?>
+	<?//php Yii::app()->clientScript->registerCssFile(Yii::app()->request->baseUrl."/css/custom.css",CClientScript::POS_END);?>
 	<title><?php echo CHtml::encode($this->pageTitle); ?></title>
 </head>
 <body>
 	<div id="mainmenu">
-
-<?php
-$accesos = Yii::app()->user->getState("accesos");  
-$this->widget('bootstrap.widgets.TbNavbar',array(
-	'color'=> 'taquilla',
-	'fluid'=>true,
-	'brandLabel'=>  "<i class=\"fa fa-th-large\"></i> ".CHtml::encode(Yii::app()->name),
-	'collapse'=>true,
-	'display'=>TbHtml::NAVBAR_DISPLAY_FIXEDTOP,
-	'items' => array(
-		array(
-			'class' => 'bootstrap.widgets.TbNav',
+		<?php
+		$accesos = Yii::app()->user->getState("accesos");
+		?>   
+		<?php 
+		$this->widget('bootstrap.widgets.TbNavbar',array(
+			'color'=> 'taquilla',
+			'fluid'=>true,
+			'brandLabel'=>  "<i class=\"fa fa-th-large\"></i> ".CHtml::encode(Yii::app()->name),
+			'collapse'=>true,
+			'display'=>TbHtml::NAVBAR_DISPLAY_FIXEDTOP,
 			'items' => array(
 				array(
 					'class' => 'bootstrap.widgets.TbNav',
@@ -74,32 +72,14 @@ array(
 		)
 	),	
 ),
-)))); 
+)); 
 ?>
 
 </div><!-- mainmenu -->
 <div id='wrap'>
 	<div class="container-fluid" id="pagina">	
 		<?php echo $content; ?>
-
 		<div class="clear"></div>
-		<?php
-//echo Yii::app()->user->name;
-//echo Yii::app()->user->id;
-//echo Yii::app()->user->getState("UsuariosStatus");
-//echo Yii::app()->user->getState("UsuariosId");
-
-
-//if(!empty($accesos) AND in_array('Eventos',$accesos) ){
-		
-//}
-//print_r($accesos);
-//print_r($accesos);
-//echo Yii::app()->user->UsuariosNom;
-
-
-
-		?>
 	</div><!-- page -->
 	<div id='push'></div>
 </div>

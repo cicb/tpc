@@ -16,45 +16,55 @@ $form=$this->beginWidget('CActiveForm', array(
 ?>
 <div class='row' style="margin-left:30px">
 		<div class='span4'>
-	<div class="row">
-<?php
-echo CHtml::label('Evento','evento_id', array('style'=>'width:70px; display:inline-table;'));
-$modeloEvento = Evento::model()->findAll(array('condition' => 'EventoSta = "ALTA"','order'=>'EventoNom'));
-$list = CHtml::listData($modeloEvento,'EventoId','EventoNom');
-echo CHtml::dropDownList('evento_id','',$list,
-		array(
-				'ajax' => array(
-						'type' => 'POST',
-						'url' => CController::createUrl('funciones/cargarFunciones'),
-						'beforeSend' => 'function() { $("#cargador").addClass("loading");}',
-						'complete'   => 'function() { $("#cargador").removeClass("loading");}',
-						'update' => '#funcion_id',
-				),'prompt' => 'Seleccione un Evento...'
-		));
-?>
-	</div>
+			<div class="row">
+				<?php
+				echo CHtml::label('Evento','', array('style'=>'width:70px; display:inline-table;'));
+				$modeloEvento = Evento::model()->findAll(array('condition' => 'EventoSta = "ALTA"','order'=>'EventoNom'));
+				$list = CHtml::listData($modeloEvento,'EventoId','EventoNom');
+				echo CHtml::dropDownList('evento_id','',$list,
+					array(
+						'ajax' => array(
+							'type' => 'POST',
+							'url' => CController::createUrl('funciones/cargarFunciones'),
+							'beforeSend' => 'function() { $("#fspin").addClass("fa fa-spinner fa-spin");}',
+							'complete'   => 'function() { 
+								$("#fspin").removeClass("fa fa-spinner fa-spin");
+								$("#funcion_id option:nth-child(2)").attr("selected", "selected");
+								$("#funcion_id").change();
+							}',
+							'update' => '#funcion_id',
+							),'prompt' => 'Seleccione un Evento...'
+						));
+						?>
+					</div>
 
 	<div class="row">
-<?php
-echo CHtml::label('Funcion','funcion_id', array('style'=>'width:70px; display:inline-table;'));
+		<?php
+		echo CHtml::label('Funcion','funcion_id', array('style'=>'width:70px; display:inline-table;'));
 
-echo CHtml::dropDownList('funcion_id','',array(),
-		array(
+		echo CHtml::dropDownList('funcion_id','',array(),
+			array(
 				'ajax' => array(
-						'type' => 'POST',
-						'url' => CController::createUrl('zonas/cargarZonas'),
-						'beforeSend' => 'function() { $("#cargador").addClass("loading");}',
-						'complete'   => 'function() { $("#cargador").removeClass("loading");}',
-						'update' => '#zona_id',
-				),'prompt' => 'Seleccione una Funcion...'
-		));
-?>
+					'type' => 'POST',
+					'url' => CController::createUrl('zonas/cargarZonas'),
+					'beforeSend' => 'function() { $("#zspin").addClass("fa fa-spinner fa-spin");}',
+					'complete'   => 'function() { 
+						$("#zspin").removeClass("fa fa-spinner fa-spin");
+						$("#zona_id option:nth-child(2)").attr("selected", "selected");
+					}',
+					'update' => '#zona_id',
+					),'prompt' => 'Seleccione una Funcion...'
+				));
+				?>
+				<span id="fspin" class=""></span>
 	</div>
 	<div class="row">
 <?php
 echo CHtml::label('Zona','zona_id', array('style'=>'width:70px; display:inline-table;'));
 echo CHtml::dropDownList('zona_id','',array(),array('prompt'=>'Seleccione una Zona...'));
 ?>
+	<span id="zspin" class=""></span>
+
 	 </div>
 		</div>
 		<div class='span4'>
@@ -121,8 +131,9 @@ echo CHtml::dropDownList('zona_id','',array(),array('prompt'=>'Seleccione una Zo
 			
              array(
 				'name'=>'VentasId',
-				'value'=>'"<a href=\"./?r=asiento/detalleventa&id=$data->VentasId#data\" 
-					       id=\"inline\">$data->VentasId</a>"',
+				'value'=>'CHtml::link("$data->VentasId",CHtml::normalizeUrl("reportes/detallarVenta&id=".$data->VentasId))',
+				// "<a href=\"./?r=asiento/detalleventa&id=$data->VentasId#data\" 
+				// 	       id=\"inline\">$data->VentasId</a>"
 			//	'value'=>'CHtml::link("test", Yii::App()->controller->createUrl("asiento/detalleventa", 
 			//			 array("id"=>"$data->VentasId","#"=>"data")), array("id"=>"inline"))',
 				'type'=>'raw',

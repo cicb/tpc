@@ -107,10 +107,10 @@
 </div>
 </div>
 <div class="row">
-    <?php echo CHtml::submitButton('Ver reporte',array('class'=>'btn btn-primary btn-medium','onclick'=>'$("#grid_mode").val("view");')); ?> 
     <?php echo CHtml::submitButton('Exportar'
         ,array('class'=>'btn btn-medium','onclick'=>'$("#grid_mode").val("export");')) ;
         ?>
+    <?php echo CHtml::submitButton('Ver reporte',array('class'=>'btn btn-primary btn-medium','onclick'=>'$("#grid_mode").val("view");')); ?> 
     </div>   
 
     <?php $this->endWidget(); ?>

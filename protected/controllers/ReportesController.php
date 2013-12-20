@@ -375,16 +375,20 @@ class ReportesController extends Controller
 
 	public function actionVentasDiarias()
 	{
-	   $this->perfil();
-		$this->render('ventasDiarias');
+			
+			$model=new ReportesFlex;
+			$desde=isset($_POST['desde'])?$_POST['desde']:0;
+			$hasta=isset($_POST['hasta'])?$_POST['hasta']:0;
+			$this->render('ventasDiarias',array(
+				'model'=>$model,
+				'desde'=>$desde,'hasta'=>$hasta));
 	}
 
 	public function actionVentasFarmatodo()
 	{
 	   $this->perfil();
-			$this->layout="reportes";
-        //if(Yii::app()->user->isGuest)
-            //$this->redirect(Yii::app()->request->baseUrl);
+        if(Yii::app()->user->isGuest)
+            $this->redirect(Yii::app()->request->baseUrl);
         $totalventa         = '';
         $totaltransacciones = '';
         $totalboleto        = '';
