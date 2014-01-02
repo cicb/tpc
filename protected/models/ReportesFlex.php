@@ -140,6 +140,7 @@ class ReportesFlex extends CFormModel
 					  lugares.LugaresLug,
 					  ventas.VentasNumRef,
 					  ventas.VentasFecHor,
+                      ventaslevel1.VentasCon,
 					  COALESCE(clientes.ClientesEma,cruge_user.email) AS email,
 					  ventas.UsuariosId,
 					  (SELECT (COUNT(reimpresiones.ReimpresionesId)) AS vecesImpreso 

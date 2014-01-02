@@ -110,7 +110,7 @@ $this->widget('zii.widgets.grid.CGridView', array(
 <?php
 if(isset($eventoId,$funcionesId) and $eventoId>0):
 $this->widget('application.extensions.EExcelView', array(
- 'dataProvider'=> $model->getInternet($eventoId,$funcionesId,$_POST["pv"]),
+ 'dataProvider'=> $model->getVendidosPor($eventoId,$funcionesId,$_POST["pv"]),
  'grid_mode'=>$grid_mode,
  'htmlOptions'=>array('class'=>'principal'),
  'type'=>'condensed',
@@ -304,9 +304,7 @@ elseif(!empty($itemselected)):
     echo "No hay informacion para Ventas en Web y Call Center";
 endif;
 ?>
-
- 
-<div id="wrapper" style="display: none;"><div class="area_impresion"></div></div>
+<div id="wrapper" style=""><div class="area_impresion"></div></div>
 <style type="text/css" media="print">
 @media print {
 #parte1 {display:none;}
@@ -347,7 +345,12 @@ $("#imprimir_boletos").click(function(){
                 data:"formatoId="+formatoId+"&tipo_impresion=todos"+"&EventoId="+EventoId+"&FuncionId="+FuncionId+"&pv="+pv,
                 success:function(data){
                     $(".area_impresion").html(data);
-                    imprSelec('wrapper');
+                    try{
+                        boletos.close();
+                    }catch(err){}
+                    
+                    window.open('<?php echo '..' . Yii::app ()->baseUrl . '/doctos/boletos.pdf'?>', 'boletos', 'width=960,height=600');
+                    //imprSelec('wrapper');
                 }
                 
             });
@@ -358,7 +361,13 @@ $("#imprimir_boletos").click(function(){
                 data:"formatoId="+formatoId+"&tipo_impresion=no_impresos"+"&EventoId="+EventoId+"&FuncionId="+FuncionId+"&pv="+pv,
                 success:function(data){
                     $(".area_impresion").html(data);
-                    imprSelec('wrapper');
+                    try{
+                        boletos.close();
+                    }catch(err){}
+                    
+                     window.open('<?php echo '..' . Yii::app ()->baseUrl . '/doctos/boletos.pdf'?>', 'boletos', 'width=960,height=600');
+                    //imprSelec('wrapper');
+                    //imprSelec('wrapper');
                 }
                 
             });
@@ -414,4 +423,19 @@ function reimpresiones($string = ""){
                     echo "0";
                 endif;
 }
+?>
+<?php
+        /*$pdf = Yii::createComponent ( 'application.extensions.html2pdf.html2pdf' );
+        $html2pdf = new HTML2PDF ( 'P', 'letter', 'es', true, 'UTF-8', array (
+                			0,
+                			0,
+                			0,
+                			0
+                	) );
+         
+         $html2pdf->writeHTML ("ok", false );
+         $path='..'. Yii::app()->request->baseUrl . '/doctos';
+    				$html2pdf->Output ($path.'/prueba.pdf', 'F' );           
+        //$html2pdf->writeHTML ( "hola mundo", false ); 
+        //$html2pdf->Output ('ok.pdf');    */       
 ?>

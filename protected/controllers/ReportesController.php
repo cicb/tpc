@@ -829,7 +829,13 @@ class ReportesController extends Controller
                                     ventaslevel1.VentasCon,
                                     ventaslevel1.VentasCarSer,
                                     ventaslevel1.LugaresNumBol,
-                                    (ventaslevel1.VentasCosBol-ventaslevel1.VentasMonDes) as cosBol 
+                                    (ventaslevel1.VentasCosBol-ventaslevel1.VentasMonDes) as cosBol,
+                                    (ventaslevel1.VentasCosBol-ventaslevel1.VentasMonDes + ventaslevel1.VentasCarSer) as cosBolCargo,
+                                    ventas.VentasNumRef,
+                                    ventas.PuntosventaId,
+                                    ventas.VentasFecHor,
+                                    ventas.VentasNumTar,
+                                    ventas.VentasNomDerTar
 									FROM
 									lugares
 									INNER JOIN funciones ON funciones.FuncionesId = lugares.FuncionesId AND funciones.EventoId = lugares.EventoId
@@ -867,12 +873,38 @@ class ReportesController extends Controller
 									((puntosventa.PuntosventaId = '$pv')) AND 
 									NOT (ventas.VentasNumRef = ''))
 									ORDER BY  fnc ,ZonasAli,filasAli,LugaresLug;";
-            $data = new CSqlDataProvider($query, array(
+                $dataCodigo = new CSqlDataProvider($query, array(
+							//'totalItemCount'=>$count,//$count,	
+							'pagination'=>false,
+					));                     
+                $data = new CSqlDataProvider($query, array(
 							//'totalItemCount'=>$count,//$count,	
 							'pagination'=>false,
 					));                        
             $formato = Formatosimpresionlevel1::model()->findAll(array('condition'=>'FormatoId='.$_POST['formatoId']));
-            $this->renderPartial('_impresionBoletosAjax', array('formato'=>$formato,'data'=>$data->getData(),'FormatoId'=>$_POST['formatoId']), false, true);
+            $imagen = $data->getData();
+            
+            if($imagen[0]['EventoImaBol']==""){
+                if(!file_exists('..' . Yii::app ()->baseUrl . '/imagesbd/blanco.jpg')){
+                    copy('https://taquillacero.com/imagesbd/blanco.jpg','..' . Yii::app ()->baseUrl . '/imagesbd/blanco.jpg' );
+                }
+            }else{
+                if(!file_exists('..' . Yii::app ()->baseUrl . '/imagesbd/'.$imagen[0]['EventoImaBol'])){
+                    copy('https://taquillacero.com/imagesbd/'.$imagen[0]['EventoImaBol'],'..' . Yii::app ()->baseUrl . '/imagesbd/'.$imagen[0]['EventoImaBol'] );
+                }
+            }
+            $documento = $this->renderPartial('_impresionBoletosAjax', array('formato'=>$formato,'data'=>$data->getData(),'FormatoId'=>$_POST['formatoId']), true, false);
+            $pdf = Yii::createComponent ( 'application.extensions.html2pdf.html2pdf' );
+            $html2pdf = new HTML2PDF ( 'P', array(75,160), 'es', true, 'UTF-8', array (
+                			0,
+                			0,
+                			0,
+                			0
+                	) );
+         
+         $html2pdf->writeHTML ($documento, false );
+         $path='..'. Yii::app()->request->baseUrl . '/doctos';
+    				$html2pdf->Output ($path.'/boletos.pdf', 'F' );
         }
         
     }
@@ -883,6 +915,13 @@ class ReportesController extends Controller
             $user->update();
             //echo "ok".$user->UsuariosId.$_POST['region_id']; 
         }
+    }
+    public function generarCodigo($longitud) {
+         $key = '';
+         $pattern = '0123456789';
+         $max = strlen($pattern)-1;
+         for($i=0;$i < $longitud;$i++) $key .= $pattern{mt_rand(0,$max)};
+         return strtoupper($key);
     }
 	// Uncomment the following methods and override them if needed
 	/*
