@@ -140,6 +140,7 @@ class ReportesFlex extends CFormModel
 					  lugares.LugaresLug,
 					  ventas.VentasNumRef,
 					  ventas.VentasFecHor,
+					  ventaslevel1.VentasCon,
 					  COALESCE(clientes.ClientesEma,cruge_user.email) AS email,
 					  ventas.UsuariosId,
 					  (SELECT (COUNT(reimpresiones.ReimpresionesId)) AS vecesImpreso 
@@ -768,7 +769,7 @@ class ReportesFlex extends CFormModel
 		{ # Origen de los datos para las dos tablas de ventas diarias
 	// 		Preparacion de los datos
 			if (strcasecmp($por, 'evento')) {
-				$query = "SELECT _ evento.EventoNom,  evento.EventoFecIni,  COUNT(ventaslevel1.LugaresId) AS cantidad,
+				$query = "SELECT evento.EventoNom,  evento.EventoFecIni,  COUNT(ventaslevel1.LugaresId) AS cantidad,
 					SUM(if(ventas.VentasTip = 'EFECTIVO', ventaslevel1.VentasCosBol - ventaslevel1.VentasMonDes, 0)) AS efectivo,
 					SUM(if(ventas.VentasTip = 'EFECTIVO', ventaslevel1.VentasCosBol - ventaslevel1.VentasMonDes + 
 						   ventaslevel1.VentasCarSer, 0)) AS efe_cargo,
@@ -791,7 +792,7 @@ class ReportesFlex extends CFormModel
 				}
 				else{
 					// consulta por usuario
-					$query = "SELECT _puntosventa.PuntosventaNom,  usuarios.UsuariosNom,  ventaslevel1.VentasSta,
+					$query = "SELECT puntosventa.PuntosventaNom,  usuarios.UsuariosNom,  ventaslevel1.VentasSta,
 						COUNT(ventaslevel1.LugaresId) AS cantidad,
 						SUM(if(ventas.VentasTip = 'EFECTIVO', ventaslevel1.VentasCosBol - ventaslevel1.VentasMonDes , 0)) AS efectivo,
 						SUM(if(ventas.VentasTip = 'EFECTIVO', ventaslevel1.VentasCosBol - 
