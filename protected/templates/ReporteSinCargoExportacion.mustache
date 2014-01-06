@@ -1,0 +1,54 @@
+<style type="text/css" media="screen">
+		th, td {border:1px solid #222}
+		.columnas, table#tabla-evento  td, #tabla-evento th{border:0}
+		
+</style>
+{{#evento}}
+<div id="evento">
+		<table cellspacing='0' id="tabla-evento">
+		        <tr>
+		                <th>Evento:</th>
+						<td colspan=3>{{nombre}}</td>
+		        </tr>
+		        <tr>
+		                <th>Funcion(es):</th>
+						<td colspan=3>{{funcion}}</td>
+		        </tr>
+		        <tr>
+		                <th>A la venta desde:</th>
+						<td>{{desde}}</td>
+						<td></td>
+						<td></td>
+		        </tr>
+		        <tr>
+						<th>Días para el evento:</th>
+						<td colspan="3">{{diaspara}}</td>
+		        </tr>
+		</table>
+</div>
+{{/evento}}
+<br />
+{{#tablas}}
+<table cellspacing='0' id="tablas" style="border:1px solid #222">
+        <tr>
+				<td class='columnas' valign="top">
+					{{resumen}}	
+					<br />
+					{{promedios}}
+					<br />
+					{{ultimas}}
+				</td>
+                <td class='' style="border-left:1px 0px 1px 0px"></td>
+				<td class='columnas'>
+						<table cellspacing='0'>
+						        <tr>
+						                <td>{{ventas}}</td>
+										<td>{{vhoy}}</td>
+						        </tr>
+						</table>
+						<br />
+				{{zonas}}		
+				</td>
+        </tr>
+</table>
+{{/tablas}}

@@ -20,8 +20,8 @@ class ReportesFlex extends CFormModel
 		return array(
 		);
 	}
-    public function getDetallesZonasCargo($EventoId, $FuncionesId, $ZonasId, $fecha1, $fecha2, $cargo){
-        if($cargo == 'SI')
+	public function getDetallesZonasCargo($EventoId, $FuncionesId, $ZonasId, $fecha1, $fecha2, $cargo){
+		if($cargo == 'SI')
 			$extra = " + ventaslevel1.VentasCarSer ";
 		else
 			$extra = "";
@@ -30,47 +30,32 @@ class ReportesFlex extends CFormModel
 			$rango = " AND ventas.VentasFecHor BETWEEN '$fecha1 00:00:00' AND '$fecha2 23:00:00' ";
 		else
 			$rango = "";
-      $aforo = Lugares::model()->count("EventoId = '$EventoId' AND FuncionesId = '$FuncionesId' AND ZonasId = '$ZonasId'");
-      $criteria = new CDbCriteria;
-      if($FuncionesId == 'TODAS'){                    
-        	$query = "SELECT ventas.VentasId as id, '$aforo' as aforo, zonas.ZonasAli,  CONCAT(ventaslevel1.VentasBolTip, ' ', if(descuentos.DescuentosDes = 'Ninguno', '',  CONCAT('- ',descuentos.DescuentosDes))) AS VentasBolTip,  COUNT(ventaslevel1.LugaresId) AS cantidad,
-				(ventaslevel1.VentasCosBol -	ventaslevel1.VentasMonDes) as ZonasCosBol,	SUM(ventaslevel1.VentasCosBol -	ventaslevel1.VentasMonDes $extra) as total, (ventaslevel1.VentasCosBol - ventaslevel1.VentasMonDes) as  VentasCosBol
-					FROM ventas
-					INNER JOIN ventaslevel1 ON (ventas.VentasId=ventaslevel1.VentasId)
-					INNER JOIN descuentos ON (descuentos.DescuentosId = ventaslevel1.DescuentosId)
-					INNER JOIN zonas ON (ventaslevel1.EventoId=zonas.EventoId)
-					AND (ventaslevel1.FuncionesId=zonas.FuncionesId)
-					AND (ventaslevel1.ZonasId=zonas.ZonasId)
-					WHERE ventaslevel1.EventoId = '$EventoId'
-					AND NOT (ventaslevel1.VentasSta = 'CANCELADO')
-					AND ventaslevel1.ZonasId = '$ZonasId'
-					$rango
-					GROUP BY  zonas.ZonasAli,  ventaslevel1.VentasBolTip,  zonas.ZonasCosBol,
-					ventaslevel1.VentasCosBol,  ventaslevel1.VentasMonDes";
-		
-		}else{
-			$query = "SELECT ventas.VentasId as id, '$aforo' as aforo,	zonas.ZonasAli,   CONCAT(ventaslevel1.VentasBolTip, ' ', if(descuentos.DescuentosDes = 'Ninguno', '',  CONCAT('- ',descuentos.DescuentosDes))) AS VentasBolTip,  COUNT(ventaslevel1.LugaresId) AS cantidad,
-					(ventaslevel1.VentasCosBol - ventaslevel1.VentasMonDes) as  ZonasCosBol,	SUM(ventaslevel1.VentasCosBol -	ventaslevel1.VentasMonDes $extra) as total, (ventaslevel1.VentasCosBol - ventaslevel1.VentasMonDes) as  VentasCosBol
-					FROM ventas
-					INNER JOIN ventaslevel1 ON (ventas.VentasId=ventaslevel1.VentasId)
-					INNER JOIN descuentos ON (descuentos.DescuentosId = ventaslevel1.DescuentosId)
-					INNER JOIN zonas ON (ventaslevel1.EventoId=zonas.EventoId)
-					AND (ventaslevel1.FuncionesId=zonas.FuncionesId)
-					AND (ventaslevel1.ZonasId=zonas.ZonasId)
-					WHERE ventaslevel1.EventoId = '$EventoId'
-					AND ventaslevel1.FuncionesId = '$FuncionesId'
-					AND NOT (ventaslevel1.VentasSta = 'CANCELADO')
-					AND ventaslevel1.ZonasId = '$ZonasId'
-					$rango
-					GROUP BY  zonas.ZonasAli,  ventaslevel1.VentasBolTip,  zonas.ZonasCosBol,
-					ventaslevel1.VentasCosBol,  ventaslevel1.VentasMonDes";
-					
-			}
-            return new CSqlDataProvider($query, array(
+		$aforo = Lugares::model()->count("EventoId = '$EventoId' AND FuncionesId = '$FuncionesId' AND ZonasId = '$ZonasId'");
+		if ($FuncionesId>0) $funcion=" AND ventaslevel1.FuncionesId = '$FuncionesId' ";
+		else $funcion='';
+		$query = "SELECT ventas.VentasId as id, '$aforo' as aforo,	zonas.ZonasAli,   CONCAT(ventaslevel1.VentasBolTip, ' ', if(descuentos.DescuentosDes = 'Ninguno', '',  CONCAT('- ',descuentos.DescuentosDes))) AS VentasBolTip,  COUNT(ventaslevel1.LugaresId) AS cantidad,
+			(ventaslevel1.VentasCosBol - ventaslevel1.VentasMonDes) as  ZonasCosBol,	
+			SUM(ventaslevel1.VentasCosBol -	ventaslevel1.VentasMonDes $extra) as total,
+			 (ventaslevel1.VentasCosBol - ventaslevel1.VentasMonDes) as  VentasCosBol
+			FROM ventas
+			INNER JOIN ventaslevel1 ON (ventas.VentasId=ventaslevel1.VentasId)
+			INNER JOIN descuentos ON (descuentos.DescuentosId = ventaslevel1.DescuentosId)
+			INNER JOIN zonas ON (ventaslevel1.EventoId=zonas.EventoId)
+			AND (ventaslevel1.FuncionesId=zonas.FuncionesId)
+			AND (ventaslevel1.ZonasId=zonas.ZonasId)
+			WHERE ventaslevel1.EventoId = '$EventoId'
+			$funcion
+			AND NOT (ventaslevel1.VentasSta = 'CANCELADO')
+			AND ventaslevel1.ZonasId = '$ZonasId'
+			$rango
+			GROUP BY  zonas.ZonasAli,  ventaslevel1.VentasBolTip,  zonas.ZonasCosBol,
+			ventaslevel1.VentasCosBol,  ventaslevel1.VentasMonDes";
+
+		return new CSqlDataProvider($query, array(
 							//'totalItemCount'=>$count,//$count,	
-							'pagination'=>false,
-					));
-    }
+			'pagination'=>false,
+			));
+	}
 
     public function getDesglose($EventoId, $FuncionesId){
          if($FuncionesId == 'TODAS')
@@ -189,6 +174,7 @@ class ReportesFlex extends CFormModel
 					)); 
 		}
 
+
 	public function getReporteTaquilla($evento,$funcion="TODAS",$desde="",$hasta="", $cargo=false){	
 		//*********************************************************************************
 		//Regresa el REPORTE DE VENTAS CON Y SIN CARGO DE VENTAS EN TAQUILLA CON Y SIN DESCUENTOS, 
@@ -204,19 +190,20 @@ class ReportesFlex extends CFormModel
 			if ($funcion>0) $funcion=" AND t2.FuncionesId=$funcion ";
 			else $funcion='';
 				$sql="SELECT DISTINCT t2.DescuentosId as id,
-					 IF (t2.DescuentosId>0,'Taquilla descuentos','Taquilla') as descuento,
+					 IF (t2.DescuentosId>0,'taquilla descuentos','taquilla') as puntos,
 				COUNT(t2.LugaresId) AS 'cantidad', 
-				SUM(t2.VentasCosBol $cargo) AS 'total'
+				SUM(t2.VentasCosBol) AS 'total',
+				SUM(t2.VentasCarSer) AS 'cargo'
 				FROM ventas AS t
 				INNER JOIN ventaslevel1	AS t2	ON	t.VentasId=t2.VentasId 
 				INNER JOIN funciones 	AS t3	ON	t2.EventoId=t3.EventoId AND t2.FuncionesId=t3.FuncionesId and t3.FuncPuntosventaId=t.PuntosventaId
-				WHERE t2.EventoId=$evento AND t2.VentasSta <> 'CANCELADO'AND t2.VentasBolTip='NORMAL'  
+				WHERE t2.EventoId=$evento AND t2.VentasSta <> 'CANCELADO'AND t2.VentasBolTip='NORMAL'  AND t2.VentasMonDes=0 
 				 $funcion $rango
-				GROUP BY descuento  " ;
+				GROUP BY puntos  " ;
 			return new CSqlDataProvider($sql,array('pagination'=>false));
 		}
 	}
-	public function getReporte($evento,$funcion="TODAS",$desde="",$hasta="", $cargo=false, $tipoBoleto='NORMAL',$where='', $group_by='puntos'){	
+	public function getReporte($evento,$funcion="TODAS",$desde="",$hasta="", $cargo=false, $tipoBoleto='NORMAL',$where='', $group_by='puntos',$campos=''){	
 		//*********************************************************************************
 		//				Regresa el REPORTE DE VENTAS CON Y SIN CARGO POR PV, 
 		//					minimamente se requiere del id del evento
@@ -232,18 +219,23 @@ class ReportesFlex extends CFormModel
 			else $funcion='';
 				# En el caso de que no se indique la funcion, no se filtran
 				$sql="SELECT DISTINCT t.PuntosventaId as id,
-					 CASE t.PuntosventaId 
-						WHEN 101 THEN 'Ventas por internet'
-						WHEN 102 THEN 'Ventas telefonicas'
-						ELSE 'Puntos de venta' END AS puntos , 
+					 CASE WHEN t.PuntosventaId = 101 THEN 'ventas por internet'
+						WHEN t.PuntosventaId = 102 THEN 'ventas telefonicas'
+						WHEN t.UsuariosId = 2 THEN 'farmatodo'
+						ELSE 'taquillas secundarias' END AS puntos , 
 					COUNT(t2.LugaresId) AS 'cantidad', 
-					SUM(t2.VentasCosBol - t2.VentasMonDes $cargo) AS 'total',
+					SUM(t2.VentasCosBol - t2.VentasMonDes ) AS 'total',
+					SUM(t2.VentasCarSer ) AS 'cargo',
 					t2.VentasBolTip,
+					t2.VentasCosBol,
 					t2.DescuentosId,
+					IF(LENGTH(t4.CuponesCod)>1,'cupones','descuentos') AS 'descuento',
 					t2.VentasMonDes
+					$campos	
 				FROM ventas AS t
 				INNER JOIN ventaslevel1	AS t2	ON	t.VentasId=t2.VentasId 
 				INNER JOIN funciones 	AS t3	ON	t2.EventoId=t3.EventoId AND t2.FuncionesId=t3.FuncionesId
+				LEFT JOIN descuentos	AS t4	ON	t2.DescuentosId=t4.DescuentosId
 				WHERE t2.EventoId=$evento AND t2.VentasSta <> 'CANCELADO'AND t2.VentasBolTip IN $tipoBoleto
 				 $funcion $rango $where 
 				GROUP BY $group_by ORDER BY $group_by desc;";
@@ -258,7 +250,8 @@ class ReportesFlex extends CFormModel
 		else
 			$rango = "";	
 		$query = "SELECT '' as id, descuentos.DescuentosDes, descuentos.DescuentosPat,
-				 COUNT(ventaslevel1.VentasId) AS descuentos,  SUM((ventaslevel1.VentasCosBol + ventaslevel1.VentasCarSer) - ventaslevel1.VentasMonDes) AS total
+				 COUNT(ventaslevel1.VentasId) AS descuentos,  SUM((ventaslevel1.VentasCosBol + ventaslevel1.VentasCarSer) - ventaslevel1.VentasMonDes) AS total,
+				 SUM(ventaslevel1.VentasCarSer ) AS 'cargo'
 				 FROM ventaslevel1
 				  INNER JOIN ventas ON (ventaslevel1.VentasId=ventas.VentasId)
 				  INNER JOIN descuentos ON (ventaslevel1.DescuentosId=descuentos.DescuentosId)
@@ -737,39 +730,11 @@ class ReportesFlex extends CFormModel
 			));   
 		}	
 
-		public function getDatosGraficaPorDia($EventoId, $FuncionesId, $fecha1, $fecha2){
-			$datos=$this->graficaFechas($EventoId, $FuncionesId, $fecha1, $fecha2);
-			$x=array();$y=array();
-			foreach ($datos->getData() as $value) {
-				$x[]=date_format(date_create($value['fecha']),'d/M');
-				$y[]=$value['ventas'];
-			}
-			return array('x'=>$x,'y'=>$y);
-			// $rows='';
-			// foreach ($datos->getData() as $value) 
-			// 	$rows.="['". $value['fecha']."',".$value['ventas']."],\n";
-			// return "[['Dia','Ventas'],\n$rows]";
-			// $cols=array(
-			// 	array('id'=> 'fecha', 'label'=> 'Fechas', 'type'=> 'string'),
-			// 	array('id'=> 'ventas', 'label'=> 'Ventas', 'type'=> 'string'),
-			// 	);
-			// $rows=array();
-			// foreach ($datos->getData() as $value) {
-			// 	$rows[]=array(
-			// 		'c'=>array(
-			// 			array('v'=>$value['fecha'],'f'=>date_format(date_create($value['fecha']),'d/m/Y')),
-			// 			array('v'=>$value['ventas'],'f'=>number_format($value['ventas'],2)),
-			// 			)
-			// 		);
-			// }
-			// return CJSON::encode(array('cols'=>$cols,'rows'=>$rows));
-		}
-
 	public function getVentasDiarias($desde,$hasta, $por="usuario",$condiciones='')
 		{ # Origen de los datos para las dos tablas de ventas diarias
 	// 		Preparacion de los datos
-			if (strcasecmp($por, 'evento')) {
-				$query = "SELECT evento.EventoNom,  evento.EventoFecIni,  COUNT(ventaslevel1.LugaresId) AS cantidad,
+			if (strcasecmp($por, 'evento')==0) {
+				$query = "SELECT '' as id , evento.EventoNom,  evento.EventoFecIni,  COUNT(ventaslevel1.LugaresId) AS cantidad,
 					SUM(if(ventas.VentasTip = 'EFECTIVO', ventaslevel1.VentasCosBol - ventaslevel1.VentasMonDes, 0)) AS efectivo,
 					SUM(if(ventas.VentasTip = 'EFECTIVO', ventaslevel1.VentasCosBol - ventaslevel1.VentasMonDes + 
 						   ventaslevel1.VentasCarSer, 0)) AS efe_cargo,
@@ -787,12 +752,12 @@ class ReportesFlex extends CFormModel
 					INNER JOIN usuarios ON (ventas.UsuariosId=usuarios.UsuariosId)
 					INNER JOIN puntosventa ON (ventas.PuntosventaId=puntosventa.PuntosventaId)
 					INNER JOIN evento ON (ventaslevel1.EventoId=evento.EventoId)
-					WHERE  (ventas.VentasSta = 'FIN') $condiciones AND DATE(ventas.VentasFecHor) BETWEEN $desde AND $hasta
+					WHERE  (ventas.VentasSta = 'FIN') $condiciones AND DATE(ventas.VentasFecHor) BETWEEN '$desde' AND '$hasta'
 					GROUP BY  evento.EventoNom, evento.EventoFecIni";
 				}
 				else{
 					// consulta por usuario
-					$query = "SELECT puntosventa.PuntosventaNom,  usuarios.UsuariosNom,  ventaslevel1.VentasSta,
+					$query = "SELECT '' as id,puntosventa.PuntosventaNom,  usuarios.UsuariosNom,  ventaslevel1.VentasSta,
 						COUNT(ventaslevel1.LugaresId) AS cantidad,
 						SUM(if(ventas.VentasTip = 'EFECTIVO', ventaslevel1.VentasCosBol - ventaslevel1.VentasMonDes , 0)) AS efectivo,
 						SUM(if(ventas.VentasTip = 'EFECTIVO', ventaslevel1.VentasCosBol - 
@@ -811,7 +776,7 @@ class ReportesFlex extends CFormModel
 						INNER JOIN ventas ON (ventaslevel1.VentasId=ventas.VentasId)
 						INNER JOIN usuarios ON (ventas.UsuariosId=usuarios.UsuariosId)
 						INNER JOIN puntosventa ON (ventas.PuntosventaId=puntosventa.PuntosventaId)
-						WHERE ventas.VentasSta = 'FIN' $condiciones AND DATE(ventas.VentasFecHor) BETWEEN $desde AND $hasta
+						WHERE ventas.VentasSta = 'FIN' $condiciones AND DATE(ventas.VentasFecHor) BETWEEN '$desde' AND '$hasta'
 						GROUP BY  usuarios.UsuariosNom,  ventaslevel1.VentasSta";
 
 				}	

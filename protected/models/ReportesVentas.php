@@ -1,12 +1,320 @@
 <?php 
-class ReportesFlex extends CFormModel
+class ReportesVentas extends CFormModel
 {
 	public function ventasWeb($value='')
 	{
 		
 	}
 
+	public function getReporte($evento,$funcion="TODAS",$desde="",$hasta="", $cargo=false, $tipoBoleto='NORMAL',$where='', $group_by='puntos')
+	{
+		$matrix=array(
+			'taquilla'				=>array('titulo'=>'','boletos'=>0,'ventas'=>0,'car serv'=>0,'porc'=>0),
+			'taquilla descuentos'	=>array('titulo'=>'','boletos'=>0,'ventas'=>0,'car serv'=>0,'porc'=>0),
+			'descuentos'			=>array('titulo'=>'','boletos'=>0,'ventas'=>0,'car serv'=>0,'porc'=>0),
+			'cupones'				=>array('titulo'=>'','boletos'=>0,'ventas'=>0,'car serv'=>0,'porc'=>0),
+			'ventas telefonicas'	=>array('titulo'=>'','boletos'=>0,'ventas'=>0,'car serv'=>0,'porc'=>0),
+			'ventas por internet'	=>array('titulo'=>'','boletos'=>0,'ventas'=>0,'car serv'=>0,'porc'=>0),
+			'farmatodo'				=>array('titulo'=>'','boletos'=>0,'ventas'=>0,'car serv'=>0,'porc'=>0),
+			'taquillas secundarias'	=>array('titulo'=>'','boletos'=>0,'ventas'=>0,'car serv'=>0,'porc'=>0),
+			'subtotal tc'			=>array('titulo'=>'','boletos'=>0,'ventas'=>0,'car serv'=>0,'porc'=>0),
+			'subtotal ventas'		=>array('titulo'=>'','boletos'=>0,'ventas'=>0,'car serv'=>0,'porc'=>0),
+			'boleto duro'			=>array('titulo'=>'','boletos'=>0,'ventas'=>0,'car serv'=>0,'porc'=>0),
+			'cortesia'				=>array('titulo'=>'','boletos'=>0,'ventas'=>0,'car serv'=>0,'porc'=>0),
+			'total'					=>array('titulo'=>'','boletos'=>0,'ventas'=>0,'car serv'=>0,'porc'=>0),
+			);
+		$modelo=new ReportesFlex;
+
+		// Ventas por taquilla
+		$reporte=$modelo->getReporteTaquilla($evento,$funcion,$desde,$hasta, $cargo);
+		foreach ($reporte->getData() as $fila) {
+			$matrix['subtotal ventas']['boletos']	+=$matrix[$fila['puntos']]['boletos']	=$fila['cantidad'];
+			$matrix['subtotal ventas']['ventas']	+=$matrix[$fila['puntos']]['ventas']	=$fila['total'];
+			$matrix['subtotal ventas']['car serv']	+=$matrix[$fila['puntos']]['car serv']	=$fila['cargo'];
+		}
+		// Ventas con descuentos
+		$reporte=$modelo->getReporte($evento,$funcion,$desde,$hasta, $cargo, 'NORMAL',' AND t2.VentasMonDes>0', 'descuento');
+		foreach ($reporte->getData() as $fila) {
+			$matrix['subtotal ventas']['boletos']	+=$matrix[$fila['descuento']]['boletos']	=$fila['cantidad'];
+			$matrix['subtotal ventas']['ventas']	+=$matrix[$fila['descuento']]['ventas']	=$fila['total'];
+			$matrix['subtotal ventas']['car serv']	+=$matrix[$fila['descuento']]['car serv']	=$fila['cargo'];
+		}
+		//Ventas por puntos de venta
+		$reporte=$modelo->getReporte($evento,$funcion,$desde,$hasta ,$cargo=false,'NORMAL','and t3.FuncPuntosventaId<>t.PuntosventaId ');
+		foreach ($reporte->getData() as $fila) {
+			$matrix['subtotal tc']['boletos']	+=$matrix[$fila['puntos']]['boletos']	=$fila['cantidad'];
+			$matrix['subtotal tc']['ventas']	+=$matrix[$fila['puntos']]['ventas']	=$fila['total'];
+			$matrix['subtotal tc']['car serv']	+=$matrix[$fila['puntos']]['car serv']	=$fila['cargo'];
+		}
+		// Sumatoria de subtotales
+			$matrix['subtotal ventas']['boletos']	+=$matrix['subtotal tc']['boletos']	;
+			$matrix['subtotal ventas']['ventas']	+=$matrix['subtotal tc']['ventas']	;
+			$matrix['subtotal ventas']['car serv']	+=$matrix['subtotal tc']['car serv'];
+
+		$reporte=$modelo->getReporte($evento,$funcion,$desde,$hasta,$cargo,
+        'CORTESIA,BOLETO DURO','','VentasBolTip');	
+		foreach ($reporte->getData() as $fila) {
+			$matrix['total']['boletos']		+=$matrix[strtolower($fila['VentasBolTip'])]['boletos']	=$fila['cantidad'];
+			$matrix['total']['ventas']		+=$matrix[strtolower($fila['VentasBolTip'])]['ventas']	=$fila['total'];
+			$matrix['total']['car serv']	+=$matrix[strtolower($fila['VentasBolTip'])]['car serv']=$fila['cargo'];        
+		}
+		// Sumatoria de totales
+			$matrix['total']['boletos']		+=$matrix['subtotal ventas']['boletos']	;
+			$matrix['total']['ventas']		+=$matrix['subtotal ventas']['ventas']	;
+			$matrix['total']['car serv']	+=$matrix['subtotal ventas']['car serv'];
+		//Primer Ciclo de la matrix
+		foreach ($matrix as $key=>&$value) {
+				$value['titulo']=ucfirst($key);
+				$value['porc']=number_format(($value['boletos']*100)/max($matrix['total']['boletos'],2));
+				$value['boletos']=number_format($value['boletos']);
+				$value['ventas']=number_format($value['ventas']);
+				$value['car serv']=number_format($value['car serv']);
+			}	
+
+
+			return  $matrix;
+	}
+
+	public function getReporteZonas($eventoId,$funcionId='TODAS',$desde='',$hasta='')
+	{
+
+		if (isset($eventoId) and $eventoId>0)
+			$evento=Evento::model()->findByPk($eventoId);
+		if (isset($funcionesId) and $funcionesId>0){
+			$funcion=Funciones::model()->findByPk(array('EventoId'=>$eventoId,'FuncionesId'=>$funcionesId));
+			if(is_object($funcion))
+				$funciones=$funcion;
+		}
+		else
+			$funciones=$evento->funciones;
+
+		$zonas=array();
+		$modelo=new ReportesFlex;
+		foreach ($funciones as $funcion) {
+			foreach ($funcion->zonas as $zona) {
+				$aforo = Lugares::model()->count("EventoId = '$eventoId' AND FuncionesId = '".$funcion->FuncionesId."' AND ZonasId =".$zona->ZonasId);
+				$zone=array();
+				$zone['aforo']=$aforo;
+				$zone['zona']=$zona->ZonasAli;
+				$matrix=array(
+					'aforo'			=>array('titulo'=>'Aforo',			'boletos'=>$aforo,	'precio'=>$zona->ZonasCosBol,	'importe'=>$zona->ZonasCosBol*$aforo,	'porcentaje'=>100),
+					'por vender'	=>array('titulo'=>'Por Vender',		'boletos'=>0,	'precio'=>0,	'importe'=>0,	'porcentaje'=>0),
+					'descuentos'	=>array('titulo'=>'Descuentos',		'boletos'=>0,	'precio'=>0,	'importe'=>0,	'porcentaje'=>0),
+					'cupones'		=>array('titulo'=>'Cupones',		'boletos'=>0,	'precio'=>0,	'importe'=>0,	'porcentaje'=>0),
+					'subtotal'		=>array('titulo'=>'Sub-total',		'boletos'=>0,	'precio'=>0,	'importe'=>0,	'porcentaje'=>0),
+					);
+				$reporte=$modelo->getDetallesZonasCargo($eventoId,$funcionId,$zona->ZonasId,$desde,$hasta,$cargo='NO');
+				//$tipos=array();
+				$matrix['tipos']=array();
+				foreach ($reporte->getData() as $fila) {
+					//$index=$fila['VentasBolTip'].$fila['VentasCosBol'];
+
+					$temp=array('titulo'=>'',		'boletos'=>0,	'precio'=>0,	'importe'=>0,	'porcentaje'=>0);
+					$temp['precio']	=$fila['VentasCosBol'];
+					$temp['titulo']	=ucfirst(strtolower($fila['VentasBolTip']));
+					if (strcasecmp($temp['titulo'],'Normal')==1) {
+						$temp['titulo']	='Ventas';
+					}	
+					$matrix['subtotal']['boletos']	+=$temp['boletos']	=$fila['cantidad'];
+					$matrix['subtotal']['importe']	+=$temp['importe']	=$fila['total'];
+					$temp['porcentaje']	=number_format(($temp['boletos']*100)/max($matrix['aforo']['boletos'],2));
+						
+					$matrix['tipos'][]=$temp;
+
+					
+				}
+				// Ventas con descuento por zona
+				$reporte=$modelo->getReporte($eventoId,$funcion->FuncionesId,$desde,$hasta, $cargo, 'NORMAL',' AND t2.VentasMonDes>0 AND t2.ZonasId='.$zona->ZonasId, 'DescuentosDes','DescuentosDes');
+				foreach ($reporte->getData() as $fila) {
+
+					$temp=array('titulo'=>'',		'boletos'=>0,	'precio'=>0,	'importe'=>0,	'porcentaje'=>0);
+					$temp['titulo']		=$fila['descuento'];
+					$temp['boletos']	=$fila['cantidad'];
+					$temp['precio']		=$fila['VentasCosBol'];
+					$temp['total']		=$fila['total'];
+					$matrix['tipos'][]	=$temp;
+				}
+			$matrix['por vender']['boletos']	=$matrix['aforo']['boletos'] - $matrix['subtotal']['boletos']	;
+			$matrix['por vender']['importe']	=$matrix['aforo']['importe'] - $matrix['subtotal']['importe']	;
+			 //$matrix['por vender']['porcentaje']	=$matrix['por vender']['boletos'] / max($matrix['aforo']['boletos'],1)	;
+			foreach ($matrix as $key=>$fila) {
+				if ($key!="tipos") {
+						$matrix[$key]['porcentaje']=number_format($fila['boletos']*100/max($matrix['aforo']['boletos'],1),2);					
+				}	
+
+			}
+			//echo "<pre>";print_r($matrix);echo "</pre>";
+
+			$this->formateoNumerico($matrix,array('boletos','importe','precio'));
+			$this->formateoNumerico($matrix['tipos'],array('boletos','importe','precio'));
+			$zone['datos']=$matrix;
+			$zonas[]=$zone;
+
+			}
+
+		}
+		return array('zonas'=>$zonas);
+	}
+
+	public function formateoNumerico(&$matrix,$cols,$decimal=0)
+	{
+			foreach($matrix as $index=>$fila){
+					foreach ($fila as $key => $value) {
+							if (in_array($key,$cols) and !is_array($value)) {
+									$matrix[$index][$key]=number_format($value,$decimal);
+							}
+					}
+		}
+	}
+
+	public function getResumenEvento($eventoId,$funcionId='TODAS',$desde,$hasta)
+	{
+			$modelo=new ReportesFlex;
+			$funcion="";
+			if ($funcionId>0) {
+					$funcion=sprintf(" AND FuncionesId = '%s' ",$funcionId);
+			}
+			$aforo = Lugares::model()->count(sprintf("EventoId = '%s' %s",$eventoId,$funcion) );
+			$vendidas = Ventaslevel1::model()->with(
+					array(
+							'venta'=> array('having'=>"VentasSta NOT LIKE 'CANCELADO' ")
+					)
+				)->count(sprintf("EventoId = '%s' %s ",$eventoId,$funcion) );
+			$porvender=$aforo-$vendidas;
+			$matrix=array(
+			'aforo'       => array('titulo' => 'Aforo','boletos'         => $aforo,'importe'     => 0,'porcentaje' => 100),
+			'por vender'  => array('titulo' => 'Por vender','boletos'    => $porvender,'importe' => 0,'porcentaje' => $porvender/max($aforo,1)),
+			'cortesia'    => array('titulo' => 'Cortesias','boletos'     => 0,'importe'          => 0,'porcentaje' => 0),
+			'boleto duro' => array('titulo' => 'Boletos duros','boletos' => 0,'importe'          => 0,'porcentaje' => 0),
+			'normal'      => array('titulo' => 'Ventas','boletos'        => 0,'importe'          => 0,'porcentaje' => 0),
+			'total'       => array('titulo' => 'Total','boletos'         => 0,'importe'          => 0,'porcentaje' => 0),
+	);
+			$model=new Ventas;
+			$matrix['aforo']['importe']=$model->getDbConnection()->createCommand(sprintf("
+					SELECT count(t.LugaresId)*ZonasCosBol as ventas FROM lugares as t
+					INNER JOIN zonas as t2 
+						ON t.EventoId     = t2.EventoId
+						AND t.FuncionesId = t2.FuncionesId
+						AND t.ZonasId     = t2.ZonasId
+					WHERE t.EventoId      = %d
+					GROUP BY t.EventoId;",$eventoId))->queryScalar();
+
+			$matrix['por vender']['importe']=$matrix['aforo']['importe']-$model->getDbConnection()->createCommand(sprintf("
+					SELECT sum(VentasCosBol-VentasMonDes) as ventas FROM ventaslevel1 as t
+					INNER JOIN zonas as t2 
+						ON t.EventoId                     = t2.EventoId
+						AND t.FuncionesId                 = t2.FuncionesId
+						AND t.ZonasId                     = t2.ZonasId
+				    INNER JOIN ventas as t3 ON t.VentasId = t3.VentasId
+					WHERE t.EventoId                      = %d AND t3.VentasSta NOT LIKE 'CANCELADO'
+					GROUP BY t.EventoId;",$eventoId))->queryScalar();
+			$reporte=$modelo->getReporte($eventoId,$funcionId,$desde,$hasta,false, 'NORMAL,CORTESIA,BOLETO DURO','', 'VentasBolTip');
+			foreach ($reporte->getData() as $fila) {
+					$index=strtolower($fila['VentasBolTip']);
+					$matrix[$index]=array('boleto'=>0,'importe'=>0,'porcentaje'=>0);
+					$matrix['total']['boletos']+=$matrix[$index]['boletos']=$fila['cantidad'];
+					$matrix['total']['importe']+=$matrix[$index]['importe']=$fila['total'];
+			}
+			foreach ($matrix as &$fila) {
+				$fila['porcentaje']=number_format($fila['boletos']*100/max($aforo,1));
+				$fila['boletos']=money_format('%i', $fila['boletos']);
+				$fila['importe']=number_format( $fila['importe']);
+			}
+		return $matrix;
+	}
+
+	public function getPromedios($eventoId,$funcionId="TODAS")
+	{
+
+			$matrix=array(
+					'promedio acumulado' => array('titulo'=>'Promedio acumulado','boletos' => 0,'importe' => 0),
+					'promedio semana'    => array('titulo'=>'Prom. Ultima semana','boletos' => 0,'importe' => 0),
+			);
+
+			$acumulado=$this->getPromedioDiario($eventoId,$funcionId);
+			$usemana=$this->getPromedioDiario($eventoId,$funcionId,
+					$desde=date('Y-m-d',strtotime("-1 week")),
+					$hasta=date("Y-m-d"));
+
+			$matrix['promedio acumulado']['boletos']=number_format($acumulado['boletos'],3);
+			$matrix['promedio acumulado']['importe']=number_format($acumulado['importe'],3);
+			$matrix['promedio semana']['boletos']=number_format($usemana['boletos'],3);
+			$matrix['promedio semana']['importe']=number_format($usemana['importe'],3);
+			return $matrix;	
+	}
+
+	public function getPromedioDiario($eventoId,$funcionId="TODAS",$desde=false,$hasta=false)
+	{
+			$funcion="";
+			if ($funcionId>0) {
+					$funcion=sprintf(" AND FuncionesId = '%s' ",$funcionId);
+			}
+			$fechas='';
+			$dias="ABS(DATEDIFF(FuncionesFecIni,LEAST(DATE(FuncionesFecHor),CURDATE())))";
+			if ($desde and $hasta 
+					and preg_match("(\d{4}-\d{2}-\d{2})",$desde)==1 
+					and preg_match("(\d{4}-\d{2}-\d{2})",$hasta)==1) {
+							$fechas="AND DATE(VentasFecHor) BETWEEN '$desde' AND  '$hasta' ";
+							$dias="ABS(DATEDIFF('$desde',LEAST('$hasta',CURDATE())  ))";
+					}
+
+			$promedio=Yii::app()->db->createCommand(sprintf("
+					SELECT COUNT(distinct LugaresId)/GREATEST(
+									$dias,1) AS boletos,
+							SUM(t2.VentasCosBol-t2.VentasMonDes)/GREATEST(
+									$dias,1) AS importe
+						FROM ventas AS t
+						INNER JOIN ventaslevel1 AS t2 ON
+							t.VentasId=t2.VentasId AND t2.EventoId='%d' %s
+						INNER JOIN funciones as t3 ON 
+							t2.EventoId=t3.EventoId AND t2.FuncionesId=t3.FuncionesId	
+						WHERE t.VentasSta<>'CANCELADO' %s;
+			",$eventoId,$funcion,$fechas))->queryRow();
+			return $promedio;	
+	}
+
+	public function getDatosGraficaPorDia($eventoId, $funcionesId, $desde, $hasta){
+			$model=new ReportesFlex;
+			$datos=$model->graficaFechas($eventoId, $funcionesId, $desde, $hasta);
+			$dias=array();
+			foreach ($datos->getData() as $value) {
+				$dias[]=array('dia'=>date_format(date_create($value['fecha']),'d/M'),'v'=>$value['ventas']);
+			}
+			return $dias;
+
+		}
+
+
+	public function getUltimasVentas($eventoId,$funcionesId="TODAS",$desde=0,$hasta=0)
+	{
+			$modelo=new ReportesFlex;
+			$desde=date("Y-m-d",strtotime("-2 day"));
+			$hasta=date("Y-m-d");
+			$funcion="";
+			if ($funcionesId>0) {
+					$funcion=sprintf(" AND FuncionesId = '%s' ",$funcionesId);
+			}
+
+			$reporte=$modelo->getReporte($eventoId,$funcion,$desde,$hasta,$cargo=false, 
+					$tipoBoleto='NORMAL,BOLETO DURO',$where='', 
+					$group_by='DAYOFYEAR(VentasFecHor)',$campos=", 	CASE DATE(VentasFecHor) 
+					WHEN DATE(VentasFecHor)=DATE_SUB(DATE(VentasFecHor), INTERVAL 2 DAY) THEN 'antier'
+					WHEN DATE(VentasFecHor)=DATE_SUB(DATE(VentasFecHor), INTERVAL 1 DAY) THEN 'ayer'
+					WHEN DATE(VentasFecHor)=CURDATE() THEN 'hoy'
+					END  AS dia" );
+
+			$matrix=array(
+					'hoy' 		=> array('titulo' =>'Venta hoy','boletos'=>0,'importe'=>0 ),
+					'ayer' 		=> array('titulo' =>'Venta ayer','boletos'=>0,'importe'=>0 ),
+					'antier' 	=> array('titulo' =>'Venta antier','boletos'=>0,'importe'=>0 ),
+			);
+			foreach ($reporte->getData() as $fila) {
+				$matrix[$fila['dia']]['boletos']=number_format($fila['cantidad']);
+				$matrix[$fila['dia']]['importe']=number_format($fila['total']);
+			}
+			return $matrix;
+	}
+
 
 }
-
  ?>

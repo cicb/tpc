@@ -1,0 +1,118 @@
+  <table class="table table-condensed table-bordered">
+    <thead>
+      <th>Boletos</th>
+      <th>Ventas</th>
+      <th>Car. Serv.</th>
+    </thead>
+    <tbody>
+      {{#taquilla}}
+        <tr>
+          <td>{{boletos}}</td>
+          <td>${{ventas}}</td>
+          <td>${{car serv}}</td>
+          
+        </tr>
+      {{/taquilla}}
+      {{#descuentos}}
+        <tr>
+          <td>{{boletos}}</td>
+          <td>${{ventas}}</td>
+          <td>${{car serv}}</td>
+          
+        </tr>
+      {{/descuentos}}
+      {{#cupones}}
+        <tr>
+          
+          <td>{{boletos}}</td>
+          <td>${{ventas}}</td>
+          <td>${{car serv}}</td>
+          
+        </tr>
+      {{/cupones}}
+      <tr><td colspan="3"></td></tr>
+      {{#ventas telefonicas}}
+        <tr>
+          <td> {{boletos}}  </td>
+          <td>${{ventas}}</td>
+          <td>${{car serv}} </td>
+        </tr>
+      {{/ventas telefonicas}}
+
+      {{#ventas por internet}}
+        <tr>
+          
+          <td> {{boletos}}  </td>
+          <td>${{ventas}}</td>
+          <td>${{car serv}} </td>
+        </tr>
+      {{/ventas por internet}}
+
+      {{#farmatodo}}
+        <tr>
+          
+          <td> {{boletos}}  </td>
+          <td>${{ventas}}</td>
+          <td>${{car serv}} </td>
+        </tr>
+      {{/farmatodo}}
+
+      {{#taquillas secundarias}}
+        <tr>
+          
+          <td> {{boletos}}  </td>
+          <td>${{ventas}}</td>
+          <td>${{car serv}} </td>
+        </tr>
+      {{/taquillas secundarias}}
+
+      {{#subtotal tc}}
+        <tr class="resaltado">
+          <td> {{boletos}}  </td>
+          <td>${{ventas}}</td>
+          <td>${{car serv}} </td>
+        </tr>
+      {{/subtotal tc}}
+
+      <tr><td colspan="3"></td></tr>
+      
+      {{#subtotal ventas}}
+        <tr class="resaltado-zanahoria">
+          <td> {{boletos}}  </td>
+          <td>${{ventas}}</td>
+          <td>${{car serv}} </td>
+        </tr>
+      {{/subtotal ventas}}
+
+      <tr><td colspan="3"></td></tr>
+
+      {{#boleto duro}}
+        <tr>
+          
+          <td> {{boletos}}  </td>
+          <td>${{ventas}}</td>
+          <td>${{car serv}} </td>
+        </tr>
+      {{/boleto duro}}
+      {{#cortesia}}
+        <tr>
+          
+          <td> {{boletos}}  </td>
+          <td>${{ventas}}</td>
+          <td>${{car serv}} </td>
+        </tr>
+      {{/cortesia}}
+
+      <tr><td colspan="3"><br/></td></tr>
+
+      {{#total}}
+        <tr class="resaltado-belize">
+          
+          <td> {{boletos}}  </td>
+          <td>${{ventas}}</td>
+          <td>${{car serv}} </td>
+        </tr>
+      {{/total}}
+
+    </tbody>
+  </table>

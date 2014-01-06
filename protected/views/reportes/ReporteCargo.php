@@ -1,17 +1,17 @@
+
 <?php
 $esMovil=Yii::app()->mobileDetect->isMobile();
-echo var_dump($esMovil);
-if (isset($_GET['dispositivo']) and $_GET['dispositivo']=='pc') {
+if (!isset($_GET['dispositivo']) or $_GET['dispositivo']=='pc') {
 	$esMovil=false;
 }
 else if (isset($_GET['dispositivo']) and $_GET['dispositivo']=='movil')
 		$esMovil=true;
 ?>
 <div class='controles'>
-    <h2>Reportes de ventas con cargo</h2>
+    <h2>Reportes de ventas <?php echo $cargo?$cargo:'sin';   ?> cargo</h2>
     <?php 
     $form=$this->beginWidget('CActiveForm', array(
-     'id'=>'controles',
+     'id'=>'usuarios-form',
    //'action'=>$this->createUrl('/asiento/main'),
    //'htmlOptions'=>array('target'=>'gridFrame'),
      'enableAjaxValidation'=>false,
@@ -27,7 +27,7 @@ else if (isset($_GET['dispositivo']) and $_GET['dispositivo']=='movil')
             echo CHtml::label('Evento','evento_id', array('style'=>'width:70px; display:inline-table;'));
             $modeloEvento = Evento::model()->findAll(array('condition' => 'EventoSta = "ALTA"','order'=>'EventoNom'));
             $list = CHtml::listData($modeloEvento,'EventoId','EventoNom');
-            echo CHtml::dropDownList('evento_id',@$_POST['evento_id'],$list,
+            echo CHtml::dropDownList('evento_id',@$evento_id,$list,
               array(
                 'ajax' => array(
                   'type' => 'POST',
@@ -44,9 +44,9 @@ else if (isset($_GET['dispositivo']) and $_GET['dispositivo']=='movil')
             <div class="row" id="funciones">
                 <?php
                 echo CHtml::label('Funcion','funcion_id', array('style'=>'width:70px; display:inline-table;'));
-                echo CHtml::dropDownList('funcion_id',@$_POST['funcion_id'],array());
+                echo CHtml::dropDownList('funcion_id',@$funcion_id,array());
                 echo CHtml::hiddenField('grid_mode','view');
-                echo CHtml::hiddenField('funcion',@$funcionesId);
+                echo CHtml::hiddenField('funcion','');
                 ?>
                 <span id="fspin" class="fa"></span>
             </div>
@@ -118,23 +118,19 @@ else if (isset($_GET['dispositivo']) and $_GET['dispositivo']=='movil')
 <div class="row">
 <?php if($eventoId>0){
 	if ($esMovil) 
-			echo CHtml::submitButton('Cambiar a vista completa',array('class'=>'btn',
-					'onclick'=>"$('#controles').attr('action','".$this->createUrl('reportes/ventasConCargo',
-			array('dispositivo'=>'pc'))."');"));
+		echo CHtml::link('Versi&oacute;n completa',$this->createUrl('reportes/ventasSinCargo',
+			array('dispositivo'=>'pc')),array('class'=>'btn'));
 	else	
-			echo CHtml::submitButton('Cambiar a vista movil',array('class'=>'btn',
-					'onclick'=>"$('#controles').attr('action','".$this->createUrl('reportes/ventasConCargo',
-			array('dispositivo'=>'movil'))."');"));
+		echo CHtml::link('Versi&oacute;n para moviles',$this->createUrl('reportes/ventasSinCargo',
+				array('dispositivo'=>'movil')),array('class'=>'btn'));
 }
 ?>
 
-<?php echo CHtml::link('Exportar',$this->createUrl('reportes/exportarReporte',array(
+<?php echo CHtml::link('Exportar',$this->createUrl('reportes/exportarExcel',array(
 		'evento_id'=>$eventoId,
 		'funcion_id'=>$funcionesId,
 		'desde'=>$desde,
 		'hasta'=>$hasta,
-		'movil'=>$esMovil,
-		'cargo'=>1,
 		
 )),array('class'=>'btn')) ; ?>
     <?php echo CHtml::submitButton('Ver reporte',array('class'=>'btn btn-primary btn-medium','onclick'=>'$("#grid_mode").val("view");')); ?> 
@@ -157,10 +153,8 @@ else if (isset($_GET['dispositivo']) and $_GET['dispositivo']=='movil')
 	else{
 			$funcion=$evento->funciones[0];
 	}
-	$meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
-	$months = array( 'January', 'February', 'March', 'April', 'May',
-			'June', 'July ', 'August', 'September', 'October', 'November',  'December',);
-	$ventasDesde=str_replace($months,$meses,date_create($funcion->FuncionesFecIni)->format("d-F-Y"));                   
+	$ventasDesde=date_create($funcion->FuncionesFecIni)->format("d-M-Y");                   
+    $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
 	$diaFuncion = new DateTime($funcion->FuncionesFecHor);
 	$hoy = new DateTime("now");
 	$interval = $hoy->diff($diaFuncion,false);
@@ -177,7 +171,7 @@ else if (isset($_GET['dispositivo']) and $_GET['dispositivo']=='movil')
                 <small>Funcion (es):</small>
                 <?php echo $funciones; ?><br/>
                 <small>A la venta desde:</small>
-				<?php echo $ventasDesde;?> <br/><br/>
+				<?php echo "$ventasDesde";?> <br/><br/>
                 <?php echo $diaspara>-1?" <small>D&iacute;as para el evento:</small>
 ".$diaspara:"El evento ya ha finalizado.";?> <br/><br/>
 
@@ -212,16 +206,16 @@ else if (isset($_GET['dispositivo']) and $_GET['dispositivo']=='movil')
             Yii::app()->mustache->render('tablaPromediosDiarios', $arreglo);
              ?>
             <?php 
-			echo "<div id='tabla-ultimas' ".($esMovil?'':'style="display:none !important;visibility:none"').">";
+				if($esMovil){
 					$ultimas=$model->getUltimasVentas($eventoId,$funcionesId);
 					Yii::app()->mustache->render('tablaUltimasVentas', $ultimas);
-			echo "</div>";
+				}
              ?>
     </div>
 <?php endif; ?>
 <?php 
 if(!$esMovil): ?>
-<div class="span7 " id="tablas-detalladas" style="float:right">
+<div class="span7 " style="float:right">
 <table class="table">
     <tr>
         <td style="text-align:center !important;font-weight:800">Resumen de ventas </td>
@@ -245,6 +239,9 @@ if(!$esMovil): ?>
 </table>
               <?php 
             $arreglo=$model->getReporteZonas($eventoId,$funcionesId,$desde,$hasta);
+			//echo "<pre>";
+			//print_r($arreglo['zonas'][0]['datos']['tipos']);
+			//echo "</pre>";	
             Yii::app()->mustache->render('tablasVentasZonas', $arreglo);
              ?>  
 
@@ -267,6 +264,15 @@ $this->widget('application.extensions.morris.MorrisChartWidget', array(
 
 
 
+<?php
+echo " <div class='row' style='text-align:center'><span>Versi&oacute;n completa</span> ".
+		CHtml::link('Versi&oacute;n para moviles',$this->createUrl('reportes/ventasSinCargo',
+		array('dispositivo'=>'movil')))."</div>";
+?>
+<?php else:
+echo "<div class='row' style='text-align:center'>".CHtml::link('Versi&oacute;n completa',$this->createUrl('reportes/ventasSinCargo',
+		array('dispositivo'=>'pc')))." <span>Versi&oacute;n para moviles</span></div>";
+?>
 <?php endif; //Fin de validacion movil ?>
 <?php endif; ?>
 </div>
@@ -287,17 +293,6 @@ $this->widget('application.extensions.morris.MorrisChartWidget', array(
 <?php
 if (isset($_POST['evento_id'])) {
 		Yii::app()->clientScript->registerScript('carga',"$('#evento_id').change();",CClientScript::POS_LOAD);
-		//Yii::app()->clientScript->registerScript('versiones',"var full=".(!$esMovil?'true':'false').";
-		//$('#btn-cambio-version').on('click',function (){
-			//$('#tablas-detalladas').toggle();
-			//$('#tabla-ultimas').toggle();		
-			//if(full){ 
-					//$('#btn-cambio-version').text('Cambiar a version completa');}
-			//else{ 
-					//$('#btn-cambio-version').text('Cambiar a version movil');}
-					//full=!full;	event.preventDefault();
-		//});",CClientScript::POS_LOAD);
-
 }
 ?>
 
