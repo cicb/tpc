@@ -424,18 +424,3 @@ function reimpresiones($string = ""){
                 endif;
 }
 ?>
-<?php
-        /*$pdf = Yii::createComponent ( 'application.extensions.html2pdf.html2pdf' );
-        $html2pdf = new HTML2PDF ( 'P', 'letter', 'es', true, 'UTF-8', array (
-                			0,
-                			0,
-                			0,
-                			0
-                	) );
-         
-         $html2pdf->writeHTML ("ok", false );
-         $path='..'. Yii::app()->request->baseUrl . '/doctos';
-    				$html2pdf->Output ($path.'/prueba.pdf', 'F' );           
-        //$html2pdf->writeHTML ( "hola mundo", false ); 
-        //$html2pdf->Output ('ok.pdf');    */       
-?>

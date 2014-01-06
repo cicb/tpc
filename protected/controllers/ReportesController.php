@@ -806,6 +806,7 @@ class ReportesController extends Controller
  
     public function actionImpresionBoletosAjax()
     {
+        set_time_limit(0);
         if(!empty($_POST['formatoId'])){
             $pv = $_POST['pv'];
             $EventoId = $_POST['EventoId'];
@@ -825,12 +826,19 @@ class ReportesController extends Controller
                                     evento.EventoNom,
                                     evento.EventoImaBol,
                                     foro.ForoNom,
+                                    ventaslevel1.EventoId,
+                                    ventaslevel1.FuncionesId,
+                                    ventaslevel1.ZonasId,
+                                    ventaslevel1.SubzonaId,
+                                    ventaslevel1.FilasId,
+                                    ventaslevel1.LugaresId,
                                     ventaslevel1.VentasBolTip,
                                     ventaslevel1.VentasCon,
                                     ventaslevel1.VentasCarSer,
                                     ventaslevel1.LugaresNumBol,
                                     (ventaslevel1.VentasCosBol-ventaslevel1.VentasMonDes) as cosBol,
                                     (ventaslevel1.VentasCosBol-ventaslevel1.VentasMonDes + ventaslevel1.VentasCarSer) as cosBolCargo,
+                                    ventas.UsuariosId,
                                     ventas.VentasNumRef,
                                     ventas.PuntosventaId,
                                     ventas.VentasFecHor,
@@ -876,8 +884,17 @@ class ReportesController extends Controller
                 $dataCodigo = new CSqlDataProvider($query, array(
 							//'totalItemCount'=>$count,//$count,	
 							'pagination'=>false,
-					));                     
-                $data = new CSqlDataProvider($query, array(
+					)); 
+                    
+                foreach($dataCodigo->getData() as $key => $boletoreimpresion):
+                    $codigo = $this->verificaCodigos();
+                    if(empty($boletoreimpresion['LugaresNumBol'])){
+                        $this->imprimeBoleto($codigo,$boletoreimpresion['id'],$boletoreimpresion['EventoId'],$boletoreimpresion['FuncionesId'],$boletoreimpresion['ZonasId'],$boletoreimpresion['SubzonaId'],$boletoreimpresion['FilasId'],$boletoreimpresion['LugaresId'],$boletoreimpresion['UsuariosId']);
+                    }else{
+                        
+                    }
+                endforeach;                        
+            $data = new CSqlDataProvider($query, array(
 							//'totalItemCount'=>$count,//$count,	
 							'pagination'=>false,
 					));                        
@@ -915,6 +932,70 @@ class ReportesController extends Controller
             $user->update();
             //echo "ok".$user->UsuariosId.$_POST['region_id']; 
         }
+    }
+   	public function imprimeBoleto($codigo,$ventasId,$eventoId,$funcionesId,$zonasId,$subzonaId,$filasId,$lugaresId,$usuariosId){
+   	    $reimpresiones = Reimpresiones::model()->count(array('condition'=>"EventoId=$eventoId AND FuncionesId=$funcionesId AND ZonasId=$zonasId AND SubzonaId=$subzonaId AND FilasId=$filasId AND LugaresId=$lugaresId"));
+        $contra = $eventoId.".".$funcionesId.".".$zonasId.".".$subzonaId;
+	    $contra .= ".".$filasId.".".$lugaresId."-".date("m").".".date("d")."-".$usuariosId;
+	    $contra .= "TR$reimpresiones";
+        $ventaslevel1 = Ventaslevel1::model()->findByAttributes(array('VentasId'=>$ventasId,'EventoId'=>$eventoId,'FuncionesId'=>$funcionesId,'ZonasId'=>$zonasId,'SubzonaId'=>$subzonaId,'FilasId'=>$filasId,'LugaresId'=>$lugaresId));
+   	    $ventaslevel1->LugaresNumBol = $codigo;
+        $ventaslevel1->VentasCon = $contra;
+        $ventaslevel1->update();
+        $ultimo = Reimpresiones::model()->findAll(array('limit'=>1,'order'=>'t.ReimpresionesId DESC'));
+        $ultimo = $ultimo[0]->ReimpresionesId;
+        
+        $guardarReimpresion                      = new Reimpresiones;
+        $guardarReimpresion->ReimpresionesId     = $ultimo+1;
+        $guardarReimpresion->EventoId            = $eventoId;
+        $guardarReimpresion->FuncionesId         = $funcionesId;
+        $guardarReimpresion->ZonasId             = $zonasId;
+        $guardarReimpresion->SubzonaId           = $subzonaId;
+        $guardarReimpresion->FilasId             = $filasId;
+        $guardarReimpresion->LugaresId           = $lugaresId;
+        $guardarReimpresion->UsuarioId           = $usuariosId;
+        $guardarReimpresion->ReimpresionesMod    = 'PANEL ADMINISTRATIVO';
+        $guardarReimpresion->ReimpresionesFecHor = date("Y-m-d G:i:s");
+        $guardarReimpresion->LugaresNumBol       = $codigo;
+        $guardarReimpresion->save();
+    }
+    public function reimprimeBoleto($codigo,$ventasId,$eventoId,$funcionesId,$zonasId,$subzonaId,$filasId,$lugaresId,$usuariosId,$ultimocodigo){
+        $reimpresiones = Reimpresiones::model()->count(array('condition'=>"EventoId=$eventoId AND FuncionesId=$funcionesId AND ZonasId=$zonasId AND SubzonaId=$subzonaId AND FilasId=$filasId AND LugaresId=$lugaresId"));
+        $contra = $eventoId.".".$funcionesId.".".$zonasId.".".$sSubzonaId;
+	    $contra .= ".".$filasId.".".$lugaresId."-".date("m").".".date("d")."-".$usuariosId;
+	    $contra .= "TR$reimpresiones";
+        $ventaslevel1 = Ventaslevel1::model()->findByAttributes(array('VentasId'=>$ventasId,'EventoId'=>$eventoId,'FuncionesId'=>$funcionesId,'ZonasId'=>$zonasId,'SubzonaId'=>$subzonaId,'FilasId'=>$filasId,'LugaresId'=>$lugaresId));
+   	    $ventaslevel1->LugaresNumBol = $codigo;
+        $ventaslevel1->VentasCon = $contra;
+        $ventaslevel1->update();
+        $ultimo = Reimpresiones::model()->findAll(array('limit'=>1,'order'=>'t.ReimpresionesId DESC'));
+        $ultimo = $ultimo[0]->ReimpresionesId;
+        
+        $guardarReimpresion                      = new Reimpresiones;
+        $guardarReimpresion->ReimpresionesId     = $ultimo+1;
+        $guardarReimpresion->EventoId            = $eventoId;
+        $guardarReimpresion->FuncionesId         = $funcionesId;
+        $guardarReimpresion->ZonasId             = $zonasId;
+        $guardarReimpresion->SubzonaId           = $subzonaId;
+        $guardarReimpresion->FilasId             = $filasId;
+        $guardarReimpresion->LugaresId           = $lugaresId;
+        $guardarReimpresion->UsuarioId           = $usuariosId;
+        $guardarReimpresion->ReimpresionesMod    = 'PANEL ADMINISTRATIVO';
+        $guardarReimpresion->ReimpresionesFecHor = date("Y-m-d G:i:s");
+        $guardarReimpresion->LugaresNumBol       = $ultimocodigo;
+        $guardarReimpresion->save();
+    }
+    public function verificaCodigos(){
+        
+        do{
+            
+            $codigo = $this->generarCodigo(12);
+            $model = Ventaslevel1::model()->count(array('condition'=>"LugaresNumBol='$codigo'",'limit'=>1));
+            if($model<=0){
+                $i=0;
+            }    
+        }while($i != 0);
+        return $codigo;
     }
     public function generarCodigo($longitud) {
          $key = '';
