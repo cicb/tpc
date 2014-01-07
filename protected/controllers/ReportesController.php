@@ -768,87 +768,6 @@ $objWriter->save('php://output');
 			$this->render('ventasWeb',array('model'=>$model,'itemselected' => $venta,'region'=>$region));
 	}
 
-	public function actionImpresionBoletosAjax()
-	{
-		if(!empty($_POST['formatoId'])){
-			$pv = $_POST['pv'];
-			$EventoId = $_POST['EventoId'];
-			$FuncionId = $_POST['FuncionId'];
-			$todos = "";
-			if($_POST['tipo_impresion']=="no_impresos"){
-				$todos = "  ventaslevel1.VentasCon='' AND ";
-			}
-			$data=array();
-			$query ="(SELECT  ventas.VentasId as id, 
-				funciones.funcionesTexto as fnc, 
-				lugares.LugaresLug,
-				filas.FilasAli,
-				zonas.ZonasAli,
-				subzona.SubzonaAcc,
-				evento.EventoDesBol,
-				evento.EventoNom,
-				evento.EventoImaBol,
-				foro.ForoNom,
-				ventaslevel1.VentasBolTip,
-				ventaslevel1.VentasCon,
-				ventaslevel1.VentasCarSer,
-				ventaslevel1.LugaresNumBol,
-				(ventaslevel1.VentasCosBol-ventaslevel1.VentasMonDes) as cosBol 
-				FROM
-				lugares
-				INNER JOIN funciones ON funciones.FuncionesId = lugares.FuncionesId AND funciones.EventoId = lugares.EventoId
-				INNER JOIN ventaslevel1 ON (lugares.EventoId=ventaslevel1.EventoId)
-				AND (lugares.FuncionesId=ventaslevel1.FuncionesId)
-				AND (lugares.ZonasId=ventaslevel1.ZonasId)
-				AND (lugares.SubzonaId=ventaslevel1.SubzonaId)
-				AND (lugares.FilasId=ventaslevel1.FilasId)
-				AND (lugares.LugaresId=ventaslevel1.LugaresId)
-				INNER JOIN evento ON evento.EventoId = ventaslevel1.EventoId
-				INNER JOIN foro ON foro.ForoId = evento.ForoId
-				INNER JOIN filas ON (filas.EventoId=lugares.EventoId)
-				AND (filas.FuncionesId=lugares.FuncionesId)
-				AND (filas.ZonasId=lugares.ZonasId)
-				AND (filas.SubzonaId=lugares.SubzonaId)
-				AND (filas.FilasId=lugares.FilasId)
-				INNER JOIN zonas ON (zonas.EventoId=filas.EventoId)
-				AND (zonas.FuncionesId=filas.FuncionesId)
-				AND (zonas.ZonasId=filas.ZonasId)
-				INNER JOIN ventas ON (ventas.VentasId=ventaslevel1.VentasId)
-				INNER JOIN puntosventa ON (puntosventa.PuntosventaId=ventas.PuntosventaId)
-				INNER JOIN subzona ON (subzona.EventoId=filas.EventoId)
-				AND (subzona.FuncionesId=filas.FuncionesId)
-				AND (subzona.ZonasId=filas.ZonasId)
-				AND (subzona.SubzonaId=filas.SubzonaId)
-				AND (zonas.EventoId=subzona.EventoId)
-				AND (zonas.FuncionesId=subzona.FuncionesId)
-				AND (zonas.ZonasId=subzona.ZonasId)
-				INNER JOIN cruge_user ON (cruge_user.iduser=ventas.UsuariosId)
-				WHERE
-				$todos 
-				ventaslevel1.VentasSta not like '%CANCELADO%' AND 
-				(lugares.EventoId = $EventoId ) AND 
-				(lugares.FuncionesId = $FuncionId ) AND
-				((puntosventa.PuntosventaId = '$pv')) AND 
-				NOT (ventas.VentasNumRef = ''))
-				ORDER BY  fnc ,ZonasAli,filasAli,LugaresLug;";
-			$data = new CSqlDataProvider($query, array(
-				//'totalItemCount'=>$count,//$count,	
-				'pagination'=>false,
-			));                        
-			$formato = Formatosimpresionlevel1::model()->findAll(array('condition'=>'FormatoId='.$_POST['formatoId']));
-			$this->renderPartial('_impresionBoletosAjax', array('formato'=>$formato,'data'=>$data->getData(),'FormatoId'=>$_POST['formatoId']), false, true);
-		}
-
-	}
-	public function actionActualizarRegion(){
-		if(!empty($_POST['region_id'])){
-			$user = Usuarios::model()->findByAttributes(array('UsuariosId'=>Yii::app()->user->id));
-			$user->UsuariosRegion = $_POST['region_id'];
-			$user->update();
-			//echo "ok".$user->UsuariosId.$_POST['region_id']; 
-		}
-	}
-
 	public function actionExportarReporte(){
 			$esMovil=Yii::app()->mobileDetect->isMobile();
 			if (isset($_GET['movil']) ) {
@@ -933,6 +852,207 @@ $objWriter->save('php://output');
 			}
 	}//actionExcel method end
 
+ 
+    public function actionImpresionBoletosAjax()
+    {
+        set_time_limit(0);
+        if(!empty($_POST['formatoId'])){
+            $pv = $_POST['pv'];
+            $EventoId = $_POST['EventoId'];
+            $FuncionId = $_POST['FuncionId'];
+            $todos = "";
+            if($_POST['tipo_impresion']=="no_impresos"){
+                $todos = "  ventaslevel1.VentasCon='' AND ";
+            }
+            $data=array();
+            $query ="(SELECT  ventas.VentasId as id, 
+                                    funciones.funcionesTexto as fnc, 
+                                    lugares.LugaresLug,
+                                    filas.FilasAli,
+                                    zonas.ZonasAli,
+                                    subzona.SubzonaAcc,
+                                    evento.EventoDesBol,
+                                    evento.EventoNom,
+                                    evento.EventoImaBol,
+                                    foro.ForoNom,
+                                    ventaslevel1.EventoId,
+                                    ventaslevel1.FuncionesId,
+                                    ventaslevel1.ZonasId,
+                                    ventaslevel1.SubzonaId,
+                                    ventaslevel1.FilasId,
+                                    ventaslevel1.LugaresId,
+                                    ventaslevel1.VentasBolTip,
+                                    ventaslevel1.VentasCon,
+                                    ventaslevel1.VentasCarSer,
+                                    ventaslevel1.LugaresNumBol,
+                                    (ventaslevel1.VentasCosBol-ventaslevel1.VentasMonDes) as cosBol,
+                                    (ventaslevel1.VentasCosBol-ventaslevel1.VentasMonDes + ventaslevel1.VentasCarSer) as cosBolCargo,
+                                    ventas.UsuariosId,
+                                    ventas.VentasNumRef,
+                                    ventas.PuntosventaId,
+                                    ventas.VentasFecHor,
+                                    ventas.VentasNumTar,
+                                    ventas.VentasNomDerTar
+									FROM
+									lugares
+									INNER JOIN funciones ON funciones.FuncionesId = lugares.FuncionesId AND funciones.EventoId = lugares.EventoId
+									INNER JOIN ventaslevel1 ON (lugares.EventoId=ventaslevel1.EventoId)
+									AND (lugares.FuncionesId=ventaslevel1.FuncionesId)
+									AND (lugares.ZonasId=ventaslevel1.ZonasId)
+									AND (lugares.SubzonaId=ventaslevel1.SubzonaId)
+									AND (lugares.FilasId=ventaslevel1.FilasId)
+									AND (lugares.LugaresId=ventaslevel1.LugaresId)
+                                    INNER JOIN evento ON evento.EventoId = ventaslevel1.EventoId
+                                    INNER JOIN foro ON foro.ForoId = evento.ForoId
+									INNER JOIN filas ON (filas.EventoId=lugares.EventoId)
+									AND (filas.FuncionesId=lugares.FuncionesId)
+									AND (filas.ZonasId=lugares.ZonasId)
+									AND (filas.SubzonaId=lugares.SubzonaId)
+									AND (filas.FilasId=lugares.FilasId)
+									INNER JOIN zonas ON (zonas.EventoId=filas.EventoId)
+									AND (zonas.FuncionesId=filas.FuncionesId)
+									AND (zonas.ZonasId=filas.ZonasId)
+									INNER JOIN ventas ON (ventas.VentasId=ventaslevel1.VentasId)
+									INNER JOIN puntosventa ON (puntosventa.PuntosventaId=ventas.PuntosventaId)
+									INNER JOIN subzona ON (subzona.EventoId=filas.EventoId)
+									AND (subzona.FuncionesId=filas.FuncionesId)
+									AND (subzona.ZonasId=filas.ZonasId)
+									AND (subzona.SubzonaId=filas.SubzonaId)
+									AND (zonas.EventoId=subzona.EventoId)
+									AND (zonas.FuncionesId=subzona.FuncionesId)
+									AND (zonas.ZonasId=subzona.ZonasId)
+									INNER JOIN cruge_user ON (cruge_user.iduser=ventas.UsuariosId)
+									WHERE
+                                    $todos 
+                                    ventaslevel1.VentasSta not like '%CANCELADO%' AND 
+									(lugares.EventoId = $EventoId ) AND 
+									(lugares.FuncionesId = $FuncionId ) AND
+									((puntosventa.PuntosventaId = '$pv')) AND 
+									NOT (ventas.VentasNumRef = ''))
+									ORDER BY  fnc ,ZonasAli,filasAli,LugaresLug;";
+                $dataCodigo = new CSqlDataProvider($query, array(
+							//'totalItemCount'=>$count,//$count,	
+							'pagination'=>false,
+					)); 
+                    
+                foreach($dataCodigo->getData() as $key => $boletoreimpresion):
+                    $codigo = $this->verificaCodigos();
+                    if(empty($boletoreimpresion['LugaresNumBol'])){
+                        $this->imprimeBoleto($codigo,$boletoreimpresion['id'],$boletoreimpresion['EventoId'],$boletoreimpresion['FuncionesId'],$boletoreimpresion['ZonasId'],$boletoreimpresion['SubzonaId'],$boletoreimpresion['FilasId'],$boletoreimpresion['LugaresId'],$boletoreimpresion['UsuariosId']);
+                    }else{
+                        
+                    }
+                endforeach;                        
+            $data = new CSqlDataProvider($query, array(
+							//'totalItemCount'=>$count,//$count,	
+							'pagination'=>false,
+					));                        
+            $formato = Formatosimpresionlevel1::model()->findAll(array('condition'=>'FormatoId='.$_POST['formatoId']));
+            $imagen = $data->getData();
+            
+            if($imagen[0]['EventoImaBol']==""){
+                if(!file_exists('..' . Yii::app ()->baseUrl . '/imagesbd/blanco.jpg')){
+                    copy('https://taquillacero.com/imagesbd/blanco.jpg','..' . Yii::app ()->baseUrl . '/imagesbd/blanco.jpg' );
+                }
+            }else{
+                if(!file_exists('..' . Yii::app ()->baseUrl . '/imagesbd/'.$imagen[0]['EventoImaBol'])){
+                    copy('https://taquillacero.com/imagesbd/'.$imagen[0]['EventoImaBol'],'..' . Yii::app ()->baseUrl . '/imagesbd/'.$imagen[0]['EventoImaBol'] );
+                }
+            }
+            $documento = $this->renderPartial('_impresionBoletosAjax', array('formato'=>$formato,'data'=>$data->getData(),'FormatoId'=>$_POST['formatoId']), true, false);
+            $pdf = Yii::createComponent ( 'application.extensions.html2pdf.html2pdf' );
+            $html2pdf = new HTML2PDF ( 'P', array(75,160), 'es', true, 'UTF-8', array (
+                			0,
+                			0,
+                			0,
+                			0
+                	) );
+         
+         $html2pdf->writeHTML ($documento, false );
+         $path='..'. Yii::app()->request->baseUrl . '/doctos';
+    				$html2pdf->Output ($path.'/boletos.pdf', 'F' );
+        }
+        
+    }
+    public function actionActualizarRegion(){
+        if(!empty($_POST['region_id'])){
+            $user = Usuarios::model()->findByAttributes(array('UsuariosId'=>Yii::app()->user->id));
+            $user->UsuariosRegion = $_POST['region_id'];
+            $user->update();
+            //echo "ok".$user->UsuariosId.$_POST['region_id']; 
+        }
+    }
+   	public function imprimeBoleto($codigo,$ventasId,$eventoId,$funcionesId,$zonasId,$subzonaId,$filasId,$lugaresId,$usuariosId){
+   	    $reimpresiones = Reimpresiones::model()->count(array('condition'=>"EventoId=$eventoId AND FuncionesId=$funcionesId AND ZonasId=$zonasId AND SubzonaId=$subzonaId AND FilasId=$filasId AND LugaresId=$lugaresId"));
+        $contra = $eventoId.".".$funcionesId.".".$zonasId.".".$subzonaId;
+	    $contra .= ".".$filasId.".".$lugaresId."-".date("m").".".date("d")."-".$usuariosId;
+	    $contra .= "TR$reimpresiones";
+        $ventaslevel1 = Ventaslevel1::model()->findByAttributes(array('VentasId'=>$ventasId,'EventoId'=>$eventoId,'FuncionesId'=>$funcionesId,'ZonasId'=>$zonasId,'SubzonaId'=>$subzonaId,'FilasId'=>$filasId,'LugaresId'=>$lugaresId));
+   	    $ventaslevel1->LugaresNumBol = $codigo;
+        $ventaslevel1->VentasCon = $contra;
+        $ventaslevel1->update();
+        $ultimo = Reimpresiones::model()->findAll(array('limit'=>1,'order'=>'t.ReimpresionesId DESC'));
+        $ultimo = $ultimo[0]->ReimpresionesId;
+        
+        $guardarReimpresion                      = new Reimpresiones;
+        $guardarReimpresion->ReimpresionesId     = $ultimo+1;
+        $guardarReimpresion->EventoId            = $eventoId;
+        $guardarReimpresion->FuncionesId         = $funcionesId;
+        $guardarReimpresion->ZonasId             = $zonasId;
+        $guardarReimpresion->SubzonaId           = $subzonaId;
+        $guardarReimpresion->FilasId             = $filasId;
+        $guardarReimpresion->LugaresId           = $lugaresId;
+        $guardarReimpresion->UsuarioId           = $usuariosId;
+        $guardarReimpresion->ReimpresionesMod    = 'PANEL ADMINISTRATIVO';
+        $guardarReimpresion->ReimpresionesFecHor = date("Y-m-d G:i:s");
+        $guardarReimpresion->LugaresNumBol       = $codigo;
+        $guardarReimpresion->save();
+    }
+    public function reimprimeBoleto($codigo,$ventasId,$eventoId,$funcionesId,$zonasId,$subzonaId,$filasId,$lugaresId,$usuariosId,$ultimocodigo){
+        $reimpresiones = Reimpresiones::model()->count(array('condition'=>"EventoId=$eventoId AND FuncionesId=$funcionesId AND ZonasId=$zonasId AND SubzonaId=$subzonaId AND FilasId=$filasId AND LugaresId=$lugaresId"));
+        $contra = $eventoId.".".$funcionesId.".".$zonasId.".".$sSubzonaId;
+	    $contra .= ".".$filasId.".".$lugaresId."-".date("m").".".date("d")."-".$usuariosId;
+	    $contra .= "TR$reimpresiones";
+        $ventaslevel1 = Ventaslevel1::model()->findByAttributes(array('VentasId'=>$ventasId,'EventoId'=>$eventoId,'FuncionesId'=>$funcionesId,'ZonasId'=>$zonasId,'SubzonaId'=>$subzonaId,'FilasId'=>$filasId,'LugaresId'=>$lugaresId));
+   	    $ventaslevel1->LugaresNumBol = $codigo;
+        $ventaslevel1->VentasCon = $contra;
+        $ventaslevel1->update();
+        $ultimo = Reimpresiones::model()->findAll(array('limit'=>1,'order'=>'t.ReimpresionesId DESC'));
+        $ultimo = $ultimo[0]->ReimpresionesId;
+        
+        $guardarReimpresion                      = new Reimpresiones;
+        $guardarReimpresion->ReimpresionesId     = $ultimo+1;
+        $guardarReimpresion->EventoId            = $eventoId;
+        $guardarReimpresion->FuncionesId         = $funcionesId;
+        $guardarReimpresion->ZonasId             = $zonasId;
+        $guardarReimpresion->SubzonaId           = $subzonaId;
+        $guardarReimpresion->FilasId             = $filasId;
+        $guardarReimpresion->LugaresId           = $lugaresId;
+        $guardarReimpresion->UsuarioId           = $usuariosId;
+        $guardarReimpresion->ReimpresionesMod    = 'PANEL ADMINISTRATIVO';
+        $guardarReimpresion->ReimpresionesFecHor = date("Y-m-d G:i:s");
+        $guardarReimpresion->LugaresNumBol       = $ultimocodigo;
+        $guardarReimpresion->save();
+    }
+    public function verificaCodigos(){
+        
+        do{
+            
+            $codigo = $this->generarCodigo(12);
+            $model = Ventaslevel1::model()->count(array('condition'=>"LugaresNumBol='$codigo'",'limit'=>1));
+            if($model<=0){
+                $i=0;
+            }    
+        }while($i != 0);
+        return $codigo;
+    }
+    public function generarCodigo($longitud) {
+         $key = '';
+         $pattern = '0123456789';
+         $max = strlen($pattern)-1;
+         for($i=0;$i < $longitud;$i++) $key .= $pattern{mt_rand(0,$max)};
+         return strtoupper($key);
+    }
 	// Uncomment the following methods and override them if needed
 	/*
 	public function filters()

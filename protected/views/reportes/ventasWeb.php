@@ -307,9 +307,7 @@ elseif(!empty($itemselected)):
     echo "No hay informacion para Ventas en Web y Call Center";
 endif;
 ?>
-
- 
-<div id="wrapper" style="display: none;"><div class="area_impresion"></div></div>
+<div id="wrapper" style=""><div class="area_impresion"></div></div>
 <style type="text/css" media="print">
 @media print {
 #parte1 {display:none;}
@@ -350,7 +348,12 @@ $("#imprimir_boletos").click(function(){
                 data:"formatoId="+formatoId+"&tipo_impresion=todos"+"&EventoId="+EventoId+"&FuncionId="+FuncionId+"&pv="+pv,
                 success:function(data){
                     $(".area_impresion").html(data);
-                    imprSelec('wrapper');
+                    try{
+                        boletos.close();
+                    }catch(err){}
+                    
+                    window.open('<?php echo '..' . Yii::app ()->baseUrl . '/doctos/boletos.pdf'?>', 'boletos', 'width=960,height=600');
+                    //imprSelec('wrapper');
                 }
                 
             });
@@ -361,7 +364,13 @@ $("#imprimir_boletos").click(function(){
                 data:"formatoId="+formatoId+"&tipo_impresion=no_impresos"+"&EventoId="+EventoId+"&FuncionId="+FuncionId+"&pv="+pv,
                 success:function(data){
                     $(".area_impresion").html(data);
-                    imprSelec('wrapper');
+                    try{
+                        boletos.close();
+                    }catch(err){}
+                    
+                     window.open('<?php echo '..' . Yii::app ()->baseUrl . '/doctos/boletos.pdf'?>', 'boletos', 'width=960,height=600');
+                    //imprSelec('wrapper');
+                    //imprSelec('wrapper');
                 }
                 
             });

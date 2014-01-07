@@ -125,7 +125,7 @@ class ReportesFlex extends CFormModel
 					  lugares.LugaresLug,
 					  ventas.VentasNumRef,
 					  ventas.VentasFecHor,
-					  ventaslevel1.VentasCon,
+                      ventaslevel1.VentasCon,
 					  COALESCE(clientes.ClientesEma,cruge_user.email) AS email,
 					  ventas.UsuariosId,
 					  (SELECT (COUNT(reimpresiones.ReimpresionesId)) AS vecesImpreso 
@@ -236,7 +236,7 @@ class ReportesFlex extends CFormModel
 				INNER JOIN ventaslevel1	AS t2	ON	t.VentasId=t2.VentasId 
 				INNER JOIN funciones 	AS t3	ON	t2.EventoId=t3.EventoId AND t2.FuncionesId=t3.FuncionesId
 				LEFT JOIN descuentos	AS t4	ON	t2.DescuentosId=t4.DescuentosId
-				WHERE t2.EventoId=$evento AND t2.VentasSta <> 'CANCELADO'AND t2.VentasBolTip IN $tipoBoleto
+				WHERE t2.EventoId=$evento AND t2.VentasSta <> 'CANCELADO' AND  t.VentasSta <> 'CANCELADO'   AND t2.VentasBolTip IN $tipoBoleto
 				 $funcion $rango $where 
 				GROUP BY $group_by ORDER BY $group_by desc;";
 			return new CSqlDataProvider($sql,array('pagination'=>false));
