@@ -50,7 +50,9 @@ body{font:normal 9pt "Verdana";}
 	background:@primario;
 	color:#fff;
 	li{
-		a{color:@primario;text-shadow:0 0px 0 #aaa;}
+		a{color:@primario;text-shadow:0 0px 0 #aaa;
+				background:#fff;
+		}
 	}
 
 }
@@ -62,9 +64,9 @@ body{font:normal 9pt "Verdana";}
 	color:#fff !important;font-weight:bolder;
 	a{color:#000 !important;text-shadow:0 1px 0 #6A6631 !important;}
 }
-#mainmenu{height:40px;}
+/*#mainmenu{height:40px;}*/
 #sidebar{background:@secundario; margin-top:5px}
-#wrap{min-height:100%;height:auto !important;height:100%;margin: 0 auto -60px;}
+#wrap{min-height:100%;height:auto !important;height:100%;margin: 0 auto -60px; margin-top:40px;}
 #footer{background:@secundario;color:#555;text-align:center;.texturizado;}
 #push,#footer{height:60px;}
  html,
@@ -82,7 +84,7 @@ body{font:normal 9pt "Verdana";}
 	h2,h1{ margin-top:0 !important;}
  }
 
-thead {background:@belize;color:@clouds}
+thead, {background:@belize;color:@clouds}
 .normal table thead{.normal;text-transform: uppercase; font-size: 80%;}
 .principal table thead{.principal;text-transform: uppercase; font-size: 80%;}
 .grid-view .table th > .sort-link{color:#fff !important}
@@ -95,10 +97,22 @@ thead {background:@belize;color:@clouds}
 .panel-normal{.normal}
 .panel-head{.normal;font-weight: 800; text-align: center; text-transform: uppercase; font-size: 110%;}
 .panel-foot{background:@midnight;color:#fff;}
-
-.navbar .nav > li > a{color:#fff!important; text-shadow:0 1px 0 @midnight !important;}
+.nav{
+		background:@primario !important;
+}
+.nav-collapse{
+		background:#fff;
+}
+.navbar .nav > li > a{color:#fff !important; text-shadow:0 1px 0 @midnight !important;
+background:@primario;
+}
+.nav-collapse .nav >li >a{color:#cc5;}
+.navbar .nav > li > a:hover{color:@belize;
+		/*text-shadow:0 1px 0 #fff !important;*/
+}
 .navbar .nav li.dropdown.open > .dropdown-toggle, .navbar .nav li.dropdown.active > .dropdown-toggle, .navbar .nav li.dropdown.open.active > .dropdown-toggle
 {color:#555 !important;text-shadow:-1px 1px 0 #FFF !important;}
 .dropdown-backdrop{
     position: static !important;
 }
+.btn{ padding:7px; }

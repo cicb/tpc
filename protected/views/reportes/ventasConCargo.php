@@ -1,6 +1,5 @@
 <?php
 $esMovil=Yii::app()->mobileDetect->isMobile();
-echo var_dump($esMovil);
 if (isset($_GET['dispositivo']) and $_GET['dispositivo']=='pc') {
 	$esMovil=false;
 }

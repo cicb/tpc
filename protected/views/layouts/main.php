@@ -85,7 +85,7 @@ array(
 </div>
 <div id="footer">
 	<div class='container'>
-		Copyright &copy; <?php echo date('Y'); ?> por Globaloxs.<br/>
+		Copyright &copy; <?php echo date('Y'); ?> por Taquilla Cero.<br/>
 		Reservados todos los derechos.<br/>
 	</div>
 </div><!-- footer -->
@@ -95,5 +95,9 @@ array(
 <?php Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl."/js/less.min.js",CClientScript::POS_HEAD); ?>
 <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/custom.css"  />
 <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/font-awesome.min.css"  />
+<?php 
+		if(Yii::app()->mobileDetect->isMobile())
+				Yii::app()->clientScript->registerCssFile(Yii::app()->request->baseUrl."/css/mobile.css");
+ ?>
 </body>
 </html>

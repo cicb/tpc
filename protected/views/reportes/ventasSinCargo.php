@@ -155,7 +155,8 @@ else if (isset($_GET['dispositivo']) and $_GET['dispositivo']=='movil')
 	else{
 			$funcion=$evento->funciones[0];
 	}
-	$meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
+	$meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio",
+			"Agosto","Septiembre","Octubre","Noviembre","Diciembre");
 	$months = array( 'January', 'February', 'March', 'April', 'May',
 			'June', 'July ', 'August', 'September', 'October', 'November',  'December',);
 	$ventasDesde=str_replace($months,$meses,date_create($funcion->FuncionesFecIni)->format("d-F-Y"));                   
@@ -279,7 +280,7 @@ $this->widget('application.extensions.morris.MorrisChartWidget', array(
     table{font-size: 90%}
 	td{text-align: right !important;}
 	.table-bordered th,.table-bordered td{border:1px solid #222 !important;}	
-	th{text-align:center}	
+	th{text-align:center !important;}	
 </style>
 
 <?php

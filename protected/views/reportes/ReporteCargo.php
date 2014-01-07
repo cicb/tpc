@@ -287,7 +287,7 @@ echo "<div class='row' style='text-align:center'>".CHtml::link('Versi&oacute;n c
     table{font-size: 90%}
 	td{text-align: right !important;}
 	.table-bordered th,.table-bordered td{border:1px solid #222 !important;}	
-	th{text-align:center}	
+	th{text-align:center !important}	
 </style>
 
 <?php

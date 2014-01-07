@@ -206,7 +206,7 @@ class ReportesVentas extends CFormModel
 						AND t.FuncionesId                 = t2.FuncionesId
 						AND t.ZonasId                     = t2.ZonasId
 				    INNER JOIN ventas as t3 ON t.VentasId = t3.VentasId
-					WHERE t.EventoId                      = %d AND t3.VentasSta NOT LIKE 'CANCELADO'
+					WHERE t.EventoId                      = %d AND t3.VentasSta <> 'CANCELADO'
 					GROUP BY t.EventoId;",$eventoId))->queryScalar();
 			$reporte=$modelo->getReporte($eventoId,$funcionId,$desde,$hasta,false, 'NORMAL,CORTESIA,BOLETO DURO','', 'VentasBolTip');
 			foreach ($reporte->getData() as $fila) {
@@ -259,7 +259,7 @@ class ReportesVentas extends CFormModel
 					}
 
 			$promedio=Yii::app()->db->createCommand(sprintf("
-					SELECT COUNT(distinct LugaresId)/GREATEST(
+					SELECT COUNT( LugaresId)/GREATEST(
 									$dias,1) AS boletos,
 							SUM(t2.VentasCosBol-t2.VentasMonDes)/GREATEST(
 									$dias,1) AS importe
@@ -268,7 +268,7 @@ class ReportesVentas extends CFormModel
 							t.VentasId=t2.VentasId AND t2.EventoId='%d' %s
 						INNER JOIN funciones as t3 ON 
 							t2.EventoId=t3.EventoId AND t2.FuncionesId=t3.FuncionesId	
-						WHERE t.VentasSta<>'CANCELADO' %s;
+						WHERE t2.VentasSta<>'CANCELADO' %s;
 			",$eventoId,$funcion,$fechas))->queryRow();
 			return $promedio;	
 	}
