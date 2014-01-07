@@ -371,7 +371,7 @@ $("#imprimir_boletos").click(function(){
             $.ajax({
                 type: "POST",
                 url:'<?php echo $this->createUrl('reportes/ImpresionBoletosAjax') ?>',
-                data:"formatoId="+formatoId+"&tipo_impresion=no_impresos"+"&EventoId="+EventoId+"&FuncionId="+FuncionId+"&pv="+pv,
+                data:"formatoId="+formatoId+"&tipo_impresion=no_impresos"+"&EventoId="+EventoId+"&FuncionId="+FuncionId+"&pv="+pvs,
                 success:function(data){
                     $(".area_impresion").html(data);
                     try{

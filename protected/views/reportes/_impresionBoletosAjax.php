@@ -3,6 +3,7 @@ $comprobante   = "";
 $total         = 0;
 $asientos      = "";
 $zonas         = array();
+//print_r($data);
 foreach($data as $key => $boleto):
     $total = $total + $boleto['cosBolCargo'];
     $asientos.= " ".$boleto['FilasAli']." ".$boleto["LugaresLug"].",";
@@ -14,17 +15,17 @@ foreach($data as $key => $boleto):
     $comprobante==""?$comprobante=$boleto['VentasNumRef']:"";
      //print_r($boleto);
         ?>
-            <div style="position:relative;border: none;width: 75mm;height: 160mm; font-size: 7pt;">
+            <div style="position:relative;margin-left: 10px; margin-top: 33px;width: 75mm;height: 160mm; font-size: 7pt;">
                 <div style=" position: absolute;top:<?php echo $formato[0]->FormatoY; ?>px ;left:<?php echo $formato[0]->FormatoX;?>px ;<?php echo $formato[0]->FormatoVisible=="true"?"":"display:none;"; ?>"> <?php echo $boleto['SubzonaAcc']; ?></div> 
-                <div style=" position: absolute;top:<?php echo $formato[1]->FormatoY; ?>px ;left:<?php echo $formato[1]->FormatoX;?>px ;<?php echo $formato[1]->FormatoVisible=="true"?"":"display:none;"; ?>"> <?php echo $boleto['EventoDesBol']; ?></div>
-                <div style=" position: absolute;top:<?php echo $formato[2]->FormatoY; ?>px ;left:<?php echo $formato[2]->FormatoX;?>px ;<?php echo $formato[2]->FormatoVisible=="true"?"":"display:none;"; ?>"> <?php echo $boleto['EventoNom']; ?></div>
-                <div style=" position: absolute;top:<?php echo $formato[3]->FormatoY; ?>px ;left:<?php echo $formato[3]->FormatoX;?>px ;<?php echo $formato[3]->FormatoVisible=="true"?"":"display:none;"; ?>"> <?php echo $boleto['ForoNom']; ?></div>
-                <div style=" position: absolute;top:<?php echo $formato[4]->FormatoY; ?>px ;left:<?php echo $formato[4]->FormatoX;?>px ;<?php echo $formato[4]->FormatoVisible=="true"?"":"display:none;"; ?>"> <?php echo $boleto['fnc']; ?></div>
+                <div style=" position: absolute;top:<?php echo $formato[1]->FormatoY; ?>px ;left:<?php echo $formato[1]->FormatoX-10;?>px ;<?php echo $formato[1]->FormatoVisible=="true"?"":"display:none;"; ?>width: 70mm;text-align:center;"> <?php echo $boleto['EventoDesBol']; ?></div>
+                <div style=" position: absolute;top:<?php echo $formato[2]->FormatoY; ?>px ;left:<?php echo $formato[2]->FormatoX-10;?>px ;<?php echo $formato[2]->FormatoVisible=="true"?"":"display:none;"; ?>width: 70mm;text-align:center;"> <?php echo $boleto['EventoNom']; ?></div>
+                <div style=" position: absolute;top:<?php echo $formato[3]->FormatoY; ?>px ;left:<?php echo $formato[3]->FormatoX-10;?>px ;<?php echo $formato[3]->FormatoVisible=="true"?"":"display:none;"; ?>width: 70mm;text-align:center;"> <?php echo $boleto['ForoNom']; ?></div>
+                <div style=" position: absolute;top:<?php echo $formato[4]->FormatoY; ?>px ;left:<?php echo $formato[4]->FormatoX-10;?>px ;<?php echo $formato[4]->FormatoVisible=="true"?"":"display:none;"; ?>width: 70mm;text-align:center;"> <?php echo $boleto['fnc']; ?></div>
                 <div style=" position: absolute;top:<?php echo $formato[5]->FormatoY; ?>px ;left:<?php echo $formato[5]->FormatoX;?>px ;<?php echo $formato[5]->FormatoVisible=="true"?"":"display:none;"; ?>"> <?php echo $boleto['VentasBolTip'];  ?></div>
                 <div style=" position: absolute;top:<?php echo $formato[6]->FormatoY; ?>px ;left:<?php echo $formato[6]->FormatoX;?>px ;<?php echo $formato[6]->FormatoVisible=="true"?"":"display:none;"; ?>"> <?php echo $boleto['VentasBolTip']; ?></div>
                 <div style=" position: absolute;top:<?php echo $formato[7]->FormatoY; ?>px ;left:<?php echo $formato[7]->FormatoX;?>px ;<?php echo $formato[7]->FormatoVisible=="true"?"":"display:none;"; ?>"> <?php echo $boleto['VentasBolTip']; ?></div>
-                <div style=" position: absolute;top:<?php echo $formato[8]->FormatoY; ?>px ;left:<?php echo $formato[8]->FormatoX;?>px ;<?php echo $formato[8]->FormatoVisible=="true"?"":"display:none;"; ?>"> <?php echo $boleto['VentasCon']; ?></div>
-                <div style=" position: absolute;top:<?php echo $formato[9]->FormatoY; ?>px ;left:<?php echo $formato[9]->FormatoX;?>px ;<?php echo $formato[9]->FormatoVisible=="true"?"":"display:none;"; ?>"> <?php echo $boleto['VentasCon']; ?></div>
+                <div style=" position: absolute;top:<?php echo $formato[8]->FormatoY; ?>px ;left:<?php echo $formato[8]->FormatoX;?>px ;<?php echo $formato[8]->FormatoVisible=="true"?"":"display:none;"; ?>width: 40px;height: 40px;"> <?php echo substr($boleto['VentasCon'],0,15)."<br/>".substr($boleto['VentasCon'],15,30); ?></div>
+                <div style=" position: absolute;top:<?php echo $formato[9]->FormatoY; ?>px ;left:<?php echo $formato[9]->FormatoX;?>px ;<?php echo $formato[9]->FormatoVisible=="true"?"":"display:none;"; ?>width: 40px;height: 40px;"> <?php echo substr($boleto['VentasCon'],0,15)."<br/>".substr($boleto['VentasCon'],15,30); ?></div>
                 <div style=" position: absolute;top:<?php echo $formato[10]->FormatoY; ?>px ;left:<?php echo $formato[10]->FormatoX;?>px ;<?php echo $formato[10]->FormatoVisible=="true"?"":"display:none;"; ?>"> <?php echo $boleto['cosBol']; ?></div>       
                 <div style=" position: absolute;top:<?php echo $formato[11]->FormatoY; ?>px ;left:<?php echo $formato[11]->FormatoX;?>px ;<?php echo $formato[11]->FormatoVisible=="true"?"":"display:none;"; ?>"> <?php echo $boleto['cosBol']; ?></div>
                 <div style=" position: absolute;top:<?php echo $formato[12]->FormatoY; ?>px ;left:<?php echo $formato[12]->FormatoX;?>px ;<?php echo $formato[12]->FormatoVisible=="true"?"":"display:none;"; ?>"> <?php echo $boleto['cosBol']; ?></div>
@@ -41,7 +42,7 @@ foreach($data as $key => $boleto):
                 <div style=" position: absolute;top:<?php echo $formato[23]->FormatoY; ?>px ;left:<?php echo $formato[23]->FormatoX;?>px ;<?php echo $formato[23]->FormatoVisible=="true"?"":"display:none;"; ?>"> <?php echo $boleto['VentasCarSer']; ?></div>
                 <div style=" position: absolute;top:<?php echo $formato[24]->FormatoY; ?>px ;left:<?php echo $formato[24]->FormatoX;?>px ;<?php echo $formato[24]->FormatoVisible=="true"?"":"display:none;"; ?>"> <?php echo $boleto['VentasCarSer']; ?></div>
                 <div style=" position: absolute;top:<?php echo $formato[25]->FormatoY; ?>px ;left:<?php echo $formato[25]->FormatoX;?>px ;<?php echo $formato[25]->FormatoVisible=="true"?"":"display:none;"; ?>"><?php echo  CHtml::image ( ($boleto['EventoImaBol']==""?'..' . Yii::app ()->baseUrl . '/imagesbd/blanco.jpg':'..' . Yii::app ()->baseUrl . '/imagesbd/'.$boleto['EventoImaBol']) , '', array () ); ?> </div>
-                <div style=" position: absolute;top:<?php echo $formato[26]->FormatoY; ?>px ;left:<?php echo $formato[26]->FormatoX-20;?>px ;<?php echo $formato[26]->FormatoVisible=="true"?"":"display:none;"; ?>text-align:center;"> <?php Barcode::getCodigo($boleto['LugaresNumBol']);//$this->widget('application.extensions.cbarras.CBarras',array('text'=>$boleto['LugaresNumBol'],'size'=>30));?><br /> <?php echo $boleto['LugaresNumBol']; ?></div>                                                                                                                                                                                                                                      
+                <div style=" position: absolute;top:<?php echo $formato[26]->FormatoY-25; ?>px ;left:<?php echo $formato[26]->FormatoX-30;?>px ;<?php echo $formato[26]->FormatoVisible=="true"?"":"display:none;"; ?>text-align:center;"> <?php Barcode::getCodigo($boleto['LugaresNumBol']);//$this->widget('application.extensions.cbarras.CBarras',array('text'=>$boleto['LugaresNumBol'],'size'=>30));?><br /> <?php echo $boleto['LugaresNumBol']; ?></div>                                                                                                                                                                                                                                      
             </div> 
         <?php
      if (array_key_exists($key+1, $data)) {
@@ -97,6 +98,7 @@ foreach($data as $key => $boleto):
     }else{
         ?>
         <div id="comprobante" class="comprobante" style="position:relative;border: none;width: 75mm;height: 160mm; font-size: 7pt;">
+                <br /><br /><br /><br /><br /><br /><br /><br />
                 <div style="text-align: right; padding-right: 3px;"><?php echo $boleto['id']." ".$boleto['PuntosventaId'];?></div>
                 <div style="padding:5px;">
                     BANAMEX<br />
