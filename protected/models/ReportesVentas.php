@@ -206,7 +206,7 @@ class ReportesVentas extends CFormModel
 						AND t.FuncionesId                 = t2.FuncionesId
 						AND t.ZonasId                     = t2.ZonasId
 				    INNER JOIN ventas as t3 ON t.VentasId = t3.VentasId
-					WHERE t.EventoId                      = %d AND t3.VentasSta <> 'CANCELADO'
+					WHERE t.EventoId                      = %d AND t3.VentasSta <> 'CANCELADO' AND  t.VentasSta<>'CANCELADO'
 					GROUP BY t.EventoId;",$eventoId))->queryScalar();
 			$reporte=$modelo->getReporte($eventoId,$funcionId,$desde,$hasta,false, 'NORMAL,CORTESIA,BOLETO DURO','', 'VentasBolTip');
 			foreach ($reporte->getData() as $fila) {
@@ -217,8 +217,8 @@ class ReportesVentas extends CFormModel
 			}
 			foreach ($matrix as &$fila) {
 				$fila['porcentaje']=number_format($fila['boletos']*100/max($aforo,1));
-				$fila['boletos']=money_format('%i', $fila['boletos']);
-				$fila['importe']=number_format( $fila['importe']);
+				$fila['boletos']=number_format( $fila['boletos'],0);
+				$fila['importe']=number_format( $fila['importe'],0);
 			}
 		return $matrix;
 	}
@@ -268,7 +268,7 @@ class ReportesVentas extends CFormModel
 							t.VentasId=t2.VentasId AND t2.EventoId='%d' %s
 						INNER JOIN funciones as t3 ON 
 							t2.EventoId=t3.EventoId AND t2.FuncionesId=t3.FuncionesId	
-						WHERE t2.VentasSta<>'CANCELADO' %s;
+						WHERE t.VentasSta<>'CANCELADO' and  t2.VentasSta<>'CANCELADO' %s;
 			",$eventoId,$funcion,$fechas))->queryRow();
 			return $promedio;	
 	}
@@ -315,6 +315,110 @@ class ReportesVentas extends CFormModel
 			return $matrix;
 	}
 
+		public function  getVentasPorRef($ref,$tipo='venta' )
+		{
+				$filtro="	(ventaslevel1.LugaresNumBol LIKE '%$ref%')";
+				if(strcasecmp($tipo,'venta')==0){
+					$filtro= "(ventas.VentasNumRef LIKE '%$ref%')";
+				}		
+				$query = "SELECT
+							'' as id,		
+							  zonas.ZonasAli,
+							  filas.FilasAli,
+							  lugares.LugaresLug as Asiento,
+							  ventaslevel1.VentasSta,
+							  ventaslevel1.VentasBolTip,
+							  evento.EventoNom,
+							  funciones.FuncionesFecHor,
+							  ventas.VentasNumRef,  ventaslevel1.LugaresNumBol as NumBol
+							FROM
+							 filas
+							 INNER JOIN lugares ON (filas.EventoId=lugares.EventoId)
+							  AND (filas.FuncionesId=lugares.FuncionesId)
+							  AND (filas.ZonasId=lugares.ZonasId)
+							  AND (filas.SubzonaId=lugares.SubzonaId)
+							  AND (filas.FilasId=lugares.FilasId)
+							 INNER JOIN zonas ON (zonas.EventoId=filas.EventoId)
+							  AND (zonas.FuncionesId=filas.FuncionesId)
+							  AND (zonas.ZonasId=filas.ZonasId)
+							 INNER JOIN ventaslevel1 ON (lugares.EventoId=ventaslevel1.EventoId)
+							  AND (lugares.FuncionesId=ventaslevel1.FuncionesId)
+							  AND (lugares.ZonasId=ventaslevel1.ZonasId)
+							  AND (lugares.SubzonaId=ventaslevel1.SubzonaId)
+							  AND (lugares.FilasId=ventaslevel1.FilasId)
+							  AND (lugares.LugaresId=ventaslevel1.LugaresId)
+							 INNER JOIN evento ON (evento.EventoId=zonas.EventoId)
+							 INNER JOIN funciones ON (funciones.EventoId=evento.EventoId)
+							  AND (funciones.FuncionesId=zonas.FuncionesId)
+							 INNER JOIN ventas ON (ventas.VentasId=ventaslevel1.VentasId)
+							 WHERE   $filtro ";
+				return new CSqlDataProvider($query, array(
+							'pagination'=>false,
+					));
+		}
 
-}
+	public function getReservacionesFarmatodo($ref)
+	{
+			$count=Templugares::model()->countByAttributes(array('tempLugaresNumRef'=>$ref));
+			if ($count>0) {
+				$query = "select 
+					ventas.ventasId as id,
+					ventas.VentasNumRef,
+					ventas.VentasFecHor Fecha, 
+					ventas.VentasNumRef Referencia, 
+					puntosventa.PuntosventaId, 
+					puntosventa.PuntosventaNom Venta, 
+					evento.EventoNom Evento, 
+					funciones.funcionesTexto Funcion, 
+					zonas.ZonasAli Zona,
+					filas.FilasAli Fila, 
+					lugares.LugaresLug Asiento,
+					ventaslevel1.VentasSta Estatus,
+					ventaslevel1.LugaresId Lug
+					from templugares
+					LEFT JOIN ventas ON ventas.VentasNumRef = templugares.tempLugaresNumRef
+					inner join ventaslevel1 on ventas.VentasId=ventaslevel1.VentasId
+					inner join lugares on lugares.EventoId=ventaslevel1.EventoId and lugares.FuncionesId=ventaslevel1.FuncionesId and lugares.ZonasId=ventaslevel1.ZonasId and lugares.SubzonaId=ventaslevel1.SubzonaId and lugares.FilasId=ventaslevel1.FilasId and lugares.LugaresId=ventaslevel1.LugaresId
+					inner join evento on evento.EventoId=ventaslevel1.EventoId
+					inner join funciones on funciones.EventoId=ventaslevel1.EventoId and funciones.FuncionesId=ventaslevel1.FuncionesId
+					inner join zonas on zonas.EventoId=ventaslevel1.EventoId and zonas.FuncionesId=ventaslevel1.FuncionesId and zonas.ZonasId=ventaslevel1.ZonasId
+					inner join subzona on subzona.EventoId=ventaslevel1.EventoId and subzona.FuncionesId=ventaslevel1.FuncionesId and subzona.ZonasId=ventaslevel1.ZonasId and subzona.SubzonaId=ventaslevel1.SubzonaId
+					inner join filas on filas.EventoId=ventaslevel1.EventoId and filas.FuncionesId=ventaslevel1.FuncionesId and filas.ZonasId=ventaslevel1.ZonasId and filas.SubzonaId=ventaslevel1.SubzonaId and filas.FilasId=ventaslevel1.FilasId
+					inner join puntosventa on puntosventa.PuntosVentaId=ventas.PuntosVentaId
+					where tempLugaresNumRef='$ref' GROUP BY Asiento" ;  
+			}
+			else{
+				$query ="select 
+					ventas.ventasId as id,
+					ventas.VentasNumRef,
+					ventas.VentasFecHor Fecha, 
+					ventas.VentasNumRef Referencia, 
+					puntosventa.PuntosventaId, 
+					puntosventa.PuntosventaNom Venta, 
+					evento.EventoNom Evento, 
+					funciones.funcionesTexto Funcion, 
+					zonas.ZonasAli Zona,
+					filas.FilasAli Fila, 
+					lugares.LugaresLug Asiento,
+					ventaslevel1.VentasSta Estatus,
+					ventaslevel1.LugaresId Lug
+					from ventas
+					inner join ventaslevel1 on ventas.VentasId=ventaslevel1.VentasId
+					inner join lugares on lugares.EventoId=ventaslevel1.EventoId and lugares.FuncionesId=ventaslevel1.FuncionesId and lugares.ZonasId=ventaslevel1.ZonasId and lugares.SubzonaId=ventaslevel1.SubzonaId and lugares.FilasId=ventaslevel1.FilasId and lugares.LugaresId=ventaslevel1.LugaresId
+					inner join evento on evento.EventoId=ventaslevel1.EventoId
+					inner join funciones on funciones.EventoId=ventaslevel1.EventoId and funciones.FuncionesId=ventaslevel1.FuncionesId
+					inner join zonas on zonas.EventoId=ventaslevel1.EventoId and zonas.FuncionesId=ventaslevel1.FuncionesId and zonas.ZonasId=ventaslevel1.ZonasId
+					inner join subzona on subzona.EventoId=ventaslevel1.EventoId and subzona.FuncionesId=ventaslevel1.FuncionesId and subzona.ZonasId=ventaslevel1.ZonasId and subzona.SubzonaId=ventaslevel1.SubzonaId
+					inner join filas on filas.EventoId=ventaslevel1.EventoId and filas.FuncionesId=ventaslevel1.FuncionesId and filas.ZonasId=ventaslevel1.ZonasId and filas.SubzonaId=ventaslevel1.SubzonaId and filas.FilasId=ventaslevel1.FilasId
+					inner join puntosventa on puntosventa.PuntosVentaId=ventas.PuntosVentaId
+					where ventas.VentasNumRef = '$ref'
+					GROUP BY Asiento";
+			}
+		return new CSqlDataProvider($query, array(
+							'pagination'=>false,
+					));
+
+		}	
+
+	}
  ?>

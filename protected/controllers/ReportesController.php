@@ -88,7 +88,10 @@ class ReportesController extends Controller
 
 	public function actionIndex()
 	{
-		$this->perfil();
+		//$this->perfil();
+		if (Yii::app()->user->getState("TipUsrId")=="2") {
+				$this->actionVentasSinCargo();
+		}	
 		$this->render('index');
 	}
 
@@ -264,109 +267,13 @@ class ReportesController extends Controller
 
 	public function actionReservacionesFarmatodo()
 	{
-
 		$this->perfil();
-		$model=new Templugares;
-
-
-		$count=0;
-		if(!empty($_POST['Templugares']['evento_id'])){
-
-			$venta = $_POST['Templugares']['evento_id'];
-
-
-			$count = Yii::app()->db->createCommand("select 
-				ventas.ventasId as id,
-				ventas.VentasNumRef,
-				ventas.VentasFecHor Fecha, 
-				ventas.VentasNumRef Referencia, 
-				puntosventa.PuntosventaId, 
-				puntosventa.PuntosventaNom Venta, 
-				evento.EventoNom Evento, 
-				funciones.funcionesTexto Funcion, 
-				zonas.ZonasAli Zona,
-				filas.FilasAli Fila, 
-				lugares.LugaresLug Asiento,
-				ventaslevel1.VentasSta Estatus,
-				ventaslevel1.LugaresId Lug
-				from templugares
-				LEFT JOIN ventas ON ventas.VentasNumRef = templugares.tempLugaresNumRef
-				inner join ventaslevel1 on ventas.VentasId=ventaslevel1.VentasId
-				inner join lugares on lugares.EventoId=ventaslevel1.EventoId and lugares.FuncionesId=ventaslevel1.FuncionesId and lugares.ZonasId=ventaslevel1.ZonasId and lugares.SubzonaId=ventaslevel1.SubzonaId and lugares.FilasId=ventaslevel1.FilasId and lugares.LugaresId=ventaslevel1.LugaresId
-				inner join evento on evento.EventoId=ventaslevel1.EventoId
-				inner join funciones on funciones.EventoId=ventaslevel1.EventoId and funciones.FuncionesId=ventaslevel1.FuncionesId
-				inner join zonas on zonas.EventoId=ventaslevel1.EventoId and zonas.FuncionesId=ventaslevel1.FuncionesId and zonas.ZonasId=ventaslevel1.ZonasId
-				inner join subzona on subzona.EventoId=ventaslevel1.EventoId and subzona.FuncionesId=ventaslevel1.FuncionesId and subzona.ZonasId=ventaslevel1.ZonasId and subzona.SubzonaId=ventaslevel1.SubzonaId
-				inner join filas on filas.EventoId=ventaslevel1.EventoId and filas.FuncionesId=ventaslevel1.FuncionesId and filas.ZonasId=ventaslevel1.ZonasId and filas.SubzonaId=ventaslevel1.SubzonaId and filas.FilasId=ventaslevel1.FilasId
-				inner join puntosventa on puntosventa.PuntosVentaId=ventas.PuntosVentaId
-				where tempLugaresNumRef='$venta' GROUP BY Asiento")->execute();
-			if($count>0){
-				$query = "select 
-					ventas.ventasId as id,
-					ventas.VentasNumRef,
-					ventas.VentasFecHor Fecha, 
-					ventas.VentasNumRef Referencia, 
-					puntosventa.PuntosventaId, 
-					puntosventa.PuntosventaNom Venta, 
-					evento.EventoNom Evento, 
-					funciones.funcionesTexto Funcion, 
-					zonas.ZonasAli Zona,
-					filas.FilasAli Fila, 
-					lugares.LugaresLug Asiento,
-					ventaslevel1.VentasSta Estatus,
-					ventaslevel1.LugaresId Lug
-					from templugares
-					LEFT JOIN ventas ON ventas.VentasNumRef = templugares.tempLugaresNumRef
-					inner join ventaslevel1 on ventas.VentasId=ventaslevel1.VentasId
-					inner join lugares on lugares.EventoId=ventaslevel1.EventoId and lugares.FuncionesId=ventaslevel1.FuncionesId and lugares.ZonasId=ventaslevel1.ZonasId and lugares.SubzonaId=ventaslevel1.SubzonaId and lugares.FilasId=ventaslevel1.FilasId and lugares.LugaresId=ventaslevel1.LugaresId
-					inner join evento on evento.EventoId=ventaslevel1.EventoId
-					inner join funciones on funciones.EventoId=ventaslevel1.EventoId and funciones.FuncionesId=ventaslevel1.FuncionesId
-					inner join zonas on zonas.EventoId=ventaslevel1.EventoId and zonas.FuncionesId=ventaslevel1.FuncionesId and zonas.ZonasId=ventaslevel1.ZonasId
-					inner join subzona on subzona.EventoId=ventaslevel1.EventoId and subzona.FuncionesId=ventaslevel1.FuncionesId and subzona.ZonasId=ventaslevel1.ZonasId and subzona.SubzonaId=ventaslevel1.SubzonaId
-					inner join filas on filas.EventoId=ventaslevel1.EventoId and filas.FuncionesId=ventaslevel1.FuncionesId and filas.ZonasId=ventaslevel1.ZonasId and filas.SubzonaId=ventaslevel1.SubzonaId and filas.FilasId=ventaslevel1.FilasId
-					inner join puntosventa on puntosventa.PuntosVentaId=ventas.PuntosVentaId
-					where tempLugaresNumRef='$venta' GROUP BY Asiento" ;    
-			}else{
-				$query ="select 
-					ventas.ventasId as id,
-					ventas.VentasNumRef,
-					ventas.VentasFecHor Fecha, 
-					ventas.VentasNumRef Referencia, 
-					puntosventa.PuntosventaId, 
-					puntosventa.PuntosventaNom Venta, 
-					evento.EventoNom Evento, 
-					funciones.funcionesTexto Funcion, 
-					zonas.ZonasAli Zona,
-					filas.FilasAli Fila, 
-					lugares.LugaresLug Asiento,
-					ventaslevel1.VentasSta Estatus,
-					ventaslevel1.LugaresId Lug
-					from ventas
-					inner join ventaslevel1 on ventas.VentasId=ventaslevel1.VentasId
-					inner join lugares on lugares.EventoId=ventaslevel1.EventoId and lugares.FuncionesId=ventaslevel1.FuncionesId and lugares.ZonasId=ventaslevel1.ZonasId and lugares.SubzonaId=ventaslevel1.SubzonaId and lugares.FilasId=ventaslevel1.FilasId and lugares.LugaresId=ventaslevel1.LugaresId
-					inner join evento on evento.EventoId=ventaslevel1.EventoId
-					inner join funciones on funciones.EventoId=ventaslevel1.EventoId and funciones.FuncionesId=ventaslevel1.FuncionesId
-					inner join zonas on zonas.EventoId=ventaslevel1.EventoId and zonas.FuncionesId=ventaslevel1.FuncionesId and zonas.ZonasId=ventaslevel1.ZonasId
-					inner join subzona on subzona.EventoId=ventaslevel1.EventoId and subzona.FuncionesId=ventaslevel1.FuncionesId and subzona.ZonasId=ventaslevel1.ZonasId and subzona.SubzonaId=ventaslevel1.SubzonaId
-					inner join filas on filas.EventoId=ventaslevel1.EventoId and filas.FuncionesId=ventaslevel1.FuncionesId and filas.ZonasId=ventaslevel1.ZonasId and filas.SubzonaId=ventaslevel1.SubzonaId and filas.FilasId=ventaslevel1.FilasId
-					inner join puntosventa on puntosventa.PuntosVentaId=ventas.PuntosVentaId
-					where ventas.VentasNumRef = '$venta'
-					GROUP BY Asiento";
-			}
-
-
-
-		}else{
-			$query = "SELECT  '' as id,'' as Evento , '' as Funcion, '' as Zona, '' as Fila, '' Asiento,
-				''  as Venta, '' as Fecha, '' as Referencia";
+		$model=new ReportesVentas;
+		$ref=null;
+		if(!empty($_POST['buscar'])){
+			$ref = $_POST['buscar'];
 		}
-		$dataProvider=new CSqlDataProvider($query, array(
-			'totalItemCount'=>$count,//$count,	
-			'pagination'=>false,
-		));
-
-
-		$this->render('reservacionesFarmatodo',array('model'=>$model, 'dataProvider'=>$dataProvider)); 
+		$this->render('reservacionesFarmatodo',array('model'=>$model, 'ref'=>$ref)); 
 		//$this->render('reservacionesFarmatodo');
 	}
 
@@ -1053,6 +960,21 @@ $objWriter->save('php://output');
          for($i=0;$i < $longitud;$i++) $key .= $pattern{mt_rand(0,$max)};
          return strtoupper($key);
     }
+
+	public function actionVentasPorRef()
+	{
+		$model=new ReportesVentas;	
+		$ref=null;	
+		$tipo="boleto";
+		if(!empty($_POST['buscar'])){
+			$ref = $_POST['buscar'];
+			if($_POST['tipo'] == 'referencia'){
+				$tipo="venta";
+			}
+		}
+
+			$this->render('ventasPorRef',array('model'=>$model,'ref'=>$ref,'tipo'=>$tipo));
+	}
 	// Uncomment the following methods and override them if needed
 	/*
 	public function filters()

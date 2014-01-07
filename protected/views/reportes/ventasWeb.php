@@ -1,5 +1,5 @@
 <div class='controles'>
-<h2>Reportes de ventas web</h2>
+<h2>Reportes de ventas Web y CallCenter</h2>
 <div class="form">
 <?php $form=$this->beginWidget('CActiveForm', array(
 	'id'=>'form-ventaslevel1',

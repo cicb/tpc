@@ -17,7 +17,7 @@ $this->breadcrumbs=array(
 	</div>
 <div class="span4" style="margin:auto;float:right">
 	
-<h1>Login</h1>
+<h1>Inicio de sesi&oacute;n</h1>
 
 <p>Por favor llene el formulario con sus datos de usuario:</p>
 
@@ -32,8 +32,7 @@ $this->breadcrumbs=array(
 
 	<p class="note">Los campos con <span class="required">*</span> son
 requeridos.</p>
-	<p class="note">Lo campos con <span class="required">*</span> son
-requeridos.</p>
+
 
 
 	<div class="row">

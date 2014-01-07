@@ -13,7 +13,7 @@
 		<div class="row form-search">
 				<?//php echo $form->labelEx($model,'buscar'); ?>
 				
-				<?php echo CHtml::textField('buscar',$ref,array('placeholder'=>'Número de reservacion','required'=>'required')); ?>
+				<?php echo CHtml::textField('buscar',array('placeholder'=>'Numero de reservacion','required'=>'required')); ?>
 				<?php echo CHtml::submitButton('Buscar', array('class'=>'btn btn-primary')); ?>
 		</div>
 
@@ -85,31 +85,31 @@ $form=$this->beginWidget('CActiveForm', array(
 )); 
 ?>
 </div>
-<?php
-//$this->widget('bootstrap.widgets.TbGridView', array(
-   //'dataProvider' => $model->getReservacionesFarmatodo($ref),
-   //'template' => "{items}",
-   //'type' => TbHtml::GRID_TYPE_STRIPED,
-
-   //'columns' => array(
-		//'Evento',
-		//'Funcion',
-		//'Zona',
-		//'Fila',
-		//'Asiento',
-		//'Venta',
-		//'Fecha',
-		//'Referencia',
-		//'Estatus',
-		//'Fecha',
-		//array(
-			////'type'=>'',
-			//'value'=>'CHtml::checkbox(\'x\')'
-		//),
-
-	//),
-//)); 
-?>
+<?//php $this->widget('bootstrap.widgets.TbGridView', array(
+/*
+ *   'dataProvider' => $dataProvider,
+ *   'template' => "{items}",
+ *   'type' => TbHtml::GRID_TYPE_STRIPED,
+ *
+ *   'columns' => array(
+ *        'Evento',
+ *        'Funcion',
+ *        'Zona',
+ *        'Fila',
+ *        'Asiento',
+ *        'Venta',
+ *        'Fecha',
+ *        'Referencia',
+ *        'Estatus',
+ *        'Fecha',
+ *        array(
+ *            //'type'=>'',
+ *            'value'=>'CHtml::checkbox(\'x\')'
+ *        ),
+ *
+ *    ),
+ */
+//)); ?>
 
 <div id="evento-grid" class="grid-view">
     <table class="items table table-collapsed">
@@ -127,7 +127,7 @@ $form=$this->beginWidget('CActiveForm', array(
         </thead>
         <tbody>
 <?php
-        foreach($model->getReservacionesFarmatodo($ref)->getData() as $key => $data):
+        foreach($model->getReservacionesFarmatodo($ref) as $key => $data):
         ?>
         <tr class="<?php echo ($key%2)==0?'odd':"even"; ?>">
             <td><?php echo $data['Evento']; ?></td>
@@ -168,7 +168,7 @@ $form=$this->beginWidget('CActiveForm', array(
 <?php
 $this->endWidget(); 
 else:
-    echo $ref;
+    echo "";
 endif;
 ?> 
 <?php

@@ -72,7 +72,12 @@ class Descuentos extends CActiveRecord
 		return array(
 			'descuentoslevel1s' => array(self::HAS_MANY, 'Descuentoslevel1', 'DescuentosId'),
 			'descuentospuntosventas' => array(self::HAS_MANY, 'Descuentospuntosventa', 'DescuentosId'),
-
+            'evento' => array(self::BELONGS_TO, 'Evento', 'EventoId'),
+            'funciones' => array(self::BELONGS_TO, 'Funciones', array('EventoId','FuncionesId')),
+            'zonas' => array(self::BELONGS_TO, 'Zonas', array('EventoId','FuncionesId','ZonasId')),
+            'subzonas' => array(self::BELONGS_TO, 'Subzonas', array('EventoId','FuncionesId','ZonasId','SubzonaId')),
+            'filas' => array(self::BELONGS_TO, 'Filas', array('EventoId','FuncionesId','ZonasId','SubzonaId','FilasId')),
+            'lugares' => array(self::BELONGS_TO, 'Lugares', array('EventoId','FuncionesId','ZonasId','SubzonaId','FilasId','LugaresId')),
 		);
 	}
 
@@ -83,16 +88,16 @@ class Descuentos extends CActiveRecord
 	{
 		return array(
 			'DescuentosId' => 'Descuentos',
-			'DescuentosDes' => 'Descuentos Des',
-			'DescuentosPat' => 'Descuentos Pat',
-			'DescuentosCan' => 'Descuentos Can',
+			'DescuentosDes' => 'Descripci&oacute;n',
+			'DescuentosPat' => 'Descuentos',
+			'DescuentosCan' => 'Forma',
 			'DescuentosValRef' => 'Descuentos Val Ref',
 			'DescuentosValIdRef' => 'Descuentos Val Id Ref',
 			'DescuentosFecIni' => 'Descuentos Fec Ini',
 			'DescuentosFecFin' => 'Descuentos Fec Fin',
-			'DescuentosExis' => 'Descuentos Exis',
+			'DescuentosExis' => 'Existencia',
 			'DescuentosUso' => 'Descuentos Uso',
-			'CuponesCod' => 'Cupones Cod',
+			'CuponesCod' => 'Cup&oacute;n',
 			'DescuentoCargo' => 'Descuento Cargo',
 		);
 	}
