@@ -1,5 +1,5 @@
 <div class='controles'>
-<h2>Reportes de ventas web</h2>
+<h2>Reportes de ventas web y Call Center</h2>
 <div class="form">
 <?php $form=$this->beginWidget('CActiveForm', array(
 	'id'=>'form-ventaslevel1',
@@ -14,12 +14,26 @@ $models = Evento::model()->findAll(array('condition' => 'EventoSta = "ALTA"','or
 $list = CHtml::listData($models, 'EventoId', 'EventoNom');
 // print_r($dataProvider->getData());
 ?>
+<style>
+#pvs{
+   visibility: hidden; 
+}
+</style>
 <div class="row">
 <?php
-echo CHtml::label('Punto de Venta','pv', array('style'=>'width:70px; display:inline-table;'));
-echo CHtml::dropDownList('pv',@$_POST["pv"],array('101'=>'Web','102'=>'Call Center'));
+//echo CHtml::label('Punto de Venta','pv', array('style'=>'width:70px; display:inline-table;'));
+
+
 ?>
 </div>
+<div class="row" >
+    <input id="pvweb" type="radio" name="pv" <?php echo @$_POST["pv"]=='101'?'checked="checked"':''; ?>   value="101"/><label style="display: inline-block;width: 250px;text-align: left;" for="pvweb">Web</label>
+</div>
+<br />
+<div class="row" >
+    <input id="pvcallcenter" type="radio" name="pv" <?php echo @$_POST["pv"]=='102'?'checked="checked"':''; ?> value="102"/> <label style="display: inline-block;width: 250px;text-align: left;" for="pvcallcenter">Call Center</label>
+</div>
+<br />
 <div class="row">
 <?php
 echo CHtml::label('Evento','evento_id', array('style'=>'width:70px; display:inline-table;'));
@@ -53,9 +67,8 @@ echo CHtml::dropDownList('Ventaslevel1[funcion]','',array());
 
 
 	<div class="row buttons">
-		<?php echo CHtml::submitButton('Ver reporte',array('class'=>'btn btn-primary','onclick'=>'$("#grid_mode").val("show");')); ?>
-		<?php echo CHtml::submitButton('Exportar',array('class'=>'btn btn-medium','onclick'=>'$("#grid_mode").val("export");')) ;
-		 ?>
+		<?php echo CHtml::submitButton('Exportar',array('class'=>'btn btn-medium','onclick'=>'$("#grid_mode").val("export");')) ; ?>
+         <?php echo CHtml::submitButton('Ver reporte',array('class'=>'btn btn-primary','onclick'=>'$("#grid_mode").val("show");')); ?>
 	</div>
 
 <?php $this->endWidget(); ?>
@@ -194,7 +207,7 @@ $this->widget('application.extensions.EExcelView', array(
             foreach($img_formato as $key => $formato):
                 echo CHtml::radioButton('impresion',($formato->FormatoId==$selected_formato?true:false),array('value'=>$formato->FormatoId,'id'=>"formato_".$formato->FormatoId,'style'=>'margin:0 5px;'));
                 ?>
-                    <label style="display: inline-block;" for="formato_<?php echo $formato->FormatoId;?>"><img id="imagen_formato<?php echo $formato->FormatoId; ?>" class="<?php echo $formato->FormatoId==$selected_formato?"formato_seleccionado":""; ?>" src="https://taquillacero.com/imagesbd/<?php echo $formato->FormatoIma;?>" style="width: 180px;height: 350px;"  /></label>
+                    <label style="display: inline-block;" for="formato_<?php echo $formato->FormatoId;?>"><img id="imagen_formato<?php echo $formato->FormatoId; ?>" class="<?php echo $formato->FormatoId==$selected_formato?"formato_seleccionado":""; ?>" src="<?php echo Yii::app()->request->baseUrl."/images/".$formato->FormatoIma;?>" style="width: 180px;height: 350px;"  /></label>
                 <?php
                 
             endforeach;
@@ -326,7 +339,6 @@ $.ajax({
             
         });
 $("#formatos input[type=radio]").click(function(){
-    console.log(this.value);
     $("#formatos img").removeClass("formato_seleccionado");
     $("#formatos img#imagen_formato"+this.value).addClass("formato_seleccionado");
     $.post( '<?php echo $this->createUrl('reportes/ActualizarRegion') ?>', { region_id: this.value});
@@ -336,13 +348,14 @@ $("#imprimir_boletos").click(function(){
     var EventoId  = $("#evento_id option:selected").val();
     var formatoId = $("#formatos input[type=radio]:checked").val();
     var FuncionId  = $("#Ventaslevel1_funcion option:selected").val();
-    var pv  = $("#pv option:selected").val();
+    var pvs  = $("#pvs option:checked").val();
+    console.log(pvs);
     var tipo = $("#select_tipo_impresion").val();
         if(tipo=="todos"){
             $.ajax({
                 type: "POST",
                 url:'<?php echo $this->createUrl('reportes/ImpresionBoletosAjax') ?>',
-                data:"formatoId="+formatoId+"&tipo_impresion=todos"+"&EventoId="+EventoId+"&FuncionId="+FuncionId+"&pv="+pv,
+                data:"formatoId="+formatoId+"&tipo_impresion=todos"+"&EventoId="+EventoId+"&FuncionId="+FuncionId+"&pv="+pvs,
                 success:function(data){
                     $(".area_impresion").html(data);
                     try{
@@ -423,4 +436,24 @@ function reimpresiones($string = ""){
                     echo "0";
                 endif;
 }
+echo CHtml::dropDownList('pvs',@$_POST["pv"],array('101'=>'Web','102'=>'Call Center'));
+  //Barcode::getCodigo(385146947825);
+  //echo 123456789123%10;
+  //Barcode::getCodigo(5689567891234);
+  /*$im = imagecreatetruecolor(300, 300);
+  $black = ImageColorAllocate($im,0x00,0x00,0x00);
+  $white = ImageColorAllocate($im,0xff,0xff,0xff);
+  imagefilledrectangle($im, 0, 0, 300, 300, $white);
+  
+  $data = Barcode::gd($im, $black, 125, 125, 0, 'ean13',   array('code'=>1234569871234), 2, 50);
+  ob_start (); 
+  imagepng($im);
+  $image_data = ob_get_contents (); 
+  ob_end_clean (); 
+  imagedestroy($im);	
+  echo '<img src="data:image/png;base64,'.base64_encode ($image_data).'" />';*/
+  
+  /*header('Content-type: image/gif');
+  imagegif($im);
+  imagedestroy($im);*/
 ?>

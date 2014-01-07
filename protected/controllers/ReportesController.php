@@ -891,7 +891,7 @@ class ReportesController extends Controller
                     if(empty($boletoreimpresion['LugaresNumBol'])){
                         $this->imprimeBoleto($codigo,$boletoreimpresion['id'],$boletoreimpresion['EventoId'],$boletoreimpresion['FuncionesId'],$boletoreimpresion['ZonasId'],$boletoreimpresion['SubzonaId'],$boletoreimpresion['FilasId'],$boletoreimpresion['LugaresId'],$boletoreimpresion['UsuariosId']);
                     }else{
-                        
+                        $this->reimprimeBoleto($codigo,$boletoreimpresion['id'],$boletoreimpresion['EventoId'],$boletoreimpresion['FuncionesId'],$boletoreimpresion['ZonasId'],$boletoreimpresion['SubzonaId'],$boletoreimpresion['FilasId'],$boletoreimpresion['LugaresId'],$boletoreimpresion['UsuariosId'],$boletoreimpresion['LugaresNumBol']);
                     }
                 endforeach;                        
             $data = new CSqlDataProvider($query, array(
@@ -937,31 +937,19 @@ class ReportesController extends Controller
    	    $reimpresiones = Reimpresiones::model()->count(array('condition'=>"EventoId=$eventoId AND FuncionesId=$funcionesId AND ZonasId=$zonasId AND SubzonaId=$subzonaId AND FilasId=$filasId AND LugaresId=$lugaresId"));
         $contra = $eventoId.".".$funcionesId.".".$zonasId.".".$subzonaId;
 	    $contra .= ".".$filasId.".".$lugaresId."-".date("m").".".date("d")."-".$usuariosId;
-	    $contra .= "TR$reimpresiones";
-        $ventaslevel1 = Ventaslevel1::model()->findByAttributes(array('VentasId'=>$ventasId,'EventoId'=>$eventoId,'FuncionesId'=>$funcionesId,'ZonasId'=>$zonasId,'SubzonaId'=>$subzonaId,'FilasId'=>$filasId,'LugaresId'=>$lugaresId));
+	    $contra .= "R$reimpresiones";
+        $ventaslevel1 = Ventaslevel1::model()->findByAttributes(array('VentasId'=>$ventasId,'EventoId'=>$eventoId,'FuncionesId'=>$funcionesId,'ZonasId'=>$zonasId,'SubzonaId'=>$subzonaId,'FilasId'=>$filasId,'LugaresId'=>$lugaresId,));
    	    $ventaslevel1->LugaresNumBol = $codigo;
         $ventaslevel1->VentasCon = $contra;
         $ventaslevel1->update();
         $ultimo = Reimpresiones::model()->findAll(array('limit'=>1,'order'=>'t.ReimpresionesId DESC'));
         $ultimo = $ultimo[0]->ReimpresionesId;
         
-        $guardarReimpresion                      = new Reimpresiones;
-        $guardarReimpresion->ReimpresionesId     = $ultimo+1;
-        $guardarReimpresion->EventoId            = $eventoId;
-        $guardarReimpresion->FuncionesId         = $funcionesId;
-        $guardarReimpresion->ZonasId             = $zonasId;
-        $guardarReimpresion->SubzonaId           = $subzonaId;
-        $guardarReimpresion->FilasId             = $filasId;
-        $guardarReimpresion->LugaresId           = $lugaresId;
-        $guardarReimpresion->UsuarioId           = $usuariosId;
-        $guardarReimpresion->ReimpresionesMod    = 'PANEL ADMINISTRATIVO';
-        $guardarReimpresion->ReimpresionesFecHor = date("Y-m-d G:i:s");
-        $guardarReimpresion->LugaresNumBol       = $codigo;
-        $guardarReimpresion->save();
+        Yii::app()->db->createCommand("INSERT INTO reimpresiones VALUES($ultimo,$eventoId,$funcionesId,$zonasId,$subzonaId,$filasId,$lugaresId,'PANEL ADMINISTRATIVO','', $usuariosId,'$hoy','$codigo')")->execute();
     }
     public function reimprimeBoleto($codigo,$ventasId,$eventoId,$funcionesId,$zonasId,$subzonaId,$filasId,$lugaresId,$usuariosId,$ultimocodigo){
         $reimpresiones = Reimpresiones::model()->count(array('condition'=>"EventoId=$eventoId AND FuncionesId=$funcionesId AND ZonasId=$zonasId AND SubzonaId=$subzonaId AND FilasId=$filasId AND LugaresId=$lugaresId"));
-        $contra = $eventoId.".".$funcionesId.".".$zonasId.".".$sSubzonaId;
+        $contra = $eventoId.".".$funcionesId.".".$zonasId.".".$subzonaId;
 	    $contra .= ".".$filasId.".".$lugaresId."-".date("m").".".date("d")."-".$usuariosId;
 	    $contra .= "TR$reimpresiones";
         $ventaslevel1 = Ventaslevel1::model()->findByAttributes(array('VentasId'=>$ventasId,'EventoId'=>$eventoId,'FuncionesId'=>$funcionesId,'ZonasId'=>$zonasId,'SubzonaId'=>$subzonaId,'FilasId'=>$filasId,'LugaresId'=>$lugaresId));
@@ -969,21 +957,11 @@ class ReportesController extends Controller
         $ventaslevel1->VentasCon = $contra;
         $ventaslevel1->update();
         $ultimo = Reimpresiones::model()->findAll(array('limit'=>1,'order'=>'t.ReimpresionesId DESC'));
-        $ultimo = $ultimo[0]->ReimpresionesId;
+        $ultimo = $ultimo[0]->ReimpresionesId + 1;
+        $hoy    = date("Y-m-d G:i:s"); 
         
-        $guardarReimpresion                      = new Reimpresiones;
-        $guardarReimpresion->ReimpresionesId     = $ultimo+1;
-        $guardarReimpresion->EventoId            = $eventoId;
-        $guardarReimpresion->FuncionesId         = $funcionesId;
-        $guardarReimpresion->ZonasId             = $zonasId;
-        $guardarReimpresion->SubzonaId           = $subzonaId;
-        $guardarReimpresion->FilasId             = $filasId;
-        $guardarReimpresion->LugaresId           = $lugaresId;
-        $guardarReimpresion->UsuarioId           = $usuariosId;
-        $guardarReimpresion->ReimpresionesMod    = 'PANEL ADMINISTRATIVO';
-        $guardarReimpresion->ReimpresionesFecHor = date("Y-m-d G:i:s");
-        $guardarReimpresion->LugaresNumBol       = $ultimocodigo;
-        $guardarReimpresion->save();
+        Yii::app()->db->createCommand("INSERT INTO reimpresiones VALUES($ultimo,$eventoId,$funcionesId,$zonasId,$subzonaId,$filasId,$lugaresId,'PANEL ADMINISTRATIVO','', $usuariosId,'$hoy','$ultimocodigo')")->execute();
+       
     }
     public function verificaCodigos(){
         
