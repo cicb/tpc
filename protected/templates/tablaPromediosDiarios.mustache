@@ -1,0 +1,25 @@
+<table cellspacing='0' class='table table-condensed table-bordered' id='promedios'>
+        <thead>
+                <tr>
+                        <th>Venta diaria</th>
+                        <th>Boletos</th>
+                        <th>Importe</th>
+                </tr>
+        </thead>
+        <tbody>
+				{{#promedio acumulado}}
+                <tr>
+                        <td>Promedio acumulado</td>
+						<td>{{boletos}}</td>
+						<td>${{importe}}</td>
+				</tr>
+				{{/promedio acumulado}}
+				{{#promedio semana}}
+                <tr>
+                        <td>Prom. Ultima semana</td>
+						<td>{{boletos}}</td>
+						<td>${{importe}}</td>
+                </tr>
+				{{/promedio semana}}
+        </tbody>
+</table>

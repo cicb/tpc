@@ -1,5 +1,6 @@
 <div class='controles'>
-<h2>Reportes de ventas web y Call Center</h2>
+
+<h2>Reportes de ventas Web y CallCenter</h2>
 <div class="form">
 <?php $form=$this->beginWidget('CActiveForm', array(
 	'id'=>'form-ventaslevel1',
@@ -21,9 +22,9 @@ $list = CHtml::listData($models, 'EventoId', 'EventoNom');
 </style>
 <div class="row">
 <?php
-//echo CHtml::label('Punto de Venta','pv', array('style'=>'width:70px; display:inline-table;'));
 
-
+//echo CHtml::label('Punto de Venta','pv', array('style'=>'width:90px; display:inline-table;'));
+//echo CHtml::dropDownList('pv',@$_POST["pv"],array('101'=>'Web','102'=>'Call Center'));
 ?>
 </div>
 <div class="row" >
@@ -45,12 +46,15 @@ echo CHtml::dropDownList('evento_id',@$_POST["evento_id"],$list,
 				'ajax' => array(
 						'type' => 'POST',
 						'url' => CController::createUrl('funciones/cargarFunciones'),
-						'beforeSend' => 'function() { $("#cargador").addClass("loading");}',
-						'complete'   => 'function() { $("#cargador").removeClass("loading");}',
+						'beforeSend' => 'function() { $("#fspin").addClass("fa fa-spinner fa-spin");}',
+						'complete'   => 'function() { 
+							$("#fspin").removeClass("fa fa-spinner fa-spin");
+							$("#funcion_id option:nth-child(2)").attr("selected", "selected");}',
 						'update' => '#Ventaslevel1_funcion',
 				)
 		));
 ?>
+	<span id="fspin" class="fa"></span>
 	</div>
 
 	<div class="row">
@@ -123,7 +127,7 @@ $this->widget('zii.widgets.grid.CGridView', array(
 <?php
 if(isset($eventoId,$funcionesId) and $eventoId>0):
 $this->widget('application.extensions.EExcelView', array(
- 'dataProvider'=> $model->getVendidosPor($eventoId,$funcionesId,$_POST["pv"]),
+ 'dataProvider'=> $model->getVendidosPor($eventoId,$funcionesId,@$_POST["pv"]),
  'grid_mode'=>$grid_mode,
  'htmlOptions'=>array('class'=>'principal'),
  'type'=>'condensed',

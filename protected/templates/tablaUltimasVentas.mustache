@@ -1,0 +1,33 @@
+<table cellspacing='0' class='table table-condensed table-bordered' id='ultimas_ventas'>
+        <thead>
+                <tr>
+                        <th></th>
+                        <th>Boletos</th>
+                        <th>Importe</th>
+                </tr>
+        </thead>
+        <tbody>
+				{{#hoy}}
+                <tr>
+                        <td>{{titulo}}:</td>
+						<td>{{boletos}}</td>
+						<td>${{importe}}</td>
+				</tr>
+				{{/hoy}}
+				{{#ayer}}
+                <tr>
+                        <td>{{titulo}}:</td>
+						<td>{{boletos}}</td>
+						<td>${{importe}}</td>
+				</tr>
+				{{/ayer}}
+				{{#antier}}
+                <tr>
+                        <td>{{titulo}}:</td>
+						<td>{{boletos}}</td>
+						<td>${{importe}}</td>
+				</tr>
+				{{/antier}}
+
+        </tbody>
+</table>

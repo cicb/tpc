@@ -1,0 +1,18 @@
+.btn{ 
+		padding: 15px 17px !important;
+		margin:5px 7px;
+}
+span.fa-calendar{
+		display:none;
+}
+/*.controles{background:#ccc}*/
+.controles .span4{float:none;}
+/*.controles h2{*/
+		/*background: rgb(230, 120, 33);*/
+		/*color: #fff;*/
+/*}*/
+body{padding:0px 3px;}
+#wrap{margin:-20px 0px !important;}
+
+
+

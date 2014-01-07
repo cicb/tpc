@@ -1,391 +1,302 @@
+<?php
+$esMovil=Yii::app()->mobileDetect->isMobile();
+if (isset($_GET['dispositivo']) and $_GET['dispositivo']=='pc') {
+	$esMovil=false;
+}
+else if (isset($_GET['dispositivo']) and $_GET['dispositivo']=='movil')
+		$esMovil=true;
+?>
 <div class='controles'>
     <h2>Reportes de ventas con cargo</h2>
     <?php 
     $form=$this->beginWidget('CActiveForm', array(
-       'id'=>'usuarios-form',
+     'id'=>'controles',
    //'action'=>$this->createUrl('/asiento/main'),
    //'htmlOptions'=>array('target'=>'gridFrame'),
-       'enableAjaxValidation'=>false,
-       'clientOptions' => array('validateOnSubmit' => false)
-       ));
-       ?>
+     'enableAjaxValidation'=>false,
+     'clientOptions' => array('validateOnSubmit' => false)
+     ));
+     ?>
 
 
-       <div class='row' style="margin-left:30px">
-        <div class='span4'>
-            <div class="row">
+     <div class='row' style="margin-left:30px">
+       <div class='span4'>
+          <div class="row">
+            <?php
+            echo CHtml::label('Evento','evento_id', array('style'=>'width:70px; display:inline-table;'));
+            $modeloEvento = Evento::model()->findAll(array('condition' => 'EventoSta = "ALTA"','order'=>'EventoNom'));
+            $list = CHtml::listData($modeloEvento,'EventoId','EventoNom');
+            echo CHtml::dropDownList('evento_id',@$_POST['evento_id'],$list,
+              array(
+                'ajax' => array(
+                  'type' => 'POST',
+                  'url' => CController::createUrl('funciones/cargarFunciones'),
+                  'beforeSend' => 'function() { $("#fspin").addClass("fa fa-spinner fa-spin");}',
+                  'complete'   => 'function() { 
+                    $("#fspin").removeClass("fa fa-spinner fa-spin");
+                    $("#funcion_id option:nth-child(2)").attr("selected", "selected");}',
+                  'update' => '#funcion_id',
+                  ),'prompt' => 'Seleccione un Evento...'
+                ));
+                ?>
+            </div>
+            <div class="row" id="funciones">
                 <?php
-                echo CHtml::label('Evento','evento_id', array('style'=>'width:70px; display:inline-table;'));
-                $modeloEvento = Evento::model()->findAll(array('condition' => 'EventoSta = "ALTA"','order'=>'EventoNom'));
-                $list = CHtml::listData($modeloEvento,'EventoId','EventoNom');
-                echo CHtml::dropDownList('evento_id','',$list,
-                    array(
-                        'ajax' => array(
-                            'type' => 'POST',
-                            'url' => CController::createUrl('funciones/cargarFunciones'),
-                            'beforeSend' => 'function() { $("#fspin").addClass("fa fa-spinner fa-spin");}',
-                            'complete'   => 'function() { 
-                                $("#fspin").removeClass("fa fa-spinner fa-spin");
-                                $("#funcion_id option:nth-child(2)").attr("selected", "selected");}',
-                                'update' => '#funcion_id',
-                                ),'prompt' => 'Seleccione un Evento...'
-                        ));
-                        ?>
-                    </div>
-                    <div class="row" id="funciones">
-                        <?php
-                        echo CHtml::label('Funcion','funcion_id', array('style'=>'width:70px; display:inline-table;'));
-                        echo CHtml::dropDownList('funcion_id','',array());
-                        echo CHtml::hiddenField('grid_mode','view');
-                        echo CHtml::hiddenField('funcion','');
-                        ?>
-                        <span id="fspin" class=""></span>
-                    </div>
-                </div>
-                <div class='span4'>
-                    <div class="controls"> 
-                        <?php echo "Desde: " ?>
-                        <?php
-                        $this->widget('zii.widgets.jui.CJuiDatePicker',
-                            array(          
-                              'name'=>'desde',
-                              'attribute'=>'fecha_revision',  
-                              'language' => 'es',             
-                              'htmlOptions' => array(         
+                echo CHtml::label('Funcion','funcion_id', array('style'=>'width:70px; display:inline-table;'));
+                echo CHtml::dropDownList('funcion_id',@$_POST['funcion_id'],array());
+                echo CHtml::hiddenField('grid_mode','view');
+                echo CHtml::hiddenField('funcion',@$funcionesId);
+                ?>
+                <span id="fspin" class="fa"></span>
+            </div>
+        </div>
+        <div class='span4'>
+            <div class="controls"> 
+              <?php echo "Desde: " ?>
+              <?php
+              $this->widget('zii.widgets.jui.CJuiDatePicker',
+                array(          
+                  'name'=>'desde',
+                  'attribute'=>'fecha_revision',  
+                  'language' => 'es',             
+                  'htmlOptions' => array(         
 //                         'readonly'=> $this->usuario->esMesaDeControl,
-                                ),
-                              'options'=>array(               
-                                'autoSize'=>false,              
-                                'defaultDate'=>'date("Y-m-d")', 
-                                'dateFormat'=>'yy-mm-dd',       
-                                'selectOtherMonths'=>true,      
-                                'showAnim'=>'fade',            
-                                'showButtonPanel'=>false,       
-                                'showOn'=>'focus',             
-                                'showOtherMonths'=>true,        
-                                'changeMonth' => true,          
-                                'changeYear' => true,
+                    ),
+                  'options'=>array(               
+                    'autoSize'=>false,              
+                    'defaultDate'=>'date("Y-m-d")', 
+                    'dateFormat'=>'yy-mm-dd',       
+                    'selectOtherMonths'=>true,      
+                    'showAnim'=>'fade',            
+                    'showButtonPanel'=>false,       
+                    'showOn'=>'focus',             
+                    'showOtherMonths'=>true,        
+                    'changeMonth' => true,          
+                    'changeYear' => true,
                         'minDate'=>'2010-01-01', //fec\ha minima
                         'maxDate'=>"+1D", //fecha maxima
                         ),
-                              )
+                  )
 );
 ?>
 <span class='fa fa-2x fa-calendar'></span>
 </div>
 
 <div class="controls"> 
-    <?php echo "Hasta: " ?>
-    <?php
-    $this->widget('zii.widgets.jui.CJuiDatePicker',
-        array(          
-            'name'=>'hasta',
-            'attribute'=>'fecha_revision',  
-            'language' => 'es',             
-            'htmlOptions' => array(         
+  <?php echo "Hasta: " ?>
+  <?php
+  $this->widget('zii.widgets.jui.CJuiDatePicker',
+    array(          
+       'name'=>'hasta',
+       'attribute'=>'fecha_revision',  
+       'language' => 'es',             
+       'htmlOptions' => array(         
 //                         'readonly'=> $this->usuario->esMesaDeControl,
-                ),
-            'options'=>array(               
-                'autoSize'=>false,              
-                'defaultDate'=>'date("Y-m-d")', 
-                'dateFormat'=>'yy-mm-dd',       
-                'selectOtherMonths'=>true,      
-                'showAnim'=>'fade',            
-                'showButtonPanel'=>false,       
-                'showOn'=>'focus',             
-                'showOtherMonths'=>true,        
-                'changeMonth' => true,          
-                'changeYear' => true,
+        ),
+       'options'=>array(               
+        'autoSize'=>false,              
+        'defaultDate'=>'date("Y-m-d")', 
+        'dateFormat'=>'yy-mm-dd',       
+        'selectOtherMonths'=>true,      
+        'showAnim'=>'fade',            
+        'showButtonPanel'=>false,       
+        'showOn'=>'focus',             
+        'showOtherMonths'=>true,        
+        'changeMonth' => true,          
+        'changeYear' => true,
                         'minDate'=>'2010-01-01', //fec\ha minima
                         'maxDate'=>"+1D", //fecha maxima
                         ),
-            )
-        );
-        ?>
-        <span class='fa fa-2x fa-calendar'></span>
-    </div>
+       )
+    );
+    ?>
+    <span class='fa fa-2x fa-calendar'></span>
+</div>
 </div>
 </div>
 <div class="row">
-    <?php echo CHtml::submitButton('Exportar'
-        ,array('class'=>'btn btn-medium','onclick'=>'$("#grid_mode").val("export");')) ;
-        ?>
+<?php if($eventoId>0){
+	if ($esMovil) 
+			echo CHtml::submitButton('Cambiar a vista completa',array('class'=>'btn',
+					'onclick'=>"$('#controles').attr('action','".$this->createUrl('reportes/ventasConCargo',
+			array('dispositivo'=>'pc'))."');"));
+	else	
+			echo CHtml::submitButton('Cambiar a vista movil',array('class'=>'btn',
+					'onclick'=>"$('#controles').attr('action','".$this->createUrl('reportes/ventasConCargo',
+			array('dispositivo'=>'movil'))."');"));
+}
+?>
+
+<?php echo CHtml::link('Exportar',$this->createUrl('reportes/exportarReporte',array(
+		'evento_id'=>$eventoId,
+		'funcion_id'=>$funcionesId,
+		'desde'=>$desde,
+		'hasta'=>$hasta,
+		'movil'=>$esMovil,
+		'cargo'=>1,
+		
+)),array('class'=>'btn')) ; ?>
     <?php echo CHtml::submitButton('Ver reporte',array('class'=>'btn btn-primary btn-medium','onclick'=>'$("#grid_mode").val("view");')); ?> 
     </div>   
 
     <?php $this->endWidget(); ?>
 
 </div>
-<div class="row-fluid">
+<div  id="reporte">
     <?php  if (isset($eventoId) and $eventoId>0): 
     $evento=Evento::model()->findByPk($eventoId);
-    $funcion="TODAS";
+    $funciones="TODAS";
     if (isset($funcionesId) and $funcionesId>0){
         $funcion=Funciones::model()->findByPk(array('EventoId'=>$eventoId,'FuncionesId'=>$funcionesId));
-        if(is_object($funcion))
-            $funcion=$funcion->funcionesTexto;
-    }
+		if(is_object($funcion)){
+				$funciones=$funcion->funcionesTexto;
+		}
 
+	}
+	else{
+			$funcion=$evento->funciones[0];
+	}
+	$meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
+	$months = array( 'January', 'February', 'March', 'April', 'May',
+			'June', 'July ', 'August', 'September', 'October', 'November',  'December',);
+	$ventasDesde=str_replace($months,$meses,date_create($funcion->FuncionesFecIni)->format("d-F-Y"));                   
+	$diaFuncion = new DateTime($funcion->FuncionesFecHor);
+	$hoy = new DateTime("now");
+	$interval = $hoy->diff($diaFuncion,false);
+	$diaspara=$interval->format('%R%a');
     ?>
     <?php  if (is_object($evento)): ?>
 
-        <div class="span7">
-            <br/>
-            <div class="well">
-                <small>Evento:</small>
-                <h3><?php echo $evento->EventoNom ?></h3>
+<div class=span4 style="float:none">
+           
+           <br/>
+            <div >
+                <strong><small>Evento:</small>
+                <?php echo $evento->EventoNom ?></strong><br/>
                 <small>Funcion (es):</small>
-                <h4><?php echo $funcion ?></h4>
+                <?php echo $funciones; ?><br/>
                 <small>A la venta desde:</small>
-                <strong><?php echo "$desde";?> </strong>
+				<?php echo $ventasDesde;?> <br/><br/>
+                <?php echo $diaspara>-1?" <small>D&iacute;as para el evento:</small>
+".$diaspara:"El evento ya ha finalizado.";?> <br/><br/>
+
             </div>
-            <?php
-            foreach ($evento->funciones as $funcion) {
-                foreach ($funcion->zonas as $zona) {
-                    echo "<div class='panel-head'>".$zona->ZonasAli."</div>";
-                    $this->widget('bootstrap.widgets.TbGridView', array(
-                        'id'=>'taquilla-grid',
-                        'emptyText'=>'No se encontraron coincidencias',
-                        'dataProvider'=>$model->getDetallesZonasCargo($eventoId,$funcionesId,$zona->ZonasId,$desde,$hasta,$cargo=true),
-                        'summaryText'=>'',
-                        'htmlOptions'=>array('class'=>'normal'),
-                        'columns'=>array(
-                            array(
-                                'header'=>'Tipo de boleto',
-                                'type'  =>'raw',
-                                'value' => '$data[\'VentasBolTip\']'
-                                ),
-                            array(
-                                'header'=>'Boletos vendidos.',
-                                'name'=>'cantidad',
-                                'htmlOptions'=>array(
-                                    'style'=>'text-align:right;'
-                                    )
-                                ), 
-                            array(
-                                'header'=>'Precio Boleto.',
-                                'name'=>'VentasCosBol',
-                                'htmlOptions'=>array(
-                                    'style'=>'text-align:right;'
-                                    )
-                                ),
-                            array(
-                                'header'=>'Sub-Totales de venta',
-                                'value'=>'"$".number_format($data[\'total\'],2)',
-                                'type'=>'raw',
-                                'htmlOptions'=>array(
-                                    'style'=>'text-align:right;'
-                                    )
-                                ),
+            </div>
+<div class="row-fluid">
+        <div class="span4" style="margin:10px; <?php
+				echo $esMovil?"float:none;margin:auto;display:block;":"";
+        ?>">
+				<div class='panel-primario'>Resumen de evento</div>
+				<?php 
+	$resumenEvento=$model->getResumenEvento($eventoId,$funcionesId,$desde,$hasta);
+	$data=array();
+	foreach (array_slice($resumenEvento,1,4) as $key=>$fila) {
+		$data[]=array('label'=>$key,'value'=>$fila['boletos']);
+	}
+		
+					$this->widget('application.extensions.morris.MorrisChartWidget', array(
+							'id'      => 'grafica-resumen',
+							'options' => array(
+									'chartType' => 'Donut',
+									'data'      => $data,
+									'barColors'    => array('#e67e22')
+							),
+					));
 
-                            ),
-)); 
-}
-break;
-}
-?>
-</div>
-<?php endif; ?>
-<div class="span5 remark" style="float:right">
-    <div class="panel-head">
-        Resumen del evento
+					Yii::app()->mustache->render('tablaResumenEvento', $resumenEvento);
+             ?>
+
+            <?php 
+            $arreglo=$model->getPromedios($eventoId,$funcionesId);
+            Yii::app()->mustache->render('tablaPromediosDiarios', $arreglo);
+             ?>
+            <?php 
+			echo "<div id='tabla-ultimas' ".($esMovil?'':'style="display:none !important;visibility:none"').">";
+					$ultimas=$model->getUltimasVentas($eventoId,$funcionesId);
+					Yii::app()->mustache->render('tablaUltimasVentas', $ultimas);
+			echo "</div>";
+             ?>
     </div>
-    <?php
-    $taquillas=$this->widget('bootstrap.widgets.TbGridView', array(
-        'id'=>'taquilla-grid',
-        'emptyText'=>'No se encontraron coincidencias',
-        'dataProvider'=>$model->getReporteTaquilla($eventoId,$funcionesId,$desde,$hasta,$cargo=true),
-        'summaryText'=>'',
-        'columns'=>array(
-            array(
-                'header'=>'Canales de venta.',
-                'name'=>'descuento',
-                ),
-            array(
-                'header'=>'Boletos vendidos.',
-                'name'=>'cantidad',
-                'htmlOptions'=>array(
-                    'style'=>'text-align:right;'
-                    )
-                ),
-            array(
-                'header'=>'Total',
-                'value'=>'"$".number_format($data[\'total\'],2)',
-                'type'=>'raw',
-                'htmlOptions'=>array(
-                    'style'=>'text-align:right;'
-                    )
-                ),
-
-            ),
-        )); 
-        ?>
-        <?php 
-        $puntos=$this->widget('bootstrap.widgets.TbGridView', array(
-            'id'=>'canales-venta-grid',
-            'emptyText'=>'No se encontraron coincidencias',
-            'dataProvider'=>$model->getReporte($eventoId,$funcionesId,$desde,$hasta,true,'NORMAL','and t3.FuncPuntosventaId<>t.PuntosventaId'),
-            'summaryText'=>'',
-        // 'htmlOptions'=>array('class'=>'span4'),
-            'columns'=>array(
-                array(
-                    'header'=>'Canales de venta.',
-                    'name'=>'puntos',
-                    ),
-                array(
-                    'header'=>'Boletos vendidos.',
-                    'name'=>'cantidad',
-                    'htmlOptions'=>array(
-                        'style'=>'text-align:right;'
-                        )
-                    ),
-                array(
-                    'header'=>'Total',
-                    'value'=>'"$".number_format($data[\'total\'],2)',
-                    'type'=>'raw',
-                    'htmlOptions'=>array(
-                        'style'=>'text-align:right;'
-                        )
-                    ),
-
-                ),
-            )); 
-
-$especiales=$this->widget('bootstrap.widgets.TbGridView', array(
-    'id'=>'boletos-especiales-grid',
-    'emptyText'=>'No se encontraron boletos duros o cortesias',
-    'dataProvider'=>$model->getReporte($eventoId,$funcionesId,$desde,$hasta,$cargo=true,
-        'CORTESIA,BOLETO DURO','','VentasBolTip'),
-    'summaryText'=>'',
-        // 'htmlOptions'=>array('class'=>'span4'),
-    'columns'=>array(
-        array(
-            'header'=>'Tipo de boleto.',
-            'name'=>'VentasBolTip',
-            ),
-        array(
-            'header'=>'Boletos vendidos.',
-            'name'=>'cantidad',
-            'htmlOptions'=>array(
-                'style'=>'text-align:right;'
-                )
-            ),
-        array(
-            'header'=>'Total',
-            'value'=>'"$".number_format($data[\'total\'],2)',
-            'type'=>'raw',
-            'htmlOptions'=>array(
-                'style'=>'text-align:right;'
-                )
-            ),
-
-        ),
-    )); 
-echo "<div class='panel-head'>Descuentos</div>";
-$descuentos=$this->widget('bootstrap.widgets.TbGridView', array(
-    'id'=>'descuentos-grid',
-    'emptyText'=>'No se encontraron ventas con descuentos',
-    'dataProvider'=>$model->getReporte($eventoId,$funcionesId,$desde,$hasta,$cargo='NO',
-        'NORMAL','AND t2.DescuentosId>0','DescuentosId'),
-    'summaryText'=>'',
-    'htmlOptions'=>array('class'=>'normal'),
-    'columns'=>array(
-        array(
-            'header'=>'Descuento.',
-            'name'=>'DescuentosId',
-            ),
-        array(
-            'header'=>'Boletos vendidos.',
-            'name'=>'cantidad',
-            'htmlOptions'=>array(
-                'style'=>'text-align:right;'
-                )
-            ),
-        array(
-            'header'=>'Total',
-            'value'=>'"$".number_format($data[\'total\'],2)',
-            'type'=>'raw',
-            'htmlOptions'=>array(
-                'style'=>'text-align:right;'
-                )
-            ),
-
-        ),
-    )); 
-    // SUMATORIAS-------------------------------------------------------------------------------------
-$vendidos=array('taquilla'=>0,'puntos'=>0,'especiales'=>0);
-$subtotal=array('taquilla'=>0,'puntos'=>0,'especiales'=>0);
-foreach ($puntos->dataProvider->getData() as $punto) {
-        # Sumariza los totales
-    $vendidos['puntos']+=$punto['cantidad'];
-    $subtotal['puntos']+=$punto['total'];
-}
-foreach ($taquillas->dataProvider->getData() as $taquilla) {
-        # Sumariza los totales de taquilla y taquilla con descuento
-    $vendidos['taquilla']+=$taquilla['cantidad'];
-    $subtotal['taquilla']+=$taquilla['total'];
-}
-foreach ($especiales->dataProvider->getData() as $especial) {
-        # Sumariza los totales de taquilla y taquilla con descuento
-    $vendidos['especiales']+=$especial['cantidad'];
-    $subtotal['especiales']+=$especial['total'];
-}
-Yii::app()->clientScript->registerScript('sumatorias',"
-    $('#canales-venta-grid table').append('<tr> <td >Sub-Total T.C. </td> <td style=\"text-align:right\">".$vendidos['puntos']."</td><td style=\"text-align:right\">$".number_format($subtotal['puntos'],2)."</td> ');
-    $('#canales-venta-grid table').append('<tr class=\'panel-head\'><td colspan=\'3\' ></td></tr><tr class=\'panel-head panel-foot\' > <td ><b>Subtotales. </b></td> <td style=\"text-align:right\">".($vendidos['taquilla']+$vendidos['puntos'])."</td><td style=\"text-align:right\">$".number_format($subtotal['taquilla']+$subtotal['puntos'],2)."</td> ')
-
-    $('#boletos-especiales-grid table').append('<tr class=\'panel-head\'><td colspan=\'3\' style=\'text-align:center\'>TOTAL</td></tr><tr class=\'panel-head panel-foot\'> <td ><b>Total: </b></td> <td style=\"text-align:right\">".(array_sum($vendidos))."</td><td style=\"text-align:right\">$".number_format(array_sum($subtotal),2)."</td> ')
-    "
-    ,CClientScript::POS_LOAD);
-
-
-    ?>
 <?php endif; ?>
-</div>
-</div>
+<?php 
+if(!$esMovil): ?>
+<div class="span7 " id="tablas-detalladas" style="float:right">
+<table class="table">
+    <tr>
+        <td style="text-align:center !important;font-weight:800">Resumen de ventas </td>
+        <td style="text-align:center !important;font-weight:800">Ventas de hoy</td>
+    </tr>
+    <tr>
+        <td>
+            <?php 
+            $arreglo=$model->getReporte($eventoId,$funcionesId,$desde,$hasta);
+            Yii::app()->mustache->render('tablaVentasSinCargo', $arreglo);
+             ?>  
+        </td>
+        <td>
+            <?php 
+            $arreglo=$model->getReporte($eventoId,$funcionesId,'curdate()','curdate()',$cargo=false,'NORMAL','and t3.FuncPuntosventaId<>t.PuntosventaId');
+            Yii::app()->mustache->render('tablaVentasHoySin', $arreglo);
+             ?>
+        </td>
+    </tr>
 
-<div id="graficas">
-    <div id="grafica_boletos">   </div>
+</table>
+              <?php 
+            $arreglo=$model->getReporteZonas($eventoId,$funcionesId,$desde,$hasta);
+            Yii::app()->mustache->render('tablasVentasZonas', $arreglo);
+             ?>  
 
-</div>
+<div class='panel-head'>Boletos vendidos por día</div>
 <?php 
 $data=$model->getDatosGraficaPorDia($eventoId,$funcionesId,$desde,$hasta);
-$this->widget(
-    'chartjs.widgets.ChLine', 
-    array(
-        'width' => 790,
-        'height' => 300,
-        'htmlOptions' => array(),
-        'labels' => $data['x'],
-        'datasets' => array(
-            array(
-                "fillColor" => "rgba(220,220,220,0.5)",
-                "strokeColor" => "rgba(220,220,220,1)",
-                "pointColor" => "rgba(220,220,220,1)",
-                "pointStrokeColor" => "#ffffff",
-                "data" => $data['y'],
-                ),
-            
-            ),
-        'options' => array()
-        )
-    ); 
-// Yii::app()->clientScript->registerScriptFile("https://www.google.com/jsapi",CClientScript::POS_HEAD);
-// Yii::app()->clientScript->registerScript('graficas',"
-//       google.load('visualization', '1', {packages:['corechart']});
-//       google.setOnLoadCallback(drawChart);
-//       function drawChart() {
-//         var data = google.visualization.arrayToDataTable(".$model->getDatosGraficaPorDia($eventoId,$funcionesId,$desde,$hasta).");
-
-//         var options = {
-//           title: 'Ventas por dia',
-//           vAxis: {title: 'Year',  titleTextStyle: {color: 'red'}}
-//         };
-
-//         var chart = new google.visualization.BarChart(document.getElementById('grafica_boletos'));
-//         chart.draw(data, options);
-//       }
+$this->widget('application.extensions.morris.MorrisChartWidget', array(
+    'id'      => 'grafica-ventas',
+    'options' => array(
+        'chartType' => 'Bar',
+        'data'      => $data,
+        'xkey'      => 'dia',
+        'ykeys'     => 'v',
+        'labels'    => array('Ventas'),
+        'barColors'    => array('#e67e22')
+    ),
+));
+        ?>
 
 
-// ",CClientScript::POS_HEAD); 
-    ?>
+
+
+<?php endif; //Fin de validacion movil ?>
+<?php endif; ?>
+</div>
+
+</div>
+</div>
+<style type="text/css">
+    .table-condensed thead{
+        background: white; color:#222;
+    }
+    .summary{background: white}
+    table{font-size: 90%}
+	td{text-align: right !important;}
+	.table-bordered th,.table-bordered td{border:1px solid #222 !important;}	
+	th{text-align:center}	
+</style>
+
+<?php
+if (isset($_POST['evento_id'])) {
+		Yii::app()->clientScript->registerScript('carga',"$('#evento_id').change();",CClientScript::POS_LOAD);
+		//Yii::app()->clientScript->registerScript('versiones',"var full=".(!$esMovil?'true':'false').";
+		//$('#btn-cambio-version').on('click',function (){
+			//$('#tablas-detalladas').toggle();
+			//$('#tabla-ultimas').toggle();		
+			//if(full){ 
+					//$('#btn-cambio-version').text('Cambiar a version completa');}
+			//else{ 
+					//$('#btn-cambio-version').text('Cambiar a version movil');}
+					//full=!full;	event.preventDefault();
+		//});",CClientScript::POS_LOAD);
+
+}
+?>
+

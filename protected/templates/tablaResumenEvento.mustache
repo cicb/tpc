@@ -1,0 +1,63 @@
+<table class="table table-condensed table-bordered" cellspacing='0'>
+		<thead>
+				<tr>
+						<th>Resumen del evento</th>
+						<th>Boletos</th>
+						<th>Importe</th>
+						<th>%</th>
+				</tr>
+		</thead>
+		<tbody>
+				{{#aforo}}
+				<tr>
+						<td>Aforo</td>
+						<td>{{boletos}}</td>
+						<td>${{importe}}</td>
+						<td>{{porcentaje}}%</td>
+				</tr>
+				{{/aforo}}
+			{{#por vender}}
+				<tr>
+						<td>Por vender</td>
+						<td>{{boletos}}</td>
+						<td>${{importe}}</td>
+						<td>{{porcentaje}}%</td>
+				</tr>
+				<tr>
+						<td colspan="4"></td>
+				</tr>
+				{{/por vender}}
+			{{#cortesia}}
+				<tr>
+						<td>Cortes&iacute;as</td>
+						<td>{{boletos}}</td>
+						<td>${{importe}}</td>
+						<td>{{porcentaje}}%</td>
+				</tr>
+				{{/cortesia}}
+			{{#boleto duro}}
+				<tr>
+						<td>Boletos duro</td>
+						<td>{{boletos}}</td>
+						<td>${{importe}}</td>
+						<td>{{porcentaje}}%</td>
+				</tr>
+				{{/boleto duro}}
+			{{#normal}}
+				<tr>
+						<td>Ventas</td>
+						<td>{{boletos}}</td>
+						<td>${{importe}}</td>
+						<td>{{porcentaje}}%</td>
+				</tr>
+				{{/normal}}
+			{{#total}}
+				<tr>
+						<td>Total</td>
+						<td>{{boletos}}</td>
+						<td>${{importe}}</td>
+						<td>{{porcentaje}}%</td>
+				</tr>
+				{{/total}}
+		</tbody>
+</table>

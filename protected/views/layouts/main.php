@@ -36,23 +36,24 @@
 
 							'active' => true,'visible'=>!Yii::app()->user->isGuest,
 							'items'=>array(
-								array('label' => 'Tipos de reportes', 'active'=>true),
+								//array('label' => 'Tipos de reportes', 'active'=>true),
+								array('label' => 'Desglose de
+								ventas', 	'url' =>  $this->createUrl('reportes/desgloseVentas'),'visible'
+								=> !Yii::app()->user->isGuest AND
+								Yii::app()->user->getState("Admin")?true:false),
 								array('label' => 'Lugares', 				'url' =>  $this->createUrl('reportes/lugares'),'visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
 								array('label' => 'Lugares vendidos', 		'url' =>  $this->createUrl('reportes/lugaresVendidos'),'visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
 										// array('label' => 'Cortes diarios', 			'url' =>  $this->createUrl('reportes/cortesDiarios'),'visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
+								array('label' => 'Ref/Num. boleto', 	'url' =>  $this->createUrl('reportes/ventasPorRef'),'visible' => !Yii::app()->user->isGuest AND (Yii::app()->user->getState("Admin"))?true:false), 
 								array('label' => 'Reservaciones Farmatodo', 'url' =>  $this->createUrl('reportes/reservacionesFarmatodo'),'visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
-								array('label' => 'Ventas por Web', 			'url' =>  $this->createUrl('reportes/ventasWeb'),'visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
+								array('label' => 'Ventas por Web y CallCenter', 			'url' =>  $this->createUrl('reportes/ventasWeb'),'visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
 								array('label' => 'Ventas sin cargo',		'url' =>  $this->createUrl('reportes/ventasSinCargo'),'visible' => !Yii::app()->user->isGuest AND (Yii::app()->user->getState("Admin") OR Yii::app()->user->getState("TipUsrId")=="2")?true:false),
 								array('label' => 'Ventas con cargo',		'url' =>  $this->createUrl('reportes/ventasConCargo'),'visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
 								array('label' => 'Ventas de Farmatodo', 	'url' =>  $this->createUrl('reportes/ventasFarmatodo'),'visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
-								array('label' => 'Ventas por Call Center', 	'url' =>  $this->createUrl('reportes/ventasCallCenter'),'visible' => !Yii::app()->user->isGuest AND (Yii::app()->user->getState("Admin"))?true:false), 
-								array('label' => 'Desglose de
-									ventas', 	'url' =>  $this->createUrl('reportes/desgloseVentas'),'visible'
-									=> !Yii::app()->user->isGuest AND
-									Yii::app()->user->getState("Admin")?true:false),
+								array('label' => 'Ventas diarias', 	'url' =>  $this->createUrl('reportes/ventasDiarias'),'visible' => !Yii::app()->user->isGuest AND (Yii::app()->user->getState("Admin"))?true:false), 
 								),
 ),
-array('label' => 'Descuentos', 	'url' => '#','visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
+array('label' => 'Descuentos', 	'url' => $this->createUrl('descuentoslevel1/admin',array('tipo'=>'descuento','query'=>'')),'visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
 array('label' => 'Eventos', 
 	'items'=>array(
 		array('label'=>'Configurador de accesos', 'url'=>$this->createUrl('accesos/index')),
@@ -85,7 +86,7 @@ array(
 </div>
 <div id="footer">
 	<div class='container'>
-		Copyright &copy; <?php echo date('Y'); ?> por Globaloxs.<br/>
+		Copyright &copy; <?php echo date('Y'); ?> por Taquilla Cero.<br/>
 		Reservados todos los derechos.<br/>
 	</div>
 </div><!-- footer -->
@@ -95,5 +96,9 @@ array(
 <?php Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl."/js/less.min.js",CClientScript::POS_HEAD); ?>
 <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/custom.css"  />
 <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/font-awesome.min.css"  />
+<?php 
+		if(Yii::app()->mobileDetect->isMobile())
+				Yii::app()->clientScript->registerCssFile(Yii::app()->request->baseUrl."/css/mobile.css",CClientScript::POS_BEGIN);
+ ?>
 </body>
 </html>

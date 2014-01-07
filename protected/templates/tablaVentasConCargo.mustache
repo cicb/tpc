@@ -1,0 +1,159 @@
+<style>
+.resaltado {
+		font-weight: 800;
+		text-transform: uppercase;
+		font-size: 90%;
+		background: #f5f1bf;
+		color: #222;
+}
+.resaltado-zanahoria {
+		font-weight: 800;
+		text-transform: uppercase;
+		font-size: 90%;
+		background: #f5f1bf;
+		background: #fbe9d9;
+		color: #222;
+}
+.resaltado-belize {
+		font-weight: 800;
+		text-transform: uppercase;
+		font-size: 90%;
+		background: #f5f1bf;
+		background: #bedcf0;
+		color: #222;
+}
+</style>
+  <table class="table table-condensed table-bordered">
+    <thead>
+      <th>Canales de venta</th>
+      <th>Boletos</th>
+      <th>Ventas</th>
+      <th>Car. Serv.</th>
+      <th>%</th>
+    </thead>
+    <tbody>
+      {{#taquilla}}
+        <tr>
+          <td>Taquilla:</td>
+          <td>{{boletos}}</td>
+          <td>${{ventas}}</td>
+          <td>${{car serv}}</td>
+          <td>{{porc}}%</td>
+        </tr>
+      {{/taquilla}}
+      {{#descuentos}}
+        <tr>
+          <td>{{titulo}}:</td>
+          <td>{{boletos}}</td>
+          <td>${{ventas}}</td>
+          <td>${{car serv}}</td>
+          <td>{{porc}}%</td>
+        </tr>
+      {{/descuentos}}
+      {{#cupones}}
+        <tr>
+          <td>{{titulo}}:</td>
+          <td>{{boletos}}</td>
+          <td>${{ventas}}</td>
+          <td>${{car serv}}</td>
+          <td>{{porc}}%</td>
+        </tr>
+      {{/cupones}}
+      <tr><td colspan="5"></td></tr>
+      {{#ventas telefonicas}}
+        <tr>
+          <td>Ventas Telefónicas:</td>
+          <td> {{boletos}}  </td>
+          <td>${{ventas}}</td>
+          <td>${{car serv}} </td>
+          <td> {{porc}}%    </td>
+        </tr>
+      {{/ventas telefonicas}}
+
+      {{#ventas por internet}}
+        <tr>
+          <td>{{titulo}}:</td>
+          <td> {{boletos}}  </td>
+          <td>${{ventas}}</td>
+          <td>${{car serv}} </td>
+          <td> {{porc}}%    </td>
+        </tr>
+      {{/ventas por internet}}
+
+      {{#farmatodo}}
+        <tr>
+          <td>{{titulo}}:</td>
+          <td> {{boletos}}  </td>
+          <td>${{ventas}}</td>
+          <td>${{car serv}} </td>
+          <td> {{porc}}%    </td>
+        </tr>
+      {{/farmatodo}}
+
+      {{#taquillas secundarias}}
+        <tr>
+          <td>{{titulo}}:</td>
+          <td> {{boletos}}  </td>
+          <td>${{ventas}}</td>
+          <td>${{car serv}} </td>
+          <td> {{porc}}%    </td>
+        </tr>
+      {{/taquillas secundarias}}
+
+      {{#subtotal tc}}
+        <tr class="resaltado">
+          <td>Sub-Total Taquilla Cero:</td>
+          <td> {{boletos}}  </td>
+          <td>${{ventas}}</td>
+          <td>${{car serv}} </td>
+          <td> {{porc}}%    </td>
+        </tr>
+      {{/subtotal tc}}
+
+      <tr><td colspan="5"></td></tr>
+      
+      {{#subtotal ventas}}
+        <tr class="resaltado-zanahoria">
+          <td>Sub-Total de ventas:</td>
+          <td> {{boletos}}  </td>
+          <td>${{ventas}}</td>
+          <td>${{car serv}} </td>
+          <td> {{porc}}%    </td>
+        </tr>
+      {{/subtotal ventas}}
+
+      <tr><td colspan="5"></td></tr>
+
+      {{#boleto duro}}
+        <tr>
+          <td>{{titulo}}:</td>
+          <td> {{boletos}}  </td>
+          <td>${{ventas}}</td>
+          <td>${{car serv}} </td>
+          <td> {{porc}}%    </td>
+        </tr>
+      {{/boleto duro}}
+      {{#cortesia}}
+        <tr>
+          <td>{{titulo}}:</td>
+          <td> {{boletos}}  </td>
+          <td>${{ventas}}</td>
+          <td>${{car serv}} </td>
+          <td> {{porc}}%    </td>
+        </tr>
+      {{/cortesia}}
+
+      <tr><td colspan="5"><br/></td></tr>
+
+      {{#total}}
+        <tr class="resaltado-belize">
+          <td>{{titulo}}:</td>
+          <td> {{boletos}}  </td>
+          <td>${{ventas}}</td>
+          <td>${{car serv}} </td>
+          <td> {{porc}}%    </td>
+        </tr>
+      {{/total}}
+
+    </tbody>
+  </table>

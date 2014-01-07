@@ -61,6 +61,7 @@ class Descuentoslevel1 extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+
 			'evento' => array(self::BELONGS_TO, 'Evento', 'EventoId'),
 			'funcion' => array(self::BELONGS_TO, 'Funciones', array('EventoId','FuncionesId')),
 			'zona' => array(self::BELONGS_TO, 'Zonas', array('EventoId','FuncionesId','ZonasId')),
@@ -68,7 +69,16 @@ class Descuentoslevel1 extends CActiveRecord
 			'fila' => array(self::BELONGS_TO, 'Filas', array('EventoId','FuncionesId','ZonasId','SubzonaId','FilasId')),
 			'lugar' => array(self::BELONGS_TO, 'Lugares', array('EventoId','FuncionesId','ZonasId','SubzonaId','FilasId','LugaresId')),
 			'descuentos' => array(self::BELONGS_TO, 'Descuentos', 'DescuentosId'),
-		);
+			
+			'funciones' => array(self::BELONGS_TO, 'Funciones', array('EventoId','FuncionesId')),
+            'zonas' => array(self::BELONGS_TO, 'Zonas', array('EventoId','FuncionesId','ZonasId')),
+            'subzonas' => array(self::BELONGS_TO, 'Subzonas', array('EventoId','FuncionesId','ZonasId','SubzonaId')),
+            'filas' => array(self::BELONGS_TO, 'Filas', array('EventoId','FuncionesId','ZonasId','SubzonaId','FilasId')),
+            'lugares' => array(self::BELONGS_TO, 'Lugares', array('EventoId','FuncionesId','ZonasId','SubzonaId','FilasId','LugaresId')),
+
+
+
+);
 	}
 
 	/**

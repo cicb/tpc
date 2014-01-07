@@ -13,9 +13,8 @@
 		<div class="row form-search">
 				<?//php echo $form->labelEx($model,'buscar'); ?>
 				
-				<?php echo $form->textField($model,'buscar',array('placeholder'=>'Número de reservación','required'=>'required')); ?>
+				<?php echo CHtml::textField('buscar',$ref,array('placeholder'=>'Número de reservacion','required'=>'required')); ?>
 				<?php echo CHtml::submitButton('Buscar', array('class'=>'btn btn-primary')); ?>
-				<?php echo $form->error($model,'buscar'); ?>
 		</div>
 
 
@@ -74,10 +73,8 @@ $this->widget('zii.widgets.grid.CGridView', array(
 endif;*/
 ?>
 <?php
-$datos = $dataProvider->getData();
-//print_r($dataProvider->getData());
-if(!empty($datos[0]['id'])):
-echo "Total ".count($dataProvider->getData())." Resultado(s)" ;
+
+if(!is_null($ref)):
 $form=$this->beginWidget('CActiveForm', array(
 	'id'=>'form-ventaslevel1',
     'action'=>Yii::app()->createUrl('/farmatodo/delete'),
@@ -88,31 +85,31 @@ $form=$this->beginWidget('CActiveForm', array(
 )); 
 ?>
 </div>
-<?//php $this->widget('bootstrap.widgets.TbGridView', array(
-/*
- *   'dataProvider' => $dataProvider,
- *   'template' => "{items}",
- *   'type' => TbHtml::GRID_TYPE_STRIPED,
- *
- *   'columns' => array(
- *        'Evento',
- *        'Funcion',
- *        'Zona',
- *        'Fila',
- *        'Asiento',
- *        'Venta',
- *        'Fecha',
- *        'Referencia',
- *        'Estatus',
- *        'Fecha',
- *        array(
- *            //'type'=>'',
- *            'value'=>'CHtml::checkbox(\'x\')'
- *        ),
- *
- *    ),
- */
-//)); ?>
+<?php
+//$this->widget('bootstrap.widgets.TbGridView', array(
+   //'dataProvider' => $model->getReservacionesFarmatodo($ref),
+   //'template' => "{items}",
+   //'type' => TbHtml::GRID_TYPE_STRIPED,
+
+   //'columns' => array(
+		//'Evento',
+		//'Funcion',
+		//'Zona',
+		//'Fila',
+		//'Asiento',
+		//'Venta',
+		//'Fecha',
+		//'Referencia',
+		//'Estatus',
+		//'Fecha',
+		//array(
+			////'type'=>'',
+			//'value'=>'CHtml::checkbox(\'x\')'
+		//),
+
+	//),
+//)); 
+?>
 
 <div id="evento-grid" class="grid-view">
     <table class="items table table-collapsed">
@@ -129,8 +126,8 @@ $form=$this->beginWidget('CActiveForm', array(
         <th>Cancelar</th>
         </thead>
         <tbody>
-        <?php
-        foreach($dataProvider->getData() as $key => $data):
+<?php
+        foreach($model->getReservacionesFarmatodo($ref)->getData() as $key => $data):
         ?>
         <tr class="<?php echo ($key%2)==0?'odd':"even"; ?>">
             <td><?php echo $data['Evento']; ?></td>
@@ -171,7 +168,7 @@ $form=$this->beginWidget('CActiveForm', array(
 <?php
 $this->endWidget(); 
 else:
-    echo "";
+    echo $ref;
 endif;
 ?> 
 <?php

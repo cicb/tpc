@@ -1,0 +1,96 @@
+<style>
+.resaltado {
+		font-weight: 800;
+		text-transform: uppercase;
+		font-size: 90%;
+		background: #f5f1bf;
+		color: #222;
+}
+.resaltado-zanahoria {
+		font-weight: 800;
+		text-transform: uppercase;
+		font-size: 90%;
+		background: #f5f1bf;
+		background: #fbe9d9;
+		color: #222;
+}
+.resaltado-belize {
+		font-weight: 800;
+		text-transform: uppercase;
+		font-size: 90%;
+		background: #f5f1bf;
+		background: #bedcf0;
+		color: #222;
+}
+</style>
+  {{#zonas}}
+  <table class="table table-condensed table-bordered">
+    <thead>
+      <th>{{zona}}</th>	
+      <th>Boletos</th>
+      <th>Precio</th>
+      <th>Importe</th>
+      <th>Porcentaje</th>
+    </thead>
+    <tbody>
+    {{#datos}}
+        {{#aforo}}
+    	<tr>
+    		<td>{{titulo}}</td>    		
+    		<td>{{boletos}}</td>    		
+    		<td>${{precio}}</td>    		
+    		<td>${{importe}}</td>    		
+    		<td>{{porcentaje}}%</td>    		
+    	</tr>    
+    	{{/aforo}}
+        {{#por vender}}
+    	<tr>
+    		<td>{{titulo}}</td>    		
+    		<td>{{boletos}}</td>    		
+    		<td>${{precio}}</td>    		
+    		<td>${{importe}}</td>    		
+    		<td>{{porcentaje}}%</td>    		
+    	</tr>    
+    	{{/por vender}}
+    	<tr><td colspan="5"></td></tr>
+        {{#tipos}}
+    	<tr>
+    		<td>{{titulo}}</td>    		
+    		<td>{{boletos}}</td>    		
+    		<td>${{precio}}</td>    		
+    		<td>${{importe}}</td>    		
+    		<td>{{porcentaje}}%</td>    		
+    	</tr>    
+    	{{/tipos}}
+        {{#descuentos}}
+    	<tr>
+    		<td>{{titulo}}</td>    		
+    		<td>{{boletos}}</td>    		
+    		<td>${{precio}}</td>    		
+    		<td>${{importe}}</td>    		
+    		<td>{{porcentaje}}%</td>    		
+    	</tr>    
+    	{{/descuentos}}
+        {{#cupones}}
+    	<tr>
+    		<td>{{titulo}}</td>    		
+    		<td>{{boletos}}</td>    		
+    		<td>${{precio}}</td>    		
+    		<td>${{importe}}</td>    		
+    		<td>{{porcentaje}}%</td>    		
+    	</tr>    
+    	{{/cupones}}  
+        {{#subtotal}}
+    	<tr class="">
+    		<td>{{titulo}}</td>    		
+    		<td>{{boletos}}</td>    		
+    		<td>${{precio}}</td>    		
+    		<td>${{importe}}</td>    		
+    		<td>{{porcentaje}}%</td>    		
+    	</tr>    
+    	{{/subtotal}}    	  	
+    {{/datos}}
+    </tbody>
+    </table>
+	<br/>
+    {{/zonas}}
