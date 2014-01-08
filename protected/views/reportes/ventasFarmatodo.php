@@ -91,7 +91,7 @@
             'id'=>'farmatodo-grid',
             'emptyText'=>'No se encontraron coincidencias',
             'dataProvider'=>$model->getVentasFarmatodo($desde,$hasta),
-			'summaryText'=>'Ventas en farmatodo agrupadaspunto de venta',
+			'summaryText'=>'Ventas en farmatodo agrupadas por punto de venta',
 			'htmlOptions'=>array('class'=>'primario'),
 			'type'=>array('condensed'),
             'columns'=>array(
@@ -113,7 +113,7 @@
 					array(
 							'header'=>'Total de boletos',
 							'value'=>'number_format($data[\'boletos\'])',
-							'htmlOptions'=>array('style'=>'text-align:right')
+							'htmlOptions'=>array('style'=>'text-align:center')
 					),
 					array(
 							'header'=>'Última transacción',

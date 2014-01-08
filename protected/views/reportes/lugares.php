@@ -1,5 +1,5 @@
 <div class="controles">
-	<h1>Lugares</h1>
+	<h2>Lugares</h2>
 	<div id="cargador"  style="position:absolute; width:40px; height:40px;left:30%; top:150px; border:0px; margin-left:-40px; margin-top:-40px;" >
 	</div>
 	<div class="form">

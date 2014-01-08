@@ -1,5 +1,5 @@
 <div class="controles">
-<h2>Lugares vendidos</h2>
+<h2>Lugares Vendidos</h2>
 <div id="cargador"  style="position:absolute; width:40px; height:40px;left:30%; top:150px; border:0px; margin-left:-40px; margin-top:-40px;" >
 </div>
 <div class="form">
