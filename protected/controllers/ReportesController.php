@@ -875,11 +875,14 @@ $objWriter->save('php://output');
                     }else{
                         $this->reimprimeBoleto($codigo,$boletoreimpresion['id'],$boletoreimpresion['EventoId'],$boletoreimpresion['FuncionesId'],$boletoreimpresion['ZonasId'],$boletoreimpresion['SubzonaId'],$boletoreimpresion['FilasId'],$boletoreimpresion['LugaresId'],$boletoreimpresion['UsuariosId'],$boletoreimpresion['LugaresNumBol']);
                     }
-                endforeach;                        
-            /*$data = new CSqlDataProvider($query, array(
-							//'totalItemCount'=>$count,//$count,	
-							'pagination'=>false,
-					));   */                     
+                endforeach;
+            if(empty($data)){
+                $ok = array('ok'=>'no');
+                echo json_encode($ok);
+            }else{
+                $ok = array('ok'=>'si');
+                echo json_encode($ok);
+            }                                                
             $formato = Formatosimpresionlevel1::model()->findAll(array('condition'=>'FormatoId='.$_POST['formatoId']));
             $imagen = Evento::model()->findByAttributes(array('EventoId'=>$_POST['EventoId']));//$data->getData();
             

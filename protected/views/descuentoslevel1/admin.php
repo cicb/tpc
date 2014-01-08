@@ -1,4 +1,3 @@
-<div class='controles'>
 <?php
 /* @var $this DescuentosController */
 /* @var $model Descuentos */
@@ -34,7 +33,6 @@ $this->menu=array(
                 <option value="cupon">Cupones</option>
                 <option value="descuento" <?php echo $_GET['tipo']!='descuento'?'':'selected'; ?>>Descuentos</option>
             </select>
-<br />
             <a href="<?php echo Yii::app()->createUrl('descuentoslevel1/admin&query=').($_GET['tipo']!='descuento'?'&tipo=cupon':'&tipo=descuento');  ?>" id="boton_query" style="margin-bottom: 15px;" class="btn btn-success <?php echo $_GET['query']=="inactivos"?"":"ocultar";?>"><i class='icon-eye-open icon-white'></i>&nbsp;<?php echo $_GET['tipo']!='descuento'?'Ver todos los cupones':'Ver todos los descuentos';?></a>
             <a href="<?php echo Yii::app()->createUrl('descuentoslevel1/admin&query=inactivos').($_GET['tipo']!='descuento'?'&tipo=cupon':'&tipo=descuento');  ?>" id="boton_query" style="margin-bottom: 15px;" class="btn btn-success <?php echo $_GET['query']=="inactivos"?"ocultar":"";?>"><i class='icon-remove icon-white'></i>&nbsp;<?php echo $_GET['tipo']!='descuento'?'Ver cupones inactivos':'Ver descuentos inactivos';?></a>
     		<?php //echo CHtml::submitButton("<i class='icon-user'></i>Buscar cupon",array('style'=>'display:inline;','class'=>'btn btn-success','encode'=>false)); ?>
@@ -53,10 +51,9 @@ $this->menu=array(
         echo '<div class="flash-' . $key . '">' . $message . "</div>\n";
     }
 ?>
-</div> <!--Finalizan controles-->
 <div id="resultado_elimnar"></div>
 <div id="evento-grid" class="grid-view">
-    <table class="table table-condensed">
+    <table class="items">
         <thead>
         <th>Activo</th>
         <th>Selecci&oacute;n</th>
@@ -65,8 +62,8 @@ $this->menu=array(
         <?php endif; ?>
         <th>Evento</th>
         <th>Descripci&oacute;n</th>
-        <th>Descuento</th>
         <th>Forma</th>
+        <th>Descuento</th>
         <th>Existencia</th>
         <th>Usados</th>
         <th>CargoXServ</th>
@@ -84,8 +81,8 @@ $this->menu=array(
             <?php endif; ?>
             <td><?php echo $descuentos->evento->EventoNom; ?></td>
             <td><?php echo $descuentos->descuentos->DescuentosDes; ?></td>
-            <td><?php echo $descuentos->descuentos->DescuentosCan; ?></td>
             <td><?php echo $descuentos->descuentos->DescuentosPat; ?></td>
+            <td><?php echo $descuentos->descuentos->DescuentosCan; ?></td>
             <td><?php echo $descuentos->descuentos->DescuentosExis; ?></td>
             <td><?php echo $descuentos->descuentos->DescuentosUso; ?></td>
             <td><?php echo $descuentos->descuentos->DescuentoCargo; ?></td>

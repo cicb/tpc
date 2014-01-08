@@ -432,7 +432,7 @@ class DescuentosController extends Controller
                             $descuentosNum = $descuentosNum+1;
                         }*/
                         $descuentoCargoCan   = $data['DescuentoCargoCan'];
-                        if(count($funcionesId)>0){
+                        if(is_array($funcionesId)){//if(count($funcionesId)>0){
                             foreach($funcionesId as $keyf => $funciones):
                                 if(count($funciones)>0){
                                     foreach($funciones as $keyz => $zonas):
@@ -545,7 +545,7 @@ class DescuentosController extends Controller
                             $filasId = $data['FilasId'];
                             foreach($data as $key => $dat):
                                 switch($key):
-                                    case 'CuponesCod'        : $body.= "<strong>Código del Cupón:</strong> ".$dat."<br/>";
+                                    case 'CuponesCod'        : $body.= ($dat==""?"<strong>Descuento</strong><br/></strong>":"<strong>Código del Cupón:</strong> ".$dat."<br/>");
                                                                break;
                                     case 'DescuentosDes'     : $body.= "<strong>Descripción:</strong> ".$dat."<br/>";
                                                                break;

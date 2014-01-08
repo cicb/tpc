@@ -782,4 +782,7 @@ class ReportesFlex extends CFormModel
 				}	
 				return new CSqlDataProvider($query, array('pagination'=>false));
 	}
+    public function getEventosAsignados(){
+        $usuarioId = Yii::app()->user->getState("TipUsrId");
+    }
 }
