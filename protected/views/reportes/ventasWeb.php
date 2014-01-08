@@ -1,6 +1,6 @@
 <div class='controles'>
 
-<h2>Reportes de ventas Web y CallCenter</h2>
+<h2>Ventas Web Y CallCenter</h2>
 <div class="form">
 <?php $form=$this->beginWidget('CActiveForm', array(
 	'id'=>'form-ventaslevel1',
@@ -40,19 +40,18 @@ $list = CHtml::listData($models, 'EventoId', 'EventoNom');
 echo CHtml::label('Evento','evento_id', array('style'=>'width:70px; display:inline-table;'));
 $modeloEvento = Evento::model()->findAll(array('condition' => 'EventoSta = "ALTA"','order'=>'EventoNom'));
 $list = CHtml::listData($modeloEvento,'EventoId','EventoNom');
-echo CHtml::dropDownList('evento_id',@$_POST["evento_id"],$list,
-
-		array(
-				'ajax' => array(
-						'type' => 'POST',
-						'url' => CController::createUrl('funciones/cargarFunciones'),
-						'beforeSend' => 'function() { $("#fspin").addClass("fa fa-spinner fa-spin");}',
-						'complete'   => 'function() { 
-							$("#fspin").removeClass("fa fa-spinner fa-spin");
-							$("#funcion_id option:nth-child(2)").attr("selected", "selected");}',
-						'update' => '#Ventaslevel1_funcion',
-				)
-		));
+            echo CHtml::dropDownList('evento_id',@$_POST['evento_id'],$list,
+              array(
+                'ajax' => array(
+                  'type' => 'POST',
+                  'url' => CController::createUrl('funciones/cargarFunciones'),
+                  'beforeSend' => 'function() { $("#fspin").addClass("fa fa-spinner fa-spin");}',
+                  'complete'   => 'function() { 
+                    $("#fspin").removeClass("fa fa-spinner fa-spin");
+                    $("#Ventaslevel1_funcion option:nth-child(2)").attr("selected", "selected");}',
+                  'update' => '#Ventaslevel1_funcion',
+                  ),'prompt' => 'Seleccione un Evento...'
+                ));
 ?>
 	<span id="fspin" class="fa"></span>
 	</div>

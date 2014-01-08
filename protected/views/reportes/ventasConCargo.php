@@ -7,7 +7,7 @@ else if (isset($_GET['dispositivo']) and $_GET['dispositivo']=='movil')
 		$esMovil=true;
 ?>
 <div class='controles'>
-    <h2>Reportes de ventas con cargo</h2>
+    <h2>Ventas Con Cargo</h2>
     <?php 
     $form=$this->beginWidget('CActiveForm', array(
      'id'=>'controles',
@@ -191,7 +191,7 @@ else if (isset($_GET['dispositivo']) and $_GET['dispositivo']=='movil')
 	$resumenEvento=$model->getResumenEvento($eventoId,$funcionesId,$desde,$hasta);
 	$data=array();
 	foreach (array_slice($resumenEvento,1,4) as $key=>$fila) {
-		$data[]=array('label'=>$key,'value'=>$fila['boletos']);
+		$data[]=array('label'=>$key,'value'=>(int)str_replace(',','',$fila['boletos']));
 	}
 		
 					$this->widget('application.extensions.morris.MorrisChartWidget', array(
@@ -199,7 +199,7 @@ else if (isset($_GET['dispositivo']) and $_GET['dispositivo']=='movil')
 							'options' => array(
 									'chartType' => 'Donut',
 									'data'      => $data,
-									'barColors'    => array('#e67e22')
+									'colors'    => array('#e67e22','#9b59b6','#d35400','#27ae60','#f1c40f')
 							),
 					));
 
@@ -230,13 +230,13 @@ if(!$esMovil): ?>
         <td>
             <?php 
             $arreglo=$model->getReporte($eventoId,$funcionesId,$desde,$hasta);
-            Yii::app()->mustache->render('tablaVentasSinCargo', $arreglo);
+            Yii::app()->mustache->render('tablaVentasConCargo', $arreglo);
              ?>  
         </td>
         <td>
             <?php 
             $arreglo=$model->getReporte($eventoId,$funcionesId,'curdate()','curdate()',$cargo=false,'NORMAL','and t3.FuncPuntosventaId<>t.PuntosventaId');
-            Yii::app()->mustache->render('tablaVentasHoySin', $arreglo);
+            Yii::app()->mustache->render('tablaVentasHoy', $arreglo);
              ?>
         </td>
     </tr>
@@ -257,7 +257,7 @@ $this->widget('application.extensions.morris.MorrisChartWidget', array(
         'data'      => $data,
         'xkey'      => 'dia',
         'ykeys'     => 'v',
-        'labels'    => array('Ventas'),
+        'labels'    => array('Boletos'),
         'barColors'    => array('#e67e22')
     ),
 ));

@@ -107,7 +107,8 @@ if(!empty($data)){
                         ),
                     array(            // display 'create_time' using an expression
                         'name'=>'Precio S/C',
-                        'value'=>'$data["VentasCosBol"]',
+                        'value'=>'number_format($data["VentasCosBol"])',
+						//'htmlOptions'=>array('style'=>'text-align:right;'),
                         ),
                     array(            // display 'create_time' using an expression
                         'name'=>'Tipo Venta',

@@ -101,7 +101,7 @@ class ReportesVentas extends CFormModel
 					'por vender'	=>array('titulo'=>'Por Vender',		'boletos'=>0,	'precio'=>0,	'importe'=>0,	'porcentaje'=>0),
 					'descuentos'	=>array('titulo'=>'Descuentos',		'boletos'=>0,	'precio'=>0,	'importe'=>0,	'porcentaje'=>0),
 					'cupones'		=>array('titulo'=>'Cupones',		'boletos'=>0,	'precio'=>0,	'importe'=>0,	'porcentaje'=>0),
-					'subtotal'		=>array('titulo'=>'Sub-total',		'boletos'=>0,	'precio'=>0,	'importe'=>0,	'porcentaje'=>0),
+					'subtotal'		=>array('titulo'=>'Sub-Total',		'boletos'=>0,	'precio'=>0,	'importe'=>0,	'porcentaje'=>0),
 					);
 				$reporte=$modelo->getDetallesZonasCargo($eventoId,$funcionId,$zona->ZonasId,$desde,$hasta,$cargo='NO');
 				//$tipos=array();

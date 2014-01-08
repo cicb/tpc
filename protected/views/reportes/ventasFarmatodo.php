@@ -1,5 +1,5 @@
 <div class='controles'>
-    <h2>Reportes de ventas en Farmatodo</h2>
+    <h2>Ventas En Farmatodo</h2>
     <?php 
     $form=$this->beginWidget('CActiveForm', array(
      'id'=>'usuarios-form',

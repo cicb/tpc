@@ -1,5 +1,5 @@
 <div class='controles'>
-    <h2>Reportes de ventas diarias</h2>
+    <h2>Ventas Diarias</h2>
     <?php 
     $form=$this->beginWidget('CActiveForm', array(
      'id'=>'usuarios-form',

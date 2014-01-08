@@ -1,5 +1,5 @@
 <div class='controles'>
-<h2>Reporte por referencia o numero de boleto</h2>
+<h2>Referencia / Numero De Boleto</h2>
 <div class="form">
 
 <?php $form=$this->beginWidget('CActiveForm', array(
