@@ -867,32 +867,32 @@ $objWriter->save('php://output');
 							//'totalItemCount'=>$count,//$count,	
 							'pagination'=>false,
 					)); 
-                    
-                foreach($dataCodigo->getData() as $key => $boletoreimpresion):
+                $data =   $dataCodigo->getData(); 
+                foreach($data as $key => $boletoreimpresion):
                     $codigo = $this->verificaCodigos();
                     if(empty($boletoreimpresion['LugaresNumBol'])){
                         $this->imprimeBoleto($codigo,$boletoreimpresion['id'],$boletoreimpresion['EventoId'],$boletoreimpresion['FuncionesId'],$boletoreimpresion['ZonasId'],$boletoreimpresion['SubzonaId'],$boletoreimpresion['FilasId'],$boletoreimpresion['LugaresId'],$boletoreimpresion['UsuariosId']);
                     }else{
-                        
+                        $this->reimprimeBoleto($codigo,$boletoreimpresion['id'],$boletoreimpresion['EventoId'],$boletoreimpresion['FuncionesId'],$boletoreimpresion['ZonasId'],$boletoreimpresion['SubzonaId'],$boletoreimpresion['FilasId'],$boletoreimpresion['LugaresId'],$boletoreimpresion['UsuariosId'],$boletoreimpresion['LugaresNumBol']);
                     }
                 endforeach;                        
-            $data = new CSqlDataProvider($query, array(
+            /*$data = new CSqlDataProvider($query, array(
 							//'totalItemCount'=>$count,//$count,	
 							'pagination'=>false,
-					));                        
+					));   */                     
             $formato = Formatosimpresionlevel1::model()->findAll(array('condition'=>'FormatoId='.$_POST['formatoId']));
-            $imagen = $data->getData();
+            $imagen = Evento::model()->findByAttributes(array('EventoId'=>$_POST['EventoId']));//$data->getData();
             
-            if($imagen[0]['EventoImaBol']==""){
-                if(!file_exists('..' . Yii::app ()->baseUrl . '/imagesbd/blanco.jpg')){
-                    copy('https://taquillacero.com/imagesbd/blanco.jpg','..' . Yii::app ()->baseUrl . '/imagesbd/blanco.jpg' );
+                if($imagen->EventoImaBol==""){
+                    if(!file_exists('..' . Yii::app ()->baseUrl . '/imagesbd/blanco.jpg')){
+                        copy('https://taquillacero.com/imagesbd/blanco.jpg','..' . Yii::app ()->baseUrl . '/imagesbd/blanco.jpg' );
+                    }
+                }else{
+                    if(!file_exists('..' . Yii::app ()->baseUrl . '/imagesbd/'.$imagen[0]['EventoImaBol'])){
+                        copy('https://taquillacero.com/imagesbd/'.$imagen[0]['EventoImaBol'],'..' . Yii::app ()->baseUrl . '/imagesbd/'.$imagen->EventoImaBol );
+                    }
                 }
-            }else{
-                if(!file_exists('..' . Yii::app ()->baseUrl . '/imagesbd/'.$imagen[0]['EventoImaBol'])){
-                    copy('https://taquillacero.com/imagesbd/'.$imagen[0]['EventoImaBol'],'..' . Yii::app ()->baseUrl . '/imagesbd/'.$imagen[0]['EventoImaBol'] );
-                }
-            }
-            $documento = $this->renderPartial('_impresionBoletosAjax', array('formato'=>$formato,'data'=>$data->getData(),'FormatoId'=>$_POST['formatoId']), true, false);
+            $documento = $this->renderPartial('_impresionBoletosAjax', array('formato'=>$formato,'data'=>$data,'FormatoId'=>$_POST['formatoId']), true, false);
             $pdf = Yii::createComponent ( 'application.extensions.html2pdf.html2pdf' );
             $html2pdf = new HTML2PDF ( 'P', array(75,160), 'es', true, 'UTF-8', array (
                 			0,
@@ -919,31 +919,21 @@ $objWriter->save('php://output');
    	    $reimpresiones = Reimpresiones::model()->count(array('condition'=>"EventoId=$eventoId AND FuncionesId=$funcionesId AND ZonasId=$zonasId AND SubzonaId=$subzonaId AND FilasId=$filasId AND LugaresId=$lugaresId"));
         $contra = $eventoId.".".$funcionesId.".".$zonasId.".".$subzonaId;
 	    $contra .= ".".$filasId.".".$lugaresId."-".date("m").".".date("d")."-".$usuariosId;
-	    $contra .= "TR$reimpresiones";
-        $ventaslevel1 = Ventaslevel1::model()->findByAttributes(array('VentasId'=>$ventasId,'EventoId'=>$eventoId,'FuncionesId'=>$funcionesId,'ZonasId'=>$zonasId,'SubzonaId'=>$subzonaId,'FilasId'=>$filasId,'LugaresId'=>$lugaresId));
+	    $contra .= "R$reimpresiones";
+        $ventaslevel1 = Ventaslevel1::model()->findByAttributes(array('VentasId'=>$ventasId,'EventoId'=>$eventoId,'FuncionesId'=>$funcionesId,'ZonasId'=>$zonasId,'SubzonaId'=>$subzonaId,'FilasId'=>$filasId,'LugaresId'=>$lugaresId,));
    	    $ventaslevel1->LugaresNumBol = $codigo;
         $ventaslevel1->VentasCon = $contra;
         $ventaslevel1->update();
-        $ultimo = Reimpresiones::model()->findAll(array('limit'=>1,'order'=>'t.ReimpresionesId DESC'));
-        $ultimo = $ultimo[0]->ReimpresionesId;
         
-        $guardarReimpresion                      = new Reimpresiones;
-        $guardarReimpresion->ReimpresionesId     = $ultimo+1;
-        $guardarReimpresion->EventoId            = $eventoId;
-        $guardarReimpresion->FuncionesId         = $funcionesId;
-        $guardarReimpresion->ZonasId             = $zonasId;
-        $guardarReimpresion->SubzonaId           = $subzonaId;
-        $guardarReimpresion->FilasId             = $filasId;
-        $guardarReimpresion->LugaresId           = $lugaresId;
-        $guardarReimpresion->UsuarioId           = $usuariosId;
-        $guardarReimpresion->ReimpresionesMod    = 'PANEL ADMINISTRATIVO';
-        $guardarReimpresion->ReimpresionesFecHor = date("Y-m-d G:i:s");
-        $guardarReimpresion->LugaresNumBol       = $codigo;
-        $guardarReimpresion->save();
+        $ultimo = Reimpresiones::model()->findAll(array('limit'=>1,'order'=>'t.ReimpresionesId DESC'));
+        $ultimo = $ultimo[0]->ReimpresionesId + 1;
+        $hoy    = date("Y-m-d G:i:s"); 
+        
+        Yii::app()->db->createCommand("INSERT INTO reimpresiones VALUES($ultimo,$eventoId,$funcionesId,$zonasId,$subzonaId,$filasId,$lugaresId,'PANEL ADMINISTRATIVO','', $usuariosId,'$hoy','$codigo')")->execute();
     }
-    public function reimprimeBoleto($codigo,$ventasId,$eventoId,$funcionesId,$zonasId,$subzonaId,$filasId,$lugaresId,$usuariosId,$ultimocodigo){
+    public function reimprimeBoleto($codigo,$ventasId,$eventoId,$funcionesId,$zonasId,$subzonaId,$filasId,$lugaresId,$usuariosId,$ultimocodigo="26"){
         $reimpresiones = Reimpresiones::model()->count(array('condition'=>"EventoId=$eventoId AND FuncionesId=$funcionesId AND ZonasId=$zonasId AND SubzonaId=$subzonaId AND FilasId=$filasId AND LugaresId=$lugaresId"));
-        $contra = $eventoId.".".$funcionesId.".".$zonasId.".".$sSubzonaId;
+        $contra = $eventoId.".".$funcionesId.".".$zonasId.".".$subzonaId;
 	    $contra .= ".".$filasId.".".$lugaresId."-".date("m").".".date("d")."-".$usuariosId;
 	    $contra .= "TR$reimpresiones";
         $ventaslevel1 = Ventaslevel1::model()->findByAttributes(array('VentasId'=>$ventasId,'EventoId'=>$eventoId,'FuncionesId'=>$funcionesId,'ZonasId'=>$zonasId,'SubzonaId'=>$subzonaId,'FilasId'=>$filasId,'LugaresId'=>$lugaresId));
@@ -951,21 +941,11 @@ $objWriter->save('php://output');
         $ventaslevel1->VentasCon = $contra;
         $ventaslevel1->update();
         $ultimo = Reimpresiones::model()->findAll(array('limit'=>1,'order'=>'t.ReimpresionesId DESC'));
-        $ultimo = $ultimo[0]->ReimpresionesId;
+        $ultimo = $ultimo[0]->ReimpresionesId + 1;
+        $hoy    = date("Y-m-d G:i:s"); 
         
-        $guardarReimpresion                      = new Reimpresiones;
-        $guardarReimpresion->ReimpresionesId     = $ultimo+1;
-        $guardarReimpresion->EventoId            = $eventoId;
-        $guardarReimpresion->FuncionesId         = $funcionesId;
-        $guardarReimpresion->ZonasId             = $zonasId;
-        $guardarReimpresion->SubzonaId           = $subzonaId;
-        $guardarReimpresion->FilasId             = $filasId;
-        $guardarReimpresion->LugaresId           = $lugaresId;
-        $guardarReimpresion->UsuarioId           = $usuariosId;
-        $guardarReimpresion->ReimpresionesMod    = 'PANEL ADMINISTRATIVO';
-        $guardarReimpresion->ReimpresionesFecHor = date("Y-m-d G:i:s");
-        $guardarReimpresion->LugaresNumBol       = $ultimocodigo;
-        $guardarReimpresion->save();
+        Yii::app()->db->createCommand("INSERT INTO reimpresiones VALUES($ultimo,$eventoId,$funcionesId,$zonasId,$subzonaId,$filasId,$lugaresId,'PANEL ADMINISTRATIVO','', $usuariosId,'$hoy','$ultimocodigo')")->execute();
+       
     }
     public function verificaCodigos(){
         
