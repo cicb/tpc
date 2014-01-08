@@ -459,4 +459,6 @@ echo CHtml::dropDownList('pvs',@$_POST["pv"],array('101'=>'Web','102'=>'Call Cen
   /*header('Content-type: image/gif');
   imagegif($im);
   imagedestroy($im);*/
+
+Yii::app()->clientScript->registerScript('carga',"$('#evento_id').change();",CClientScript::POS_LOAD);
 ?>

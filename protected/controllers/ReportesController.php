@@ -778,7 +778,7 @@ $objWriter->save('php://output');
 					$matrix['evento']['diaspara']=$diaspara>-1?$diaspara:"El evento ya ha finalizado.";
 
 					header('Content-type: application/ms-excel');
-					header('Content-Disposition: attachment; filename=ReporteSinCargo.xls');
+					header('Content-Disposition: attachment; filename=VentasSinCargo.xls');
 					Yii::app()->mustache->render('ReporteSinCargoExportacion',$matrix);
 
 

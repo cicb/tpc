@@ -171,13 +171,13 @@ else if (isset($_GET['dispositivo']) and $_GET['dispositivo']=='movil')
            
            <br/>
             <div >
-                <strong><small>Evento:</small>
+                <strong><span>Evento:</span>
                 <?php echo $evento->EventoNom ?></strong><br/>
-                <small>Funcion (es):</small>
+                <span>Funcion (es):</span>
                 <?php echo $funciones; ?><br/>
-                <small>A la venta desde:</small>
+                <span>A la venta desde:</span>
 				<?php echo $ventasDesde;?> <br/><br/>
-                <?php echo $diaspara>-1?" <small>D&iacute;as para el evento:</small>
+                <?php echo $diaspara>-1?" <span>D&iacute;as para el evento:</span>
 ".$diaspara:"El evento ya ha finalizado.";?> <br/><br/>
 
             </div>
@@ -281,6 +281,7 @@ $this->widget('application.extensions.morris.MorrisChartWidget', array(
 	td{text-align: right !important;}
 	.table-bordered th,.table-bordered td{border:1px solid #222 !important;}	
 	th{text-align:center}	
+	.table{width:auto !important;}	
 </style>
 
 <?php
