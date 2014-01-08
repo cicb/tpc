@@ -105,6 +105,7 @@
 							<div id="Contenido" style=" overflow:auto;">
 								<?php $this->widget('bootstrap.widgets.TbGridView', array(
 									'id'=>'evento-grid',
+									'type'=>array('condensed'),
 									'dataProvider'=>$dataProvider,
 									'columns'=>array(
 										array(

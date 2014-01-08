@@ -112,7 +112,7 @@ $form=$this->beginWidget('CActiveForm', array(
 ?>
 
 <div id="evento-grid" class="grid-view">
-    <table class="items table table-collapsed">
+    <table class="items table table-collapsed table-condensed">
         <thead>
         <th>Evento</th>
         <th>Función</th>

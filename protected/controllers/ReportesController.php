@@ -296,6 +296,20 @@ class ReportesController extends Controller
 
 	public function actionVentasFarmatodo()
 	{
+			$model=new ReportesVentas;
+			$desde=0;$hasta=0;		
+			if (isset($_POST['desde'],$_POST['hasta'])  
+					and preg_match("(\d{4}-\d{2}-\d{2})",$_POST['desde'])==1 
+					and preg_match("(\d{4}-\d{2}-\d{2})",$_POST['hasta'])==1
+			) {
+					$desde=$_POST['desde'];
+					$hasta=$_POST['hasta'];
+			}	
+			$this->render('ventasFarmatodo',array('model'=>$model,'desde'=>$desde,'hasta'=>$hasta));
+	}
+
+	public function actionVentasFarmatodo2()
+	{
 		$this->perfil();
 		if(Yii::app()->user->isGuest)
 			$this->redirect(Yii::app()->request->baseUrl);
@@ -406,6 +420,18 @@ class ReportesController extends Controller
 
 			if(isset($_POST['mes']) && ($_POST['mes']!= 'todo') || ($_POST['turno'] != 'todo') && isset($_POST['turno']))
 			{
+					$query="SELECT 
+							puntosventa.PuntosventaNom,
+							SUM(ventaslevel1.VentasCosBol) + SUM(ventaslevel1.VentasCarSer) AS total_de_venta_en_pesos, 
+							(SELECT COUNT(VentasId)
+									FROM ventas WHERE PuntosventaId = puntosventa.PuntosventaId AND DATE(VentasFecHor) BETWEEN '$mesInicio' AND  '$mesFin'  AND VentasFecHor != '0000-00-00 00:00:00' $hora) AS total_transacciones,
+						puntosventa.PuntosventaId,
+						ventas.VentasFecHor,
+						COUNT(ventaslevel1.VentasCosBol) AS total_de_boletos
+						INNER JOIN ventas ON (ventas.VentasId = ventaslevel1.VentasId)
+						INNER JOIN puntosventa ON (ventas.PuntosventaId = puntosventa.PuntosventaId)
+						";
+
 
 				$dataproviderReporte = new CActiveDataProvider('Ventaslevel1',array(
 					'criteria'=>array(

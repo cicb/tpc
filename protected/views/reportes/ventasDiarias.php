@@ -94,6 +94,7 @@
             'emptyText'=>'No se encontraron coincidencias',
             'dataProvider'=>$model->getVentasDiarias($desde,$hasta,'evento'),
             'summaryText'=>'',
+			'type'=>'condensed',
             'htmlOptions'=>array('class'=>'primario'),
             'columns'=>array(
                 array(

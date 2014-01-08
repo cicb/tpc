@@ -75,6 +75,7 @@
 if(!empty($data)){
  $this->widget('bootstrap.widgets.TbGridView', array(
     'dataProvider'=>$data,
+	'type'=>array('condensed'),
     'columns'=>array(    
                     array(            // display 'create_time' using an expression
                         'name'=>'Usuario',

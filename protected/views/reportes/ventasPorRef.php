@@ -53,7 +53,7 @@ if (isset($ref) and !is_null($ref)) {
 		'id'=>'evento-grid',
 		'dataProvider'=>$model->getVentasPorRef($ref,$tipo),
         'summaryText'=>'',
-
+		'type'=>array('condensed'),
         'emptyText'=>'No se encontraron resultados',
 		'columns'=>array(
 				'EventoNom',

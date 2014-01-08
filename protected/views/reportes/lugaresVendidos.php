@@ -101,6 +101,7 @@ echo CHtml::dropDownList('zona_id','',array(),array('prompt'=>'Seleccione una Zo
 	<?php $this->widget('bootstrap.widgets.TbGridView', array(
         'id'=>'evento-grid',
         'dataProvider'=>$dataProvider,
+		'type'=>array('condensed'),
         'columns'=>array(
 
 			array(

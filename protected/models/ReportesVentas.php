@@ -418,7 +418,38 @@ class ReportesVentas extends CFormModel
 							'pagination'=>false,
 					));
 
-		}	
+	}
+
+	public function getVentasFarmatodo($desde,$hasta,$turno='ambos')
+	{
+		//if ($desde and $hasta 
+					//and preg_match("(\d{4}-\d{2}-\d{2})",$desde)==1 
+					//and preg_match("(\d{4}-\d{2}-\d{2})",$hasta)==1){
+				$query="SELECT t.PuntosventaId as id,
+					PuntosventaNom,
+					SUM(t1.VentasCosBol+t1.VentasCarSer) as importe,
+					COUNT(*) as boletos,
+					COUNT(distinct t.VentasId) as ventas,
+					MAX(VentasFecHor) as ultimo
+				FROM ventas AS t
+				INNER JOIN ventaslevel1 as t1 ON t.VentasId=t1.VentasId 
+				INNER JOIN puntosventa  as t2 ON t2.PuntosventaId=t.PuntosVentaId
+				WHERE t.VentasFecHor BETWEEN '$desde' AND '$hasta'
+						AND VentasSec like 'FARMATODO'
+				GROUP BY PuntosventaNom";
+				return new CSqlDataProvider($query, array(
+							'pagination'=>false,
+							//'sort'=>array(
+									//'puntos_venta'=>array(
+											//'asc'=>'"puntosventa"."PuntosventaNom"',
+											//'desc'=>'"importe" DESC'
+									//)
+							//)
+					));
+		
 
 	}
+
+
+}
  ?>

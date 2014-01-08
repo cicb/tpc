@@ -11,7 +11,6 @@
 	<![endif]-->
 	<link rel="stylesheet/less" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/style.less"  />
 	<?php Yii::app()->bootstrap->register(); ?>
-	<?//php Yii::app()->clientScript->registerCssFile(Yii::app()->request->baseUrl."/css/custom.css",CClientScript::POS_END);?>
 	<title><?php echo CHtml::encode($this->pageTitle); ?></title>
 </head>
 <body>
