@@ -1,0 +1,126 @@
+<div class='controles'>
+	<h2>Detalles de venta</h2>
+
+</div>
+<div id="detalles">
+	<?php
+if ($ventaId>0) {
+		 $this->widget('bootstrap.widgets.TbGridView', array(
+		'id'=>'evento-grid',
+        'dataProvider'=>$model->getDetalleVenta($ventaId),
+        //'rowCssClassExpression'=>'$data->Estatus="CANCELADO"?"row-cancel":"row-closed"',
+        'columns'=>array(
+
+            array(
+                'name'=>'Zona',
+                'cssClassExpression'=>'$data->Estatus',
+            ),
+            array(
+                'name'=>'Fila',
+                'cssClassExpression'=>'$data->Estatus',
+            ),
+            array(
+                'name'=>'Asiento',
+                'cssClassExpression'=>'$data->Estatus',
+            ),
+             array(
+                'name'=>'Barras',
+                'cssClassExpression'=>'$data->Estatus',
+            ),
+             array(
+                'name'=>'Estatus',
+                'cssClassExpression'=>'$data->Estatus',
+            ),
+             array(
+                'name'=>'FechaVenta',
+                'cssClassExpression'=>'$data->Estatus',
+            ),
+             array(
+                'name'=>'VentasId',
+                'value'=>'$data->VentasId',
+                //'type'=>'html',
+                'cssClassExpression'=>'$data->Estatus',
+            ),
+             array(
+                'name'=>'VentasNumRef',
+                'cssClassExpression'=>'$data->Estatus',
+            ),
+             array(
+                'name'=>'TipoVenta',
+                'cssClassExpression'=>'$data->Estatus',
+            ),
+             array(
+                'name'=>'TipoBoleto',
+                'cssClassExpression'=>'$data->Estatus',
+            ),
+             array(
+                'name'=>'PuntosventaId',
+                'cssClassExpression'=>'$data->Estatus',
+            ),
+             array(
+                'name'=>'PuntoVenta',
+                'cssClassExpression'=>'$data->Estatus',
+            ),
+             array(
+                'name'=>'Descuento',
+                'cssClassExpression'=>'$data->Estatus',
+            ),
+             array(
+                'name'=>'UsuariosId',
+                'cssClassExpression'=>'$data->Estatus',
+            ),
+             array(
+                'name'=>'QuienVende',
+                'cssClassExpression'=>'$data->Estatus',
+            ),
+             array(
+                'name'=>'NombreTarjeta',
+                'cssClassExpression'=>'$data->Estatus',
+            ),
+             array(
+                'name'=>'NumeroTarjeta',
+                'cssClassExpression'=>'$data->Estatus',
+            ),
+             array(
+                'name'=>'VecesImpreso',
+                'cssClassExpression'=>'$data->Estatus',
+            ),
+             array(
+                'name'=>'QuienCancelo',
+                'cssClassExpression'=>'$data->Estatus',
+            ),
+             array(
+                'name'=>'FechaCancelacion',
+                'cssClassExpression'=>'$data->Estatus',
+            ),
+             array(
+                'name'=>'EventoId',
+                'cssClassExpression'=>'$data->Estatus',
+            ),
+             array(
+                'name'=>'FuncionesId',
+                'cssClassExpression'=>'$data->Estatus',
+            ),
+             array(
+                'name'=>'ZonasId',
+                'cssClassExpression'=>'$data->Estatus',
+            ),
+             array(
+                'name'=>'SubzonaId',
+                'cssClassExpression'=>'$data->Estatus',
+            ),
+             array(
+                'name'=>'FilasId',
+                'cssClassExpression'=>'$data->Estatus',
+            ),
+             array(
+                'name'=>'LugaresId',
+                'cssClassExpression'=>'$data->Estatus',
+            ),
+        ),
+    ));
+}	
+
+?>
+
+</div>

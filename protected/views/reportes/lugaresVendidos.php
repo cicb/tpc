@@ -132,7 +132,7 @@ echo CHtml::dropDownList('zona_id','',array(),array('prompt'=>'Seleccione una Zo
 			
              array(
 				'name'=>'VentasId',
-				'value'=>'CHtml::link("$data->VentasId",CHtml::normalizeUrl("reportes/detallarVenta&id=".$data->VentasId))',
+				'value'=>'CHtml::link("$data->VentasId",Yii::app()->controller->createUrl("ventas/detallarVenta",array("venta_id"=>$data->VentasId)))',
 				// "<a href=\"./?r=asiento/detalleventa&id=$data->VentasId#data\" 
 				// 	       id=\"inline\">$data->VentasId</a>"
 			//	'value'=>'CHtml::link("test", Yii::App()->controller->createUrl("asiento/detalleventa", 

@@ -141,7 +141,7 @@ else if (isset($_GET['dispositivo']) and $_GET['dispositivo']=='movil')
     <?php $this->endWidget(); ?>
 
 </div>
-<div  id="reporte">
+<div class="contenido"  id="reporte">
     <?php  if (isset($eventoId) and $eventoId>0): 
     $evento=Evento::model()->findByPk($eventoId);
     $funciones="TODAS";
@@ -191,7 +191,8 @@ else if (isset($_GET['dispositivo']) and $_GET['dispositivo']=='movil')
 	$resumenEvento=$model->getResumenEvento($eventoId,$funcionesId,$desde,$hasta);
 	$data=array();
 	foreach (array_slice($resumenEvento,1,4) as $key=>$fila) {
-		$data[]=array('label'=>$key,'value'=>(int)str_replace(',','',$fila['boletos']));
+		$label=strcasecmp($key,'NORMAL')==0?'Ventas':ucwords($key);		
+		$data[]=array('label'=>$label,'value'=>(int)str_replace(',','',$fila['boletos']));
 	}
 		
 					$this->widget('application.extensions.morris.MorrisChartWidget', array(

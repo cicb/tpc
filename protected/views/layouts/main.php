@@ -92,7 +92,7 @@ $this->widget('bootstrap.widgets.TbNavbar',array(
 
 </div><!-- mainmenu -->
 <div id='wrap'>
-	<div class="container-fluid" id="pagina">	
+	<div class="container-fluid " id="pagina">	
 		<?php echo $content; ?>
 		<div class="clear"></div>
 	</div><!-- page -->
