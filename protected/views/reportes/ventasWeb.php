@@ -507,4 +507,11 @@ echo CHtml::dropDownList('pvs',@$_POST["pv"],array('101'=>'Web','102'=>'Call Cen
   imagedestroy($im);*/
 
 Yii::app()->clientScript->registerScript('carga',"$('#evento_id').change();",CClientScript::POS_LOAD);
+//echo  Yii::app()->user->id;
+/*$r = new ReportesFlex;
+$data =  $r->getEventosAsignados();
+foreach($data as $key => $evento):
+echo $evento->EventoNom."<BR/>";
+endforeach
+//print_r($r->getEventosAsignados());*/
 ?>
