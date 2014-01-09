@@ -782,38 +782,5 @@ class ReportesFlex extends CFormModel
 				}	
 				return new CSqlDataProvider($query, array('pagination'=>false));
 	}
-    public function getEventosAsignados(){
-        $usuarioId = Yii::app()->user->id;
-        $hoy = date("Y-m-d G:i:s");
-        $usrval = Usrval::model()->findAll(array('condition'=>"UsuarioId=$usuarioId AND UsrTipId=2 AND UsrSubTipId=4  AND  ((FecHorIni < '$hoy' AND FecHorFin > '$hoy ') OR FecHorIni = '0000-00-00 00:00:00' AND FecHorIni = '0000-00-00 00:00:00')"));
-        $condiciones = "";
-        if($usrval[0]->usrValIdRef=="TODAS"){
-            
-        }else{
-            $condicion ="";
-            foreach($usrval as $key => $evento){
-                $condicion .= $evento->usrValIdRef.",";
-            }
-            $condiciones = " AND EventoId IN(".substr($condicion,0,-1).")";
-        }
-        $eventos = Evento::model()->findAll(array('condition'=>" EventoSta='ALTA'".$condiciones,'order'=>"t.EventoNom ASC"));
-        return $eventos;
-    }
-    public function getFuncionesAsignadas($EventoId){
-        $usuarioId = Yii::app()->user->id;
-        $hoy = date("Y-m-d G:i:s");
-        $usrval = Usrval::model()->findAll(array('condition'=>"UsuarioId=$usuarioId AND UsrTipId=2 AND UsrSubTipId=4  AND  ((FecHorIni < '$hoy ' AND FecHorFin > '$hoy ') OR FecHorIni = '0000-00-00 00:00:00' AND FecHorIni = '0000-00-00 00:00:00')"));
-        $condiciones = "";
-        if($usrval[0]->usrValIdRef2=="TODAS"){
-            
-        }else{
-            $condicion ="";
-            foreach($usrval as $key => $funcion){
-                $condicion .= $funcion->usrValIdRef2.",";
-            }
-            $condiciones = " AND FuncionesId IN(".substr($condicion,0,-1).")";
-        }
-        $funciones = Funciones::model()->findAll(array('condition'=>" EventoId=$EventoId".$condiciones,'order'=>"t.FuncionesId ASC"));
-        return $funciones;
-    }
+
 }
