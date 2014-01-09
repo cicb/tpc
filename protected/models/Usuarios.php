@@ -176,16 +176,24 @@ class Usuarios extends CActiveRecord
 			$hoy = date("Y-m-d G:i:s");
 			$usrval = Usrval::model()->findAll(array('condition'=>"UsuarioId=$usuarioId AND UsrTipId=2 AND UsrSubTipId=4  AND  ((FecHorIni < '$hoy' AND FecHorFin > '$hoy ') OR FecHorIni = '0000-00-00 00:00:00' AND FecHorIni = '0000-00-00 00:00:00')"));
 			$condiciones = "";
-			if($usrval[0]->usrValIdRef=="TODAS"){
-
-			}else{
-					$condicion ="";
-					foreach($usrval as $key => $evento){
-							$condicion .= $evento->usrValIdRef.",";
+			$eventos = array();
+			if (is_array($usrval)) {
+					$eventos=array();
+					foreach($usrval as $evento){
+							if (strcasecmp($evento->usrValIdRef,"TODOS")==0
+							 OR strcasecmp($evento->usrValIdRef,"TODAS")==0 ) {
+									$eventos=array();
+									break;
+							}	
+							else
+									$eventos[]=$evento->usrValIdRef;
 					}
-					$condiciones = " AND EventoId IN(".substr($condicion,0,-1).")";
+					if (sizeof($eventos)>0) {
+							$condiciones = " AND EventoId IN(".implode(',',$eventos).")";
+					}	
 			}
 			$eventos = Evento::model()->findAll(array('condition'=>" EventoSta='ALTA'".$condiciones,'order'=>"t.EventoNom ASC"));
+
 			return $eventos;
 	}
 
@@ -194,16 +202,22 @@ class Usuarios extends CActiveRecord
 			$hoy = date("Y-m-d G:i:s");
 			$usrval = Usrval::model()->findAll(array('condition'=>"UsuarioId=$usuarioId AND UsrTipId=2 AND UsrSubTipId=4  AND  ((FecHorIni < '$hoy ' AND FecHorFin > '$hoy ') OR FecHorIni = '0000-00-00 00:00:00' AND FecHorIni = '0000-00-00 00:00:00')"));
 			$condiciones = "";
-			if($usrval[0]->usrValIdRef2=="TODAS"){
+			$eventos = array();
+			if (is_array($usrval)) {		
+					if($usrval[0]->usrValIdRef2=="TODAS"){
 
-			}else{
-					$condicion ="";
-					foreach($usrval as $key => $funcion){
-							$condicion .= $funcion->usrValIdRef2.",";
+					}else{
+							$condicion ="";
+							foreach($usrval as $key => $funcion){
+									$condicion .= $funcion->usrValIdRef2.",";
+							}
+
+							if (strlen($condicion)>0) {
+									$condiciones = " AND FuncionesId IN(".substr($condicion,0,-1).")";
+							}
 					}
-					$condiciones = " AND FuncionesId IN(".substr($condicion,0,-1).")";
+					$funciones = Funciones::model()->findAll(array('condition'=>" EventoId=$EventoId".$condiciones,'order'=>"t.FuncionesId ASC"));
 			}
-			$funciones = Funciones::model()->findAll(array('condition'=>" EventoId=$EventoId".$condiciones,'order'=>"t.FuncionesId ASC"));
 			return $funciones;
 	}
 }

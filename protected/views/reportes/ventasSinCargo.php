@@ -30,7 +30,7 @@ else if (isset($_GET['dispositivo']) and $_GET['dispositivo']=='movil')
 			  array(
 				'ajax' => array(
 				  'type' => 'POST',
-				  'url' => CController::createUrl('funciones/cargarFunciones'),
+				  'url' => CController::createUrl('funciones/cargarFuncionesFiltradas'),
 				  'beforeSend' => 'function() { $("#fspin").addClass("fa fa-spinner fa-spin");}',
 				  'complete'   => 'function() { 
 					$("#fspin").removeClass("fa fa-spinner fa-spin");
@@ -200,7 +200,7 @@ else if (isset($_GET['dispositivo']) and $_GET['dispositivo']=='movil')
 							'options' => array(
 									'chartType' => 'Donut',
 									'data'      => $data,
-									'colors'    => array('#e67e22','#9b59b6','#d35400','#27ae60','#f1c40f')
+									'colors'    => array('#f1c40f','#2980b9','#8e44ad','#27ae60','#f1c40f')
 							),
 					));
 

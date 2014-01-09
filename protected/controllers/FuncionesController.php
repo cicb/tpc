@@ -10,6 +10,18 @@ class FuncionesController extends Controller
 
 	public function actionCargarFunciones()
 	{
+			$data = Funciones::model()->findAll('EventoId=:parent_id',
+					array(':parent_id'=>(int) $_POST['evento_id']));
+
+			$data = CHtml::listData($data,'FuncionesId','funcionesTexto');
+			echo CHtml::tag('option',array('value' => ''),'Seleccione ...',true);
+			foreach($data as $id => $value)
+			{
+					echo CHtml::tag('option',array('value' => $id),CHtml::encode($value),true);
+			}
+	}
+	public function actionCargarFuncionesFiltradas()
+	{
 			$data =Yii::app()->user->modelo->getFuncionesAsignadas($_POST['evento_id']);
 			$lista = CHtml::listData($data,'FuncionesId','funcionesTexto');
 			echo CHtml::tag('option',array('value' => 'TODAS'),'Todas',true);
