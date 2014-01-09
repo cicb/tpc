@@ -156,6 +156,8 @@ foreach($data as $key => $boleto):
                     <br />
                     Asientos: <?php echo substr($asientos,0,-1);?><br />
                     Total:$<?php echo  $total;?><br />
+                    Copia Negocio<br />
+                    Recib&iacute; boletos<br />
                     FIRMA:________________________________________
                     <br />
                     <div style="text-align: center;width: 65mm;"><?php echo $boleto['VentasNomDerTar']; ?></div>
