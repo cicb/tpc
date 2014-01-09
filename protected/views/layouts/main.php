@@ -82,8 +82,8 @@ $this->widget('bootstrap.widgets.TbNavbar',array(
 						'type'=>'right',
 						'htmlOptions'=>array('class'=>'pull-right'),
 						'items' => array(
-								array('label'=>'Iniciar sesión', 'url'=>array('/site/login'), 'visible'=>Yii::app()->user->isGuest),
-								array('label'=>'Cerrar sesión ('.Yii::app()->user->name.')', 'url'=>array('/site/logout'), 'visible'=>!Yii::app()->user->isGuest)
+								array('label'=>'Iniciar Sesión', 'url'=>array('/site/login'), 'visible'=>Yii::app()->user->isGuest),
+								array('label'=>'Cerrar Sesión ('.Yii::app()->user->name.')', 'url'=>array('/site/logout'), 'visible'=>!Yii::app()->user->isGuest)
 						)
 				),	
 		),
@@ -92,7 +92,7 @@ $this->widget('bootstrap.widgets.TbNavbar',array(
 
 </div><!-- mainmenu -->
 <div id='wrap'>
-	<div class="container-fluid" id="pagina">	
+	<div class="container-fluid " id="pagina">	
 		<?php echo $content; ?>
 		<div class="clear"></div>
 	</div><!-- page -->

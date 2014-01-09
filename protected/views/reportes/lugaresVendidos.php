@@ -1,5 +1,5 @@
 <div class="controles">
-<h2>Lugares vendidos</h2>
+<h2>Lugares Vendidos</h2>
 <div id="cargador"  style="position:absolute; width:40px; height:40px;left:30%; top:150px; border:0px; margin-left:-40px; margin-top:-40px;" >
 </div>
 <div class="form">
@@ -132,7 +132,7 @@ echo CHtml::dropDownList('zona_id','',array(),array('prompt'=>'Seleccione una Zo
 			
              array(
 				'name'=>'VentasId',
-				'value'=>'CHtml::link("$data->VentasId",CHtml::normalizeUrl("reportes/detallarVenta&id=".$data->VentasId))',
+				'value'=>'CHtml::link("$data->VentasId",Yii::app()->controller->createUrl("ventas/detallarVenta",array("venta_id"=>$data->VentasId)))',
 				// "<a href=\"./?r=asiento/detalleventa&id=$data->VentasId#data\" 
 				// 	       id=\"inline\">$data->VentasId</a>"
 			//	'value'=>'CHtml::link("test", Yii::App()->controller->createUrl("asiento/detalleventa", 

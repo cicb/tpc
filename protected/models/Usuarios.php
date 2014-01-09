@@ -171,4 +171,53 @@ class Usuarios extends CActiveRecord
         }
         return $data;
     }
+	public function getEventosAsignados(){
+			$usuarioId = $this->UsuariosId;
+			$hoy = date("Y-m-d G:i:s");
+			$usrval = Usrval::model()->findAll(array('condition'=>"UsuarioId=$usuarioId AND UsrTipId=2 AND UsrSubTipId=4  AND  ((FecHorIni < '$hoy' AND FecHorFin > '$hoy ') OR FecHorIni = '0000-00-00 00:00:00' AND FecHorIni = '0000-00-00 00:00:00')"));
+			$condiciones = "";
+			$eventos = array();
+			if (is_array($usrval)) {
+					$eventos=array();
+					foreach($usrval as $evento){
+							if (strcasecmp($evento->usrValIdRef,"TODOS")==0
+							 OR strcasecmp($evento->usrValIdRef,"TODAS")==0 ) {
+									$eventos=array();
+									break;
+							}	
+							else
+									$eventos[]=$evento->usrValIdRef;
+					}
+					if (sizeof($eventos)>0) {
+							$condiciones = " AND EventoId IN(".implode(',',$eventos).")";
+					}	
+			}
+			$eventos = Evento::model()->findAll(array('condition'=>" EventoSta='ALTA'".$condiciones,'order'=>"t.EventoNom ASC"));
+
+			return $eventos;
+	}
+
+	public function getFuncionesAsignadas($EventoId){
+			$usuarioId = $this->UsuariosId;
+			$hoy = date("Y-m-d G:i:s");
+			$usrval = Usrval::model()->findAll(array('condition'=>"UsuarioId=$usuarioId AND UsrTipId=2 AND UsrSubTipId=4  AND  ((FecHorIni < '$hoy ' AND FecHorFin > '$hoy ') OR FecHorIni = '0000-00-00 00:00:00' AND FecHorIni = '0000-00-00 00:00:00')"));
+			$condiciones = "";
+			$eventos = array();
+			if (is_array($usrval)) {		
+					if($usrval[0]->usrValIdRef2=="TODAS"){
+
+					}else{
+							$condicion ="";
+							foreach($usrval as $key => $funcion){
+									$condicion .= $funcion->usrValIdRef2.",";
+							}
+
+							if (strlen($condicion)>0) {
+									$condiciones = " AND FuncionesId IN(".substr($condicion,0,-1).")";
+							}
+					}
+					$funciones = Funciones::model()->findAll(array('condition'=>" EventoId=$EventoId".$condiciones,'order'=>"t.FuncionesId ASC"));
+			}
+			return $funciones;
+	}
 }

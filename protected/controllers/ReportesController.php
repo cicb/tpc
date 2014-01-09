@@ -244,7 +244,7 @@ class ReportesController extends Controller
 				INNER JOIN funciones ON (funciones.FuncionesId = zonas.FuncionesId)
 				AND (funciones.EventoId = zonas.EventoId)
 				INNER JOIN ventas ON (ventaslevel1.VentasId = ventas.VentasId)
-				INNER JOIN descuentos ON (ventaslevel1.DescuentosId = descuentos.DescuentosId)
+				LEFT JOIN descuentos ON (ventaslevel1.DescuentosId = descuentos.DescuentosId)
 				INNER JOIN puntosventa ON (ventas.PuntosventaId = puntosventa.PuntosventaId)
 				INNER JOIN evento ON (funciones.EventoId = evento.EventoId)",
 					'condition'=>"lugares.EventoId = '$evento' AND 

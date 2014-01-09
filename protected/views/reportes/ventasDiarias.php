@@ -102,23 +102,24 @@
                     'type'  =>'raw',
                     'value' => '$data[\'EventoNom\']'
                     ),
-                array(
-                    'header'=>'Fecha.',
-                    'name'=>'EventoFecIni',
-                    'htmlOptions'=>array(
-                        'style'=>'text-align:right;'
-                        )
-                    ),
+                //array(
+                    //'header'=>'Fecha.',
+                    //'name'=>'EventoFecIni',
+                    //'htmlOptions'=>array(
+                        //'style'=>'text-align:right;'
+                        //)
+                    //),
                 array(
                     'header'=>'No. Boletos.',
                     'name'=>'cantidad',
                     'htmlOptions'=>array(
                         'style'=>'text-align:right;'
-                        )
-                    ), 
+                        ),
+					'value'=>'"$".number_format($data[\'cantidad\'],0)',
+				), 
                 array(
                     'header'=>'Efectivo sin cargo',
-                    'value'=>'"$".number_format($data[\'efectivo\'],2)',
+                    'value'=>'"$".number_format($data[\'efectivo\'],0)',
                     'type'=>'raw',
                     'htmlOptions'=>array(
                         'style'=>'text-align:right;'
@@ -126,7 +127,7 @@
                     ),
                 array(
                     'header'=>'Efectivo con cargo',
-                    'value'=>'"$".number_format($data[\'efe_cargo\'],2)',
+                    'value'=>'"$".number_format($data[\'efe_cargo\'],0)',
                     'type'=>'raw',
                     'htmlOptions'=>array(
                         'style'=>'text-align:right;'
@@ -134,7 +135,7 @@
                     ),
                 array(
                     'header'=>'Visa/Mastercard sin cargo',
-                    'value'=>'"$".number_format($data[\'tarjeta\'],2)',
+                    'value'=>'"$".number_format($data[\'tarjeta\'],0)',
                     'type'=>'raw',
                     'htmlOptions'=>array(
                         'style'=>'text-align:right;'
@@ -142,7 +143,7 @@
                     ),
                 array(
                     'header'=>'Visa/Mastercard con cargo',
-                    'value'=>'"$".number_format($data[\'tarjetaccargo\'],2)',
+                    'value'=>'"$".number_format($data[\'tarjetaccargo\'],0)',
                     'type'=>'raw',
                     'htmlOptions'=>array(
                         'style'=>'text-align:right;'
@@ -150,7 +151,7 @@
                     ),
                 array(
                     'header'=>'Terminal sin cargo',
-                    'value'=>'"$".number_format($data[\'terminal\'],2)',
+                    'value'=>'"$".number_format($data[\'terminal\'],0)',
                     'type'=>'raw',
                     'htmlOptions'=>array(
                         'style'=>'text-align:right;'
@@ -158,7 +159,7 @@
                     ),
                 array(
                     'header'=>'Terminal con cargo',
-                    'value'=>'"$".number_format($data[\'terminalccargo\'],2)',
+                    'value'=>'"$".number_format($data[\'terminalccargo\'],0)',
                     'type'=>'raw',
                     'htmlOptions'=>array(
                         'style'=>'text-align:right;'
@@ -166,7 +167,7 @@
                     ),
                 array(
                     'header'=>'Total venta sin cargo',
-                    'value'=>'"$".number_format($data[\'total\'],2)',
+                    'value'=>'"$".number_format($data[\'total\'],0)',
                     'type'=>'raw',
                     'htmlOptions'=>array(
                         'style'=>'text-align:right;'
@@ -174,7 +175,7 @@
                     ),
                 array(
                     'header'=>'Total con cargo',
-                    'value'=>'"$".number_format($data[\'totalccargo\'],2)',
+                    'value'=>'"$".number_format($data[\'totalccargo\'],0)',
                     'type'=>'raw',
                     'htmlOptions'=>array(
                         'style'=>'text-align:right;'
@@ -182,7 +183,7 @@
                     ),
                 array(
                     'header'=>'Total de cargo por servicio',
-                    'value'=>'"$".number_format($data[\'cargo\'],2)',
+                    'value'=>'"$".number_format($data[\'cargo\'],0)',
                     'type'=>'raw',
                     'htmlOptions'=>array(
                         'style'=>'text-align:right;'
@@ -222,7 +223,7 @@
                     ), 
                 array(
                     'header'=>'Efectivo sin cargo',
-                    'value'=>'"$".number_format($data[\'efectivo\'],2)',
+                    'value'=>'"$".number_format($data[\'efectivo\'],0)',
                     'type'=>'raw',
                     'htmlOptions'=>array(
                         'style'=>'text-align:right;'
@@ -230,7 +231,7 @@
                     ),
                 array(
                     'header'=>'Efectivo con cargo',
-                    'value'=>'"$".number_format($data[\'efe_cargo\'],2)',
+                    'value'=>'"$".number_format($data[\'efe_cargo\'],0)',
                     'type'=>'raw',
                     'htmlOptions'=>array(
                         'style'=>'text-align:right;'
@@ -238,7 +239,7 @@
                     ),
                 array(
                     'header'=>'Visa/Mastercard sin cargo',
-                    'value'=>'"$".number_format($data[\'tarjeta\'],2)',
+                    'value'=>'"$".number_format($data[\'tarjeta\'],0)',
                     'type'=>'raw',
                     'htmlOptions'=>array(
                         'style'=>'text-align:right;'
@@ -246,7 +247,7 @@
                     ),
                 array(
                     'header'=>'Visa/Mastercard con cargo',
-                    'value'=>'"$".number_format($data[\'tarjetaccargo\'],2)',
+                    'value'=>'"$".number_format($data[\'tarjetaccargo\'],0)',
                     'type'=>'raw',
                     'htmlOptions'=>array(
                         'style'=>'text-align:right;'
@@ -254,7 +255,7 @@
                     ),
                 array(
                     'header'=>'Terminal sin cargo',
-                    'value'=>'"$".number_format($data[\'terminal\'],2)',
+                    'value'=>'"$".number_format($data[\'terminal\'],0)',
                     'type'=>'raw',
                     'htmlOptions'=>array(
                         'style'=>'text-align:right;'
@@ -262,7 +263,7 @@
                     ),
                 array(
                     'header'=>'Terminal con cargo',
-                    'value'=>'"$".number_format($data[\'terminalccargo\'],2)',
+                    'value'=>'"$".number_format($data[\'terminalccargo\'],0)',
                     'type'=>'raw',
                     'htmlOptions'=>array(
                         'style'=>'text-align:right;'
@@ -270,7 +271,7 @@
                     ),
                 array(
                     'header'=>'Total venta sin cargo',
-                    'value'=>'"$".number_format($data[\'total\'],2)',
+                    'value'=>'"$".number_format($data[\'total\'],0)',
                     'type'=>'raw',
                     'htmlOptions'=>array(
                         'style'=>'text-align:right;'
@@ -278,7 +279,7 @@
                     ),
                 array(
                     'header'=>'Total con cargo',
-                    'value'=>'"$".number_format($data[\'totalccargo\'],2)',
+                    'value'=>'"$".number_format($data[\'totalccargo\'],0)',
                     'type'=>'raw',
                     'htmlOptions'=>array(
                         'style'=>'text-align:right;'
@@ -286,7 +287,7 @@
                     ),
                 array(
                     'header'=>'Total de cargo por servicio',
-                    'value'=>'"$".number_format($data[\'cargo\'],2)',
+                    'value'=>'"$".number_format($data[\'cargo\'],0)',
                     'type'=>'raw',
                     'htmlOptions'=>array(
                         'style'=>'text-align:right;'

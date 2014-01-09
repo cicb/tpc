@@ -20,6 +20,16 @@ class FuncionesController extends Controller
 					echo CHtml::tag('option',array('value' => $id),CHtml::encode($value),true);
 			}
 	}
+	public function actionCargarFuncionesFiltradas()
+	{
+			$data =Yii::app()->user->modelo->getFuncionesAsignadas($_POST['evento_id']);
+			$lista = CHtml::listData($data,'FuncionesId','funcionesTexto');
+			echo CHtml::tag('option',array('value' => 'TODAS'),'Todas',true);
+			foreach($lista as $id => $value)
+			{
+					echo CHtml::tag('option',array('value' => $id),CHtml::encode($value),true);
+			}
+	}
 	// Uncomment the following methods and override them if needed
 	/*
 	public function filters()

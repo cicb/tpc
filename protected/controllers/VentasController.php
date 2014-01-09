@@ -53,6 +53,12 @@ class VentasController extends Controller
         
     }
 
+		public function actionDetallarVenta()
+		{
+			$ventaId=isset($_GET['venta_id'])?$_GET['venta_id']:0;
+			$model=new ReportesVentas;
+			$this->render('detalle',array('model'=>$model,'ventaId'=>$ventaId));
+		}
 	// Uncomment the following methods and override them if needed
 	/*
 	public function filters()

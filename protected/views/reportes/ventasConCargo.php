@@ -24,13 +24,13 @@ else if (isset($_GET['dispositivo']) and $_GET['dispositivo']=='movil')
           <div class="row">
             <?php
             echo CHtml::label('Evento','evento_id', array('style'=>'width:70px; display:inline-table;'));
-            $modeloEvento = Evento::model()->findAll(array('condition' => 'EventoSta = "ALTA"','order'=>'EventoNom'));
-            $list = CHtml::listData($modeloEvento,'EventoId','EventoNom');
-            echo CHtml::dropDownList('evento_id',@$_POST['evento_id'],$list,
+			$eventos = Yii::app()->user->modelo->getEventosAsignados();
+			$list = CHtml::listData($eventos,'EventoId','EventoNom');
+			echo CHtml::dropDownList('evento_id',@$_POST['evento_id'],$list,
               array(
                 'ajax' => array(
                   'type' => 'POST',
-                  'url' => CController::createUrl('funciones/cargarFunciones'),
+                  'url' => CController::createUrl('funciones/cargarFuncionesFiltradas'),
                   'beforeSend' => 'function() { $("#fspin").addClass("fa fa-spinner fa-spin");}',
                   'complete'   => 'function() { 
                     $("#fspin").removeClass("fa fa-spinner fa-spin");
@@ -142,7 +142,7 @@ else if (isset($_GET['dispositivo']) and $_GET['dispositivo']=='movil')
     <?php $this->endWidget(); ?>
 
 </div>
-<div  id="reporte">
+<div  class="contenido"  id="reporte">
     <?php  if (isset($eventoId) and $eventoId>0): 
     $evento=Evento::model()->findByPk($eventoId);
     $funciones="TODAS";
@@ -191,7 +191,9 @@ else if (isset($_GET['dispositivo']) and $_GET['dispositivo']=='movil')
 	$resumenEvento=$model->getResumenEvento($eventoId,$funcionesId,$desde,$hasta);
 	$data=array();
 	foreach (array_slice($resumenEvento,1,4) as $key=>$fila) {
-		$data[]=array('label'=>$key,'value'=>(int)str_replace(',','',$fila['boletos']));
+			$label=strcasecmp($key,'NORMAL')==0?'Ventas':ucwords($key);		
+			$data[]=array('label'=>$label,'value'=>(int)str_replace(',','',$fila['boletos']));
+		
 	}
 		
 					$this->widget('application.extensions.morris.MorrisChartWidget', array(
@@ -199,7 +201,7 @@ else if (isset($_GET['dispositivo']) and $_GET['dispositivo']=='movil')
 							'options' => array(
 									'chartType' => 'Donut',
 									'data'      => $data,
-									'colors'    => array('#e67e22','#9b59b6','#d35400','#27ae60','#f1c40f')
+									'colors'    => array('#f1c40f','#2980b9','#8e44ad','#27ae60','#f1c40f')
 							),
 					));
 

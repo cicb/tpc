@@ -35,6 +35,7 @@ class UserIdentity extends CUserIdentity
             $this->setState('Admin',$user[0]->TipUsrId=="1"?true:false);
             $this->setState('TipUsrId',$user[0]->TipUsrId);
             $this->setState('accesos',$user[0]->Accesos());
+			$this->setState('modelo',$user[0]);
              
             /*Actualizamos el last_login del usuario que se esta autenticando ($user->username) */
             //$sql = "update usuario set last_login = now() where username='$user->username'";
@@ -49,6 +50,8 @@ class UserIdentity extends CUserIdentity
     public function getId(){
         return $this->_id;
     }
+
+
     /*public function authenticate()
 	{
 		$users=array(
