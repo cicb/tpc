@@ -897,7 +897,7 @@ $objWriter->save('php://output');
                 }
             $documento = $this->renderPartial('_impresionBoletosAjax', array('formato'=>$formato,'data'=>$data,'FormatoId'=>$_POST['formatoId']), true, false);
             $pdf = Yii::createComponent ( 'application.extensions.html2pdf.html2pdf' );
-            $html2pdf = new HTML2PDF ( 'P', array(75,160), 'es', true, 'UTF-8', array (
+            $html2pdf = new HTML2PDF ( 'P', array(75,180), 'es', true, 'UTF-8', array (
                 			0,
                 			0,
                 			0,
