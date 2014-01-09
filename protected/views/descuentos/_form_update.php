@@ -331,7 +331,7 @@ $eventos=Evento::model()->findAll("EventoSta='ALTA'",array('order'=>'EventoNom')
 <div id="myModal_continuar" style="width: 800px;left: 40%;" class="modal hide fade">
     <div class="modal-header">
         <a class="close" data-dismiss="modal">&times;</a>
-        <h4>Guardar Cupones de Descuento</h4>
+        <h4>Guardar <?php echo empty($cupon)?"Descuento":"Cupones de Descuento"; ?></h4>
     </div>
     <div class="modal-body">
         <div id="resultado_antes_guardar" class="resultado">

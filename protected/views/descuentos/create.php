@@ -1,4 +1,3 @@
-<div class='controles'>
 <?php
 /* @var $this DescuentosController */
 /* @var $model Descuentos */
@@ -14,6 +13,5 @@ $this->menu=array(
 ?>
 
 <h1>Cup&oacute;n o Descuento Nuevo</h1>
-</div>
 
 <?php echo $this->renderPartial('_form', array('model'=>$model)); ?>

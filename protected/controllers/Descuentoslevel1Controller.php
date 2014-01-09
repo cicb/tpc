@@ -105,7 +105,7 @@ class Descuentoslevel1Controller extends Controller
                 echo "<ul>";
                 foreach($descuentos as $key => $descuento):
                     $eventoNom = $evento->findAllByPk($descuento->EventoId);
-                    echo "<li class='alert-success'><strong class='span-5'>Cup&oacute;n: </strong>".$descuento->descuentos->CuponesCod."</li>";
+                    echo "<li class='alert-success'>".($descuento->descuentos->CuponesCod==""?"<strong class='span-5'>Descuento </strong><br/>":"<strong class='span-5'>Cup&oacute;n: </strong>".$descuento->descuentos->CuponesCod)."</li>";
                     echo "<li><strong class='span-5'>Descuentos Id: </strong>".$descuento->DescuentosId."</li>";
                     echo "<li><strong class='span-5'>Evento: </strong>".$eventoNom[0]->EventoNom."</li>";
                     echo "<li><strong class='span-5'>Descripci&oacute;n: </strong>".$descuento->descuentos->DescuentosDes."</li>";

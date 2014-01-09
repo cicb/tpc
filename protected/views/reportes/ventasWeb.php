@@ -37,6 +37,7 @@ $list = CHtml::listData($models, 'EventoId', 'EventoNom');
 <br />
 <div class="row">
 <?php
+$funcionId = @$_POST["Ventaslevel1"]["funcion"];
 echo CHtml::label('Evento','evento_id', array('style'=>'width:70px; display:inline-table;'));
 $modeloEvento = Evento::model()->findAll(array('condition' => 'EventoSta = "ALTA"','order'=>'EventoNom'));
 $list = CHtml::listData($modeloEvento,'EventoId','EventoNom');
@@ -44,11 +45,18 @@ $list = CHtml::listData($modeloEvento,'EventoId','EventoNom');
               array(
                 'ajax' => array(
                   'type' => 'POST',
+                  //'data' => 'FuncionId='.@$_POST['Ventaslevel1']['funcion'],
                   'url' => CController::createUrl('funciones/cargarFunciones'),
                   'beforeSend' => 'function() { $("#fspin").addClass("fa fa-spinner fa-spin");}',
-                  'complete'   => 'function() { 
-                    $("#fspin").removeClass("fa fa-spinner fa-spin");
-                    $("#Ventaslevel1_funcion option:nth-child(2)").attr("selected", "selected");}',
+                  'complete'   => "function() { 
+                    $('#fspin').removeClass('fa fa-spinner fa-spin');
+                    var data = 0$funcionId ;
+                    var child=0;
+                    var num_elem = $('#Ventaslevel1_funcion option').length;
+                    if(data==0){ child=2;}
+                    else{child= data+1;}
+                    $('#Ventaslevel1_funcion option:nth-child('+child+')').attr('selected', 'selected');}
+                    ",
                   'update' => '#Ventaslevel1_funcion',
                   ),'prompt' => 'Seleccione un Evento...'
                 ));
@@ -329,18 +337,25 @@ endif;
 #footer {display:none;}
 .container-fluid{display:none;}
 }
+
+</style>
+<style>
+.loading{
+    position: fixed;
+    border: none;
+    width: 300px;
+    height: 320px;
+    top: 45%;
+    left: 35%;
+    background: url('<?php echo '..' . Yii::app ()->baseUrl . '/images/loading.gif'; ?>') no-repeat center ;
+    text-align: center;
+    color: blue;
+    font-size: 20pt;
+    font-weight: bold;
+}
 </style>
 <script>
-$.ajax({
-            type: "POST",
-            url:'<?php echo $this->createUrl('funciones/cargarFunciones') ?>',
-            data:"evento_id="+<?php echo @$_POST["evento_id"]; ?>,
-            success:function(data){
-                $("#Ventaslevel1_funcion").html(data);
-                
-            }
-            
-        });
+
 $("#formatos input[type=radio]").click(function(){
     $("#formatos img").removeClass("formato_seleccionado");
     $("#formatos img#imagen_formato"+this.value).addClass("formato_seleccionado");
@@ -357,15 +372,23 @@ $("#imprimir_boletos").click(function(){
         if(tipo=="todos"){
             $.ajax({
                 type: "POST",
+                dataType:'json',
+                beforeSend:function(){
+                    $("body").append("<div class='loading'>Generando pdf</div>");
+                },
                 url:'<?php echo $this->createUrl('reportes/ImpresionBoletosAjax') ?>',
                 data:"formatoId="+formatoId+"&tipo_impresion=todos"+"&EventoId="+EventoId+"&FuncionId="+FuncionId+"&pv="+pvs,
                 success:function(data){
-                    $(".area_impresion").html(data);
+                    //$(".area_impresion").html(data);
+                    $(".loading").remove();
                     try{
                         boletos.close();
                     }catch(err){}
-                    
-                    window.open('<?php echo '..' . Yii::app ()->baseUrl . '/doctos/boletos.pdf'?>', 'boletos', 'width=960,height=600');
+                    if(data.ok=="si"){
+                        window.open('<?php echo '..' . Yii::app ()->baseUrl . '/doctos/boletos.pdf'?>', 'boletos', 'width=960,height=600');
+                    }else{
+                        alert("No hay boletos para imprimir");
+                     }
                     //imprSelec('wrapper');
                 }
                 
@@ -373,16 +396,26 @@ $("#imprimir_boletos").click(function(){
         }else{
             $.ajax({
                 type: "POST",
+                dataType:'json',
+                beforeSend:function(){
+                    $("body").append("<div class='loading'>Generando pdf</div>");
+                },
                 url:'<?php echo $this->createUrl('reportes/ImpresionBoletosAjax') ?>',
                 data:"formatoId="+formatoId+"&tipo_impresion=no_impresos"+"&EventoId="+EventoId+"&FuncionId="+FuncionId+"&pv="+pvs,
                 success:function(data){
-                    $(".area_impresion").html(data);
+                    //$(".area_impresion").html(data);
+                    $(".loading").remove();
                     try{
                         boletos.close();
                     }catch(err){}
+                     console.log(data);
+                     if(data.ok=="si"){
+                        window.open('<?php echo '..' . Yii::app ()->baseUrl . '/doctos/boletos.pdf'?>', 'boletos', 'width=960,height=600');
                     
-                     window.open('<?php echo '..' . Yii::app ()->baseUrl . '/doctos/boletos.pdf'?>', 'boletos', 'width=960,height=600');
-                    //imprSelec('wrapper');
+                     }else{
+                        alert("No hay boletos NO impresos para imprimir");
+                     }
+                                          //imprSelec('wrapper');
                     //imprSelec('wrapper');
                 }
                 
@@ -423,6 +456,19 @@ function imprSelec(nombre){
       ventimp.print( );
       ventimp.close();
 } 
+try{
+   var resultados = $(".summary").html();
+    $(".summary").html(resultados.replace("results","resultados")); 
+}catch(err){
+    
+}
+try{
+    var empty = $("span.empty").html();
+    $(".empty").html(empty.replace("No results found.","No hay resultados."));
+}catch(err){
+    
+}
+
 </script>
 <?php
 function reimpresiones($string = ""){
@@ -461,4 +507,11 @@ echo CHtml::dropDownList('pvs',@$_POST["pv"],array('101'=>'Web','102'=>'Call Cen
   imagedestroy($im);*/
 
 Yii::app()->clientScript->registerScript('carga',"$('#evento_id').change();",CClientScript::POS_LOAD);
+//echo  Yii::app()->user->id;
+/*$r = new ReportesFlex;
+$data =  $r->getEventosAsignados();
+foreach($data as $key => $evento):
+echo $evento->EventoNom."<BR/>";
+endforeach
+//print_r($r->getEventosAsignados());*/
 ?>

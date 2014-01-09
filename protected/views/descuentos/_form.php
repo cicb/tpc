@@ -335,7 +335,7 @@ $eventos=Evento::model()->findAll("EventoSta='ALTA'",array('order'=>'EventoNom')
 <div id="myModal_continuar" style="width: 800px;left: 40%;" class="modal hide fade">
     <div class="modal-header">
         <a class="close" data-dismiss="modal">&times;</a>
-        <h4>Guardar Cupones de Descuento</h4>
+        <h4> <div id="descripcion_tipo">Guardar Cupones de Descuento</div></h4>
         <h4 id="cupon_generado" style="font-size: 20pt;"></h4>
     </div>
     <div class="modal-body">
@@ -396,6 +396,7 @@ Yii::app()->getSession()->remove('descuentos_relacionados');
             $("#codigo").val("");
             $("#codigo").focus();
             $("#boton_guardar").show();
+            $("#descripcion_tipo").html("Guardar Descuento");
         }else{
             $("#seccion_eventos_relacionados").attr('style',"visibility:visible;");
             $("#generar_cupon").attr('style',"visibility:visible;");
@@ -403,6 +404,7 @@ Yii::app()->getSession()->remove('descuentos_relacionados');
             $("#codigo").attr('readonly',false);
             $("#codigo").focus();
             $("#boton_guardar").hide();
+            $("#descripcion_tipo").html("Guardar Cupones de Descuento");
         }
     });
     $("#boton_correo").click(function(event){
