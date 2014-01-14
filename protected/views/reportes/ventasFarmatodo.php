@@ -86,11 +86,12 @@
 </div>
 
 <?php                    
-    if (isset($desde,$hasta) and preg_match("(\d{4}-\d{2}-\d{2})", $desde)==1  ) {
-             $this->widget('bootstrap.widgets.TbGridView', array(
+    if (isset($desde,$hasta) and preg_match("(\d{4}-\d{2}-\d{2})", $desde)==1  ) :
+			$ventas=$model->getVentasFarmatodo($desde,$hasta);
+	$this->widget('bootstrap.widgets.TbGridView', array(
             'id'=>'farmatodo-grid',
             'emptyText'=>'No se encontraron coincidencias',
-            'dataProvider'=>$model->getVentasFarmatodo($desde,$hasta),
+            'dataProvider'=>$ventas,
 			'summaryText'=>'Ventas en farmatodo agrupadas por punto de venta',
 			'htmlOptions'=>array('class'=>'primario'),
 			'type'=>array('condensed'),
@@ -123,5 +124,26 @@
                 ),
     )); 
 
-}
+
  ?>
+
+<?php 
+	$data=$ventas->getData();
+	$i=0;
+foreach ($data as $key=>$fila) {
+		$data[$key]['i']=$i;
+		$i++;
+}
+		$this->widget('application.extensions.morris.MorrisChartWidget', array(
+				'id'      => 'grafica-ventas',
+				'options' => array(
+						'chartType' => 'Bar',
+						'data'      => $data,
+						'xkey'      => 'PuntosventaNom',
+						'ykeys'     => array('ventas','boletos'),
+						'labels'    => array('Transacciones','Boletos'),
+						'barColors'    => array('#e67e22','#3498db')
+				),
+		));
+        ?>
+<?php endif;?>

@@ -91,8 +91,9 @@ class ReportesController extends Controller
 		//$this->perfil();
 		if (Yii::app()->user->getState("TipUsrId")=="2") {
 				$this->actionVentasSinCargo();
-		}	
-		$this->render('index');
+		}
+		else	
+				$this->render('index');
 	}
 
 	public function actionLugares()
@@ -562,117 +563,115 @@ class ReportesController extends Controller
 	public function actionVentasInternet()
 	{
 
+			$download ="";
+			$this->perfil();
+			$user = Usuarios::model()->findByAttributes(array('UsuariosId'=>Yii::app()->user->id));
+			$region = $user->UsuariosRegion;
+			$download ="";
+			//if(Yii::app()->user->isGuest)
+			//$this->redirect(Yii::app()->request->baseUrl);
+			$venta = "";
+			$model=new Ventaslevel1;
+			$count = 0;
+			if(!empty($_POST['Ventaslevel1'])){
+					if(!empty($_POST['Ventaslevel1']['funcion']) && $_POST['Ventaslevel1']['funcion']!=0 )
+							$funcion = " lugares.FuncionesId=".$_POST['Ventaslevel1']['funcion']." AND ";
+					else
+							$funcion = " lugares.FuncionesId in(1,2,3,4,5,6,7,8,9,10) AND ";
+					$venta = $_POST['evento_id'];
+					$query = "SELECT '' as id, '' as VentasId , '' as PuntosventaId, '' as PuntosventaNom, '' as VentasFecHor, '' ZonasAli,
+							''  as FilasAli, '' as LugaresLug, '' as LugaresNumBol, 
+							'' as VentasCon, '' as VentasNumRef";
+					if ($venta>0){
 
+							$query ="(SELECT  ventas.VentasId as id, ventas.PuntosventaId, funciones.funcionesTexto as fnc,
+									puntosventa.PuntosventaNom, ventas.VentasFecHor, zonas.ZonasAli,
+									filas.FilasAli, lugares.LugaresLug,  subzona.SubzonaAcc,
+									ventaslevel1.LugaresNumBol, ventaslevel1.VentasCon,cruge_user.email,
+									ventas.VentasNumRef
+									FROM
+									lugares
+									INNER JOIN funciones ON funciones.FuncionesId = lugares.FuncionesId AND funciones.EventoId = lugares.EventoId
+									INNER JOIN ventaslevel1 ON (lugares.EventoId=ventaslevel1.EventoId)
+									AND (lugares.FuncionesId=ventaslevel1.FuncionesId)
+									AND (lugares.ZonasId=ventaslevel1.ZonasId)
+									AND (lugares.SubzonaId=ventaslevel1.SubzonaId)
+									AND (lugares.FilasId=ventaslevel1.FilasId)
+									AND (lugares.LugaresId=ventaslevel1.LugaresId)
+									INNER JOIN filas ON (filas.EventoId=lugares.EventoId)
+									AND (filas.FuncionesId=lugares.FuncionesId)
+									AND (filas.ZonasId=lugares.ZonasId)
+									AND (filas.SubzonaId=lugares.SubzonaId)
+									AND (filas.FilasId=lugares.FilasId)
+									INNER JOIN zonas ON (zonas.EventoId=filas.EventoId)
+									AND (zonas.FuncionesId=filas.FuncionesId)
+									AND (zonas.ZonasId=filas.ZonasId)
+									INNER JOIN ventas ON (ventas.VentasId=ventaslevel1.VentasId)
+									INNER JOIN puntosventa ON (puntosventa.PuntosventaId=ventas.PuntosventaId)
+									INNER JOIN subzona ON (subzona.EventoId=filas.EventoId)
+									AND (subzona.FuncionesId=filas.FuncionesId)
+									AND (subzona.ZonasId=filas.ZonasId)
+									AND (subzona.SubzonaId=filas.SubzonaId)
+									AND (zonas.EventoId=subzona.EventoId)
+									AND (zonas.FuncionesId=subzona.FuncionesId)
+									AND (zonas.ZonasId=subzona.ZonasId)
+									INNER JOIN cruge_user ON (cruge_user.iduser=ventas.UsuariosId)
+									WHERE
+									(lugares.EventoId = $venta) AND
+									$funcion
+									((puntosventa.PuntosventaId = '101')) AND
+									NOT (ventas.VentasNumRef = ''))
+									ORDER BY  fnc ,ZonasAli,filasAli,LugaresLug;";
+					}
 
-		$download ="";
-		$this->perfil();
-		$user = Usuarios::model()->findByAttributes(array('UsuariosId'=>Yii::app()->user->id));
-		$region = $user->UsuariosRegion;
-		$download ="";
-		//if(Yii::app()->user->isGuest)
-		//$this->redirect(Yii::app()->request->baseUrl);
-		$venta = "";
-		$model=new Ventaslevel1;
-		$count = 0;
-		if(!empty($_POST['Ventaslevel1'])){
-			if(!empty($_POST['Ventaslevel1']['funcion']) && $_POST['Ventaslevel1']['funcion']!=0 )
-				$funcion = " lugares.FuncionesId=".$_POST['Ventaslevel1']['funcion']." AND ";
-			else
-				$funcion = " lugares.FuncionesId in(1,2,3,4,5,6,7,8,9,10) AND ";
-			$venta = $_POST['evento_id'];
-			$query = "SELECT '' as id, '' as VentasId , '' as PuntosventaId, '' as PuntosventaNom, '' as VentasFecHor, '' ZonasAli,
-				''  as FilasAli, '' as LugaresLug, '' as LugaresNumBol, 
-				'' as VentasCon, '' as VentasNumRef";
-			if ($venta>0){
-
-				$query ="(SELECT  ventas.VentasId as id, ventas.PuntosventaId, funciones.funcionesTexto as fnc,
-					puntosventa.PuntosventaNom, ventas.VentasFecHor, zonas.ZonasAli,
-					filas.FilasAli, lugares.LugaresLug,  subzona.SubzonaAcc,
-					ventaslevel1.LugaresNumBol, ventaslevel1.VentasCon,cruge_user.email,
-					ventas.VentasNumRef
-					FROM
-					lugares
-					INNER JOIN funciones ON funciones.FuncionesId = lugares.FuncionesId AND funciones.EventoId = lugares.EventoId
-					INNER JOIN ventaslevel1 ON (lugares.EventoId=ventaslevel1.EventoId)
-					AND (lugares.FuncionesId=ventaslevel1.FuncionesId)
-					AND (lugares.ZonasId=ventaslevel1.ZonasId)
-					AND (lugares.SubzonaId=ventaslevel1.SubzonaId)
-					AND (lugares.FilasId=ventaslevel1.FilasId)
-					AND (lugares.LugaresId=ventaslevel1.LugaresId)
-					INNER JOIN filas ON (filas.EventoId=lugares.EventoId)
-					AND (filas.FuncionesId=lugares.FuncionesId)
-					AND (filas.ZonasId=lugares.ZonasId)
-					AND (filas.SubzonaId=lugares.SubzonaId)
-					AND (filas.FilasId=lugares.FilasId)
-					INNER JOIN zonas ON (zonas.EventoId=filas.EventoId)
-					AND (zonas.FuncionesId=filas.FuncionesId)
-					AND (zonas.ZonasId=filas.ZonasId)
-					INNER JOIN ventas ON (ventas.VentasId=ventaslevel1.VentasId)
-					INNER JOIN puntosventa ON (puntosventa.PuntosventaId=ventas.PuntosventaId)
-					INNER JOIN subzona ON (subzona.EventoId=filas.EventoId)
-					AND (subzona.FuncionesId=filas.FuncionesId)
-					AND (subzona.ZonasId=filas.ZonasId)
-					AND (subzona.SubzonaId=filas.SubzonaId)
-					AND (zonas.EventoId=subzona.EventoId)
-					AND (zonas.FuncionesId=subzona.FuncionesId)
-					AND (zonas.ZonasId=subzona.ZonasId)
-					INNER JOIN cruge_user ON (cruge_user.iduser=ventas.UsuariosId)
-					WHERE
-					(lugares.EventoId = $venta) AND
-					$funcion
-					((puntosventa.PuntosventaId = '101')) AND
-					NOT (ventas.VentasNumRef = ''))
-					ORDER BY  fnc ,ZonasAli,filasAli,LugaresLug;";
-			}
-
-			$dataProvider = new CSqlDataProvider($query, array(
-				'totalItemCount'=>count($query),	
-				'pagination'=>false,
-			));
-			if(isset($_POST['grid_mode']) and $_POST['grid_mode']=='export'){  
-				$EventoNombre = Evento::model()->findAll("EventoId=".$_POST['evento_id']);
-				$dir_file = Yii::app()->request->scriptFile."doctos/";
-				$delete_file = @scandir(str_replace('index.php','',$dir_file));
-				if(!empty($delete_file[2])){
-					@unlink(str_replace('index.php','',$dir_file).$delete_file[2]);
-				}
-				$phpExcelPath = Yii::getPathOfAlias('ext.phpexcel.Classes');
-				spl_autoload_unregister(array('YiiBase','autoload'));
-				include($phpExcelPath . DIRECTORY_SEPARATOR . 'PHPExcel.php');
-				$objPHPExcel = new PHPExcel();
-				$objPHPExcel->setActiveSheetIndex(0);
-				$objPHPExcel->getActiveSheet()->setCellValue('A1', 'Función');
-				$objPHPExcel->getActiveSheet()->setCellValue('B1', 'Punto de Venta');
-				$objPHPExcel->getActiveSheet()->setCellValue('C1', 'Ventas Fecha y Hora');
-				$objPHPExcel->getActiveSheet()->setCellValue('D1', 'Zona');
-				$objPHPExcel->getActiveSheet()->setCellValue('E1', 'Fila');
-				$objPHPExcel->getActiveSheet()->setCellValue('F1', 'Lugar');
-				$objPHPExcel->getActiveSheet()->setCellValue('G1', 'Referencia');
-				$objPHPExcel->getActiveSheet()->setCellValue('H1', 'Clientes Email');
-				$objPHPExcel->getActiveSheet()->setCellValue('I1', 'Reimpresiones');
-				spl_autoload_register(array('YiiBase','autoload'));
-				foreach($dataProvider->getData() as $key => $datos):
-					$fila = $key+2;
-				$objPHPExcel->getActiveSheet()->setCellValue("A$fila", $datos['fnc']);
-				$objPHPExcel->getActiveSheet()->setCellValue("B$fila", $datos['PuntosventaNom']);
-				$objPHPExcel->getActiveSheet()->setCellValue("C$fila", $datos['VentasFecHor']);
-				$objPHPExcel->getActiveSheet()->setCellValue("D$fila", $datos['ZonasAli']);
-				$objPHPExcel->getActiveSheet()->setCellValue("E$fila", $datos['FilasAli']);
-				$objPHPExcel->getActiveSheet()->setCellValue("F$fila", $datos['LugaresLug']);
-				$objPHPExcel->getActiveSheet()->setCellValue("G$fila", $datos['VentasNumRef']);
-				$objPHPExcel->getActiveSheet()->setCellValue("H$fila", $datos['ClientesEma']);
-				$string = $datos['VentasCon'];
-				if(!empty($string)):
-					$len = strlen($string);
-				$num = substr($string ,$len -2);
-				if(is_numeric($num)):
-					$reimp = $num + 1;
-				else:
-					$num = substr($string ,$len -1);
-				$reimp = $num + 1;
+					$dataProvider = new CSqlDataProvider($query, array(
+							'totalItemCount'=>count($query),	
+							'pagination'=>false,
+					));
+					if(isset($_POST['grid_mode']) and $_POST['grid_mode']=='export'){  
+							$EventoNombre = Evento::model()->findAll("EventoId=".$_POST['evento_id']);
+							$dir_file = Yii::app()->request->scriptFile."doctos/";
+							$delete_file = @scandir(str_replace('index.php','',$dir_file));
+							if(!empty($delete_file[2])){
+									@unlink(str_replace('index.php','',$dir_file).$delete_file[2]);
+							}
+							$phpExcelPath = Yii::getPathOfAlias('ext.phpexcel.Classes');
+							spl_autoload_unregister(array('YiiBase','autoload'));
+							include($phpExcelPath . DIRECTORY_SEPARATOR . 'PHPExcel.php');
+							$objPHPExcel = new PHPExcel();
+							$objPHPExcel->setActiveSheetIndex(0);
+							$objPHPExcel->getActiveSheet()->setCellValue('A1', 'Función');
+							$objPHPExcel->getActiveSheet()->setCellValue('B1', 'Punto de Venta');
+							$objPHPExcel->getActiveSheet()->setCellValue('C1', 'Ventas Fecha y Hora');
+							$objPHPExcel->getActiveSheet()->setCellValue('D1', 'Zona');
+							$objPHPExcel->getActiveSheet()->setCellValue('E1', 'Fila');
+							$objPHPExcel->getActiveSheet()->setCellValue('F1', 'Lugar');
+							$objPHPExcel->getActiveSheet()->setCellValue('G1', 'Referencia');
+							$objPHPExcel->getActiveSheet()->setCellValue('H1', 'Clientes Email');
+							$objPHPExcel->getActiveSheet()->setCellValue('I1', 'Reimpresiones');
+							spl_autoload_register(array('YiiBase','autoload'));
+							foreach($dataProvider->getData() as $key => $datos):
+									$fila = $key+2;
+							$objPHPExcel->getActiveSheet()->setCellValue("A$fila", $datos['fnc']);
+							$objPHPExcel->getActiveSheet()->setCellValue("B$fila", $datos['PuntosventaNom']);
+							$objPHPExcel->getActiveSheet()->setCellValue("C$fila", $datos['VentasFecHor']);
+							$objPHPExcel->getActiveSheet()->setCellValue("D$fila", $datos['ZonasAli']);
+							$objPHPExcel->getActiveSheet()->setCellValue("E$fila", $datos['FilasAli']);
+							$objPHPExcel->getActiveSheet()->setCellValue("F$fila", $datos['LugaresLug']);
+							$objPHPExcel->getActiveSheet()->setCellValue("G$fila", $datos['VentasNumRef']);
+							$objPHPExcel->getActiveSheet()->setCellValue("H$fila", $datos['ClientesEma']);
+							$string = $datos['VentasCon'];
+							if(!empty($string)):
+									$len = strlen($string);
+							$num = substr($string ,$len -2);
+							if(is_numeric($num)):
+									$reimp = $num + 1;
+							else:
+									$num = substr($string ,$len -1);
+							$reimp = $num + 1;
 endif;
 else:
-	$reimp = "0";
+		$reimp = "0";
 endif;
 $objPHPExcel->getActiveSheet()->setCellValue("I$fila", $reimp);
 endforeach;
@@ -691,14 +690,14 @@ header('Content-Disposition: attachment; filename="reporte_web_'.str_replace(arr
 $objWriter->save('php://output');
 //$objWriter->save('..'.$file); 
 
-			}      
+					}      
 
-			$this->render('ventasWeb',
-				array('model'=>$model,'itemselected' => $venta, 'dataProvider'=>$dataProvider,'download'=>$download,'region'=>$region));
+					$this->render('ventasWeb',
+							array('model'=>$model,'itemselected' => $venta, 'dataProvider'=>$dataProvider,'download'=>$download,'region'=>$region));
 
-		} 
-		else
-			$this->render('ventasWeb',array('model'=>$model,'itemselected' => $venta,'region'=>$region));
+			} 
+			else
+					$this->render('ventasWeb',array('model'=>$model,'itemselected' => $venta,'region'=>$region));
 	}
 
 	public function actionExportarReporte(){

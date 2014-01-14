@@ -184,7 +184,7 @@ class ReportesVentas extends CFormModel
 			$matrix=array(
 			'aforo'       => array('titulo' => 'Aforo','boletos'         => $aforo,'importe'     => 0,'porcentaje' => 100),
 			'por vender'  => array('titulo' => 'Por vender','boletos'    => $porvender,'importe' => 0,'porcentaje' => $porvender/max($aforo,1)),
-			'cortesia'    => array('titulo' => 'Cortesias','boletos'     => 0,'importe'          => 0,'porcentaje' => 0),
+			'cortesía'    => array('titulo' => 'Cortesías','boletos'     => 0,'importe'          => 0,'porcentaje' => 0),
 			'boleto duro' => array('titulo' => 'Boletos duros','boletos' => 0,'importe'          => 0,'porcentaje' => 0),
 			'normal'      => array('titulo' => 'Ventas','boletos'        => 0,'importe'          => 0,'porcentaje' => 0),
 			'total'       => array('titulo' => 'Total','boletos'         => 0,'importe'          => 0,'porcentaje' => 0),
@@ -435,7 +435,7 @@ class ReportesVentas extends CFormModel
 				INNER JOIN ventaslevel1 as t1 ON t.VentasId=t1.VentasId 
 				INNER JOIN puntosventa  as t2 ON t2.PuntosventaId=t.PuntosVentaId
 				WHERE t.VentasFecHor BETWEEN '$desde' AND '$hasta'
-						AND VentasSec like 'FARMATODO'
+						AND VentasSec like 'FARMATODO' AND VentasCosBol>10
 				GROUP BY PuntosventaNom";
 				return new CSqlDataProvider($query, array(
 							'pagination'=>false,
@@ -520,39 +520,6 @@ class ReportesVentas extends CFormModel
 
 
 		}
-    public function getEventosAsignados(){
-        $usuarioId = Yii::app()->user->id;
-        $hoy = date("Y-m-d G:i:s");
-        $usrval = Usrval::model()->findAll(array('condition'=>"UsuarioId=$usuarioId AND UsrTipId=2 AND UsrSubTipId=4  AND  ((FecHorIni < '$hoy' AND FecHorFin > '$hoy ') OR FecHorIni = '0000-00-00 00:00:00' AND FecHorIni = '0000-00-00 00:00:00')"));
-        $condiciones = "";
-        if($usrval[0]->usrValIdRef=="TODAS"){
-            
-        }else{
-            $condicion ="";
-            foreach($usrval as $key => $evento){
-                $condicion .= $evento->usrValIdRef.",";
-            }
-            $condiciones = " AND EventoId IN(".substr($condicion,0,-1).")";
-        }
-        $eventos = Evento::model()->findAll(array('condition'=>" EventoSta='ALTA'".$condiciones,'order'=>"t.EventoNom ASC"));
-        return $eventos;
-    }
-    public function getFuncionesAsignadas($EventoId){
-        $usuarioId = Yii::app()->user->id;
-        $hoy = date("Y-m-d G:i:s");
-        $usrval = Usrval::model()->findAll(array('condition'=>"UsuarioId=$usuarioId AND UsrTipId=2 AND UsrSubTipId=4  AND  ((FecHorIni < '$hoy ' AND FecHorFin > '$hoy ') OR FecHorIni = '0000-00-00 00:00:00' AND FecHorIni = '0000-00-00 00:00:00')"));
-        $condiciones = "";
-        if($usrval[0]->usrValIdRef2=="TODAS"){
-            
-        }else{
-            $condicion ="";
-            foreach($usrval as $key => $funcion){
-                $condicion .= $funcion->usrValIdRef2.",";
-            }
-            $condiciones = " AND FuncionesId IN(".substr($condicion,0,-1).")";
-        }
-        $funciones = Funciones::model()->findAll(array('condition'=>" EventoId=$EventoId".$condiciones,'order'=>"t.FuncionesId ASC"));
-        return $funciones;
-    }
+
 }
  ?>
