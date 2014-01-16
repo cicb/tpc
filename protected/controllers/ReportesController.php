@@ -983,6 +983,15 @@ $objWriter->save('php://output');
 
 			$this->render('ventasPorRef',array('model'=>$model,'ref'=>$ref,'tipo'=>$tipo));
 	}
+	public function actionAccesos()
+	{
+		//Este es un reporte de los boletos accesados y por accesar en en evento especifico
+		$model=new ReportesVentas;
+		$eventoId=isset($_POST['evento_id'])?$_POST['evento_id']:0;
+		$funcionesId=isset($_POST['funcion_id'])?$_POST['funcion_id']:"TODAS";
+		$this->render('Accesos',array('model'=>$model,'eventoId'=>$eventoId,'funcionesId'=>$funcionesId));
+		
+	}
 	// Uncomment the following methods and override them if needed
 	/*
 	public function filters()

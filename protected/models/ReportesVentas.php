@@ -330,7 +330,10 @@ class ReportesVentas extends CFormModel
 							  ventaslevel1.VentasBolTip,
 							  evento.EventoNom,
 							  funciones.FuncionesFecHor,
-							  ventas.VentasNumRef,  ventaslevel1.LugaresNumBol as NumBol
+							  ventas.VentasNumRef,
+							  ventaslevel1.LugaresNumBol as NumBol,
+							  IFNULL(acceso.AccesoFecha,'Sin acceso') as UltimoAcceso,
+							  IdTerminal
 							FROM
 							 filas
 							 INNER JOIN lugares ON (filas.EventoId=lugares.EventoId)
@@ -351,6 +354,7 @@ class ReportesVentas extends CFormModel
 							 INNER JOIN funciones ON (funciones.EventoId=evento.EventoId)
 							  AND (funciones.FuncionesId=zonas.FuncionesId)
 							 INNER JOIN ventas ON (ventas.VentasId=ventaslevel1.VentasId)
+							 LEFT JOIN acceso ON ventaslevel1.LugaresNumBol=acceso.BoletoNum 
 							 WHERE   $filtro ";
 				return new CSqlDataProvider($query, array(
 							'pagination'=>false,
@@ -435,7 +439,8 @@ class ReportesVentas extends CFormModel
 				INNER JOIN ventaslevel1 as t1 ON t.VentasId=t1.VentasId 
 				INNER JOIN puntosventa  as t2 ON t2.PuntosventaId=t.PuntosVentaId
 				WHERE t.VentasFecHor BETWEEN '$desde' AND '$hasta'
-						AND VentasSec like 'FARMATODO' AND VentasCosBol>10
+				AND VentasSec like 'FARMATODO' AND VentasCosBol>10 
+				AND t.VentasSta NOT LIKE 'CANCELADO' AND t1.VentasSta NOT LIKE 'CANCELADO'
 				GROUP BY PuntosventaNom";
 				return new CSqlDataProvider($query, array(
 							'pagination'=>false,
@@ -521,5 +526,63 @@ class ReportesVentas extends CFormModel
 
 		}
 
+	public function getAccesosPorZonas($eventoId,$funcionesId="TODAS")
+	{
+			$funcion="";
+			if ($funcionesId>0) {
+					$funcion=sprintf(" AND t.FuncionesId = '%s' ",$funcionesId);
+			}
+			$query=sprintf("
+					SELECT 
+					t.ZonasId as id ,t1.ZonasAli,
+					COUNT(LugaresId)-COUNT(BoletoNum) as Pendientes,
+					COUNT(BoletoNum) as Registrados
+						FROM
+						ventaslevel1 as t
+						INNER JOIN
+								zonas as t1 ON t.EventoId = t1.EventoId 
+								AND t.FuncionesId = t1.FuncionesId 
+								AND t.ZonasId = t1.ZonasId
+						LEFT JOIN
+								acceso as t2 
+								ON t2.BoletoNum = t.LugaresNumBol
+						WHERE
+						t.EventoId = '%d'
+						AND t.VentasSta NOT LIKE 'CANCELADO' 					   
+						%s
+						GROUP BY t.EventoId , t.FuncionesId , t.ZonasId
+						",$eventoId,$funcion);
+			return new CSqlDataProvider($query, array(
+					'pagination'=>false,
+					));
+	}
+
+	public function getAccesosPorPuertas($eventoId,$funcionesId="TODAS")
+	{
+			$funcion="";
+			if ($funcionesId>0) {
+					$funcion=sprintf(" AND t.FuncionesId = '%s' ",$funcionesId);
+			}
+			$query=sprintf("
+					SELECT 
+					t1.idCatTerminal as id ,t1.CatTerminalNom,
+					COUNT(LugaresId)-COUNT(BoletoNum) as Pendientes,
+					COUNT(BoletoNum) as Registrados
+						FROM
+						ventaslevel1 as t
+						INNER JOIN	acceso as t2 
+								ON t2.BoletoNum = t.LugaresNumBol
+						INNER JOIN	catterminal as t1 
+								ON t1.idCatTerminal=t2.IdTerminal
+						WHERE
+						t.EventoId = '%d'
+						AND t.VentasSta NOT LIKE 'CANCELADO' 					   
+						%s
+						GROUP BY t1.idCatTerminal
+						",$eventoId,$funcion);
+			return new CSqlDataProvider($query, array(
+					'pagination'=>false,
+					));
+	}
 }
  ?>

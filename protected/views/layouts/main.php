@@ -11,6 +11,7 @@
 	<![endif]-->
 	<link rel="stylesheet/less" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/style.less"  />
 	<?php Yii::app()->bootstrap->register(); ?>
+
 	<title><?php echo CHtml::encode($this->pageTitle); ?></title>
 </head>
 <body>
@@ -33,7 +34,9 @@ $this->widget('bootstrap.widgets.TbNavbar',array(
 								'url' => $this->createUrl('reportes/index'),
 								'active' => true,'visible'=>!Yii::app()->user->isGuest,
 								'items'=>array(
-										//array('label' => 'Tipos de reportes', 'active'=>true),
+										array('label' => 'Accesos',
+												'url' =>  $this->createUrl('reportes/accesos'),
+												'visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
 										array('label' => 'Desglose De Ventas', 
 												'url' =>  $this->createUrl('reportes/desgloseVentas'),'visible'
 												=> !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
@@ -53,12 +56,12 @@ $this->widget('bootstrap.widgets.TbNavbar',array(
 										array('label' => 'Ventas Web Y CallCenter', 
 												'url' =>  $this->createUrl('reportes/ventasWeb'),
 												'visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
-										array('label' => 'Ventas Sin Cargo',
-												'url' =>  $this->createUrl('reportes/ventasSinCargo'),
-												'visible' => !Yii::app()->user->isGuest AND (Yii::app()->user->getState("Admin") OR Yii::app()->user->getState("TipUsrId")=="2")?true:false),
 										array('label' => 'Ventas Con Cargo',
 												'url' =>  $this->createUrl('reportes/ventasConCargo'),
 												'visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
+										array('label' => 'Ventas Sin Cargo',
+												'url' =>  $this->createUrl('reportes/ventasSinCargo'),
+												'visible' => !Yii::app()->user->isGuest AND (Yii::app()->user->getState("Admin") OR Yii::app()->user->getState("TipUsrId")=="2")?true:false),
 										array('label' => 'Ventas De Farmatodo',
 												'url' =>  $this->createUrl('reportes/ventasFarmatodo'),
 												'visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
