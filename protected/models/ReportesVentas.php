@@ -423,42 +423,66 @@ class ReportesVentas extends CFormModel
 					));
 
 	}
-	public function getVentas($desde,$hasta,$turno='ambos',$condicion='1')
+	public function getVentas($desde,$hasta,$criterio=false)
 	{
-		//if ($desde and $hasta 
-					//and preg_match("(\d{4}-\d{2}-\d{2})",$desde)==1 
-					//and preg_match("(\d{4}-\d{2}-\d{2})",$hasta)==1){
-				$query="SELECT t.PuntosventaId as id,
+			//if ($desde and $hasta 
+			//and preg_match("(\d{4}-\d{2}-\d{2})",$desde)==1 
+			//and preg_match("(\d{4}-\d{2}-\d{2})",$hasta)==1){
+			if ($criterio){
+				   if(is_array($criterio)) {
+					$criteria=new CDbCriteria($criterio);
+					$criterio=$criteria->toArray();
+				   }
+				   if(is_object($criterio))
+						   $criterio=$criterio->toArray();		
+				   if (isset($criterio['select']) and is_array($criterio['select'])) 
+						   $criterio['select']=implode(',',$criterio['campos']);
+					if (isset($criterio['condition']) and is_array($criterio['condition'])) 
+							$criterio['condition']=implode(',',$criterio['condicion']);
+					if (isset($criterio['group']) and is_array($criterio['group'])) 
+							$criterio['group']=implode(',',$criterio['group']);	
+					if (isset($criterio['order']) and is_array($criterio['order'])) 
+							$criterio['order']=implode(',',$criterio['order']);
+			}else{
+					$criterio=array('select'=>'','condition'=>'','order'=>'PuntosventaNom','group'=>'PuntosventaNom');
+			}	
+			$criterio['select']=strlen($criterio['select'])>1?','.$criterio['select']:'';
+			$criterio['condition']=strlen($criterio['condition'])>0?$criterio['condition']:'1';
+			$criterio['order']=strlen($criterio['order'])>0?$criterio['order']:'PuntosventaNom';
+			$criterio['group']=strlen($criterio['group'])>0?$criterio['group']:'PuntosventaNom';
+			$query=sprintf("SELECT t.PuntosventaId as id,
 					PuntosventaNom,
 					SUM(t1.VentasCosBol+t1.VentasCarSer) as importe,
 					COUNT(*) as boletos,
 					COUNT(distinct t.VentasId) as ventas,
 					MAX(VentasFecHor) as ultimo
-				FROM ventas AS t
-				INNER JOIN ventaslevel1 as t1 ON t.VentasId=t1.VentasId 
-				INNER JOIN puntosventa  as t2 ON t2.PuntosventaId=t.PuntosVentaId
-				WHERE DATE(t.VentasFecHor) BETWEEN '$desde' AND '$hasta'
-				AND VentasCosBol>10 
-				AND t.VentasSta NOT LIKE 'CANCELADO' AND t1.VentasSta NOT LIKE 'CANCELADO'
-				AND  $condicion  
-				GROUP BY PuntosventaNom";
-				return new CSqlDataProvider($query, array(
-							'pagination'=>false,
-							//'sort'=>array(
-									//'puntos_venta'=>array(
-											//'asc'=>'"puntosventa"."PuntosventaNom"',
-											//'desc'=>'"importe" DESC'
-									//)
-							//)
-					));
+					%s
+					FROM ventas AS t
+					INNER JOIN ventaslevel1 as t1 ON t.VentasId=t1.VentasId 
+					INNER JOIN puntosventa  as t2 ON t2.PuntosventaId=t.PuntosVentaId
+					WHERE DATE(t.VentasFecHor) BETWEEN '$desde' AND '$hasta'
+					AND VentasCosBol>10 
+					AND t.VentasSta NOT LIKE 'CANCELADO' AND t1.VentasSta NOT LIKE 'CANCELADO'
+					AND  %s 
+					GROUP BY %s ORDER BY %s ",$criterio['select'],$criterio['condition'],$criterio['group'],$criterio['order']);
+			return new CSqlDataProvider($query, array(
+					'pagination'=>false,
+					//'sort'=>array(
+					//'puntos_venta'=>array(
+					//'asc'=>'"puntosventa"."PuntosventaNom"',
+					//'desc'=>'"importe" DESC'
+					//)
+					//)
+			));
 
 	}
 	public function getVentasFarmatodo($desde,$hasta,$turno='ambos')
 	{
-		return	$this->getVentas($desde,$hasta,$turno,"VentasSec like 'FARMATODO'");
+			return	$this->getVentas($desde,$hasta,array('condition'=>"VentasSec like 'FARMATODO'"));
 	}
-		public function getDetalleVenta($ventaId)
-		{
+
+	public function getDetalleVenta($ventaId)
+	{
 			 return new CActiveDataProvider('Lugares', 
                   array('criteria'=>array('select'   =>"evento.EventoNom,
                   funciones.funcionesTexto,
@@ -538,7 +562,7 @@ class ReportesVentas extends CFormModel
 			$query=sprintf("
 					SELECT 
 					t.ZonasId as id ,t1.ZonasAli,
-					COUNT(LugaresId)-COUNT(BoletoNum) as Pendientes,
+					COUNT(t.LugaresId)-COUNT(BoletoNum) as Pendientes,
 					COUNT(BoletoNum) as Registrados
 						FROM
 						ventaslevel1 as t
@@ -569,7 +593,7 @@ class ReportesVentas extends CFormModel
 			$query=sprintf("
 					SELECT 
 					t1.idCatTerminal as id ,t1.CatTerminalNom,
-					COUNT(LugaresId)-COUNT(BoletoNum) as Pendientes,
+					COUNT(t.LugaresId)-COUNT(BoletoNum) as Pendientes,
 					COUNT(BoletoNum) as Registrados
 						FROM
 						ventaslevel1 as t
