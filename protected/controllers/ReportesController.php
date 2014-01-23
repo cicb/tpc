@@ -92,8 +92,19 @@ class ReportesController extends Controller
 		if (Yii::app()->user->getState("TipUsrId")=="2") {
 				$this->actionVentasSinCargo();
 		}
-		else	
-				$this->render('index');
+		else{
+				$widgets=array();
+				$model=new ReportesVentas;
+				$desde=date('Y-m-d',strtotime("-30 days"));
+				$hasta=date('Y-m-d');
+				$funciones=Funciones::model()->with('evento')->findAll(array('limit'=>3,'condition'=>'FuncionesFecHor>NOW()','group'=>'t.EventoId','select'=>'t.EventoId'));
+				//var_dump($eventos);
+				//$eventos=Evento::model()->with('funciones')->findAll(array('limit'=>3,'condition'=>'FuncionesFecHor>NOW()'));
+				foreach ($funciones as $funcion) {
+					$widgets[]=$this->renderPartial('_resumenVentas',array('model'=>$model,'evento'=>$funcion->evento,'funcionesId'=>"TODAS",'desde'=>$desde,'hasta'=>$hasta),true,true);
+				}
+				$this->render('index',array('model'=>$model,'widgets'=>$widgets,'desde'=>$desde,'hasta'=>$hasta));
+		}	
 	}
 
 	public function actionLugares()

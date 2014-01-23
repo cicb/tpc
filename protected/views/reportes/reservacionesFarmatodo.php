@@ -1,5 +1,5 @@
 <div class='controles'>
-        <h2>Reservaciones Farmatodo</h2>
+        <h2>Ventas y cancelaciones</h2>
 		<div class="form">
 
 		<?php $form=$this->beginWidget('CActiveForm', array(

@@ -389,7 +389,7 @@ class ReportesVentas extends CFormModel
 					inner join subzona on subzona.EventoId=ventaslevel1.EventoId and subzona.FuncionesId=ventaslevel1.FuncionesId and subzona.ZonasId=ventaslevel1.ZonasId and subzona.SubzonaId=ventaslevel1.SubzonaId
 					inner join filas on filas.EventoId=ventaslevel1.EventoId and filas.FuncionesId=ventaslevel1.FuncionesId and filas.ZonasId=ventaslevel1.ZonasId and filas.SubzonaId=ventaslevel1.SubzonaId and filas.FilasId=ventaslevel1.FilasId
 					inner join puntosventa on puntosventa.PuntosVentaId=ventas.PuntosVentaId
-					where tempLugaresNumRef='$ref' GROUP BY Asiento" ;  
+					where tempLugaresNumRef like '%$ref%' GROUP BY Asiento" ;  
 			}
 			else{
 				$query ="select 
@@ -415,7 +415,7 @@ class ReportesVentas extends CFormModel
 					inner join subzona on subzona.EventoId=ventaslevel1.EventoId and subzona.FuncionesId=ventaslevel1.FuncionesId and subzona.ZonasId=ventaslevel1.ZonasId and subzona.SubzonaId=ventaslevel1.SubzonaId
 					inner join filas on filas.EventoId=ventaslevel1.EventoId and filas.FuncionesId=ventaslevel1.FuncionesId and filas.ZonasId=ventaslevel1.ZonasId and filas.SubzonaId=ventaslevel1.SubzonaId and filas.FilasId=ventaslevel1.FilasId
 					inner join puntosventa on puntosventa.PuntosVentaId=ventas.PuntosVentaId
-					where ventas.VentasNumRef = '$ref'
+					where ventas.VentasNumRef like  '%$ref%'
 					GROUP BY Asiento";
 			}
 		return new CSqlDataProvider($query, array(
@@ -423,8 +423,7 @@ class ReportesVentas extends CFormModel
 					));
 
 	}
-
-	public function getVentasFarmatodo($desde,$hasta,$turno='ambos')
+	public function getVentas($desde,$hasta,$turno='ambos',$condicion='1')
 	{
 		//if ($desde and $hasta 
 					//and preg_match("(\d{4}-\d{2}-\d{2})",$desde)==1 
@@ -438,9 +437,10 @@ class ReportesVentas extends CFormModel
 				FROM ventas AS t
 				INNER JOIN ventaslevel1 as t1 ON t.VentasId=t1.VentasId 
 				INNER JOIN puntosventa  as t2 ON t2.PuntosventaId=t.PuntosVentaId
-				WHERE t.VentasFecHor BETWEEN '$desde' AND '$hasta'
-				AND VentasSec like 'FARMATODO' AND VentasCosBol>10 
+				WHERE DATE(t.VentasFecHor) BETWEEN '$desde' AND '$hasta'
+				AND VentasCosBol>10 
 				AND t.VentasSta NOT LIKE 'CANCELADO' AND t1.VentasSta NOT LIKE 'CANCELADO'
+				AND  $condicion  
 				GROUP BY PuntosventaNom";
 				return new CSqlDataProvider($query, array(
 							'pagination'=>false,
@@ -451,8 +451,11 @@ class ReportesVentas extends CFormModel
 									//)
 							//)
 					));
-		
 
+	}
+	public function getVentasFarmatodo($desde,$hasta,$turno='ambos')
+	{
+		return	$this->getVentas($desde,$hasta,$turno,"VentasSec like 'FARMATODO'");
 	}
 		public function getDetalleVenta($ventaId)
 		{
