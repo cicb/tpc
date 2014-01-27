@@ -162,8 +162,8 @@ else if (isset($_GET['dispositivo']) and $_GET['dispositivo']=='movil')
 	$ventasDesde=str_replace($months,$meses,date_create($funcion->FuncionesFecIni)->format("d-F-Y"));                   
 	$diaFuncion = new DateTime($funcion->FuncionesFecHor);
 	$hoy = new DateTime("now");
-	$interval = $hoy->diff($diaFuncion,false);
-	$diaspara=$interval->format('%R%a');
+	$diaspara=round(($diaFuncion->format('U') - $hoy->format('U')) / (60*60*24));
+
     ?>
     <?php  if (is_object($evento)): ?>
 

@@ -334,7 +334,7 @@ $("a#resumen_desplegable").click(function(event){
           </div>
           <div class='span4'>
                <div class="row" >
-                    <?php echo CHtml::button('guardar',array('class'=>'btn btn-success','id'=>'boton_guardar','style'=>'display:none;')); ?>
+                    <?php echo CHtml::button('Guardar',array('class'=>'btn btn-success','id'=>'boton_guardar','style'=>'display:none;')); ?>
                     <script>
                         $("#boton_guardar").click(function(){
                             var nombre_distribucion = prompt("Escriba el nombre de la Nueva Distribucion");
@@ -346,29 +346,27 @@ $("a#resumen_desplegable").click(function(event){
                                     url:'<?php echo Yii::app()->createUrl('funciones/Asignar'); ?>',
                                     dataType:'json',
                                     beforeSend:function(){
+                                        $("#content-img").css({'visibility':'hidden'});
                                          $("#loading").show();
                                     },
-                                    data:'id_distribucion=<?php echo $id_distribucion_nueva ?>&nombre_distribucion='+nombre_distribucion,
+                                    data:'EventoId=<?php echo $_GET['EventoId']; ?>&id_distribucion=<?php echo $id_distribucion_nueva ?>&nombre_distribucion='+nombre_distribucion,
                                     success:function(data){
                                         $("#loading").hide();
-                                        if(data.ok=="0")
-                                        alert("El Nombre asignacion ya existe, por favor trate con otro");
-                                        else{
+                                        if(data.ok=="-1"){
+                                            alert("Necesitas asignar por lo menos una subzona a alguna puerta");
+                                            $("#content-img").css({'visibility':'visible'});
+                                        }else if(data.ok=="0"){
+                                            alert("El Nombre asignacion ya existe, por favor trate con otro");
+                                            $("#content-img").css({'visibility':'visible'}); 
+                                        }else{
                                             $("body").attr('onbeforeunload','');
                                             //$("#boton_guardar").show();
-                                            window.location.href = '<?php echo Yii::app()->createUrl('evento/Index'); ?>';
+                                            window.location.href = '<?php echo Yii::app()->createUrl('evento/Index&EventoId='.$_GET['EventoId']); ?>';
                                         }
                                         
                                     }
                                 });  
                             }
-                        $.ajax({
-                            url:'<?php echo $this->createUrl('funciones/Asignar'); ?>',
-                            data:'EventoId='+EventoId+'&IdDistribucion='+IdDistribucion+'&Idfuncion='+funciones+'&idPuerta='+data_id_puerta,
-                            success:function(data){
-                                console.log(data);
-                            }
-                       });
                   });
                </script>
                </div>
@@ -573,10 +571,12 @@ endforeach;
             url:'<?php echo Yii::app()->createUrl('evento/DeleteZona'); ?>',
             data:'id_puerta='+id_puerta+'&id_distribucion_nueva='+id_distribucion_nueva+'&id_evento='+id_evento+'&funciones='+funciones.split(",")+'&id_zona='+id_zona+'&id_subzona='+id_subzona,
             beforeSend:function(){
+                $("#content-img").css({'visibility':'hidden'});
                 $("#loading").show();
             },
             success:function(data){
                 $("#loading").hide();
+                $("#content-img").css({'visibility':'visible'});
                 $.get('<?php echo Yii::app()->createUrl('funciones/Resumen'); ?>', {IdDistribucion: id_distribucion_nueva, EventoId:id_evento,Idfuncion:"0"}, function(respuesta){
                        $("#resumen").html(respuesta);
                     });

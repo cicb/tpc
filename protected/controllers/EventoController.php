@@ -24,7 +24,7 @@ class EventoController extends Controller
 	 * This method is used by the 'accessControl' filter.
 	 * @return array access control rules
 	 */
-	public function accessRules()
+	/*public function accessRules()
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
@@ -42,9 +42,9 @@ class EventoController extends Controller
             /*
 			array('deny',  // deny all users
 				'users'=>array('*'),
-			),                           */
+			),                           
 		);
-	}
+	}*/
 
 	/**
 	 * Displays a particular model.
@@ -55,13 +55,19 @@ class EventoController extends Controller
 			'model'=>$this->loadModel($id),
 		));
 	}
-
+    public function perfil(){
+		if(Yii::app()->user->isGuest OR !Yii::app()->user->getState("Admin")){
+			$this->redirect(array("site/logout"));
+		}
+	}
 	/**
 	 * Creates a new model.
 	 * If creation is successful, the browser will be redirected to the 'view' page.
 	 */
 	public function actionCreate($EventoId,$EventoDistribucionId,$funcionId,$funciones,$IdDistribucion,$ForoId,$ForoMapIntId){
-	    $user_id = Yii::app()->user->id;
+	    $this->perfil();
+        set_time_limit(0);
+        $user_id = Yii::app()->user->id;
         if($ForoId=="0" or $ForoMapIntId=="0"){
             $foro = Funciones::model()->find("EventoId=$EventoId");
             $ForoId = $foro->ForoId;
@@ -309,7 +315,7 @@ class EventoController extends Controller
 	 * Lists all models.
 	 */
 	public function actionIndex()
-	{
+	{   $this->perfil(); 
 		$dataProvider=new CActiveDataProvider('Evento');
 		$this->render('index',array(
 			'dataProvider'=>$dataProvider,

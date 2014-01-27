@@ -65,6 +65,8 @@ if (isset($ref) and !is_null($ref)) {
 				'VentasBolTip',
 				'VentasNumRef',
 				'NumBol',
+				'UltimoAcceso',
+				'IdTerminal'
 		),
 		));
 }else

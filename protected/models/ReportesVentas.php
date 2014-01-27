@@ -75,24 +75,31 @@ class ReportesVentas extends CFormModel
 			return  $matrix;
 	}
 
-	public function getReporteZonas($eventoId,$funcionId='TODAS',$desde='',$hasta='')
+	public function getReporteZonas($eventoId,$funcionesId='TODAS',$desde='',$hasta='')
 	{
+			$funcionCond='';
 
 		if (isset($eventoId) and $eventoId>0)
 			$evento=Evento::model()->findByPk($eventoId);
 		if (isset($funcionesId) and $funcionesId>0){
-			$funcion=Funciones::model()->findByPk(array('EventoId'=>$eventoId,'FuncionesId'=>$funcionesId));
-			if(is_object($funcion))
-				$funciones=$funcion;
-		}
-		else
-			$funciones=$evento->funciones;
 
-		$zonas=array();
+			$funcionCond=sprintf(" AND FuncionesId = '%s' ",$funcionesId);
+			$funcion=Funciones::model()->with('zonas')->findByPk(array('EventoId'=>$eventoId,'FuncionesId'=>$funcionesId));
+			if(is_object($funcion))
+				//$funciones=$funcion;
+				$zonas=$funcion->zonas;
+		}
+		else{
+				//$funciones=$evento->funciones;
+				$zonas=Zonas::model()->with('funcion')->findAllByAttributes(array('EventoId'=>$eventoId),array('group'=>'t.EventoId,t.ZonasId'));
+		}
+
+		$matrixZonas=array();
 		$modelo=new ReportesFlex;
-		foreach ($funciones as $funcion) {
-			foreach ($funcion->zonas as $zona) {
-				$aforo = Lugares::model()->count("EventoId = '$eventoId' AND FuncionesId = '".$funcion->FuncionesId."' AND ZonasId =".$zona->ZonasId);
+		//foreach ($funciones as $funcion) {
+			foreach ($zonas as $zona) {
+				$aforo = Lugares::model()->count( sprintf("EventoId= '%s' %s AND ZonasId = '%s'  AND LugaresStatus<>'OFF' ", $eventoId,$funcionCond,$zona->ZonasId));
+							//"EventoId = '$eventoId' AND FuncionesId = '".$zona->funcion->FuncionesId."' AND ZonasId =".$zona->ZonasId);
 				$zone=array();
 				$zone['aforo']=$aforo;
 				$zone['zona']=$zona->ZonasAli;
@@ -103,7 +110,7 @@ class ReportesVentas extends CFormModel
 					'cupones'		=>array('titulo'=>'Cupones',		'boletos'=>0,	'precio'=>0,	'importe'=>0,	'porcentaje'=>0),
 					'subtotal'		=>array('titulo'=>'Sub-Total',		'boletos'=>0,	'precio'=>0,	'importe'=>0,	'porcentaje'=>0),
 					);
-				$reporte=$modelo->getDetallesZonasCargo($eventoId,$funcionId,$zona->ZonasId,$desde,$hasta,$cargo='NO');
+				$reporte=$modelo->getDetallesZonasCargo($eventoId,$funcionesId,$zona->ZonasId,$desde,$hasta,$cargo='NO');
 				//$tipos=array();
 				$matrix['tipos']=array();
 				foreach ($reporte->getData() as $fila) {
@@ -124,7 +131,7 @@ class ReportesVentas extends CFormModel
 					
 				}
 				// Ventas con descuento por zona
-				$reporte=$modelo->getReporte($eventoId,$funcion->FuncionesId,$desde,$hasta, $cargo, 'NORMAL',' AND t2.VentasMonDes>0 AND t2.ZonasId='.$zona->ZonasId, 'DescuentosDes','DescuentosDes');
+				$reporte=$modelo->getReporte($eventoId,$zona->funcion->FuncionesId,$desde,$hasta, $cargo, 'NORMAL',' AND t2.VentasMonDes>0 AND t2.ZonasId='.$zona->ZonasId, 'DescuentosDes','DescuentosDes');
 				foreach ($reporte->getData() as $fila) {
 
 					$temp=array('titulo'=>'',		'boletos'=>0,	'precio'=>0,	'importe'=>0,	'porcentaje'=>0);
@@ -148,12 +155,12 @@ class ReportesVentas extends CFormModel
 			$this->formateoNumerico($matrix,array('boletos','importe','precio'));
 			$this->formateoNumerico($matrix['tipos'],array('boletos','importe','precio'));
 			$zone['datos']=$matrix;
-			$zonas[]=$zone;
+			$matrixZonas[]=$zone;
 
 			}
 
-		}
-		return array('zonas'=>$zonas);
+		//}
+		return array('zonas'=>$matrixZonas);
 	}
 
 	public function formateoNumerico(&$matrix,$cols,$decimal=0)
@@ -174,13 +181,15 @@ class ReportesVentas extends CFormModel
 			if ($funcionId>0) {
 					$funcion=sprintf(" AND FuncionesId = '%s' ",$funcionId);
 			}
-			$aforo = Lugares::model()->count(sprintf("EventoId = '%s' %s",$eventoId,$funcion) );
-			$vendidas = Ventaslevel1::model()->with(
-					array(
-							'venta'=> array('having'=>"VentasSta NOT LIKE 'CANCELADO' ")
-					)
-				)->count(sprintf("EventoId = '%s' %s ",$eventoId,$funcion) );
-			$porvender=$aforo-$vendidas;
+			$aforo = Lugares::model()->count(sprintf("EventoId = '%s' AND LugaresStatus<>'OFF'  %s",$eventoId,$funcion) );
+			$porvender = Lugares::model()->count(sprintf("EventoId = '%s' AND LugaresStatus='TRUE'  %s",$eventoId,$funcion) );
+			$vendidas = Lugares::model()->count(sprintf("EventoId = '%s' AND LugaresStatus IN ('RESERVADO','SELECTED','FALSE')  %s",$eventoId,$funcion) );
+			//$vendidas = Ventaslevel1::model()->with(
+					//array(
+							//'venta'=> array('having'=>"VentasSta NOT LIKE 'CANCELADO' ")
+					//)
+				//)->count(sprintf("EventoId = '%s' %s ",$eventoId,$funcion) );
+			//$porvender=$aforo-$vendidas;
 			$matrix=array(
 			'aforo'       => array('titulo' => 'Aforo','boletos'         => $aforo,'importe'     => 0,'porcentaje' => 100),
 			'por vender'  => array('titulo' => 'Por vender','boletos'    => $porvender,'importe' => 0,'porcentaje' => $porvender/max($aforo,1)),
@@ -206,7 +215,8 @@ class ReportesVentas extends CFormModel
 						AND t.FuncionesId                 = t2.FuncionesId
 						AND t.ZonasId                     = t2.ZonasId
 				    INNER JOIN ventas as t3 ON t.VentasId = t3.VentasId
-					WHERE t.EventoId                      = %d AND t3.VentasSta <> 'CANCELADO' AND  t.VentasSta<>'CANCELADO'
+					WHERE t.EventoId                      = %d
+				   	AND t3.VentasSta <> 'CANCELADO' AND  t.VentasSta<>'CANCELADO'
 					GROUP BY t.EventoId;",$eventoId))->queryScalar();
 			$reporte=$modelo->getReporte($eventoId,$funcionId,$desde,$hasta,false, 'NORMAL,CORTESIA,BOLETO DURO','', 'VentasBolTip');
 			foreach ($reporte->getData() as $fila) {
@@ -216,7 +226,7 @@ class ReportesVentas extends CFormModel
 					$matrix['total']['importe']+=$matrix[$index]['importe']=$fila['total'];
 			}
 			foreach ($matrix as &$fila) {
-				$fila['porcentaje']=number_format($fila['boletos']*100/max($aforo,1));
+				$fila['porcentaje']=number_format($fila['boletos']*100/max($aforo,1),2);
 				$fila['boletos']=number_format( $fila['boletos'],0);
 				$fila['importe']=number_format( $fila['importe'],0);
 			}
@@ -330,7 +340,10 @@ class ReportesVentas extends CFormModel
 							  ventaslevel1.VentasBolTip,
 							  evento.EventoNom,
 							  funciones.FuncionesFecHor,
-							  ventas.VentasNumRef,  ventaslevel1.LugaresNumBol as NumBol
+							  ventas.VentasNumRef,
+							  ventaslevel1.LugaresNumBol as NumBol,
+							  IFNULL(acceso.AccesoFecha,'Sin acceso') as UltimoAcceso,
+							  IdTerminal
 							FROM
 							 filas
 							 INNER JOIN lugares ON (filas.EventoId=lugares.EventoId)
@@ -351,6 +364,7 @@ class ReportesVentas extends CFormModel
 							 INNER JOIN funciones ON (funciones.EventoId=evento.EventoId)
 							  AND (funciones.FuncionesId=zonas.FuncionesId)
 							 INNER JOIN ventas ON (ventas.VentasId=ventaslevel1.VentasId)
+							 LEFT JOIN acceso ON ventaslevel1.LugaresNumBol=acceso.BoletoNum 
 							 WHERE   $filtro ";
 				return new CSqlDataProvider($query, array(
 							'pagination'=>false,
@@ -385,7 +399,7 @@ class ReportesVentas extends CFormModel
 					inner join subzona on subzona.EventoId=ventaslevel1.EventoId and subzona.FuncionesId=ventaslevel1.FuncionesId and subzona.ZonasId=ventaslevel1.ZonasId and subzona.SubzonaId=ventaslevel1.SubzonaId
 					inner join filas on filas.EventoId=ventaslevel1.EventoId and filas.FuncionesId=ventaslevel1.FuncionesId and filas.ZonasId=ventaslevel1.ZonasId and filas.SubzonaId=ventaslevel1.SubzonaId and filas.FilasId=ventaslevel1.FilasId
 					inner join puntosventa on puntosventa.PuntosVentaId=ventas.PuntosVentaId
-					where tempLugaresNumRef='$ref' GROUP BY Asiento" ;  
+					where tempLugaresNumRef like '%$ref%' GROUP BY Asiento" ;  
 			}
 			else{
 				$query ="select 
@@ -411,7 +425,7 @@ class ReportesVentas extends CFormModel
 					inner join subzona on subzona.EventoId=ventaslevel1.EventoId and subzona.FuncionesId=ventaslevel1.FuncionesId and subzona.ZonasId=ventaslevel1.ZonasId and subzona.SubzonaId=ventaslevel1.SubzonaId
 					inner join filas on filas.EventoId=ventaslevel1.EventoId and filas.FuncionesId=ventaslevel1.FuncionesId and filas.ZonasId=ventaslevel1.ZonasId and filas.SubzonaId=ventaslevel1.SubzonaId and filas.FilasId=ventaslevel1.FilasId
 					inner join puntosventa on puntosventa.PuntosVentaId=ventas.PuntosVentaId
-					where ventas.VentasNumRef = '$ref'
+					where ventas.VentasNumRef like  '%$ref%'
 					GROUP BY Asiento";
 			}
 		return new CSqlDataProvider($query, array(
@@ -419,38 +433,66 @@ class ReportesVentas extends CFormModel
 					));
 
 	}
-
-	public function getVentasFarmatodo($desde,$hasta,$turno='ambos')
+	public function getVentas($desde,$hasta,$criterio=false)
 	{
-		//if ($desde and $hasta 
-					//and preg_match("(\d{4}-\d{2}-\d{2})",$desde)==1 
-					//and preg_match("(\d{4}-\d{2}-\d{2})",$hasta)==1){
-				$query="SELECT t.PuntosventaId as id,
+			//if ($desde and $hasta 
+			//and preg_match("(\d{4}-\d{2}-\d{2})",$desde)==1 
+			//and preg_match("(\d{4}-\d{2}-\d{2})",$hasta)==1){
+			if ($criterio){
+				   if(is_array($criterio)) {
+					$criteria=new CDbCriteria($criterio);
+					$criterio=$criteria->toArray();
+				   }
+				   if(is_object($criterio))
+						   $criterio=$criterio->toArray();		
+				   if (isset($criterio['select']) and is_array($criterio['select'])) 
+						   $criterio['select']=implode(',',$criterio['campos']);
+					if (isset($criterio['condition']) and is_array($criterio['condition'])) 
+							$criterio['condition']=implode(',',$criterio['condicion']);
+					if (isset($criterio['group']) and is_array($criterio['group'])) 
+							$criterio['group']=implode(',',$criterio['group']);	
+					if (isset($criterio['order']) and is_array($criterio['order'])) 
+							$criterio['order']=implode(',',$criterio['order']);
+			}else{
+					$criterio=array('select'=>'','condition'=>'','order'=>'PuntosventaNom','group'=>'PuntosventaNom');
+			}	
+			$criterio['select']=strlen($criterio['select'])>1?','.$criterio['select']:'';
+			$criterio['condition']=strlen($criterio['condition'])>0?$criterio['condition']:'1';
+			$criterio['order']=strlen($criterio['order'])>0?$criterio['order']:'PuntosventaNom';
+			$criterio['group']=strlen($criterio['group'])>0?$criterio['group']:'PuntosventaNom';
+			$query=sprintf("SELECT t.PuntosventaId as id,
 					PuntosventaNom,
 					SUM(t1.VentasCosBol+t1.VentasCarSer) as importe,
 					COUNT(*) as boletos,
 					COUNT(distinct t.VentasId) as ventas,
 					MAX(VentasFecHor) as ultimo
-				FROM ventas AS t
-				INNER JOIN ventaslevel1 as t1 ON t.VentasId=t1.VentasId 
-				INNER JOIN puntosventa  as t2 ON t2.PuntosventaId=t.PuntosVentaId
-				WHERE t.VentasFecHor BETWEEN '$desde' AND '$hasta'
-						AND VentasSec like 'FARMATODO' AND VentasCosBol>10
-				GROUP BY PuntosventaNom";
-				return new CSqlDataProvider($query, array(
-							'pagination'=>false,
-							//'sort'=>array(
-									//'puntos_venta'=>array(
-											//'asc'=>'"puntosventa"."PuntosventaNom"',
-											//'desc'=>'"importe" DESC'
-									//)
-							//)
-					));
-		
+					%s
+					FROM ventas AS t
+					INNER JOIN ventaslevel1 as t1 ON t.VentasId=t1.VentasId 
+					INNER JOIN puntosventa  as t2 ON t2.PuntosventaId=t.PuntosVentaId
+					WHERE DATE(t.VentasFecHor) BETWEEN '$desde' AND '$hasta'
+					AND VentasCosBol>10 
+					AND t.VentasSta NOT LIKE 'CANCELADO' AND t1.VentasSta NOT LIKE 'CANCELADO'
+					AND  %s 
+					GROUP BY %s ORDER BY %s ",$criterio['select'],$criterio['condition'],$criterio['group'],$criterio['order']);
+			return new CSqlDataProvider($query, array(
+					'pagination'=>false,
+					//'sort'=>array(
+					//'puntos_venta'=>array(
+					//'asc'=>'"puntosventa"."PuntosventaNom"',
+					//'desc'=>'"importe" DESC'
+					//)
+					//)
+			));
 
 	}
-		public function getDetalleVenta($ventaId)
-		{
+	public function getVentasFarmatodo($desde,$hasta,$turno='ambos')
+	{
+			return	$this->getVentas($desde,$hasta,array('condition'=>"VentasSec like 'FARMATODO'"));
+	}
+
+	public function getDetalleVenta($ventaId)
+	{
 			 return new CActiveDataProvider('Lugares', 
                   array('criteria'=>array('select'   =>"evento.EventoNom,
                   funciones.funcionesTexto,
@@ -521,5 +563,63 @@ class ReportesVentas extends CFormModel
 
 		}
 
+	public function getAccesosPorZonas($eventoId,$funcionesId="TODAS")
+	{
+			$funcion="";
+			if ($funcionesId>0) {
+					$funcion=sprintf(" AND t.FuncionesId = '%s' ",$funcionesId);
+			}
+			$query=sprintf("
+					SELECT 
+					t.ZonasId as id ,t1.ZonasAli,
+					COUNT(t.LugaresId)-COUNT(BoletoNum) as Pendientes,
+					COUNT(BoletoNum) as Registrados
+						FROM
+						ventaslevel1 as t
+						INNER JOIN
+								zonas as t1 ON t.EventoId = t1.EventoId 
+								AND t.FuncionesId = t1.FuncionesId 
+								AND t.ZonasId = t1.ZonasId
+						LEFT JOIN
+								acceso as t2 
+								ON t2.BoletoNum = t.LugaresNumBol
+						WHERE
+						t.EventoId = '%d'
+						AND t.VentasSta NOT LIKE 'CANCELADO' 					   
+						%s
+						GROUP BY t.EventoId , t.FuncionesId , t.ZonasId
+						",$eventoId,$funcion);
+			return new CSqlDataProvider($query, array(
+					'pagination'=>false,
+					));
+	}
+
+	public function getAccesosPorPuertas($eventoId,$funcionesId="TODAS")
+	{
+			$funcion="";
+			if ($funcionesId>0) {
+					$funcion=sprintf(" AND t.FuncionesId = '%s' ",$funcionesId);
+			}
+			$query=sprintf("
+					SELECT 
+					t1.idCatTerminal as id ,t1.CatTerminalNom,
+					COUNT(t.LugaresId)-COUNT(BoletoNum) as Pendientes,
+					COUNT(BoletoNum) as Registrados
+						FROM
+						ventaslevel1 as t
+						INNER JOIN	acceso as t2 
+								ON t2.BoletoNum = t.LugaresNumBol
+						INNER JOIN	catterminal as t1 
+								ON t1.idCatTerminal=t2.IdTerminal
+						WHERE
+						t.EventoId = '%d'
+						AND t.VentasSta NOT LIKE 'CANCELADO' 					   
+						%s
+						GROUP BY t1.idCatTerminal
+						",$eventoId,$funcion);
+			return new CSqlDataProvider($query, array(
+					'pagination'=>false,
+					));
+	}
 }
  ?>

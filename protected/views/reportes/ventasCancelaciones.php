@@ -160,10 +160,13 @@ $form=$this->beginWidget('CActiveForm', array(
        <td></td>
        <td></td>
        <td></td>
-       <td><?php if(!empty($data['VentasNumRef'])) echo CHtml::submitButton('Cancelar'); ?></td>
+       <td></td>
        </tr>
         </tbody>    
     </table>
+
+<?php if(!empty($data['VentasNumRef'])) echo CHtml::submitButton('Cancelar boletos',array('class'=>'btn btn-danger btn-large','onclick'=>'confirmar();',
+'style'=>'float:right;margin:10px')); ?>
 </div>
 <?php
 $this->endWidget(); 
@@ -176,3 +179,12 @@ endif;
         echo '<div class="alert alert-success flash-' . $key . '">' . $message . "</div>\n";
     }
 ?> 
+<?php Yii::app()->clientScript->registerScript('confirmacion',"
+function confirmar(){
+   var retVal = prompt('Escriba la palabra \"Cancelar\" para confirmar la cancelación: ', '');
+   if (retVal!='Cancelar') {
+		   event.preventDefault();
+		   return false;
+   }	
+}
+",CClientScript::POS_BEGIN); ?>

@@ -178,8 +178,12 @@ class FuncionesController extends Controller
     public function actionAsignar(){
            $distribucionId      = $_GET['id_distribucion'];
            $nombre_distribucion = $_GET['nombre_distribucion'];
+           $eventoId = $_GET['EventoId'];
         $distribucion = DistribucionPuerta::model()->find("DistribucionPuertaNom='$nombre_distribucion'");
-        if(empty($distribucion)){
+        $distribucionpuertalvel1 = Distribucionpuertalevel1::model()->find("idDistribucionPuerta=$distribucionId AND EventoId=$eventoId");
+        if(empty($distribucionpuertalvel1)){
+            $data =  array('ok'=>-1);
+        }elseif(empty($distribucion)){
             $distribucionpuerta = DistribucionPuerta::model()->findByPk($distribucionId);
             $distribucionpuerta->DistribucionPuertaNom = $nombre_distribucion;
             $distribucionpuerta->update();

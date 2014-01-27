@@ -92,8 +92,19 @@ class ReportesController extends Controller
 		if (Yii::app()->user->getState("TipUsrId")=="2") {
 				$this->actionVentasSinCargo();
 		}
-		else	
-				$this->render('index');
+		else{
+				$widgets=array();
+				$model=new ReportesVentas;
+				$desde=date('Y-m-d',strtotime("-30 days"));
+				$hasta=date('Y-m-d');
+				$funciones=Funciones::model()->with('evento')->findAll(array('limit'=>3,'condition'=>'FuncionesFecHor>NOW()','group'=>'t.EventoId','select'=>'t.EventoId'));
+				//var_dump($eventos);
+				//$eventos=Evento::model()->with('funciones')->findAll(array('limit'=>3,'condition'=>'FuncionesFecHor>NOW()'));
+				foreach ($funciones as $funcion) {
+					$widgets[]=$this->renderPartial('_resumenVentas',array('model'=>$model,'evento'=>$funcion->evento,'funcionesId'=>"TODAS",'desde'=>$desde,'hasta'=>$hasta),true,true);
+				}
+				$this->render('index',array('model'=>$model,'widgets'=>$widgets,'desde'=>$desde,'hasta'=>$hasta));
+		}	
 	}
 
 	public function actionLugares()
@@ -266,7 +277,7 @@ class ReportesController extends Controller
 
 	}
 
-	public function actionReservacionesFarmatodo()
+	public function actionVentasCancelaciones()
 	{
 		$this->perfil();
 		$model=new ReportesVentas;
@@ -274,7 +285,7 @@ class ReportesController extends Controller
 		if(!empty($_POST['buscar'])){
 			$ref = $_POST['buscar'];
 		}
-		$this->render('reservacionesFarmatodo',array('model'=>$model, 'ref'=>$ref)); 
+		$this->render('ventasCancelaciones',array('model'=>$model, 'ref'=>$ref)); 
 		//$this->render('reservacionesFarmatodo');
 	}
 
@@ -982,6 +993,25 @@ $objWriter->save('php://output');
 		}
 
 			$this->render('ventasPorRef',array('model'=>$model,'ref'=>$ref,'tipo'=>$tipo));
+	}
+	public function actionAccesos()
+	{
+		//Este es un reporte de los boletos accesados y por accesar en en evento especifico
+		$model=new ReportesVentas;
+		$eventoId=isset($_POST['evento_id'])?$_POST['evento_id']:0;
+		$funcionesId=isset($_POST['funcion_id'])?$_POST['funcion_id']:"TODAS";
+		$this->render('Accesos',array('model'=>$model,'eventoId'=>$eventoId,'funcionesId'=>$funcionesId));
+		
+	}
+	public function actionVentasPorPunto(){
+			//if(Yii::app()->request->isAjaxRquest()){
+		$eventoId=isset($_POST['eventoId'])?$_POST['eventoId']:0;
+		$funcionesId=isset($_POST['funcionesId'])?$_POST['funcionesId']:0;
+		$puntoVenta=isset($_POST['puntoVenta'])?$_POST['puntoVenta']:0;
+				$model=new ReportesFlex();
+		$this->render('ventasPorPunto',array('model'=>$model,'eventoId'=>$eventoId,'funcionesId'=>$funcionesId,'puntoVenta'=>$puntoVenta));
+			//}
+
 	}
 	// Uncomment the following methods and override them if needed
 	/*
