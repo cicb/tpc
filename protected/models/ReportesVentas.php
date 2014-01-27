@@ -75,24 +75,31 @@ class ReportesVentas extends CFormModel
 			return  $matrix;
 	}
 
-	public function getReporteZonas($eventoId,$funcionId='TODAS',$desde='',$hasta='')
+	public function getReporteZonas($eventoId,$funcionesId='TODAS',$desde='',$hasta='')
 	{
+			$funcionCond='';
 
 		if (isset($eventoId) and $eventoId>0)
 			$evento=Evento::model()->findByPk($eventoId);
 		if (isset($funcionesId) and $funcionesId>0){
-			$funcion=Funciones::model()->findByPk(array('EventoId'=>$eventoId,'FuncionesId'=>$funcionesId));
-			if(is_object($funcion))
-				$funciones=$funcion;
-		}
-		else
-			$funciones=$evento->funciones;
 
-		$zonas=array();
+			$funcionCond=sprintf(" AND FuncionesId = '%s' ",$funcionesId);
+			$funcion=Funciones::model()->with('zonas')->findByPk(array('EventoId'=>$eventoId,'FuncionesId'=>$funcionesId));
+			if(is_object($funcion))
+				//$funciones=$funcion;
+				$zonas=$funcion->zonas;
+		}
+		else{
+				//$funciones=$evento->funciones;
+				$zonas=Zonas::model()->with('funcion')->findAllByAttributes(array('EventoId'=>$eventoId),array('group'=>'t.EventoId,t.ZonasId'));
+		}
+
+		$matrixZonas=array();
 		$modelo=new ReportesFlex;
-		foreach ($funciones as $funcion) {
-			foreach ($funcion->zonas as $zona) {
-				$aforo = Lugares::model()->count("EventoId = '$eventoId' AND FuncionesId = '".$funcion->FuncionesId."' AND ZonasId =".$zona->ZonasId);
+		//foreach ($funciones as $funcion) {
+			foreach ($zonas as $zona) {
+				$aforo = Lugares::model()->count( sprintf("EventoId= '%s' %s AND ZonasId = '%s'  AND LugaresStatus<>'OFF' ", $eventoId,$funcionCond,$zona->ZonasId));
+							//"EventoId = '$eventoId' AND FuncionesId = '".$zona->funcion->FuncionesId."' AND ZonasId =".$zona->ZonasId);
 				$zone=array();
 				$zone['aforo']=$aforo;
 				$zone['zona']=$zona->ZonasAli;
@@ -103,7 +110,7 @@ class ReportesVentas extends CFormModel
 					'cupones'		=>array('titulo'=>'Cupones',		'boletos'=>0,	'precio'=>0,	'importe'=>0,	'porcentaje'=>0),
 					'subtotal'		=>array('titulo'=>'Sub-Total',		'boletos'=>0,	'precio'=>0,	'importe'=>0,	'porcentaje'=>0),
 					);
-				$reporte=$modelo->getDetallesZonasCargo($eventoId,$funcionId,$zona->ZonasId,$desde,$hasta,$cargo='NO');
+				$reporte=$modelo->getDetallesZonasCargo($eventoId,$funcionesId,$zona->ZonasId,$desde,$hasta,$cargo='NO');
 				//$tipos=array();
 				$matrix['tipos']=array();
 				foreach ($reporte->getData() as $fila) {
@@ -124,7 +131,7 @@ class ReportesVentas extends CFormModel
 					
 				}
 				// Ventas con descuento por zona
-				$reporte=$modelo->getReporte($eventoId,$funcion->FuncionesId,$desde,$hasta, $cargo, 'NORMAL',' AND t2.VentasMonDes>0 AND t2.ZonasId='.$zona->ZonasId, 'DescuentosDes','DescuentosDes');
+				$reporte=$modelo->getReporte($eventoId,$zona->funcion->FuncionesId,$desde,$hasta, $cargo, 'NORMAL',' AND t2.VentasMonDes>0 AND t2.ZonasId='.$zona->ZonasId, 'DescuentosDes','DescuentosDes');
 				foreach ($reporte->getData() as $fila) {
 
 					$temp=array('titulo'=>'',		'boletos'=>0,	'precio'=>0,	'importe'=>0,	'porcentaje'=>0);
@@ -148,12 +155,12 @@ class ReportesVentas extends CFormModel
 			$this->formateoNumerico($matrix,array('boletos','importe','precio'));
 			$this->formateoNumerico($matrix['tipos'],array('boletos','importe','precio'));
 			$zone['datos']=$matrix;
-			$zonas[]=$zone;
+			$matrixZonas[]=$zone;
 
 			}
 
-		}
-		return array('zonas'=>$zonas);
+		//}
+		return array('zonas'=>$matrixZonas);
 	}
 
 	public function formateoNumerico(&$matrix,$cols,$decimal=0)
@@ -174,13 +181,15 @@ class ReportesVentas extends CFormModel
 			if ($funcionId>0) {
 					$funcion=sprintf(" AND FuncionesId = '%s' ",$funcionId);
 			}
-			$aforo = Lugares::model()->count(sprintf("EventoId = '%s' %s",$eventoId,$funcion) );
-			$vendidas = Ventaslevel1::model()->with(
-					array(
-							'venta'=> array('having'=>"VentasSta NOT LIKE 'CANCELADO' ")
-					)
-				)->count(sprintf("EventoId = '%s' %s ",$eventoId,$funcion) );
-			$porvender=$aforo-$vendidas;
+			$aforo = Lugares::model()->count(sprintf("EventoId = '%s' AND LugaresStatus<>'OFF'  %s",$eventoId,$funcion) );
+			$porvender = Lugares::model()->count(sprintf("EventoId = '%s' AND LugaresStatus='TRUE'  %s",$eventoId,$funcion) );
+			$vendidas = Lugares::model()->count(sprintf("EventoId = '%s' AND LugaresStatus IN ('RESERVADO','SELECTED','FALSE')  %s",$eventoId,$funcion) );
+			//$vendidas = Ventaslevel1::model()->with(
+					//array(
+							//'venta'=> array('having'=>"VentasSta NOT LIKE 'CANCELADO' ")
+					//)
+				//)->count(sprintf("EventoId = '%s' %s ",$eventoId,$funcion) );
+			//$porvender=$aforo-$vendidas;
 			$matrix=array(
 			'aforo'       => array('titulo' => 'Aforo','boletos'         => $aforo,'importe'     => 0,'porcentaje' => 100),
 			'por vender'  => array('titulo' => 'Por vender','boletos'    => $porvender,'importe' => 0,'porcentaje' => $porvender/max($aforo,1)),
@@ -206,7 +215,8 @@ class ReportesVentas extends CFormModel
 						AND t.FuncionesId                 = t2.FuncionesId
 						AND t.ZonasId                     = t2.ZonasId
 				    INNER JOIN ventas as t3 ON t.VentasId = t3.VentasId
-					WHERE t.EventoId                      = %d AND t3.VentasSta <> 'CANCELADO' AND  t.VentasSta<>'CANCELADO'
+					WHERE t.EventoId                      = %d
+				   	AND t3.VentasSta <> 'CANCELADO' AND  t.VentasSta<>'CANCELADO'
 					GROUP BY t.EventoId;",$eventoId))->queryScalar();
 			$reporte=$modelo->getReporte($eventoId,$funcionId,$desde,$hasta,false, 'NORMAL,CORTESIA,BOLETO DURO','', 'VentasBolTip');
 			foreach ($reporte->getData() as $fila) {
@@ -216,7 +226,7 @@ class ReportesVentas extends CFormModel
 					$matrix['total']['importe']+=$matrix[$index]['importe']=$fila['total'];
 			}
 			foreach ($matrix as &$fila) {
-				$fila['porcentaje']=number_format($fila['boletos']*100/max($aforo,1));
+				$fila['porcentaje']=number_format($fila['boletos']*100/max($aforo,1),2);
 				$fila['boletos']=number_format( $fila['boletos'],0);
 				$fila['importe']=number_format( $fila['importe'],0);
 			}

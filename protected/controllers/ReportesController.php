@@ -277,7 +277,7 @@ class ReportesController extends Controller
 
 	}
 
-	public function actionReservacionesFarmatodo()
+	public function actionVentasCancelaciones()
 	{
 		$this->perfil();
 		$model=new ReportesVentas;
@@ -285,7 +285,7 @@ class ReportesController extends Controller
 		if(!empty($_POST['buscar'])){
 			$ref = $_POST['buscar'];
 		}
-		$this->render('reservacionesFarmatodo',array('model'=>$model, 'ref'=>$ref)); 
+		$this->render('ventasCancelaciones',array('model'=>$model, 'ref'=>$ref)); 
 		//$this->render('reservacionesFarmatodo');
 	}
 
@@ -1002,6 +1002,16 @@ $objWriter->save('php://output');
 		$funcionesId=isset($_POST['funcion_id'])?$_POST['funcion_id']:"TODAS";
 		$this->render('Accesos',array('model'=>$model,'eventoId'=>$eventoId,'funcionesId'=>$funcionesId));
 		
+	}
+	public function actionVentasPorPunto(){
+			//if(Yii::app()->request->isAjaxRquest()){
+		$eventoId=isset($_POST['eventoId'])?$_POST['eventoId']:0;
+		$funcionesId=isset($_POST['funcionesId'])?$_POST['funcionesId']:0;
+		$puntoVenta=isset($_POST['puntoVenta'])?$_POST['puntoVenta']:0;
+				$model=new ReportesFlex();
+		$this->render('ventasPorPunto',array('model'=>$model,'eventoId'=>$eventoId,'funcionesId'=>$funcionesId,'puntoVenta'=>$puntoVenta));
+			//}
+
 	}
 	// Uncomment the following methods and override them if needed
 	/*

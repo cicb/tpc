@@ -44,7 +44,7 @@ $this->widget('bootstrap.widgets.TbNavbar',array(
 												'url' =>  $this->createUrl('reportes/ventasPorRef'),
 												'visible' => !Yii::app()->user->isGuest AND (Yii::app()->user->getState("Admin"))?true:false), 
 										array('label' => 'Ventas y cancelaciones',
-												'url' =>  $this->createUrl('reportes/reservacionesFarmatodo'),
+												'url' =>  $this->createUrl('reportes/ventasCancelaciones'),
 												'visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
 										array('label' => 'Ventas Web Y CallCenter', 
 												'url' =>  $this->createUrl('reportes/ventasWeb'),

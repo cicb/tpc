@@ -19,3 +19,4 @@ $resumenEvento=$model->getResumenEvento($evento->EventoId,$funcionesId,$desde,$h
 					));
 					Yii::app()->mustache->render('tablaResumenEvento', $resumenEvento);
 ?>
+<?//php echo "<pre>";print_r($resumenEvento);echo "</pre>"; ?>
