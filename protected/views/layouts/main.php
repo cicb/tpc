@@ -65,10 +65,21 @@ $this->widget('bootstrap.widgets.TbNavbar',array(
 										),
 								),
 								array(
-										'label' => 'Descuentos', 
-										'url' => $this->createUrl('descuentoslevel1/admin',array('tipo'=>'descuento','query'=>'')),
+										'label' => 'Cupones Y Descuentos', 
+										//'url' => $this->createUrl('descuentoslevel1/admin',array('tipo'=>'descuento','query'=>'')),
 										'visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false,
 										'active' => in_array(Yii::app()->controller->id,array('descuentos','descuentoslevel1')),
+										'items'=>array(
+												array('label' => 'Lista De Descuentos',
+												'url' => $this->createUrl('descuentoslevel1/admin',array('tipo'=>'descuento','query'=>'')),
+												'visible' => !Yii::app()->user->isGuest AND (Yii::app()->user->getState("Admin"))?true:false), 
+												array('label' => 'Lista De Cupones',
+												'url' => $this->createUrl('descuentoslevel1/admin',array('tipo'=>'cupon','query'=>'')),
+												'visible' => !Yii::app()->user->isGuest AND (Yii::app()->user->getState("Admin"))?true:false), 
+												array('label' => 'Crear Cupón/Descuento',
+												'url' => $this->createUrl('descuentos/create'),
+												'visible' => !Yii::app()->user->isGuest AND (Yii::app()->user->getState("Admin"))?true:false), 
+										)
 										),
 								array('label' => 'Eventos', 
 								'items'=>array(
