@@ -25,7 +25,8 @@ $this->widget('bootstrap.widgets.TbNavbar',array(
 						'items' => array(
 							array('label' => 'Reportes',
 								'url' => $this->createUrl('reportes/index'),
-								'active' => true,'visible'=>!Yii::app()->user->isGuest,
+								'active' => Yii::app()->controller->id=='reportes',
+								'visible'=>!Yii::app()->user->isGuest,
 								'items'=>array(
 										array('label' => 'Accesos',
 												'url' =>  $this->createUrl('reportes/accesos'),
@@ -63,7 +64,12 @@ $this->widget('bootstrap.widgets.TbNavbar',array(
 												'visible' => !Yii::app()->user->isGuest AND (Yii::app()->user->getState("Admin"))?true:false), 
 										),
 								),
-								array('label' => 'Descuentos', 	'url' => $this->createUrl('descuentoslevel1/admin',array('tipo'=>'descuento','query'=>'')),'visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
+								array(
+										'label' => 'Descuentos', 
+										'url' => $this->createUrl('descuentoslevel1/admin',array('tipo'=>'descuento','query'=>'')),
+										'visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false,
+										'active' => in_array(Yii::app()->controller->id,array('descuentos','descuentoslevel1')),
+										),
 								array('label' => 'Eventos', 
 								'items'=>array(
 										array('label'=>'Configurador de accesos', 'url'=>$this->createUrl('evento/index')),

@@ -3,15 +3,6 @@
     $baseUrl = Yii::app()->baseUrl; 
     $js = Yii::app()->getClientScript();
     $js->registerScriptFile($baseUrl.'/js/jquery.treeview.js');
-    //$js->registerScriptFile($baseUrl.'/css/jquery.treeview.css');
-    //$js->registerScriptFile($baseUrl.'/js/chosen.jquery.min.js');
-    //$js->registerScriptFile($baseUrl.'/js/jquery-ui-timepicker-addon.js');
-    //$js->registerScriptFile($baseUrl.'/css/chosen.css');
-    //$js->registerScriptFile($baseUrl.'/css/style.css');
-/* @var $this DescuentosController */
-/* @var $model Descuentos */
-/* @var $form CActiveForm */
-//print_r($model->isNewRecord);
 ?>
 
     <?php 
@@ -19,242 +10,221 @@
             'target' => '.chosen',
       ));
     ?>
-<!--obtencion del cupon-->
-<div class="span-16">
-    <strong style="margin-left: 75px;">Tipo de Descuento</strong>
-    <select id="tipo">
-        <option value="cupon">Cup&oacute;n</option>
-        <option value="descuento">Descuento</option>
-    </select>
-    <a id="boton_ayuda"  class="btn btn-primary" style="float: right;margin-right: 37px;"><i class="icon-wrench icon-white"></i>&nbsp;Ayuda</a>
+
+<div class='row-fluid'>
+	<!--obtencion del cupon-->
+	<div class="span3" style="float:none;margin:auto;">
+		<strong style="margin-left: 75px;">Tipo de Descuento</strong>
+		<select id="tipo">
+			<option value="cupon">Cup&oacute;n</option>
+			<option value="descuento">Descuento</option>
+		</select>
+	</div>
+		<a id="boton_ayuda"  class="btn btn-info fa fa-question-circle" style="margin-right: 37px;">&nbsp;Ayuda</a>
+
 </div>
+
+
 <br /><br />
-<div class="span-16" style="margin: 0;padding-bottom: 3px; border-bottom: silver solid 1px;text-align: right;">
-    <!--<i class="icon-barcode"></i>-->
-    <strong>C&oacute;digo del Cup&oacute;n:</strong>
-    <input id="codigo" title="" class="" data-placement='left' data-id="-1" data-tipo="cupon" name="CuponesCod" style="margin:0;height:20px;" type="text" placeholder="Cupon" />&nbsp;&nbsp;&nbsp;
-    <a id="generar_cupon" data-placement='top' title=""  class="btn btn-success" style="margin-right: 17px;"><i class="icon-repeat icon-white"></i>&nbsp;Generar Cup&oacute;n</a>
-</div><!--fin de obtencion del cupon-->
+<div class='row-fluid'>
+		<div class='span5'>
+		<?php echo TbHtml::textField('CuponesCod', '',
+				array(
+					'data-placement'=>'left',
+					'data-id'=>-1,		
+					'data-tipo'=>'cupon',		
+					'id'=>'codigo',
+					'append' => TbHtml::button('Generar cupón',array('id'=>'generar_cupon')),
+					'span' => 7,
+					'placeholder'=>'Código del cupón')
+			); ?>
+	<label><strong>Eventos</strong></label>
+	<label>Seleciona por lo menos un evento</label>
+	<select id="lista_eventos" multiple="" size="11">
+	</select>
+	<table width="50%" style="margin:auto">
+		<tr>
+			<td>
+			<a id="eliminar_lista_evento" class="btn btn-danger"><i class="icon-remove icon-white"></i>&nbsp;Eliminar</a>
+			</td>
+			<td>
+			<a data-toggle="modal" data-target="#myModal_eventos" id="boton_eventos" class="btn btn-success"><i class="icon-plus icon-white"></i>&nbsp;Agregar</a>
+			</td>
+		</tr>
+	</table>
+	<br />
+	<div id="seccion_eventos_relacionados">
+		<label>Eventos Relacionados(opcional)</label>
+		<select id="lista_eventos_relacionados" multiple="" size="10">
+		</select>
+		<table width="50%"  style="margin:auto">
+			<tr>
+				<td>
+				<a id="eliminar_lista_evento_releacionado" class="btn btn-danger"><i class="icon-remove icon-white"></i>&nbsp;Eliminar</a>
+				</td>
+				<td>
+				<a id="boton_eventos_relacionados" class="btn btn-success"><i class="icon-plus icon-white"></i>&nbsp;Agregar</a>
+				</td>
+			</tr>
+		</table>
+	</div>
+		</div>
+		<div class='span5'>
+		
+		<table border="0" style="text-align:left">
+		    <tr>
+		    	<td>Descripci&oacute;n:</td>
+		    	<td><input  type="text" id="descripcion" class="data-id save_temp" data-id="" name="DescuentosDes" /></td>
+		    </tr>
+		    <tr>
+		    	<td>Forma de descuento:</td>
+		    	<td>
+		        <select id="descuento" class="data-id save_temp chosen-select" data-id="" name="DescuentosPat">
+		            <option value="0">Selecciona una Opcion</option>
+		            <option value="PORCENTAJE">Porcentaje</option>
+		            <option value="EFECTIVO">Efectivo</option>
+		            <option value="2X1">2X1</option>
+		            <option value="3X2">3X2</option>
+		        </select>
+		        
+		    </tr>
+		    <tr>
+		    	<td>Monto a descontar:</td>
+		    	<td><strong id="signo_monto">%</strong><input id="monto_descontar" class="data-id save_temp" data-id="" type="text" name="DescuentosCan" style="width:195px;max-width:205px;" /></td>
+		    </tr>
+		    <tr>
+		        <td>&nbsp;</td>
+		    	<td>
+		        <input type="checkbox" name="DescuentoCargo" value="si" id="cargo" class="data-id save_temp" data-id="" />
+		        <label style="display: inline;" title="Al marcar esta opci&oacute;n se aplica el mismo descuento al cargo por servicio" for="cargo">Aplica a cargo por servicio</label>
+		        </td>
+		   	</tr>
+		    <tr>
+		    	<td>Fecha de inicio:</td>
+		    	<td>
+		            <?php
+		
+		                    $this->widget('ext.CJuiDateTimePicker.CJuiDateTimePicker',array(
+		                            'model'=>$model, //Model object
+		                            'id'=>'fecha_inicio',
+		                            'name'=>'DescuentosFecIni',
+		                            'attribute'=>'DescuentosFecIni', //attribute name
+		                            'language'=>'es',
+		                            'mode'=>'datetime', //use "time","date" or "datetime" (default)
+		                            'options'=>array(   'showAnim'=>'fold',
+		                                                'dateFormat' => 'yy-mm-dd ',
+		                                                'changeMonth'=>true,
+		                                                'changeYear'=>true,
+		                                                'timeFormat'=>"hh:mm:ss",
+		                                                'timeText'=>"Hora",
+		                                                'hourText'=>"Hora",
+		                                                'minuteText'=>"Minuto",
+		                                                ), // jquery plugin options
+		                            'htmlOptions'=>array(
+		                            'style'=>'height:20px;',
+		                            'readonly'=>'readonly',
+		                            'class'=>'data-id save_temp',
+		                            'data-id'=>""
+		                            ),
+		                        ));
+		                
+		             /* $this->widget('zii.widgets.jui.CJuiDatePicker',array(
+		                        'language'=>'es',
+		                        'id'=>'fecha_inicio',
+		                        'name'=>'DescuentosFecIni',
+		                        // additional javascript options for the date picker plugin
+		                        'options'=>array(
+		                            'showAnim'=>'fold',
+		                            'dateFormat' => 'yy-mm-dd 06:00:00',
+		                            'changeMonth'=>true,
+		                            'changeYear'=>true,
+		                        ),
+		                        'htmlOptions'=>array(
+		                            'style'=>'height:20px;',
+		                            'readonly'=>'readonly',
+		                            'class'=>'data-id save_temp',
+		                            'data-id'=>""
+		                        ),
+		                    ));*/
+		            ?>
+		        </td>
+		    </tr>
+		    <tr>
+		    	<td>Caducidad:</td>
+		    	<td>
+		            <?php
+		                    $this->widget('ext.CJuiDateTimePicker.CJuiDateTimePicker',array(
+		                            'model'=>$model, //Model object
+		                            'id'=>'fecha_fin',
+		                            'name'=>'DescuentosFecFin',
+		                            'attribute'=>'DescuentosFecFin', //attribute name
+		                            'language'=>'es',
+		                            'mode'=>'datetime', //use "time","date" or "datetime" (default)
+		                            'options'=>array(   'showAnim'=>'fold',
+		                                                'dateFormat' => 'yy-mm-dd ',
+		                                                'changeMonth'=>true,
+		                                                'changeYear'=>true,
+		                                                'timeFormat'=>"hh:mm:ss",
+		                                                'timeText'=>"Hora",
+		                                                'hourText'=>"Hora",
+		                                                'minuteText'=>"Minuto",
+		                                                ), // jquery plugin options
+		                            'htmlOptions'=>array(
+		                            'style'=>'height:20px;',
+		                            'readonly'=>'readonly',
+		                            'class'=>'data-id save_temp',
+		                            'data-id'=>"",
+		                        ),
+		                        ));
+		               /*$this->widget('zii.widgets.jui.CJuiDatePicker',array(
+		                        'language'=>'es',
+		                        'id'=>'fecha_fin',
+		                        'name'=>'DescuentosFecFin',
+		                        // additional javascript options for the date picker plugin
+		                        'options'=>array(
+		                            'showAnim'=>'fold',
+		                            'dateFormat' => 'yy-mm-dd 23:59:00',
+		                            'changeMonth'=>true,
+		                            'changeYear'=>true,
+		                        ),
+		                        'htmlOptions'=>array(
+		                            'style'=>'height:20px;',
+		                            'readonly'=>'readonly',
+		                            'class'=>'data-id save_temp',
+		                            'data-id'=>"",
+		                        ),
+		                    ));*/
+		            ?>
+		        </td>
+		    </tr>
+		    <tr>
+		    	<td>Aplica a los primeros:</td>
+		    	<td>
+		        <input type="text" id="cantidad_descuentos" class="data-id save_temp" data-id="" style="width: 178px;"  name="DescuentosExis" value="0"/>
+		        </td>
+		    </tr>
+		    <tr>
+		    	<td colspan="2" style="text-align: right;">
+				<br />
+				<br />
+		        <a data-toggle="modal" data-target="#myModal_resultado" id="previsualizar" class="btn btn-default"><i class="icon-th-list icon-black"></i>&nbsp;Ver lista de eventos</a>
+		        <a data-toggle="modal" data-target="#myModal_continuar" id="continuar" class="btn btn-primary">Continuar&nbsp;<i class="icon-play icon-white"></i></a>
+		        </td>
+		    </tr>
+		    <tr>
+		        <td colspan="2" id="tree_view"></td>
+		        <!--<div id="tree_view" class="span-16">
+		        </div>-->
+		    </tr>
+		</table>
+		</div>
+</div>
+
 <!-- Evento y eventosn relacionados -->
 <div class="span-6" style="margin: 0;border-right: silver solid 1px;">
-    <label><strong>Eventos</strong></label>
-    <label>Seleciona por lo menos un evento</label>
-    <select id="lista_eventos" multiple="" size="11">
-    </select>
-    <table>
-        <tr>
-        	<td>
-            <a data-toggle="modal" data-target="#myModal_eventos" id="boton_eventos" class="btn btn-primary"><i class="icon-plus icon-white"></i>&nbsp;Agregar</a>
-            </td>
-        	<td>
-            <a id="eliminar_lista_evento" class="btn btn-danger"><i class="icon-remove icon-white"></i>&nbsp;Eliminar</a>
-            </td>
-        </tr>
-    </table>
-    <hr />
-    <div id="seccion_eventos_relacionados">
-        <label>Eventos Relacionados(opcional)</label>
-        <select id="lista_eventos_relacionados" multiple="" size="10">
-        </select>
-        <table>
-            <tr>
-            	<td>
-                <a id="boton_eventos_relacionados" class="btn btn-primary"><i class="icon-plus icon-white"></i>&nbsp;Agregar</a>
-                </td>
-            	<td>
-                <a id="eliminar_lista_evento_releacionado" class="btn btn-danger"><i class="icon-remove icon-white"></i>&nbsp;Eliminar</a>
-                </td>
-            </tr>
-        </table>
-    </div>
 </div><!-- fin de evento y eventosrelacionados -->
 <!-- informacion de eventos -->
 <div class="span-10" style="margin: 0 0 0 6px;">
-<table border="1">
-    <tr>
-    	<td>Descripci&oacute;n:</td>
-    	<td><input  type="text" id="descripcion" class="data-id save_temp" data-id="" name="DescuentosDes" /></td>
-    </tr>
-    <tr>
-    	<td>Forma de descuento:</td>
-    	<td>
-        <select id="descuento" class="data-id save_temp chosen-select" data-id="" name="DescuentosPat">
-            <option value="0">Selecciona una Opcion</option>
-            <option value="PORCENTAJE">Porcentaje</option>
-            <option value="EFECTIVO">Efectivo</option>
-            <option value="2X1">2X1</option>
-            <option value="3X2">3X2</option>
-        </select>
-        
-    </tr>
-    <tr>
-    	<td>Monto a descontar:</td>
-    	<td><strong id="signo_monto">%</strong><input id="monto_descontar" class="data-id save_temp" data-id="" type="text" name="DescuentosCan" style="width:195px;max-width:205px;" /></td>
-    </tr>
-    <tr>
-        <td>&nbsp;</td>
-    	<td>
-        <input type="checkbox" name="DescuentoCargo" value="si" id="cargo" class="data-id save_temp" data-id="" />
-        <label style="display: inline;" title="Al marcar esta opci&oacute;n se aplica el mismo descuento al cargo por servicio" for="cargo">Aplica a cargo por servicio</label>
-        </td>
-   	</tr>
-    <tr>
-    	<td>Fecha de inicio:</td>
-    	<td>
-            <?php
-
-                    $this->widget('ext.CJuiDateTimePicker.CJuiDateTimePicker',array(
-                            'model'=>$model, //Model object
-                            'id'=>'fecha_inicio',
-                            'name'=>'DescuentosFecIni',
-                            'attribute'=>'DescuentosFecIni', //attribute name
-                            'language'=>'es',
-                            'mode'=>'datetime', //use "time","date" or "datetime" (default)
-                            'options'=>array(   'showAnim'=>'fold',
-                                                'dateFormat' => 'yy-mm-dd ',
-                                                'changeMonth'=>true,
-                                                'changeYear'=>true,
-                                                'timeFormat'=>"hh:mm:ss",
-                                                'timeText'=>"Hora",
-                                                'hourText'=>"Hora",
-                                                'minuteText'=>"Minuto",
-                                                ), // jquery plugin options
-                            'htmlOptions'=>array(
-                            'style'=>'height:20px;',
-                            'readonly'=>'readonly',
-                            'class'=>'data-id save_temp',
-                            'data-id'=>""
-                            ),
-                        ));
-                
-             /* $this->widget('zii.widgets.jui.CJuiDatePicker',array(
-                        'language'=>'es',
-                        'id'=>'fecha_inicio',
-                        'name'=>'DescuentosFecIni',
-                        // additional javascript options for the date picker plugin
-                        'options'=>array(
-                            'showAnim'=>'fold',
-                            'dateFormat' => 'yy-mm-dd 06:00:00',
-                            'changeMonth'=>true,
-                            'changeYear'=>true,
-                        ),
-                        'htmlOptions'=>array(
-                            'style'=>'height:20px;',
-                            'readonly'=>'readonly',
-                            'class'=>'data-id save_temp',
-                            'data-id'=>""
-                        ),
-                    ));*/
-            ?>
-        </td>
-    </tr>
-    <tr>
-    	<td>Caducidad:</td>
-    	<td>
-            <?php
-                    $this->widget('ext.CJuiDateTimePicker.CJuiDateTimePicker',array(
-                            'model'=>$model, //Model object
-                            'id'=>'fecha_fin',
-                            'name'=>'DescuentosFecFin',
-                            'attribute'=>'DescuentosFecFin', //attribute name
-                            'language'=>'es',
-                            'mode'=>'datetime', //use "time","date" or "datetime" (default)
-                            'options'=>array(   'showAnim'=>'fold',
-                                                'dateFormat' => 'yy-mm-dd ',
-                                                'changeMonth'=>true,
-                                                'changeYear'=>true,
-                                                'timeFormat'=>"hh:mm:ss",
-                                                'timeText'=>"Hora",
-                                                'hourText'=>"Hora",
-                                                'minuteText'=>"Minuto",
-                                                ), // jquery plugin options
-                            'htmlOptions'=>array(
-                            'style'=>'height:20px;',
-                            'readonly'=>'readonly',
-                            'class'=>'data-id save_temp',
-                            'data-id'=>"",
-                        ),
-                        ));
-               /*$this->widget('zii.widgets.jui.CJuiDatePicker',array(
-                        'language'=>'es',
-                        'id'=>'fecha_fin',
-                        'name'=>'DescuentosFecFin',
-                        // additional javascript options for the date picker plugin
-                        'options'=>array(
-                            'showAnim'=>'fold',
-                            'dateFormat' => 'yy-mm-dd 23:59:00',
-                            'changeMonth'=>true,
-                            'changeYear'=>true,
-                        ),
-                        'htmlOptions'=>array(
-                            'style'=>'height:20px;',
-                            'readonly'=>'readonly',
-                            'class'=>'data-id save_temp',
-                            'data-id'=>"",
-                        ),
-                    ));*/
-            ?>
-        </td>
-    </tr>
-    <tr>
-    	<td>Aplica a los primeros:</td>
-    	<td>
-        <input type="text" id="cantidad_descuentos" class="data-id save_temp" data-id="" style="width: 178px;"  name="DescuentosExis" value="0"/>
-        </td>
-    </tr>
-    <!--<tr>
-    	<td>Funci&oacute;n:</td>
-    	<td>
-        <select id="funcion" class="data-id save_temp" data-id="" name="FuncionesId">
-            <option value="0">Todas las funciones</option>
-        </select>
-        </td>
-    </tr>
-    <tr>
-    	<td>Zona:</td>
-    	<td>
-            <select id="zona" class="data-id save_temp" data-id="" name="ZonasId">
-                <option value="0">Todas las zonas</option>
-            </select>
-        </td>
-    </tr>
-    <tr>
-    	<td>Subzona:</td>
-    	<td>
-            <select id="subzona" class="data-id save_temp" data-id="" name="SubzonaId">
-                <option value="0">Todas las subzonas</option>
-            </select>
-        </td>
-    </tr>
-    <tr>
-    	<td>Fila:</td>
-    	<td>
-            <select id="fila" class="data-id save_temp" data-id="" name="FilasId">
-                <option value="0">Todas las filas</option>
-            </select>
-        </td>
-    </tr>
-    <tr>
-    	<td>Lugar:</td>
-    	<td>
-            <select id="lugar" class="data-id save_temp" data-id="" name="LugaresId">
-                <option value="0">Todos los lugares</option>
-            </select>
-     </td>
-    </tr>-->
-    <tr>
-    	<td colspan="2" style="text-align: right;">
-        &nbsp;&nbsp;
-        <a data-toggle="modal" data-target="#myModal_resultado" id="previsualizar" class="btn btn-default"><i class="icon-th-list icon-black"></i>&nbsp;Ver lista de eventos</a>
-        <a data-toggle="modal" data-target="#myModal_continuar" id="continuar" class="btn btn-success">Continuar&nbsp;<i class="icon-play icon-white"></i></a>
-        </td>
-    </tr>
-    <tr>
-        <td colspan="2" id="tree_view"></td>
-        <!--<div id="tree_view" class="span-16">
-        </div>-->
-    </tr>
-</table>
     <?php
            // echo CHtml::dateField('fecha','',array());
     ?>
@@ -297,6 +267,8 @@ $eventos=Evento::model()->findAll("EventoSta='ALTA'",array('order'=>'EventoNom')
     </div>
 
 </div>
+
+</div> <!---FIN de cntroles-->
 <style>
 .resultado{
 }
@@ -314,6 +286,7 @@ $eventos=Evento::model()->findAll("EventoSta='ALTA'",array('order'=>'EventoNom')
     padding-left: 3px;
     overflow: auto;
 }
+select{width:85%}
 </style>
 <div id="myModal_resultado" style="width: 800px;left: 40%;" class="modal hide fade">
     <div class="modal-header">
