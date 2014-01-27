@@ -23,23 +23,31 @@ $this->menu=array(
             'target' => '.chosen',
       ));
     ?>
-<h1><?php echo $_GET['tipo']!='descuento'?'Cupones':'Descuentos';?></h1>
-<div class="form">
-    
-            <?php //echo CHtml::dropDownList('query','',CHtml::listData(Descuentos::model()->findAll(array('order'=>'CuponesCod')),"CuponesCod","CuponesCod"),array('style'=>'width:288px;margin-top:7px;','class'=>'chosen','empty'=>"Todos","data-placeholder"=>"Selecciona un cupon a buscar")); ?>
-    		<?php //echo CHtml::textField('query','',array('style'=>'width:188px;margin-top:7px;','maxlength'=>50)); ?>
-            Ver:
-            <select id="tipo" style="width: 115px;">
-                <option value="cupon">Cupones</option>
-                <option value="descuento" <?php echo $_GET['tipo']!='descuento'?'':'selected'; ?>>Descuentos</option>
-            </select>
-            <a href="<?php echo Yii::app()->createUrl('descuentoslevel1/admin&query=').($_GET['tipo']!='descuento'?'&tipo=cupon':'&tipo=descuento');  ?>" id="boton_query" style="margin-bottom: 15px;" class="btn btn-success <?php echo $_GET['query']=="inactivos"?"":"ocultar";?>"><i class='icon-eye-open icon-white'></i>&nbsp;<?php echo $_GET['tipo']!='descuento'?'Ver todos los cupones':'Ver todos los descuentos';?></a>
-            <a href="<?php echo Yii::app()->createUrl('descuentoslevel1/admin&query=inactivos').($_GET['tipo']!='descuento'?'&tipo=cupon':'&tipo=descuento');  ?>" id="boton_query" style="margin-bottom: 15px;" class="btn btn-success <?php echo $_GET['query']=="inactivos"?"ocultar":"";?>"><i class='icon-remove icon-white'></i>&nbsp;<?php echo $_GET['tipo']!='descuento'?'Ver cupones inactivos':'Ver descuentos inactivos';?></a>
-    		<?php //echo CHtml::submitButton("<i class='icon-user'></i>Buscar cupon",array('style'=>'display:inline;','class'=>'btn btn-success','encode'=>false)); ?>
-    	    <a id="desactivar_seleccion"  class="btn btn-success" style="margin-left: 0px;margin-bottom: 15px;"><i class="icon-check icon-white"></i>&nbsp;Desactivar seleccionados</a>
-            <?php echo CHtml::link("<i class='icon-barcode icon-white'></i>&nbsp;Crear Cupones o Descuentos",array('descuentos/create'),array('title'=>'','class'=>'btn btn-primary','style'=>'margin-left:0px;margin-bottom: 15px;')); ?>
+<div class='controles'>
 
-    
+<h1>
+	<?php echo $_GET['tipo']!='descuento'?'Cupones':'Descuentos';?></h1>
+	<div class="form">
+		<div style='float:none;margin:auto' class='span4'>
+	            Ver:
+	            <select id="tipo" style="width: 115px;">
+	                <option value="cupon">Cupones</option>
+	                <option value="descuento" <?php echo $_GET['tipo']!='descuento'?'':'selected'; ?>>Descuentos</option>
+	            </select>
+		</div>
+<br />
+				<a href="<?php echo Yii::app()->createUrl('descuentoslevel1/admin&query=').($_GET['tipo']!='descuento'?'&tipo=cupon':'&tipo=descuento');  ?>" id="boton_query" style="margin-bottom: 15px;" class="btn <?php echo $_GET['query']=="inactivos"?"":"ocultar";?>">
+				<span class="fa fa-eye"></span><?php echo $_GET['tipo']!='descuento'?'Ver todos los cupones':'Ver todos los descuentos';?></a>
+
+				<a href="<?php echo Yii::app()->createUrl('descuentoslevel1/admin&query=inactivos').($_GET['tipo']!='descuento'?'&tipo=cupon':'&tipo=descuento');  ?>" id="boton_query" style="margin-bottom: 15px;" class="btn <?php echo $_GET['query']=="inactivos"?"ocultar":"";?>">
+<span class="fa fa-eye"></span> <?php echo $_GET['tipo']!='descuento'?'Ver cupones inactivos':'Ver descuentos inactivos';?></a>
+
+	    	    <a id="desactivar_seleccion"  class="btn" style="margin-left: 0px;margin-bottom: 15px;"><span class=" fa fa-minus-square-o"></span> Desactivar seleccionados</a>
+
+	            <?php echo CHtml::link("<i class='icon-barcode icon-white'></i>&nbsp;Crear Cupones o Descuentos",array('descuentos/create'),array('title'=>'','class'=>'btn btn-primary','style'=>'margin-left:0px;margin-bottom: 15px;')); ?>
+	
+	    
+	</div>
 </div>
     <!--<a id="abrir_cupon"  class="btn btn-success" data-placement='top' title="" style="margin-right: 0px;"><i class="icon-folder-open icon-white"></i>&nbsp;Abrir cup&oacute;n seleccinado</a>-->
     
@@ -52,8 +60,8 @@ $this->menu=array(
     }
 ?>
 <div id="resultado_elimnar"></div>
-<div id="evento-grid" class="grid-view">
-    <table class="items">
+<div id="evento-grid" class="">
+    <table class="table table-bordered table-hover">
         <thead>
         <th>Activo</th>
         <th>Selecci&oacute;n</th>
