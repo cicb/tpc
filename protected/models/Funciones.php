@@ -18,13 +18,28 @@
  * @property string $FuncionesSta
  * @property string $funcionesTexto
  * @property string $FuncionesBanEsp
+ * @property string $funcionesAccExtra
+ *
+ * The followings are the available model relations:
+ * @property ConfigurlFuncionesMapaGrande[] $configurlFuncionesMapaGrandes
+ * @property ConfigurlFuncionesMapaGrande[] $configurlFuncionesMapaGrandes1
  */
 class Funciones extends CActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
+	 * @param string $className active record class name.
 	 * @return Funciones the static model class
 	 */
+	 
+	public $pathUrlImagesBD;
+
+    public function init() {
+
+        //$this->pathUrlImagesBD = Yii::app()->baseUrl . '/imagesbd/';
+        $this->pathUrlImagesBD =  'https://www.taquillacero.com/imagesbd/';
+        return parent::init();
+    }
 	public static function model($className=__CLASS__)
 	{
 		return parent::model($className);
@@ -46,13 +61,14 @@ class Funciones extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('EventoId, FuncionesId, FuncionesTip, FuncionesFor, FuncionesFecIni, FuncionesFecHor, FuncionesNomDia, ForoId, ForoMapIntId, FuncionesBanExp, FuncPuntosventaId, FuncionesSta, funcionesTexto, FuncionesBanEsp', 'required'),
+			array('EventoId, FuncionesId, FuncionesTip, FuncionesFor, FuncionesFecIni, FuncionesFecHor, FuncionesNomDia, ForoId, ForoMapIntId, FuncionesBanExp, FuncPuntosventaId, FuncionesSta, funcionesTexto, FuncionesBanEsp, funcionesAccExtra', 'required'),
 			array('FuncionesBanExp', 'numerical', 'integerOnly'=>true),
 			array('EventoId, FuncionesId, FuncionesTip, FuncionesFor, FuncionesNomDia, ForoId, ForoMapIntId, FuncPuntosventaId, FuncionesSta, FuncionesBanEsp', 'length', 'max'=>20),
 			array('funcionesTexto', 'length', 'max'=>200),
+			array('funcionesAccExtra', 'length', 'max'=>100),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('EventoId, FuncionesId, FuncionesTip, FuncionesFor, FuncionesFecIni, FuncionesFecHor, FuncionesNomDia, ForoId, ForoMapIntId, FuncionesBanExp, FuncPuntosventaId, FuncionesSta, funcionesTexto, FuncionesBanEsp', 'safe', 'on'=>'search'),
+			array('EventoId, FuncionesId, FuncionesTip, FuncionesFor, FuncionesFecIni, FuncionesFecHor, FuncionesNomDia, ForoId, ForoMapIntId, FuncionesBanExp, FuncPuntosventaId, FuncionesSta, funcionesTexto, FuncionesBanEsp, funcionesAccExtra', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -64,8 +80,10 @@ class Funciones extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-        'evento' => array(self::BELONGS_TO, 'Evento', array('EventoId')),
-        'zonas' => array(self::HAS_MANY, 'Zonas', array('EventoId','FuncionesId')),
+			'configurlFuncionesMapaGrandes' => array(self::HAS_MANY, 'ConfigurlFuncionesMapaGrande', 'EventoId'),
+			'configurlFuncionesMapaGrandes1' => array(self::HAS_MANY, 'ConfigurlFuncionesMapaGrande', 'FuncionId'),
+            'zonas' => array(self::HAS_MANY, 'Zonas', array('EventoId','FuncionesId')),
+            'evento' => array(self::BELONGS_TO, 'Evento', array('EventoId')),
 		);
 	}
 
@@ -89,8 +107,16 @@ class Funciones extends CActiveRecord
 			'FuncionesSta' => 'Funciones Sta',
 			'funcionesTexto' => 'Funciones Texto',
 			'FuncionesBanEsp' => 'Funciones Ban Esp',
+			'funcionesAccExtra' => 'Funciones Acc Extra',
 		);
 	}
+	
+	public function getListaFunciones()
+    {
+        return array(
+                CHtml::listData(Funciones::model()->findAll(), 'EventoId','name'),array('empty'=>array(NULL=>'-- Seleccione --')),
+        );
+    }
 
 	/**
 	 * Retrieves a list of models based on the current search/filter conditions.
@@ -117,9 +143,36 @@ class Funciones extends CActiveRecord
 		$criteria->compare('FuncionesSta',$this->FuncionesSta,true);
 		$criteria->compare('funcionesTexto',$this->funcionesTexto,true);
 		$criteria->compare('FuncionesBanEsp',$this->FuncionesBanEsp,true);
+		$criteria->compare('funcionesAccExtra',$this->funcionesAccExtra,true);
 
-		return new CActiveDataProvider(get_class($this), array(
+		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
 		));
 	}
+	public function getZonasInteractivasMapaGrande() {
+        $criteria = new CDbCriteria();
+        $criteria->join = 'INNER JOIN configurl_funciones_mapa_grande t1 ON (t1.id = t.configurl_funcion_mapa_grande_id)';
+        $criteria->addCondition('t1.EventoId = :EventoId');
+        $criteria->addCondition('t1.FuncionId = :FuncionId');
+        $criteria->params = array(
+            ':EventoId'=>$this->EventoId,
+            ':FuncionId'=>$this->FuncionesId
+        );
+
+        return ConfigurlMapaGrandeCoordenadas::model()->findAll($criteria);
+    }
+    
+    public function getForoGrande() {
+        $criteria = new CDbCriteria();
+        $criteria->addCondition('t.EventoId = :EventoId');
+        $criteria->addCondition('t.FuncionId = :FuncionId');
+        $criteria->params = array(
+            ':EventoId'=>$this->EventoId,
+            ':FuncionId'=>$this->FuncionesId
+        );
+
+        $reg = MapaGrande::model()->find($criteria);
+
+        return isset($reg) ? $this->pathUrlImagesBD .  $reg->nombre_imagen : '';
+    }
 }
