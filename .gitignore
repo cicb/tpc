@@ -9,3 +9,5 @@ themes/classic/views/
 *.log
 protected/runtime/*
 protected/runtime/application.log
+*.swp
+*.sh
