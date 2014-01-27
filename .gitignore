@@ -1,6 +1,6 @@
 assets/*
 protected/config/*
-index.php
+/index.php
 !assets/.gitignore
 protected/runtime/*
 !protected/runtime/.gitignore
