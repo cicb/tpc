@@ -145,4 +145,34 @@ class Subzona extends CActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
+    public function getCoordenadasComoCadena() {
+        $coordenadas = '';
+        
+        if (isset($this->SubzonaX1) && isset($this->SubzonaY1) &&
+            $this->SubzonaX1 != 0 && $this->SubzonaY1 != 0) {
+            $coordenadas .= $this->SubzonaX1 . ',' . $this->SubzonaY1;
+        }
+        
+        if (isset($this->SubzonaX2) && isset($this->SubzonaY2) &&
+            $this->SubzonaX2 != 0 && $this->SubzonaY2 != 0) {
+            $coordenadas .= ','. $this->SubzonaX2 . ',' . $this->SubzonaY2;
+        }
+        
+        if (isset($this->SubzonaX3) && isset($this->SubzonaY3) &&
+            $this->SubzonaX3 != 0 && $this->SubzonaY3 != 0) {
+            $coordenadas .= ',' . $this->SubzonaX3 . ',' . $this->SubzonaY3;
+        }
+        
+        if (isset($this->SubzonaX4) && isset($this->SubzonaY4) &&
+            $this->SubzonaX4 != 0 && $this->SubzonaY4 != 0) {
+            $coordenadas .= ','. $this->SubzonaX4 . ',' . $this->SubzonaY4;
+        }
+        
+        if (isset($this->SubzonaX5) && isset($this->SubzonaY5) &&
+            $this->SubzonaX5 != 0 && $this->SubzonaY5 != 0) {
+            $coordenadas .= ',' .$this->SubzonaX5 . ',' . $this->SubzonaY5;
+        }
+        
+        return $coordenadas;
+    }
 }

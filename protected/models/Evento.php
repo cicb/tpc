@@ -72,8 +72,9 @@ class Evento extends CActiveRecord
 		return array(
 			'categoria' => array(self::BELONGS_TO, 'Categorialevel1', 'CategoriaId'),
 			'categoriaSub' => array(self::BELONGS_TO, 'Categorialevel1', 'CategoriaSubId'),
-             'funciones' => array(self::HAS_MANY, 'Funciones', array( 'EventoId')),
-             'zonas' => array(self::HAS_MANY, 'Zonas', array('FuncionesId', 'EventoId')),
+            'funciones' => array(self::BELONGS_TO, 'Funciones', array('EventoId','FuncionesId')),
+            'zonas' => array(self::HAS_MANY, 'Zonas', array('FuncionesId', 'EventoId')),
+            'distribucionpuertalevel1' =>array(self::BELONGS_TO,'Distribucionpuertalevel1','EventoId'),
 		);
 	}
 
@@ -98,8 +99,17 @@ class Evento extends CActiveRecord
 			'ForoId' => 'Foro',
 			'PuntosventaId' => 'Puntosventa',
 			'EventoSta2' => 'Evento Sta2',
+			'FuncionesId' => 'Funciones',
+			'idDistribucionPuerta' => 'Distribucion Puerta'
 		);
 	}
+	
+    public function getListaEvento()
+    {
+        return array(
+                CHtml::listData(evento::model()->findAll(), 'EventoId','name'),array('empty'=>array(NULL=>'-- Seleccione --')),
+        );
+    }
 
 	/**
 	 * Retrieves a list of models based on the current search/filter conditions.
@@ -127,9 +137,128 @@ class Evento extends CActiveRecord
 		$criteria->compare('ForoId',$this->ForoId,true);
 		$criteria->compare('PuntosventaId',$this->PuntosventaId,true);
 		$criteria->compare('EventoSta2',$this->EventoSta2,true);
-
+        $criteria->with =array('evento');
+        $criteria->addSearchCondition('evento.EventoNom', $this->EventoId);
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
 		));
 	}
+	
+	public function getAsignaciones($EventoId){
+		$query = "SELECT DISTINCT idAsignacion,idCatTerminal,AsignacionFecha,asignacion.idCatPuerta,CatPuertaNom
+				 FROM asignacion INNER JOIN catpuerta ON catpuerta.idCatPuerta=asignacion.idCatPuerta
+                 INNER JOIN distribucionpuertalevel1 ON distribucionpuertalevel1.idDistribucionPuerta=asignacion.idDistribucionPuerta
+                 WHERE distribucionpuertalevel1.EventoId = '$EventoId'";
+        return new CSqlDataProvider($query, array(
+					//		'totalItemCount'=>$count,//$count,
+                            'pagination'=>false,
+			));
+     }
+     
+     public function getPuertas($DistribucionId){
+		$query = "SELECT DISTINCT catpuerta.CatPuertaNom,catpuerta.idCatPuerta,ZonasId,SubzonaId
+                 FROM catpuerta INNER JOIN distribucionpuertalevel1 ON distribucionpuertalevel1.idCatPuerta=catpuerta.idCatPuerta
+				 WHERE distribucionpuertalevel1.idDistribucionPuerta='$DistribucionId' AND EventoId=(SELECT EventoId
+                 FROM distribucionpuertalevel1 where idDistribucionPuerta='$DistribucionId' order by iddistribucionpuertalevel1 LIMIT 1) order by catpuerta.idCatPuerta";
+        $data= new CSqlDataProvider($query, array(
+					//		'totalItemCount'=>$count,//$count,
+                            'pagination'=>false,
+			));
+        return $data->getData();
+     }
+     
+     public static function getCargarPuertas($DistribucionId){
+		$query = "SELECT DISTINCT catpuerta.CatPuertaNom,catpuerta.idCatPuerta
+                 FROM catpuerta INNER JOIN distribucionpuertalevel1 ON distribucionpuertalevel1.idCatPuerta=catpuerta.idCatPuerta
+				 WHERE distribucionpuertalevel1.idDistribucionPuerta='$DistribucionId' AND EventoId=(SELECT EventoId
+                 FROM distribucionpuertalevel1 where idDistribucionPuerta='$DistribucionId' order by iddistribucionpuertalevel1 LIMIT 1) order by catpuerta.idCatPuerta";
+        $data= new CSqlDataProvider($query, array(
+					//		'totalItemCount'=>$count,//$count,
+                            'pagination'=>false,
+			));
+        return $data->getData();
+     }
+     
+     public function getCatPuertas($DistribucionId,$PuertaId){
+		$query = "SELECT DISTINCT catpuerta.CatPuertaNom,catpuerta.idCatPuerta
+                 FROM catpuerta
+				 WHERE idDistribucionPuerta='$DistribucionId' AND idCatPuerta='$PuertaId'";
+        $data= new CSqlDataProvider($query, array(
+					//		'totalItemCount'=>$count,//$count,
+                            'pagination'=>false,
+			));
+        return $data->getData();
+     }
+     
+     public function getZonas($idCatPuerta,$distribucionId,$eventoId){
+		$query = "SELECT DISTINCT ZonasAli,ZonasId
+				 FROM zonas
+                 WHERE ZonasId IN(SELECT DISTINCT ZonasId
+                 FROM distribucionpuertalevel1 WHERE idCatPuerta='$idCatPuerta' AND idDistribucionPuerta='$distribucionId'
+                 AND EventoId=(SELECT EventoId FROM distribucionpuertalevel1 WHERE idDistribucionPuerta='$distribucionId' ORDER BY idDistribucionPuerta LIMIT 1))
+                 AND EventoId='$eventoId'";
+        $data= new CSqlDataProvider($query, array(
+					//		'totalItemCount'=>$count,//$count,
+                            'pagination'=>false,
+			));
+        return $data->getData();
+     }
+     
+     public function getFunciones($EventoId){
+		$query = "SELECT FuncionesId,funcionesTexto,ForoId,ForoMapIntId,(SELECT COUNT(FuncionesId)
+                 FROM funciones WHERE EventoId='$EventoId') AS Cantidad,(SELECT COUNT(distinctrow CONCAT(ForoId,ForoMapIntId))
+                 FROM funciones WHERE EventoId='$EventoId') AS Distribucion
+				 FROM funciones
+                 WHERE EventoId= '$EventoId' ORDER BY ForoId,ForoMapIntId,FuncionesId";
+        $data= new CSqlDataProvider($query, array(
+					//		'totalItemCount'=>$count,//$count,
+                            'pagination'=>false,
+			));
+        return $data->getData();
+     }
+     
+      public function getSubZonas($EventoId,$ZonaId,$distribucionId,$idCatPuerta){
+		 $query = "SELECT DISTINCT SubzonaAcc,SubzonaId
+				 FROM subzona
+                 WHERE SubzonaId IN(SELECT DISTINCT SubzonaId
+                 FROM distribucionpuertalevel1 WHERE idCatPuerta='$idCatPuerta' AND idDistribucionPuerta='$distribucionId' AND ZonasId='$ZonaId'
+                 AND EventoId=(SELECT EventoId FROM distribucionpuertalevel1 WHERE idDistribucionPuerta='$distribucionId' ORDER BY idDistribucionPuerta LIMIT 1))
+                 AND EventoId='$EventoId' AND ZonasId='$ZonaId'";
+         $data= new CSqlDataProvider($query, array(
+					//		'totalItemCount'=>$count,//$count,
+                            'pagination'=>false,
+			));
+         return $data->getData();
+     }
+     
+     public function getDistribucionForo($EventoId,$FuncionesId){
+        $query = "SELECT DISTINCT distribucionpuertalevel1.EventoId,distribucionpuerta.idDistribucionPuerta,DistribucionPuertaNom
+        FROM distribucionpuerta inner join funciones on funciones.ForoId=distribucionpuerta.ForoId and funciones.ForoMapIntId=distribucionpuerta.ForoIntMapId
+        INNER JOIN distribucionpuertalevel1 ON distribucionpuerta.idDistribucionPuerta =  distribucionpuertalevel1.idDistribucionPuerta                
+        WHERE funciones.EventoId='$EventoId' AND funciones.FuncionesId IN ('$FuncionesId') AND DistribucionPuertaNom NOT LIKE '%DISTRIBUCION_TEMP_%'
+        GROUP BY distribucionpuertalevel1.idCatPuerta,distribucionpuertalevel1.idDistribucionPuerta";
+		/*$query = "SELECT DISTINCT EventoId,idDistribucionPuerta,DistribucionPuertaNom
+                 FROM distribucionpuerta inner join funciones on funciones.ForoId=distribucionpuerta.ForoId and funciones.ForoMapIntId=distribucionpuerta.ForoIntMapId
+                 WHERE funciones.EventoId='$EventoId' AND funciones.FuncionesId IN ('$FuncionesId') AND DistribucionPuertaNom NOT LIKE '%DISTRIBUCION_TEMP_%'";
+        */
+        $data= new CSqlDataProvider($query, array(
+					//		'totalItemCount'=>$count,//$count,
+                            'pagination'=>false,
+			));
+       return $data->getData();
+     }
+     
+     public function getValidacion($distribucionId,$eventoId,$funcion,$ZonasId,$SubzonaId){
+		$query = "SELECT Count(idDistribucionPuerta) As Total
+                 FROM distribucionpuertalevel1
+                 WHERE idDistribucionPuerta = '$distribucionId' AND EventoId = '$eventoId' AND FuncionesId = '$funcion'
+                 AND ZonasId = '$ZonasId' AND SubzonaId = '$SubzonaId'";
+                 
+        $data= new CSqlDataProvider($query, array(
+					//		'totalItemCount'=>$count,//$count,
+                            'pagination'=>false,
+			));
+       return $data->getData();
+     }
+     
 }
