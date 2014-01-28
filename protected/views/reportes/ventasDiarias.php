@@ -115,7 +115,7 @@
                     'htmlOptions'=>array(
                         'style'=>'text-align:right;'
                         ),
-					'value'=>'"$".number_format($data[\'cantidad\'],0)',
+					'value'=>'number_format($data[\'cantidad\'],0)',
 				), 
                 array(
                     'header'=>'Efectivo sin cargo',
