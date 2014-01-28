@@ -83,17 +83,17 @@ class FuncionesController extends Controller
                       echo "</td>";
                  echo "</tr>";
 
-                 foreach($value as $id => $funcion)
-                 {
+                 foreach($value as $id => $funcion){
+                 if (($foro!=($value[$id]['ForoId'])) || ($forointmap!=($value[$id]['ForoMapIntId']))){
+                           echo "<tr><td colspan='2' style='border-top:1px solid #FCAA04 !important'></td></tr>";
+                           //echo "<hr style='border-top:1px solid #FCAA04 !important' size=1 width= 110% align=center/>";
+                         }   
                  echo "<tr>";
                       echo "<td>";
                            echo CHtml::checkBox("funcion_id",false,array('value'=>$value[$id]['FuncionesId'],'id'=>"funcion_id_".$value[$id]['FuncionesId'],"data_foro_id"=>$value[$id]['ForoId'].$value[$id]['ForoMapIntId'],'data-foroId'=>$value[$id]['ForoId'],'data-mapintId'=>$value[$id]['ForoMapIntId'],"data_funcion_id"=>$value[$id]['FuncionesId'],'class'=>"ck"));
                       echo "</td>";
                       echo "<td>";
-                         if (($foro!=($value[$id]['ForoId'])) || ($forointmap!=($value[$id]['ForoMapIntId'])))
-                         {
-                           echo "<hr style=color: #0056b2 size=1 width= 110% align=center/>";
-                         }
+                         
                            echo "<label for='funcion_id_".$value[$id]['FuncionesId']."'>".$value[$id]['funcionesTexto']."</label>";
                       echo "</td>";
                   echo "</tr>";

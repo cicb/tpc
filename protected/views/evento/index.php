@@ -233,6 +233,7 @@
 <br />
              <div id="botonagrega" class="buttonsagrega" style="display: none;">
                    <?php //echo CHtml::link("+",array('evento/create'),array('title'=>'','class'=>'btn','style'=>'margin-left:0px;margin-bottom: 15px;','id'=>'boton_agregar')); ?>
+
                    <?php echo CHtml::button('+ Nuevo',array('class'=>'btn btn-success','id'=>'boton_agregar')); ?>
              </div>
          </div>
