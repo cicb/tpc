@@ -361,6 +361,4 @@ $("tr").click(function(event){
 	border: 1px solid #ccc;
 }
 </style>
-<?php
 
-?>

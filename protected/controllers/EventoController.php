@@ -6,7 +6,7 @@ class EventoController extends Controller
 	 * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
 	 * using two-column layout. See 'protected/views/layouts/column2.php'.
 	 */
-	public $layout='//layouts/column2';
+	//public $layout='//layouts/column2';
 
 	/**
 	 * @return array action filters
@@ -154,7 +154,7 @@ class EventoController extends Controller
         //print_r($_GET);
         $nombre_puerta   = $_GET['nombre_puerta'];
         $id_distribucion = $_GET['id_distribucion'];
-        $puerta = CatPuerta::model()->find("CatPuertaNom='$nombre_puerta' AND idDistribucionPuerta=$id_distribucion");
+        $puerta = Catpuerta::model()->find("CatPuertaNom='$nombre_puerta' AND idDistribucionPuerta=$id_distribucion");
         if(empty($puerta)){
             $catpuerta =new Catpuerta;
             $catpuerta->idDistribucionPuerta = $id_distribucion;

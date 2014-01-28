@@ -83,17 +83,17 @@ class FuncionesController extends Controller
                       echo "</td>";
                  echo "</tr>";
 
-                 foreach($value as $id => $funcion)
-                 {
+                 foreach($value as $id => $funcion){
+                 if (($foro!=($value[$id]['ForoId'])) || ($forointmap!=($value[$id]['ForoMapIntId']))){
+                           echo "<tr><td colspan='2' style='border-top:1px solid #FCAA04 !important'></td></tr>";
+                           //echo "<hr style='border-top:1px solid #FCAA04 !important' size=1 width= 110% align=center/>";
+                         }   
                  echo "<tr>";
                       echo "<td>";
                            echo CHtml::checkBox("funcion_id",false,array('value'=>$value[$id]['FuncionesId'],'id'=>"funcion_id_".$value[$id]['FuncionesId'],"data_foro_id"=>$value[$id]['ForoId'].$value[$id]['ForoMapIntId'],'data-foroId'=>$value[$id]['ForoId'],'data-mapintId'=>$value[$id]['ForoMapIntId'],"data_funcion_id"=>$value[$id]['FuncionesId'],'class'=>"ck"));
                       echo "</td>";
                       echo "<td>";
-                         if (($foro!=($value[$id]['ForoId'])) || ($forointmap!=($value[$id]['ForoMapIntId'])))
-                         {
-                           echo "<hr style=color: #0056b2 size=1 width= 110% align=center/>";
-                         }
+                         
                            echo "<label for='funcion_id_".$value[$id]['FuncionesId']."'>".$value[$id]['funcionesTexto']."</label>";
                       echo "</td>";
                   echo "</tr>";
@@ -179,7 +179,7 @@ class FuncionesController extends Controller
            $distribucionId      = $_GET['id_distribucion'];
            $nombre_distribucion = $_GET['nombre_distribucion'];
            $eventoId = $_GET['EventoId'];
-        $distribucion = DistribucionPuerta::model()->find("DistribucionPuertaNom='$nombre_distribucion'");
+        $distribucion = Distribucionpuerta::model()->find("DistribucionPuertaNom='$nombre_distribucion'");
         $distribucionpuertalvel1 = Distribucionpuertalevel1::model()->find("idDistribucionPuerta=$distribucionId AND EventoId=$eventoId");
         if(empty($distribucionpuertalvel1)){
             $data =  array('ok'=>-1);
@@ -201,7 +201,7 @@ class FuncionesController extends Controller
            $eventoId = $_GET['EventoId'];
            $evento = new Evento;
            //print_r($evento->getPuertas($distribucionId));
-           echo "<table id='tabla_Resumen' border='1'>";
+           echo "<table id='tabla_Resumen'class='table table-bordered table-striped' border='1'>";
 
            $valuecp = $evento->getCatPuertas($distribucion,$puertaid);
            foreach($valuecp as $key => $puerta):
@@ -250,26 +250,26 @@ class FuncionesController extends Controller
            $funcionId = $_GET['Idfuncion'];
            $evento = new Evento;
            //print_r($evento->getPuertas($distribucionId));
-           echo "<table id='tabla_Resumen' border='0'>";
+           echo "<table id='tabla_Resumen' class='table table-bordered ' >";
 
            $valuecp = $evento->getCargarPuertas($distribucionId);
            foreach($valuecp as $key => $puerta):
 
-                 echo "<tr style='border-bottom:1px solid gray;'>";
+                 echo "<tr >";
                       echo "<td style='max-width:300px;min-width:100px;'>";
-                           echo ($puerta['CatPuertaNom']);
+                           echo ucfirst($puerta['CatPuertaNom']);
                       echo "</td>";
                       echo "<td>";
-                           echo "<table border='0'>";
+                           echo "<table class='table table-bordered'";
                                  $valuez = $evento->getZonas($puerta['idCatPuerta'],$distribucionId,$eventoId);
                                     //      echo  $eventoId."-".$funcionId."-".$puerta['ZonasId'] ;
                                         foreach($valuez as $key => $zonas):
                                              echo "<tr style=''>";
-                                             echo "<td style='max-width:300px;min-width:100px;border:1px solid black;'>";
+                                             echo "<td style='max-width:300px;min-width:100px;'>";
                                              echo $zonas['ZonasAli'];
                                              echo "</td>";
                                              echo "<td>";
-                                             echo "<table border='1'>";
+                                             echo "<table class='table table-bordered table-striped'>";
                                                  $values = $evento->getSubZonas($eventoId,$zonas['ZonasId'],$distribucionId,$puerta['idCatPuerta']);
                                                //  echo  $eventoId."-".$funcionId."-".$zonas['ZonasId']."-".$puerta['SubzonaId'] ;
 

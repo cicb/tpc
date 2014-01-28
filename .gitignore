@@ -1,9 +1,5 @@
 assets/*
 protected/config/*
-<<<<<<< HEAD
-/index.php
-=======
->>>>>>> 96403defe7f7e018d7e8cda2fd4ad0b95b86abaf
 !assets/.gitignore
 /index.php
 protected/runtime/*
