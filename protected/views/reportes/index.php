@@ -1,6 +1,6 @@
 
 <div class='controles'>
-		<h2>Panel de reportes</h2>
+		<h2>Tablero</h2>
 
 </div>
 <div class='span9' style="margin:auto;float:none">
