@@ -179,12 +179,12 @@ class FuncionesController extends Controller
            $distribucionId      = $_GET['id_distribucion'];
            $nombre_distribucion = $_GET['nombre_distribucion'];
            $eventoId = $_GET['EventoId'];
-        $distribucion = DistribucionPuerta::model()->find("DistribucionPuertaNom='$nombre_distribucion'");
+        $distribucion = Distribucionpuerta::model()->find("DistribucionPuertaNom='$nombre_distribucion'");
         $distribucionpuertalvel1 = Distribucionpuertalevel1::model()->find("idDistribucionPuerta=$distribucionId AND EventoId=$eventoId");
         if(empty($distribucionpuertalvel1)){
             $data =  array('ok'=>-1);
         }elseif(empty($distribucion)){
-            $distribucionpuerta = DistribucionPuerta::model()->findByPk($distribucionId);
+            $distribucionpuerta = Distribucionpuerta::model()->findByPk($distribucionId);
             $distribucionpuerta->DistribucionPuertaNom = $nombre_distribucion;
             $distribucionpuerta->update();
             
@@ -250,26 +250,26 @@ class FuncionesController extends Controller
            $funcionId = $_GET['Idfuncion'];
            $evento = new Evento;
            //print_r($evento->getPuertas($distribucionId));
-           echo "<table id='tabla_Resumen' border='0'>";
+           echo "<table id='tabla_Resumen' class='table table-bordered ' >";
 
            $valuecp = $evento->getCargarPuertas($distribucionId);
            foreach($valuecp as $key => $puerta):
 
-                 echo "<tr style='border-bottom:1px solid gray;'>";
+                 echo "<tr >";
                       echo "<td style='max-width:300px;min-width:100px;'>";
-                           echo ($puerta['CatPuertaNom']);
+                           echo ucfirst($puerta['CatPuertaNom']);
                       echo "</td>";
                       echo "<td>";
-                           echo "<table border='0'>";
+                           echo "<table class='table table-bordered'";
                                  $valuez = $evento->getZonas($puerta['idCatPuerta'],$distribucionId,$eventoId);
                                     //      echo  $eventoId."-".$funcionId."-".$puerta['ZonasId'] ;
                                         foreach($valuez as $key => $zonas):
                                              echo "<tr style=''>";
-                                             echo "<td style='max-width:300px;min-width:100px;border:1px solid black;'>";
+                                             echo "<td style='max-width:300px;min-width:100px;'>";
                                              echo $zonas['ZonasAli'];
                                              echo "</td>";
                                              echo "<td>";
-                                             echo "<table border='1'>";
+                                             echo "<table class='table table-bordered table-striped'>";
                                                  $values = $evento->getSubZonas($eventoId,$zonas['ZonasId'],$distribucionId,$puerta['idCatPuerta']);
                                                //  echo  $eventoId."-".$funcionId."-".$zonas['ZonasId']."-".$puerta['SubzonaId'] ;
 

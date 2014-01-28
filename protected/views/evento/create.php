@@ -270,7 +270,7 @@ ul.puertas li a:hover{
 }
 </style>
 
-     <div class='row' style="margin-left:0;border: black 1px solid;"> 
+     <div class='row' style="margin-left:0;"> 
           <a href="#" class="resumen_desplegable" id="resumen_desplegable">Resumen <i class="icon-white icon-chevron-down"></i></a> 
           <div class="resumen" id="resumen" style="display: none;">
           <table id='tabla_resumen' class='table primario' border='0'>
@@ -288,7 +288,7 @@ ul.puertas li a:hover{
                                   foreach($valuez as $key => $zonas):
                                  ?>               
                                  <tr style=''>
-                                    <td style='max-width:300px;min-width:100px;border:1px solid black;'>
+                                    <td style='max-width:300px;min-width:100px;'>
                                         <?php echo $zonas['ZonasAli'];?>
                                     </td>
                                     <td>

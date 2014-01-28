@@ -218,10 +218,15 @@
                 display: block;
                 text-decoration: none;
              }
+				.table{
+						margin-bottom:1px !important;}
+				td{	vertical-align:middle;
+				}
+
              </style>
              <input type="hidden" id="id_distribucion" value="0"/>
              <input type="hidden" id="id_evento_distribucion" value="0"/>
-             <div id="distribucionpuerta" class="asignaciones white-box" style="text-align:left;padding: 5px;margin-left:0px;height:200px;overflow:auto;border: display:none;">
+             <div id="distribucionpuerta" class="asignaciones white-box" style="text-align:left;padding: 5px;margin-left:0px;height:200px;overflow:auto; display:none;">
                   
                   
              </div>
