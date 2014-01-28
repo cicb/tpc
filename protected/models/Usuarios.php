@@ -1,5 +1,4 @@
-<?php
-
+<?php if ( ! defined('YII_PATH')) exit('No direct script access allowed');
 /**
  * This is the model class for table "usuarios".
  *
@@ -23,6 +22,8 @@
  */
 class Usuarios extends CActiveRecord
 {
+    public $initialPassword;
+
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return Usuarios the static model class
@@ -96,16 +97,16 @@ class Usuarios extends CActiveRecord
 			'TipUsrId' => 'Tipo de Usuario',
 			'UsuariosNom' => 'Nombre completo',
 			'UsuariosCiu' => 'Ciudad',
-			'UsuariosTelMov' => 'Tel. Mov',
-			'UsuariosNot' => 'Nota',
+			'UsuariosTelMov' => 'Tel. Movil',
+			'UsuariosNot' => 'Notas',
 			'UsuariosNick' => 'Nombre de usuario',
 			'UsuariosPass' => 'Contraseña',
 			'UsuariosPasCon' => 'Confirme contraseña',
 			'UsuariosGruId' => 'Grupo',
 			'UsuariosIma' => 'Imagen',
-			'UsuariosInf' => 'Inf',
+			'UsuariosInf' => 'Información adicional',
 			'UsuariosEmail' => 'Email',
-			'UsuariosRegion' => 'Region',
+			'UsuariosRegion' => 'Formato de impresión',
 			'UsuariosStatus' => 'Status',
 			'UsuariosVigencia' => 'Vigencia',
 		);
@@ -144,6 +145,38 @@ class Usuarios extends CActiveRecord
 			'pagination'=>array('pageSize'=>20)
 		));
 	}
+	public function beforeSave()
+	{
+        // in this case, we will use the old hashed password.
+        if(empty($this->UsuariosPass) && empty($this->UsuariosPasCon) && !empty($this->initialPassword))
+            $this->UsuariosPass=$this->UsuariosPasCon=$this->initialPassword;
+ 
+        return parent::beforeSave();
+    }
+    public function afterFind()
+    {
+        //reset the password to null because we don't want the hash to be shown.
+        $this->initialPassword = $this->UsuariosPass;
+        $this->UsuariosPass = null;
+ 
+        parent::afterFind();
+    }
+    public function saveModel($data=array())
+    {
+            //because the hashes needs to match
+            if(!empty($data['UsuariosPass']) && !empty($data['UsuariosPasCon']))
+            {
+                $data['UsuariosPass'] = Yii::app()->user->hashPassword($data['UsuariosPass']);
+                $data['UsuariosPasCon'] = Yii::app()->user->hashPassword($data['UsuariosPasCon']);
+            }
+ 
+            $this->attributes=$data;
+ 
+            if(!$this->save())
+                return CHtml::errorSummary($this);
+ 
+         return true;
+    }
 	public function getUsuarios()
 	{
 		// Devuelve la lista de usuarios a los que tiene permitido ver sus operaciones

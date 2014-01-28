@@ -59,25 +59,6 @@ class UsuariosController extends Controller {
 		) );
 	}
 	
-	
-	public function actionUpdate() {
-            $model = $this->loadModel ();
-		
-            $model->perfil_id = UsuariosPerfiles::model()->find('usuario_id = :param1', array(
-                ':param1' => $model->id 
-            ));
-
-            if (isset ( $_POST ['Usuarios'] )) {
-                $model->attributes = $_POST ['Usuarios'];
-                if ($model->validate ()) {
-                    if ($model->update ()) {
-                        $this->redirect(array('index'));
-                    }
-                }
-            }
-            
-            $this->render('update', array('model'=>$model));
-	}    
 	/**
 	 * Manages all models.
 	 */
@@ -100,10 +81,15 @@ class UsuariosController extends Controller {
 	 * variable.
 	 * If the data model is not found, an HTTP exception will be raised.
 	 */
-	public function loadModel() {
+	public function loadModel($id=null,$nick=null) {
             if ($this->_model === null) {
-                if (isset ( $_GET ['id'] ))
-                    $this->_model = Usuarios::model ()->findbyPk ( $_GET ['id'] );
+					if (!isset($id,$nick)) {
+							if (isset ( $_GET ['id'],$_GET['nick'] )){
+									$id=$_GET['id'];
+									$nick=$_GET['nick'];
+							}
+					}	
+                    $this->_model = Usuarios::model ()->findbyPk (array('UsuariosId'=>$id,'UsuariosNick'=>$nick ));
                 if ($this->_model === null)
                     throw new CHttpException ( 404, 'El Usuario no existe.' );
             }
@@ -122,10 +108,29 @@ class UsuariosController extends Controller {
 		}
 	}
 
-		public function actionRegistro()
-		{
-			$model=new Usuarios;	
-			$this->render('_nuevo',array('model'=>$model));
-		}
-        
+	public function actionRegistro()
+	{
+			$model=new Usuarios('insert');	
+			$this->saveModel($model);
+			$this->render('_nuevo',compact('model'));
+	}
+
+	public function actionUpdate($id,$nick)
+	{
+			$user=$this->loadModel($id,$nick);
+			$user->scenario='update';
+			$this->saveModel($user);
+			$this->setViewData(compact('user'));
+			$this->render('update', $this->getViewData());
+	}
+
+	protected function saveModel(Usuarios $usuario)
+	{
+        if(isset($_POST['Usuarios']))
+        {
+            $this->performAjaxValidation($usuario);
+            $msg = $usuario->saveModel($_POST['Usuarios']);
+            //check $msg here
+        }
+    }
 }

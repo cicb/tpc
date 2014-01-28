@@ -23,7 +23,7 @@
     <div class="row">
 		<?php echo $form->labelEx($model,'TipUsrId'); ?>
         <?php echo $form->dropDownList($model, 'TipUsrId',
-            CHtml::listData(Tipusr::model()->findAll(), 'tipUsrId', 'tipUsrIdDes'),
+            CHtml::listData(Tipusr::model()->findAll('tipUsrId<>1'), 'tipUsrId', 'tipUsrIdDes'),
             array('empty'=>'---', )
         ); ?>	
 		<?php echo $form->error($model,'TipUsrId'); ?>
@@ -51,6 +51,11 @@
 		<?php echo $form->error($model,'UsuariosPasCon'); ?>
 	</div>
 	<div class="row">
+		<?php echo $form->labelEx($model,'UsuariosEmail'); ?>
+		<?php echo $form->textField($model,'UsuariosEmail'); ?>
+		<?php echo $form->error($model,'UsuariosEmail'); ?>
+	</div>
+	<div class="row">
 		<?php echo $form->labelEx($model,'UsuariosCiu'); ?>
 		<?php echo $form->textField($model,'UsuariosCiu'); ?>
 		<?php echo $form->error($model,'UsuariosCiu'); ?>
@@ -63,55 +68,37 @@
 	</div>
 
 	<div class="row">
-		<?php echo $form->labelEx($model,'UsuariosNot'); ?>
-		<?php echo $form->textField($model,'UsuariosNot'); ?>
-		<?php echo $form->error($model,'UsuariosNot'); ?>
+		<?php echo $form->labelEx($model,'UsuariosStatus'); ?>
+		<?php echo $form->dropDownList($model,'UsuariosStatus', 
+              array('ALTA' => 'Alta', 'BAJA' => 'Baja')); ?>
+		<?php echo $form->error($model,'UsuariosStatus'); ?>
 	</div>
 </div>
         <div class='span5'>
-
-
-
-
 	<div class="row">
-		<?php echo $form->labelEx($model,'UsuariosGruId'); ?>
-		<?php echo $form->textField($model,'UsuariosGruId'); ?>
-		<?php echo $form->error($model,'UsuariosGruId'); ?>
-	</div>
-
-	<div class="row">
-		<?php echo $form->labelEx($model,'UsuariosIma'); ?>
-		<?php echo $form->textField($model,'UsuariosIma'); ?>
-		<?php echo $form->error($model,'UsuariosIma'); ?>
+		<?php echo $form->labelEx($model,'UsuariosNot'); ?>
+		<?php echo $form->textArea($model,'UsuariosNot',array('cols'=>7,'rows'=>5,'style'=>'width:300px')); ?>
+		<?php echo $form->error($model,'UsuariosNot'); ?>
 	</div>
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'UsuariosInf'); ?>
-		<?php echo $form->textField($model,'UsuariosInf'); ?>
+		<?php echo $form->textArea($model,'UsuariosInf',array('cols'=>7,'rows'=>5,'style'=>'width:300px')); ?>
 		<?php echo $form->error($model,'UsuariosInf'); ?>
 	</div>
 
-	<div class="row">
-		<?php echo $form->labelEx($model,'UsuariosEmail'); ?>
-		<?php echo $form->textField($model,'UsuariosEmail'); ?>
-		<?php echo $form->error($model,'UsuariosEmail'); ?>
-	</div>
+
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'UsuariosRegion'); ?>
-		<?php echo $form->textField($model,'UsuariosRegion'); ?>
+		<?php echo $form->numberField($model,'UsuariosRegion'); ?>
 		<?php echo $form->error($model,'UsuariosRegion'); ?>
 	</div>
 
-	<div class="row">
-		<?php echo $form->labelEx($model,'UsuariosStatus'); ?>
-		<?php echo $form->textField($model,'UsuariosStatus'); ?>
-		<?php echo $form->error($model,'UsuariosStatus'); ?>
-	</div>
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'UsuariosVigencia'); ?>
-		<?php echo $form->textField($model,'UsuariosVigencia'); ?>
+		<?php echo $form->dateField($model,'UsuariosVigencia'); ?>
 		<?php echo $form->error($model,'UsuariosVigencia'); ?>
 	</div>
 	<div class="row buttons">

@@ -46,13 +46,19 @@
 					array(
 							'class'=>'CButtonColumn',
 							'header'=>'Acciones',
-							'template'=>'{eliminar} {editar} ',
+							'template'=>'{editar} {alta}{baja}  ',
 							'buttons'=>array(
-									'editar'=>array(
-											'label'=>'<span class="text-error fa fa-times"> Eliminar </span>',
-											//'url'=>'#',
+									'alta'=>array(
+											'label'=>'<span class="text-success fa fa-arrow-up"> Dar Alta </span>',
+											'url'=>'Yii::app()->createUrl("usuarios/registro")',
+											'visible'=>'$data["UsuariosStatus"]!="ALTA"'
 									),
-										'eliminar'=>array(
+										'baja'=>array(
+											'label'=>'<span class="text-error fa fa-arrow-down"> Dar Baja </span>',
+											'url'=>'Yii::app()->createUrl("usuarios/registro")',
+											'visible'=>'$data["UsuariosStatus"]=="ALTA"'
+									),
+									'editar'=>array(
 											'label'=>'<span class="text-info fa fa-pencil"> Editar </span>',
 											'url'=>'Yii::app()->createUrl("usuarios/registro")',
 									),
