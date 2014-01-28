@@ -184,7 +184,7 @@ class FuncionesController extends Controller
         if(empty($distribucionpuertalvel1)){
             $data =  array('ok'=>-1);
         }elseif(empty($distribucion)){
-            $distribucionpuerta = DistribucionPuerta::model()->findByPk($distribucionId);
+            $distribucionpuerta = Distribucionpuerta::model()->findByPk($distribucionId);
             $distribucionpuerta->DistribucionPuertaNom = $nombre_distribucion;
             $distribucionpuerta->update();
             

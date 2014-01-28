@@ -246,6 +246,9 @@
                                      funciones[index] = "0";
                                    else
                                      funciones[index] = $(this).attr("data_funcion_id");
+                                     
+                                     ForoMapIntId = $(this).attr("data-mapintid");
+                                     ForoId       = $(this).attr("data-foroid");
                                    });
                                    window.location.href='<?php echo $this->createUrl('evento/create'); ?>'+'&EventoId='+eventoId+'&EventoDistribucionId=0&funcionId=1'+'&funciones='+funciones+'&IdDistribucion=0&ForoId='+ForoId+"&ForoMapIntId="+ForoMapIntId
                                 }

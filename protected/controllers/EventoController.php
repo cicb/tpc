@@ -156,7 +156,7 @@ class EventoController extends Controller
         $id_distribucion = $_GET['id_distribucion'];
         $puerta = CatPuerta::model()->find("CatPuertaNom='$nombre_puerta' AND idDistribucionPuerta=$id_distribucion");
         if(empty($puerta)){
-            $catpuerta =new CatPuerta;
+            $catpuerta =new Catpuerta;
             $catpuerta->idDistribucionPuerta = $id_distribucion;
             $catpuerta->CatPuertaNom = $nombre_puerta;
             $catpuerta->save();
