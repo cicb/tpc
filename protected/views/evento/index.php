@@ -95,11 +95,11 @@
     	<div class='span5'>
     	     <div class="row">
                   <div class="row" id="">
-                       <div id="funciones_distribucion_n" style="display:none;">
+                       <div id="funciones_distribucion_n"  style="display:none;">
                                <?php echo CHtml::label('Funciones','', array('style'=>'width:70px; display:inline-table;'));?>
                        </div>
     
-                       <div id="funciones_distribucion" style="padding: 5px;margin-left:50px;height:200px;overflow:auto;border: black solid 1px; display:none;">
+                       <div id="funciones_distribucion" class="white-box" style="padding: 5px;margin-left:50px;height:200px;overflow:auto; display:none;">
                        </div>
                   </div>
              </div>
@@ -199,7 +199,7 @@
     
      <div class='row' style="margin-left:20%">
     	<div class='span3' style="margin: 0; width: 300px;">
-             <div id="distribucionpuerta" class="asignaciones_nombre" style="display:none;">
+             <div id="distribucionpuerta" class="asignaciones_nombre " style="display:none;">
                        <?php echo CHtml::label('Asignaci&oacute;n de Puertas','', array('style'=>'width:150px; display:inline-table;')); ?>
              </div>
              <style>
@@ -221,36 +221,14 @@
              </style>
              <input type="hidden" id="id_distribucion" value="0"/>
              <input type="hidden" id="id_evento_distribucion" value="0"/>
-             <div id="distribucionpuerta" class="asignaciones" style="text-align:left;padding: 5px;margin-left:0px;height:200px;overflow:auto;border: black solid 1px; display:none;">
+             <div id="distribucionpuerta" class="asignaciones white-box" style="text-align:left;padding: 5px;margin-left:0px;height:200px;overflow:auto;border: display:none;">
                   
                   
              </div>
+<br />
              <div id="botonagrega" class="buttonsagrega" style="display: none;">
                    <?php //echo CHtml::link("+",array('evento/create'),array('title'=>'','class'=>'btn','style'=>'margin-left:0px;margin-bottom: 15px;','id'=>'boton_agregar')); ?>
-                   <?php echo CHtml::button('+ Nuevo',array('class'=>'btn btn-primary','id'=>'boton_agregar')); ?>
-                   <script>  
-                      $("#boton_agregar").click(function(){
-                           var eventoId = $("#evento_id").val();
-                           var funciones = new Array();
-                           var eventoId = $("#evento_id").val();
-                               var funciones = new Array();
-                               var id_evento_distribucion = $("#id_evento_distribucion").val();
-                               var ForoMapIntId = 0;
-                               var ForoId = 0;
-                               var seleccion = $("#tabla_funciones input[type=checkbox]:checked").length;
-                               if(seleccion<="0"){
-                                    alert("Necesitas seleccionar una funcion");
-                               }else{
-                                   $("#tabla_funciones input[type=checkbox]:checked").each(function(index,value){
-                                   if($(this).val()=="todas")
-                                     funciones[index] = "0";
-                                   else
-                                     funciones[index] = $(this).attr("data_funcion_id");
-                                   });
-                                   window.location.href='<?php echo $this->createUrl('evento/create'); ?>'+'&EventoId='+eventoId+'&EventoDistribucionId=0&funcionId=1'+'&funciones='+funciones+'&IdDistribucion=0&ForoId='+ForoId+"&ForoMapIntId="+ForoMapIntId
-                                }
-                      });
-                   </script>
+                   <?php echo CHtml::button('+ Nuevo',array('class'=>'btn btn-success','id'=>'boton_agregar')); ?>
              </div>
          </div>
     
@@ -258,15 +236,32 @@
              <div id="nombre_resumen" class="resumen_nombre" style="display:none;">
                        <?php echo CHtml::label('Resumen','', array('style'=>'width:70px; display:inline-table;')); ?>
              </div>
-             <div id="distribucion_resumen" class="distribucion_resumen" style="padding: 5px;margin-left:0;height:200px;overflow:auto;border: black solid 1px; display:none;">
+             <div id="distribucion_resumen" class="distribucion_resumen white-box" style="padding: 5px;margin-left:0;height:200px;overflow:auto; display:none;">
     
                   <div id="inf_resumen" style="margin-left:0;height:200px;overflow:auto;border: black solid 1px;">
     
                   </div>
              </div>
+<br />
+			<div class='span2'>  
+				<div id="botonmodificar" class="buttonsmodifica" style="display: none;" >
+					   <?php echo CHtml::button('Modificar',array('class'=>'btn btn-info','id'=>'boton_modificar')); ?>
+				 </div>
+			 </div>
              <div class='span2'>
                  <div id="botonasignar" class="buttonsasignar" style="display: none;">
-                       <?php echo CHtml::button('Asignar',array('class'=>'btn btn-success','id'=>'boton_asignar')); ?>
+                       <?php echo CHtml::button('Asignar',array('class'=>'btn btn-primary','id'=>'boton_asignar')); ?>
+                  </div>
+              </div>
+         </div>
+         <div class='span2'>
+             
+         </div>
+    </div>
+    <?php $this->endWidget(); ?>
+    </div>
+</div>
+<span id="fspin" style="position: fixed;top:300px;left: 50%;" class=""></span>
                        <script>
                           $("#boton_asignar").click(function(){
                                var eventoId = $("#evento_id").val();
@@ -297,11 +292,6 @@
                               }     
                           });
                        </script>
-                  </div>
-              </div>
-            <div class='span2'>  
-                <div id="botonmodificar" class="buttonsmodifica" style="display: none;" >
-                       <?php echo CHtml::button('Modificar',array('class'=>'btn btn-warning','id'=>'boton_modificar')); ?>
                        <script>
                           $("#boton_modificar").click(function(){
                                var eventoId = $("#evento_id").val();
@@ -327,15 +317,27 @@
                           });
                           
                        </script>
-                 </div>
-             </div>
-         </div>
-         <div class='span2'>
-             
-         </div>
-    </div>
-    <?php $this->endWidget(); ?>
-    </div>
-</div>
-<span id="fspin" style="position: fixed;top:300px;left: 50%;" class=""></span>
+                   <script>  
+                      $("#boton_agregar").click(function(){
+                           var eventoId = $("#evento_id").val();
+                           var funciones = new Array();
+                           var eventoId = $("#evento_id").val();
+                               var funciones = new Array();
+                               var id_evento_distribucion = $("#id_evento_distribucion").val();
+                               var ForoMapIntId = 0;
+                               var ForoId = 0;
+                               var seleccion = $("#tabla_funciones input[type=checkbox]:checked").length;
+                               if(seleccion<="0"){
+                                    alert("Necesitas seleccionar una funcion");
+                               }else{
+                                   $("#tabla_funciones input[type=checkbox]:checked").each(function(index,value){
+                                   if($(this).val()=="todas")
+                                     funciones[index] = "0";
+                                   else
+                                     funciones[index] = $(this).attr("data_funcion_id");
+                                   });
+                                   window.location.href='<?php echo $this->createUrl('evento/create'); ?>'+'&EventoId='+eventoId+'&EventoDistribucionId=0&funcionId=1'+'&funciones='+funciones+'&IdDistribucion=0&ForoId='+ForoId+"&ForoMapIntId="+ForoMapIntId
+                                }
+                      });
+                   </script>
 

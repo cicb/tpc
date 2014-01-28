@@ -48,6 +48,11 @@ class Usuarios extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
+				//array (
+						//'password, password_repeat, UsuariosNom, nombre, puesto_id, email, perfil_id',
+						//'required',
+                        //'on' => 'insert' 
+                    //),
 			array('UsuariosId, TipUsrId, UsuariosNom, UsuariosCiu, UsuariosTelMov, UsuariosNot, UsuariosNick, UsuariosPass, UsuariosPasCon, UsuariosGruId, UsuariosIma, UsuariosInf, UsuariosEmail, UsuariosRegion, UsuariosStatus, UsuariosVigencia', 'required'),
 			array('TipUsrId', 'numerical', 'integerOnly'=>true),
 			array('UsuariosId, UsuariosTelMov, UsuariosGruId, UsuariosStatus', 'length', 'max'=>20),
@@ -68,6 +73,7 @@ class Usuarios extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+				'tipusr'=>array(self::BELONGS_TO, 'Tipusr', array('TipUsrId')),
 		);
 	}
 
@@ -77,22 +83,22 @@ class Usuarios extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'UsuariosId' => 'Usuarios',
-			'TipUsrId' => 'Tip Usr',
-			'UsuariosNom' => 'Usuarios Nom',
-			'UsuariosCiu' => 'Usuarios Ciu',
-			'UsuariosTelMov' => 'Usuarios Tel Mov',
-			'UsuariosNot' => 'Usuarios Not',
-			'UsuariosNick' => 'Usuarios Nick',
-			'UsuariosPass' => 'Usuarios Pass',
-			'UsuariosPasCon' => 'Usuarios Pas Con',
-			'UsuariosGruId' => 'Usuarios Gru',
-			'UsuariosIma' => 'Usuarios Ima',
-			'UsuariosInf' => 'Usuarios Inf',
-			'UsuariosEmail' => 'Usuarios Email',
-			'UsuariosRegion' => 'Usuarios Region',
-			'UsuariosStatus' => 'Usuarios Status',
-			'UsuariosVigencia' => 'Usuarios Vigencia',
+			'UsuariosId' => 'Id',
+			'TipUsrId' => 'Tipo de Usuario',
+			'UsuariosNom' => 'Nombre completo',
+			'UsuariosCiu' => 'Ciudad',
+			'UsuariosTelMov' => 'Tel. Mov',
+			'UsuariosNot' => 'Not',
+			'UsuariosNick' => 'Nick',
+			'UsuariosPass' => 'Contraseña',
+			'UsuariosPasCon' => 'Pas Con',
+			'UsuariosGruId' => 'Grupo',
+			'UsuariosIma' => 'Imagen',
+			'UsuariosInf' => 'Inf',
+			'UsuariosEmail' => 'Email',
+			'UsuariosRegion' => 'Region',
+			'UsuariosStatus' => 'Status',
+			'UsuariosVigencia' => 'Vigencia',
 		);
 	}
 
@@ -126,6 +132,7 @@ class Usuarios extends CActiveRecord
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
+			'pagination'=>array('pageSize'=>20)
 		));
 	}
 	public function getUsuarios()
@@ -219,5 +226,13 @@ class Usuarios extends CActiveRecord
 					$funciones = Funciones::model()->findAll(array('condition'=>" EventoId=$EventoId".$condiciones,'order'=>"t.FuncionesId ASC"));
 			}
 			return $funciones;
+	}
+	public function getTipo()
+	{
+			$tipo=Tipusr::model()->findByPk($this->TipUsrId);
+			if (is_object($tipo)) {
+					return $tipo->tipUsrIdDes;
+			}	
+			else return 'Sin tipo';
 	}
 }

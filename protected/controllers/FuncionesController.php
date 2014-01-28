@@ -201,7 +201,7 @@ class FuncionesController extends Controller
            $eventoId = $_GET['EventoId'];
            $evento = new Evento;
            //print_r($evento->getPuertas($distribucionId));
-           echo "<table id='tabla_Resumen' border='1'>";
+           echo "<table id='tabla_Resumen'class='table table-bordered table-striped' border='1'>";
 
            $valuecp = $evento->getCatPuertas($distribucion,$puertaid);
            foreach($valuecp as $key => $puerta):

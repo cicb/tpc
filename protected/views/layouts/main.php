@@ -86,8 +86,8 @@ $this->widget('bootstrap.widgets.TbNavbar',array(
 										array('label'=>'Configurador de accesos', 'url'=>$this->createUrl('evento/index')),
 								),
 								'url' => '#','visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
+								array('label' => 'Usuarios', 	'url' => $this->createUrl('usuarios/index'),'visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
 								array('label' => 'Boletos', 	'url' => '#','visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
-								array('label' => 'Usuarios', 	'url' => '#','visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
 						),
 				),
 				array(

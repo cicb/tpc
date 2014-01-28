@@ -89,7 +89,7 @@ ul.puertas li a:hover{
                      <?php endforeach; ?>
                </select>
                <div class="row" id="agregar_puerta">
-                    <?php echo CHtml::button('+ Agregar Puerta',array('class'=>'btn btn-primary','id'=>'agregar_puerta')); ?>
+                    <?php echo CHtml::button('+ Agregar Puerta',array('class'=>'btn btn-success','id'=>'agregar_puerta')); ?>
                </div>
                <script>
                    $("select.puertas").change(function(){
@@ -273,7 +273,7 @@ ul.puertas li a:hover{
      <div class='row' style="margin-left:0;border: black 1px solid;"> 
           <a href="#" class="resumen_desplegable" id="resumen_desplegable">Resumen <i class="icon-white icon-chevron-down"></i></a> 
           <div class="resumen" id="resumen" style="display: none;">
-          <table id='tabla_resumen' border='0'>
+          <table id='tabla_resumen' class='table primario' border='0'>
            <?php 
            foreach($resumen_distribucion as $key => $puerta):
            ?>
@@ -327,14 +327,14 @@ $("a#resumen_desplegable").click(function(event){
      <div class='row' style="margin-left:0px">
           <div class='span3'>
                <div class="row" id="boton1">
-                    <?php echo CHtml::button('Regresar',array('class'=>'btn btn-danger','onclick'=>'window.history.back();','id'=>'boton_regresar')); ?>
+                    <?php echo CHtml::button('Regresar',array('class'=>'btn ','onclick'=>'window.history.back();','id'=>'boton_regresar')); ?>
                </div>
           </div>
           <div class='span3'>
           </div>
           <div class='span4'>
                <div class="row" >
-                    <?php echo CHtml::button('Guardar',array('class'=>'btn btn-success','id'=>'boton_guardar','style'=>'display:none;')); ?>
+                    <?php echo CHtml::button('Guardar',array('class'=>'btn btn-primary','id'=>'boton_guardar','style'=>'display:none;')); ?>
                     <script>
                         $("#boton_guardar").click(function(){
                             var nombre_distribucion = prompt("Escriba el nombre de la Nueva Distribucion");

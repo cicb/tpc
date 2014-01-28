@@ -11,56 +11,22 @@ class UsuariosController extends Controller {
 	}
 	
 	public function accessRules()
-        {
-            $usuario = Usuarios::model()->findByPk(Yii::app()->user->id);
-	    $isMesa = isset($usuario)?$usuario->esMesaDeControl:false ;
+	{
+			//$usuario = Usuarios::model()->findByPk(Yii::app()->user->id);
+			//$usuario = Yii::app()->user->modelo;
+			$esAdmin=false;
+			$esAdmin = @Yii::app()->user->getState("Admin") ;
 
-            return array(
-                array('allow', // allow authenticated user to perform 'create' and 'update' actions
-                'expression'=>$isMesa . '== true',
-                ),
-                array('deny',  // deny all users
-                    'users'=>array('*'),
-                ),
-            );
-        }
-	
-	public function actionBoletines($id){
-// 	  $usuario=Usuarios::model()->findByPk($id);
-// 	  foreach($usuario->getBoletines() as $aviso){
-// 	    print_r($aviso->nombreCompleto);
-// 	  }
-	  $aviso=Avisos::model()->findByPk($id);
-	  foreach ($aviso->getListaUsuarios() as $usr)
-	    echo $usr->nombreCompleto." ".$usr->organigrama_id." \n<br>";
-	  echo $aviso->para;
+			return array(
+					array('allow', // allow authenticated user to perform 'create' and 'update' actions
+					'expression'=>$esAdmin . '== true',
+			),
+			array('deny',  // deny all users
+			'users'=>array('*'),
+	),
+			);
 	}
-	/**
-	 * Crea un nuevo modelo.
-	 * Si la creación es exitosa, el navegador será redirigido a la vista
-	 * 'Index'.
-	 */
-	public function actionAgregar() {
-            $model = new Usuarios ( 'insert' );
-		
-            if (isset ( $_POST ['Usuarios'] )) {
-                $model->attributes = $_POST ['Usuarios'];
-                $model->es_interno = 0;
-                if ($model->validate ()) {
-                    //$model->organigrama_id = Organigrama::getNodoRaiz()->id;
-                    $model->fecha_registro = date('Ymd');
-                    if ($model->validate ()) {
-                        $model->password = md5($model->n_Password);
-                        if ($model->save ()) {
-                            EQuickDlgs::checkDialogJsScript();
-                            $this->redirect(array('index'));
-                        }
-                    }
-                }
-                
-            }
-            EQuickDlgs::render('create',array('model'=>$model, 'selectRama'=>1));
-	}
+
 	
 	/**
 	 * Actualiza un Modelo en Particular.
@@ -111,37 +77,12 @@ class UsuariosController extends Controller {
             }
             
             $this->render('update', array('model'=>$model));
-	}
-	
-    public function actionDelete() {
-        if (Yii::app()->request->isPostRequest) {
-	    
-            if (isset($_GET['id'])) {
-                $usuario = Usuarios::model()->findByPk($_GET['id']);
-                $revisiones=$usuario->archivosPorRevisar();
-		if ($revisiones==0){
-		  $usuario->eliminarLogicamente();
-		  echo "Usuario eliminado";
-		  }
-		else
-		  echo "Este usuario no se puede eliminar, porque esta revisando algun recurso.";
-                //$usuario->delete();
-                
-                if(!isset($_GET['ajax']))
-                    $this->redirect(array('index'));
-            } else {
-                throw new CHttpException(404,'El usuario no existe.');
-            }
-        }
-        else
-            throw new CHttpException(400,'Petición no válida.');
-    }
-    
+	}    
 	/**
 	 * Manages all models.
 	 */
 	public function actionIndex() {
-			$this->layout='//layouts/column1';
+			//$this->layout='//layouts/column1';
 			$model = new Usuarios ( 'search' );
 			$model->unsetAttributes (); // clear any default values
 			if (isset ( $_GET ['Usuarios'] ))
@@ -177,46 +118,11 @@ class UsuariosController extends Controller {
 			Yii::app ()->end ();
 		}
 	}
-	public function actionCambiarPassword() {
-            $model = $this->loadModel ();
-            $model->setScenario('cambiarPassword');
-            if (isset($_POST['Usuarios'])) {
-                $model->attributes = $_POST['Usuarios'];
-                if ($model->validate()) {
-                    $model->password = md5($model->n_Password);
-                    if ($model->save()) {
-                        $this->redirect(array (
-                            'index' 
-                        ));
-                    }
-                }
-            }
-            $this->render('cambiarPassword', array(
-                'model' => $model 
-            ));
-	}
+
+		public function actionRegistro()
+		{
+			$model=new Usuarios;	
+			$this->render('_nuevo',array('model'=>$model));
+		}
         
-    public function actionGetNombre($id) {
-        if ($_GET['id']) {
-            $result = array();
-            $model = $this->loadModel();
-            $result['nombre'] = $model->nombreCompleto;
-
-            echo CJSON::encode($result);
-        }
-    }
-
-	public function actionUsuarios()
-	{
-		// incompleta
-			$data = Usuarios::model()->findAll('UsuariosId=:parent_id',
-					array(':parent_id'=>(int) $_POST['evento_id']));
-
-			$data = CHtml::listData($data,'FuncionesId','funcionesTexto');
-			echo CHtml::tag('option',array('value' => ''),'Seleccione ...',true);
-			foreach($data as $id => $value)
-			{
-					echo CHtml::tag('option',array('value' => $id),CHtml::encode($value),true);
-			}
-	}
 }
