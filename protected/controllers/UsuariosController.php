@@ -85,8 +85,11 @@ class UsuariosController extends Controller {
 			//$this->layout='//layouts/column1';
 			$model = new Usuarios ( 'search' );
 			$model->unsetAttributes (); // clear any default values
-			if (isset ( $_GET ['Usuarios'] ))
-					$model->attributes = $_GET ['Usuarios'];
+			if (isset ( $_POST ['Usuarios'] )){
+					//VAR_DUMP(@$_POST);
+					$model->attributes = $_POST ['Usuarios'];
+
+			}
 			$this->render ( 'index', array (
 					'model' => $model 
 			) );

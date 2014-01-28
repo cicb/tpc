@@ -260,7 +260,7 @@ class FuncionesController extends Controller
                            echo ucfirst($puerta['CatPuertaNom']);
                       echo "</td>";
                       echo "<td>";
-                           echo "<table class='table table-bordered'";
+                           echo "<table class='table table-bordered table-striped'";
                                  $valuez = $evento->getZonas($puerta['idCatPuerta'],$distribucionId,$eventoId);
                                     //      echo  $eventoId."-".$funcionId."-".$puerta['ZonasId'] ;
                                         foreach($valuez as $key => $zonas):

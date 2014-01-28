@@ -4,9 +4,9 @@
 )); ?>
 <div class='controles'>
 		<h2>Control de usuarios</h2>
-		<?php echo TbHtml::textField('UsuariosNom', '',
+		<?php echo $form->textFieldControlGroup($model,'UsuariosNom',
 				array(
-						'append' => TbHtml::button('Buscar',array('class'=>'btn-primary')), 
+						'append' => TbHtml::submitButton('Buscar',array('class'=>'btn-primary')), 
 						'span' => 3,
 						'placeholder'=>'Nombre del usuario',
 						'id'=>'filtro-usuario'
@@ -61,7 +61,6 @@
 					)
 			)
 	));
-
 		?>
 </div>
 <?php $this->endWidget(); ?>

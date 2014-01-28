@@ -277,7 +277,7 @@ ul.puertas li a:hover{
            <?php 
            foreach($resumen_distribucion as $key => $puerta):
            ?>
-                    <tr style='border-bottom:1px solid gray;'>
+                    <tr >
                         <td style='max-width:300px;min-width:100px;'>
                             <?php echo ($puerta['CatPuertaNom']); ?>
                         </td>

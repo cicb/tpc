@@ -53,12 +53,21 @@ class Usuarios extends CActiveRecord
 						//'required',
                         //'on' => 'insert' 
                     //),
-			array('UsuariosId, TipUsrId, UsuariosNom, UsuariosCiu, UsuariosTelMov, UsuariosNot, UsuariosNick, UsuariosPass, UsuariosPasCon, UsuariosGruId, UsuariosIma, UsuariosInf, UsuariosEmail, UsuariosRegion, UsuariosStatus, UsuariosVigencia', 'required'),
+			array('UsuariosId, TipUsrId, UsuariosNom, UsuariosNick, UsuariosPass, UsuariosPasCon, UsuariosEmail,UsuariosStatus', 'required'),
 			array('TipUsrId', 'numerical', 'integerOnly'=>true),
 			array('UsuariosId, UsuariosTelMov, UsuariosGruId, UsuariosStatus', 'length', 'max'=>20),
 			array('UsuariosNom, UsuariosNick, UsuariosPass, UsuariosPasCon', 'length', 'max'=>50),
 			array('UsuariosCiu', 'length', 'max'=>30),
 			array('UsuariosEmail, UsuariosRegion', 'length', 'max'=>200),
+            array('UsuariosPass, UsuariosPasCon', 'required', 'on'=>'insert'),
+            array('UsuariosPass, UsuariosPasCon', 'length', 'min'=>6,'max'=>40),
+
+			array (
+					'UsuarioPassCon',
+					'compare',
+					'compareAttribute' => 'UsuariosPass',
+					'on' => 'insert' 
+			),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('UsuariosId, TipUsrId, UsuariosNom, UsuariosCiu, UsuariosTelMov, UsuariosNot, UsuariosNick, UsuariosPass, UsuariosPasCon, UsuariosGruId, UsuariosIma, UsuariosInf, UsuariosEmail, UsuariosRegion, UsuariosStatus, UsuariosVigencia', 'safe', 'on'=>'search'),
@@ -88,10 +97,10 @@ class Usuarios extends CActiveRecord
 			'UsuariosNom' => 'Nombre completo',
 			'UsuariosCiu' => 'Ciudad',
 			'UsuariosTelMov' => 'Tel. Mov',
-			'UsuariosNot' => 'Not',
-			'UsuariosNick' => 'Nick',
+			'UsuariosNot' => 'Nota',
+			'UsuariosNick' => 'Nombre de usuario',
 			'UsuariosPass' => 'Contraseña',
-			'UsuariosPasCon' => 'Pas Con',
+			'UsuariosPasCon' => 'Confirme contraseña',
 			'UsuariosGruId' => 'Grupo',
 			'UsuariosIma' => 'Imagen',
 			'UsuariosInf' => 'Inf',

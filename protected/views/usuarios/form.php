@@ -34,7 +34,22 @@
 		<?php echo $form->textField($model,'UsuariosNom'); ?>
 		<?php echo $form->error($model,'UsuariosNom'); ?>
 	</div>
+	<div class="row">
+		<?php echo $form->labelEx($model,'UsuariosNick'); ?>
+		<?php echo $form->textField($model,'UsuariosNick'); ?>
+		<?php echo $form->error($model,'UsuariosNick'); ?>
+	</div>
+	<div class="row">
+		<?php echo $form->labelEx($model,'UsuariosPass'); ?>
+		<?php echo $form->passwordField($model,'UsuariosPass'); ?>
+		<?php echo $form->error($model,'UsuariosPass'); ?>
+	</div>
 
+	<div class="row">
+		<?php echo $form->labelEx($model,'UsuariosPasCon'); ?>
+		<?php echo $form->passwordField($model,'UsuariosPasCon'); ?>
+		<?php echo $form->error($model,'UsuariosPasCon'); ?>
+	</div>
 	<div class="row">
 		<?php echo $form->labelEx($model,'UsuariosCiu'); ?>
 		<?php echo $form->textField($model,'UsuariosCiu'); ?>
@@ -54,23 +69,9 @@
 	</div>
 </div>
         <div class='span5'>
-	<div class="row">
-		<?php echo $form->labelEx($model,'UsuariosNick'); ?>
-		<?php echo $form->textField($model,'UsuariosNick'); ?>
-		<?php echo $form->error($model,'UsuariosNick'); ?>
-	</div>
 
-	<div class="row">
-		<?php echo $form->labelEx($model,'UsuariosPass'); ?>
-		<?php echo $form->textField($model,'UsuariosPass'); ?>
-		<?php echo $form->error($model,'UsuariosPass'); ?>
-	</div>
 
-	<div class="row">
-		<?php echo $form->labelEx($model,'UsuariosPasCon'); ?>
-		<?php echo $form->textField($model,'UsuariosPasCon'); ?>
-		<?php echo $form->error($model,'UsuariosPasCon'); ?>
-	</div>
+
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'UsuariosGruId'); ?>
