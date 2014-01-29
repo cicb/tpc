@@ -30,8 +30,7 @@ class FuncionesController extends Controller
 					echo CHtml::tag('option',array('value' => $id),CHtml::encode($value),true);
 			}
 	}
-	public function actionCargarFuncionesDistribucion()
-	{
+	public function actionCargarFuncionesDistribucion(){
           $eventoId = $_POST['evento_id'];
           $evento = new Evento;
           $value = $evento->getFunciones($eventoId);
@@ -84,15 +83,17 @@ class FuncionesController extends Controller
                  echo "</tr>";
 
                  foreach($value as $id => $funcion){
+                 $distribucionlevel1 =  Distribucionpuertalevel1::model()->find("EventoId=$eventoId  AND FuncionesId IN($funcion[FuncionesId])");   
+                 $estilo = !empty($distribucionlevel1)?'distribucion_asignada':'';
                  if (($foro!=($value[$id]['ForoId'])) || ($forointmap!=($value[$id]['ForoMapIntId']))){
-                           echo "<tr><td colspan='2' style='border-top:1px solid #FCAA04 !important'></td></tr>";
+                           echo "<tr><td colspan='2' style='border:1px solid #959494 !important'></td></tr>";
                            //echo "<hr style='border-top:1px solid #FCAA04 !important' size=1 width= 110% align=center/>";
                          }   
                  echo "<tr>";
-                      echo "<td>";
+                      echo "<td class='$estilo'>";
                            echo CHtml::checkBox("funcion_id",false,array('value'=>$value[$id]['FuncionesId'],'id'=>"funcion_id_".$value[$id]['FuncionesId'],"data_foro_id"=>$value[$id]['ForoId'].$value[$id]['ForoMapIntId'],'data-foroId'=>$value[$id]['ForoId'],'data-mapintId'=>$value[$id]['ForoMapIntId'],"data_funcion_id"=>$value[$id]['FuncionesId'],'class'=>"ck"));
                       echo "</td>";
-                      echo "<td>";
+                      echo "<td class='$estilo'>";
                          
                            echo "<label for='funcion_id_".$value[$id]['FuncionesId']."'>".$value[$id]['funcionesTexto']."</label>";
                       echo "</td>";
@@ -121,14 +122,17 @@ class FuncionesController extends Controller
 
 	public function actionAsignaciones(){
      $funciones = $_GET['funciones'];
+     $estilo = "";
     // print_r($funciones);
      $eventoId = $_GET['EventoId'];
      $evento = new Evento;
      $value = $evento->getDistribucionForo($eventoId,$funciones);
-     $distribucionlevel1 =  Distribucionpuertalevel1::model()->find("EventoId= $eventoId AND FuncionesId IN($funciones)");
+     
      echo "<table id='tabla_distribucionP'>";
+     $distribucionlevel1 =  Distribucionpuertalevel1::model()->find(" EventoId= $eventoId AND FuncionesId IN($funciones)");
      foreach($value as $key => $distribucion):
-          $estilo = $distribucionlevel1->idDistribucionPuerta ==$distribucion['idDistribucionPuerta']?'distribucion_asignada':'';
+          if(!empty($distribucionlevel1))
+                $estilo = $distribucionlevel1->idDistribucionPuerta ==$distribucion['idDistribucionPuerta']?'distribucion_asignada':'';
        //   print_r($evento->getDistribucionForo($eventoId,$funcion));
                  echo "<tr>";
                       echo "<td class='$estilo' width='300'>";

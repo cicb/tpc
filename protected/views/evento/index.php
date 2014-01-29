@@ -206,7 +206,8 @@
              #tabla_funciones td{
                 text-align: left !important;
              }
-             #tabla_distribucionP td.distribucion_asignada{
+             #tabla_distribucionP td.distribucion_asignada,
+             #tabla_funciones td.distribucion_asignada{
                 background-color: #FF8000;
              }
              #tabla_distribucionP td.distribucion_asignada a{
