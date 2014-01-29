@@ -176,14 +176,30 @@ class FuncionesController extends Controller
            //fata enviar mensaje de Guardado
     }
     public function actionAsignar(){
-           $distribucionId      = $_GET['id_distribucion'];
-           $nombre_distribucion = $_GET['nombre_distribucion'];
-           $eventoId = $_GET['EventoId'];
-        $distribucion = Distribucionpuerta::model()->find("DistribucionPuertaNom='$nombre_distribucion'");
+        $distribucionId          = $_GET['id_distribucion'];
+        $nombre_distribucion     = $_GET['nombre_distribucion'];
+        $eventoId                = $_GET['EventoId'];
+        $distribucion            = Distribucionpuerta::model()->find("DistribucionPuertaNom='$nombre_distribucion'");
         $distribucionpuertalvel1 = Distribucionpuertalevel1::model()->find("idDistribucionPuerta=$distribucionId AND EventoId=$eventoId");
-        if(empty($distribucionpuertalvel1)){
+        $catpuerta               = Catpuerta::model()->findAll("idDistribucionPuerta=$distribucionId AND idCatPuerta NOT IN(SELECT idCatPuerta FROM distribucionpuertalevel1)"); 
+        if(!empty($catpuerta)){
+            $p = "";
+            foreach($catpuerta as $puerta):
+                $p .= " ".$puerta->CatPuertaNom.",";
+            endforeach;
+            $p = substr($p,0,-1);
+            $data = array('ok'=>-2,'puertas'=>$p);
+        }elseif(empty($distribucionpuertalvel1)){
             $data =  array('ok'=>-1);
         }elseif(empty($distribucion)){
+           Distribucionpuertalevel1::model()->deleteAll("idDistribucionPuerta NOT IN($distribucionId) AND EventoId=$eventoId AND FuncionesId IN(".$_GET['funciones'].")");
+           $distribucion = Distribucionpuerta::model()->findAll("idDistribucionPuerta NOT IN(SELECT idDistribucionPuerta FROM distribucionpuertalevel1)");
+           if(!empty($distribucion)){
+               foreach($distribucion as $dist):
+                    Distribucionpuerta::model()->deleteAll("idDistribucionPuerta=$dist->idDistribucionPuerta");
+                    Catpuerta::model()->deleteAll("idDistribucionPuerta=$dist->idDistribucionPuerta");
+               endforeach; 
+           }
             $distribucionpuerta = Distribucionpuerta::model()->findByPk($distribucionId);
             $distribucionpuerta->DistribucionPuertaNom = $nombre_distribucion;
             $distribucionpuerta->update();

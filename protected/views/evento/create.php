@@ -57,38 +57,27 @@ $cs = Yii::app()->getClientScript();
      ));
      ?>
 <style>
-ul.puertas{
-    list-style: none;
-    margin: 0;
-}
-ul.puertas li a{
-    text-align: left;
-    display: block;
-    text-decoration: none;
-    color: black;
-}
-ul.puertas li a:hover{
-    color: white;
-    background: blue;
-}
 .seleccionado{
     color: white !important;
     background: blue;
 }
+
+
 </style>
      <div class='row' style="margin-left:0px">
 	      <div class='span3'>
 	           <div class="row" id="puerta">
 	                <?php echo CHtml::label('Puertas','', array('style'=>'display:inline-table;')); ?>
                </div>
-               <select class="puertas" multiple="" size="20" >
+               <select class="row puertas" style="width: 280px;" multiple="" size="20" >
                     <?php  foreach($puertas as $key => $puerta): ?>
-                    <option value="<?php echo $puerta['idCatPuerta'];?>" id="puerta" data_id_puerta='<?php echo $puerta['idCatPuerta'];?>' data-eventoId='<?php echo $_GET['EventoId'];?>' data-funcionId='<?php echo $_GET['funciones'] ?>' data-distribucionId='<?php echo $id_distribucion_nueva;?>' >
+                    <option value="<?php echo $puerta['idCatPuerta'];?>" id="puerta_<?php echo $puerta['idCatPuerta'];?>" data_id_puerta='<?php echo $puerta['idCatPuerta'];?>' data-eventoId='<?php echo $_GET['EventoId'];?>' data-funcionId='<?php echo $_GET['funciones'] ?>' data-distribucionId='<?php echo $id_distribucion_nueva;?>' >
                              <?php echo $puerta['CatPuertaNom']; ?>
                     </option>    
                      <?php endforeach; ?>
                </select>
-               <div class="row" id="agregar_puerta">
+               <div class="row" id="">
+                    <?php echo CHtml::button('- Eliminar Puerta',array('class'=>'btn btn-danger','id'=>'eliminar_puerta')); ?>    
                     <?php echo CHtml::button('+ Agregar Puerta',array('class'=>'btn btn-success','id'=>'agregar_puerta')); ?>
                </div>
                <script>
@@ -233,13 +222,49 @@ ul.puertas li a:hover{
                                     else{
                                         $("body").attr('onbeforeunload','return cambios();');
                                         $("#boton_guardar").show();
-                                        $("select.puertas").append("<option value='"+data.id_puerta+"' id='puerta'  data_id_puerta='"+data.id_puerta+"' data-eventoid='"+<?php echo $_GET['EventoId'];?>+"' data-funcionid='"+<?php echo "0";?>+"' data-distribucionid='"+<?php echo $id_distribucion_nueva;?>+"' class=''>"+nombre_puerta+"</option>");
+                                        $('select.puertas option').attr('selected',false);
+                                        $("select.puertas").append("<option selected='selected' value='"+data.id_puerta+"' id='puerta_"+data.id_puerta+"'  data_id_puerta='"+data.id_puerta+"' data-eventoid='"+<?php echo $_GET['EventoId'];?>+"' data-funcionid='"+<?php echo "0";?>+"' data-distribucionid='"+<?php echo $id_distribucion_nueva;?>+"' class=''>"+nombre_puerta+"</option>");
                                     }
                                     
                                 }
                             });  
                         }
                     });
+                   $("#eliminar_puerta").click(function(event){
+                        var seleccion   = $('select.puertas option:selected').length;
+                        var id          = $('select.puertas option:selected').val();
+                        //console.log(seleccion);
+                        if(seleccion<=0)
+                            alert("Necesitas seleccionar el acceso a eliminar");
+                        else if(seleccion>1)
+                            alert("Tienes que seleccionar un acceso a la vez");
+                        else{
+                            var confirmar = confirm("Desea eliminar el acceso seleccionado");
+                            if(confirmar==true){
+                                $.ajax({
+                                url:'<?php echo Yii::app()->createUrl('evento/DeletePuerta'); ?>',
+                                dataType:'json',
+                                beforeSend:function(){
+                                     $("#loading").show();
+                                },
+                                data:'id_distribucion=<?php echo $id_distribucion_nueva ?>&idCatPuerta='+id,
+                                success:function(data){
+                                    $("#loading").hide();
+                                    if(data.ok=="0")
+                                         alert("No se pudo eliminar la puerta, por favor trate de nuevo");
+                                    else{
+                                        $("body").attr('onbeforeunload','return cambios();');
+                                        $("#boton_guardar").show();
+                                        $('select.puertas option').remove("#puerta_"+id);
+                                    }
+                                    
+                                }
+                            })
+                                
+                            }
+                            return false;
+                        }        
+                   }); 
                </script>
           </div>
           
@@ -337,7 +362,13 @@ $("a#resumen_desplegable").click(function(event){
                     <?php echo CHtml::button('Guardar',array('class'=>'btn btn-primary','id'=>'boton_guardar','style'=>'display:none;')); ?>
                     <script>
                         $("#boton_guardar").click(function(){
+                            var seleccionado = $("select.puertas option").length;
+                            if(seleccionado<=0){
+                                alert("Necesitas tener al menos un acceso en la lista");
+                                return false;
+                            }
                             var nombre_distribucion = prompt("Escriba el nombre de la Nueva Distribucion");
+                            var funciones = '<?php echo $_GET['funciones']; ?>';
                             if(nombre_distribucion == ""){    
                             }else if(nombre_distribucion == 'null'){
                             }else if(nombre_distribucion == null){
@@ -349,11 +380,14 @@ $("a#resumen_desplegable").click(function(event){
                                         $("#content-img").css({'visibility':'hidden'});
                                          $("#loading").show();
                                     },
-                                    data:'EventoId=<?php echo $_GET['EventoId']; ?>&id_distribucion=<?php echo $id_distribucion_nueva ?>&nombre_distribucion='+nombre_distribucion,
+                                    data:'funciones='+funciones+'&EventoId=<?php echo $_GET['EventoId']; ?>&id_distribucion=<?php echo $id_distribucion_nueva ?>&nombre_distribucion='+nombre_distribucion,
                                     success:function(data){
                                         $("#loading").hide();
-                                        if(data.ok=="-1"){
-                                            alert("Necesitas asignar por lo menos una subzona a alguna puerta");
+                                        if(data.ok=="-2"){
+                                            alert("Todos los accesos deben tener al menos una subzona asignada.\n Accesos sin asignar:"+data.puertas);
+                                            $("#content-img").css({'visibility':'visible'});
+                                        }else if(data.ok=="-1"){
+                                            alert("Necesitas asignar por lo menos una subzona a algun acceso");
                                             $("#content-img").css({'visibility':'visible'});
                                         }else if(data.ok=="0"){
                                             alert("El Nombre asignacion ya existe, por favor trate con otro");
@@ -489,7 +523,7 @@ endforeach;
                 $("body").attr('onbeforeunload','return cambios();');
                 $("#boton_guardar").show();
                 $("#content-img").css({'visibility':'visible'});
-                console.log(data);
+                //console.log(data);
                 if(typeof coordenadas[2]!="undefined"){
                     createLine(coordenadas[0],coordenadas[1], coordenadas[2],coordenadas[3],id);
                     last_x = coordenadas[2];
@@ -608,7 +642,7 @@ endforeach;
 		return line;
 	}
     function cambios(){
-        return "Se han hecho modificaciones si continua los perdera";
+            return "Se han hecho modificaciones si continua los perdera";   
     }
 </script>
 <style>

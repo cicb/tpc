@@ -135,7 +135,7 @@
                               funciones[index] = this.value;
                               data_funcion_id=$(this).attr("data_funcion_id") }
                         nodoCheck = index;
-                        console.log(index);      
+                        //console.log(index);      
                       });
                       if (data_funcion_id==0)
                           data_funcion_id = 1;
@@ -182,7 +182,7 @@
                                                                $(".buttonsmodifica").show();
                                                                $(".buttonsasignar").show();
                                                                $("#distribucion_resumen").html(data);
-                                                               console.log(data);
+                                                               //console.log(data);
                                                         }
                                                 });
                                                 return false;
@@ -283,7 +283,7 @@
                                    else
                                      funciones[index] = this.value;
                                    });
-                                   console.log(id_distribucion);
+                                   //console.log(id_distribucion);
                                    $.ajax({
                                         url:'<?php echo $this->createUrl('funciones/AsignarDistribucion'); ?>',
                                         beforeSend:function(){
@@ -341,6 +341,8 @@
                                      funciones[index] = "0";
                                    else
                                      funciones[index] = $(this).attr("data_funcion_id");
+                                     ForoMapIntId = $(this).attr("data-mapintid");
+                                     ForoId       = $(this).attr("data-foroid");
                                    });
                                    window.location.href='<?php echo $this->createUrl('evento/create'); ?>'+'&EventoId='+eventoId+'&EventoDistribucionId=0&funcionId=1'+'&funciones='+funciones+'&IdDistribucion=0&ForoId='+ForoId+"&ForoMapIntId="+ForoMapIntId
                                 }

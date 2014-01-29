@@ -167,6 +167,19 @@ class EventoController extends Controller
         }
         echo json_encode($data);
     }
+    public function actionDeletePuerta(){
+        //print_r($_GET);
+        $idCatPuerta   = $_GET['idCatPuerta'];
+        $id_distribucion = $_GET['id_distribucion'];
+        $puerta = Catpuerta::model()->deleteAll("idCatPuerta=$idCatPuerta");
+        $distribucionpuetalevel1 = Distribucionpuertalevel1::model()->deleteAll("idCatPuerta=$idCatPuerta AND idDistribucionPuerta=$id_distribucion");
+        if($puerta>0){
+            $data =  array('ok'=>1);
+        }else{
+            $data =  array('ok'=>0);
+        }
+        echo json_encode($data);
+    }
     private function loadFuncion($eventoId, $funcionId) {
         $model = Funciones::model()->findByAttributes(array('EventoId'=>$eventoId, 'FuncionesId'=>$funcionId));
 
