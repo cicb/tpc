@@ -210,7 +210,8 @@
              #tabla_funciones td.distribucion_asignada{
                 background-color: #FF8000;
              }
-             #tabla_distribucionP td.distribucion_asignada a{
+             #tabla_distribucionP td.distribucion_asignada a,
+             #tabla_funciones td.distribucion_asignada label{
                color: white;
                font-weight: bold;
              }

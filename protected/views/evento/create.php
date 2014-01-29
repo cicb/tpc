@@ -224,6 +224,10 @@ $cs = Yii::app()->getClientScript();
                                         $("#boton_guardar").show();
                                         $('select.puertas option').attr('selected',false);
                                         $("select.puertas").append("<option selected='selected' value='"+data.id_puerta+"' id='puerta_"+data.id_puerta+"'  data_id_puerta='"+data.id_puerta+"' data-eventoid='"+<?php echo $_GET['EventoId'];?>+"' data-funcionid='"+<?php echo "0";?>+"' data-distribucionid='"+<?php echo $id_distribucion_nueva;?>+"' class=''>"+nombre_puerta+"</option>");
+                                        $("div").remove(".line");
+                                        $("map area").each(function(index){
+                                            $(this).attr('data-delete','0');
+                                        });
                                     }
                                     
                                 }
@@ -256,6 +260,10 @@ $cs = Yii::app()->getClientScript();
                                         $("body").attr('onbeforeunload','return cambios();');
                                         $("#boton_guardar").show();
                                         $('select.puertas option').remove("#puerta_"+id);
+                                        $("div").remove(".line");
+                                        $("map area").each(function(index){
+                                            $(this).attr('data-delete','0');
+                                         });
                                     }
                                     
                                 }
