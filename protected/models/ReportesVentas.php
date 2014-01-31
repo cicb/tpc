@@ -219,12 +219,14 @@ class ReportesVentas extends CFormModel
 				   	AND t3.VentasSta <> 'CANCELADO' AND  t.VentasSta<>'CANCELADO'
 					GROUP BY t.EventoId;",$eventoId))->queryScalar();
 			$reporte=$modelo->getReporte($eventoId,$funcionId,$desde,$hasta,false, 'NORMAL,CORTESIA,BOLETO DURO','', 'VentasBolTip');
-			foreach ($reporte->getData() as $fila) {
-					$index=strtolower($fila['VentasBolTip']);
-					$matrix[$index]=array('boleto'=>0,'importe'=>0,'porcentaje'=>0);
-					$matrix['total']['boletos']+=$matrix[$index]['boletos']=$fila['cantidad'];
-					$matrix['total']['importe']+=$matrix[$index]['importe']=$fila['total'];
-			}
+			if (is_object($reporte)) {
+					foreach ($reporte->getData() as $fila) {
+							$index=strtolower($fila['VentasBolTip']);
+							$matrix[$index]=array('boleto'=>0,'importe'=>0,'porcentaje'=>0);
+							$matrix['total']['boletos']+=$matrix[$index]['boletos']=$fila['cantidad'];
+							$matrix['total']['importe']+=$matrix[$index]['importe']=$fila['total'];
+					}
+			}	
 			foreach ($matrix as &$fila) {
 				$fila['porcentaje']=number_format($fila['boletos']*100/max($aforo,1),2);
 				$fila['boletos']=number_format( $fila['boletos'],0);
