@@ -37,11 +37,11 @@
     	<div class='span3'>
     	     <div class="row" id="evento">
     	          <?php
-                       $fecha = date('Y-m-d', mktime(0, 0, 0, date('m'),date('d')-1,date('Y')));
+                       $fecha = date('Y-m-d H:i:s');
     	               echo CHtml::label('Evento','', array('style'=>'width:70px; display:inline-table;'));
     	               //   $modeloEvento = Evento::model()->findAll(array('condition' => 'EventoSta = "ALTA"','order'=>'EventoNom'));
-                       //   $modeloEvento = Evento::model()->findAll(array('condition'=>"EventoSta='ALTA' AND EventoFecFin>='$fecha' order by EventoNom DESC"));
-                       $modeloEvento = Evento::model()->findAll(array('condition'=>"EventoSta='ALTA' order by EventoNom DESC"));
+                       $modeloEvento = Evento::model()->findAll(array('condition'=>"EventoSta='ALTA' AND EventoFecFin>='$fecha' order by EventoNom DESC"));
+                       //$modeloEvento = Evento::model()->findAll(array('condition'=>"EventoSta='ALTA' order by EventoNom DESC"));
                        //     $modeloEvento2 = Evento::model()->findAll(array('condition'=>"EventoSta='ALTA' order by EventoNom DESC"));
                        $eventoSelected = "'".@$_GET['EventoId']."'"==""?'':@$_GET['EventoId'];
                        $list = CHtml::listData($modeloEvento,'EventoId','EventoNom');
@@ -68,7 +68,7 @@
                             $("#funciones_distribucion_n").show();
     						}',
     						'update' => '#funciones_distribucion',
-    						),'empty'=>'--------------','style'=>'width:300px;','class'=>'chosen'));
+    						),'style'=>'width:300px;','class'=>'chosen'));
     
     	         ?>
                  <script>
@@ -135,7 +135,7 @@
                               funciones[index] = this.value;
                               data_funcion_id=$(this).attr("data_funcion_id") }
                         nodoCheck = index;
-                        console.log(index);      
+                        //console.log(index);      
                       });
                       if (data_funcion_id==0)
                           data_funcion_id = 1;
@@ -182,7 +182,7 @@
                                                                $(".buttonsmodifica").show();
                                                                $(".buttonsasignar").show();
                                                                $("#distribucion_resumen").html(data);
-                                                               console.log(data);
+                                                               //console.log(data);
                                                         }
                                                 });
                                                 return false;
@@ -206,10 +206,12 @@
              #tabla_funciones td{
                 text-align: left !important;
              }
-             #tabla_distribucionP td.distribucion_asignada{
+             #tabla_distribucionP td.distribucion_asignada,
+             #tabla_funciones td.distribucion_asignada{
                 background-color: #FF8000;
              }
-             #tabla_distribucionP td.distribucion_asignada a{
+             #tabla_distribucionP td.distribucion_asignada a,
+             #tabla_funciones td.distribucion_asignada label{
                color: white;
                font-weight: bold;
              }
@@ -283,7 +285,7 @@
                                    else
                                      funciones[index] = this.value;
                                    });
-                                   console.log(id_distribucion);
+                                   //console.log(id_distribucion);
                                    $.ajax({
                                         url:'<?php echo $this->createUrl('funciones/AsignarDistribucion'); ?>',
                                         beforeSend:function(){
@@ -341,6 +343,8 @@
                                      funciones[index] = "0";
                                    else
                                      funciones[index] = $(this).attr("data_funcion_id");
+                                     ForoMapIntId = $(this).attr("data-mapintid");
+                                     ForoId       = $(this).attr("data-foroid");
                                    });
                                    window.location.href='<?php echo $this->createUrl('evento/create'); ?>'+'&EventoId='+eventoId+'&EventoDistribucionId=0&funcionId=1'+'&funciones='+funciones+'&IdDistribucion=0&ForoId='+ForoId+"&ForoMapIntId="+ForoMapIntId
                                 }
