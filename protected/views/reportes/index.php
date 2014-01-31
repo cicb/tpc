@@ -46,10 +46,10 @@ foreach ($data as $key=>$fila) {
 </div>
 </div>
 <style type="text/css" media="screen">
-	#wrap{
-	height:1000px;
-	}
-
 	td{text-align: right !important;}
 </style>
-
+<?php 
+		//Yii::app()->clientScript->registerScript('overlap',
+		//"$('#mainmenu').html($(this).html);",CClientScript::POS_END
+		//);
+?>

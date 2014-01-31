@@ -9,6 +9,8 @@
 @midnight:#2c3e50;
 @esmeralda:#2ecc71;
 @belize:#2980b9;
+@calabaza:#d35400;
+@zanahoria:#e67e22;
 .gamarillo(){
 background: #fce300;
 background: -moz-linear-gradient(top,  #fce300 0%, #e8b500 100%);
@@ -21,9 +23,8 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fce300', end
 color:#333;
 }
 
-.principal(){
-	background:@belize; color:#fff;
-}
+.principal(){ background:@belize; color:#fff; }
+.alternativo(){ background:@zanahoria;color:@clouds; }
 .normal(){
  background: rgb(236,236,236);color:rgb(96, 106, 112);
 }
@@ -43,6 +44,7 @@ body{font:normal 9pt "Verdana";}
 		background:@amarillo;
 		margin: 0px;
 }
+
 #pagina{
 	.area-0;
 	background:#FFF;
@@ -85,7 +87,7 @@ body{font:normal 9pt "Verdana";}
 	color:#FFF;
  }
  .controles{.texturizado;height:100%;margin:0px;width:100%;text-align:center;box-shadow:0px 1px 5px;
-	h2,h1{ margin-top:0 !important;}
+	h2,h1{ margin-top:0 !important;  }
  }
 
 .normal table thead{.normal;text-transform: uppercase; font-size: 80%;}
@@ -122,7 +124,7 @@ background:@primario;
 .btn{ padding:7px; }
 
 /*//Tablas*/
-thead, {background:@belize;color:@clouds}
+thead {background:@belize;color:@clouds}
 th{text-align:center !important;}
 .table-condensed {td,th{margin:1px;padding:1px !important;}}
 .table{
@@ -130,6 +132,7 @@ th{text-align:center !important;}
 		td,th{margin:1px;padding:1px !important;}
 		TH A {color:#FFF}
 }
+
 .table-fit{width:auto !important; margin:auto;}
 /*\tablas*/
 

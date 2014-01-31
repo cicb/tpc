@@ -6,19 +6,24 @@
 		<h2>Control de usuarios</h2>
 		<?php echo $form->textFieldControlGroup($model,'UsuariosNom',
 				array(
-						'append' => TbHtml::submitButton('Buscar',array('class'=>'btn-primary')), 
+						'append' => TbHtml::submitButton('Buscar',array('class'=>'btn')), 
 						'span' => 3,
-						'placeholder'=>'Nombre del usuario',
+						'placeholder'=>'Nombre del usuario o Nick',
 						'id'=>'filtro-usuario'
 				)); ?>		
+<?php $this->endWidget(); ?>
+<?php echo TbHtml::link('<span class="fa fa-plus-circle"> Registrar nuevo</span>',$this->createUrl('usuarios/registro'),array('class'=>'btn btn-primary')); ?>
+<br />
+<br />
 </div>
 <div id='tabla-usuarios'>
 		<?php 
              $this->widget('bootstrap.widgets.TbGridView', array(
-            'id'=>'taquilla-grid',
+            'id'=>'usuarios-grid',
             'emptyText'=>'No se encontraron coincidencias',
-            'dataProvider'=>$model->search(),
+            'dataProvider'=>$model->buscar(),
             'summaryText'=>'',
+			//'filter'=>$model,
 			'type'=>'condensed hover striped',
             'htmlOptions'=>array('class'=>'primario'),
 			'columns'=>array(
@@ -35,8 +40,8 @@
 							'name'=>'UsuariosNom',
 					),
 					array(
-							'header'=>'Correo electrónico',
-							'name'=>'UsuariosEmail',
+							'header'=>'Estatus',
+							'name'=>'UsuariosStatus',
 					),
 					'TipUsrId',
 					array(
@@ -49,18 +54,43 @@
 							'template'=>'{editar} {alta}{baja}  ',
 							'buttons'=>array(
 									'alta'=>array(
-											'label'=>'<span class="text-success fa fa-arrow-up"> Dar Alta </span>',
-											'url'=>'Yii::app()->createUrl("usuarios/registro")',
-											'visible'=>'$data["UsuariosStatus"]!="ALTA"'
+											'label'=>'<span class="text-success fa fa-arrow-down"> Dar Alta </span>',
+											'url'=>'Yii::app()->createUrl("usuarios/conmutarEstatus",array(
+													"id"=>$data["UsuariosId"],
+													"nick"=>$data["UsuariosNick"],
+											))',
+											'visible'=>'$data["UsuariosStatus"]!="ALTA"',
+											'click'=>'function(event)
+											{ $.ajax({
+													url:$(this).attr("href"),
+															success: function(data){
+																	$.fn.yiiGridView.update("usuarios-grid");
+															}		
+												 });
+												event.preventDefault(); }',
 									),
 										'baja'=>array(
 											'label'=>'<span class="text-error fa fa-arrow-down"> Dar Baja </span>',
-											'url'=>'Yii::app()->createUrl("usuarios/registro")',
-											'visible'=>'$data["UsuariosStatus"]=="ALTA"'
+											'url'=>'Yii::app()->createUrl("usuarios/conmutarEstatus",array(
+													"id"=>$data["UsuariosId"],
+													"nick"=>$data["UsuariosNick"],
+											))',
+											'visible'=>'$data["UsuariosStatus"]=="ALTA"',
+											'click'=>'function(event)
+											{ $.ajax({
+													url:$(this).attr("href"),
+															success: function(data){
+																	$.fn.yiiGridView.update("usuarios-grid");
+															}		
+												 });
+												event.preventDefault(); }',
 									),
 									'editar'=>array(
 											'label'=>'<span class="text-info fa fa-pencil"> Editar </span>',
-											'url'=>'Yii::app()->createUrl("usuarios/registro")',
+											'url'=>'Yii::app()->createUrl("usuarios/actualizar",array(
+													"id"=>$data["UsuariosId"],
+													"nick"=>$data["UsuariosNick"],
+											))',
 									),
 						)
 
@@ -69,10 +99,9 @@
 	));
 		?>
 </div>
-<?php $this->endWidget(); ?>
 <?php 
 Yii::app()->clientScript->registerCss('tablas','
 		TD{padding:5px !important;}
-
+		FORM {margin:5px;}
 		',CClientScript::POS_END)
 ?>

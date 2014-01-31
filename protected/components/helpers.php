@@ -9,6 +9,16 @@ function diff_date($date1, $date2) {
     } 
     return $count; 
 } 
+function coalesce() {
+    $args = func_get_args();
+    foreach ($args as $arg) {
+        if (!empty($arg)) {
+            return $arg;
+        }
+    }
+    return $args[0];
+}
+
 /**
 * Workaround for PHP < 5.3.0
 */

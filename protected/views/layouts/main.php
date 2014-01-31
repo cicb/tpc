@@ -3,12 +3,15 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="language" content="en" />
-	<link rel="stylesheet/less" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/style.less"  />
+	<?php  Yii::app()->clientScript->registerCssFile(Yii::app()->request->baseUrl."/css/font-awesome.min.css"); ?>
 	<?php Yii::app()->bootstrap->register(); ?>
+	<?php  Yii::app()->clientScript->registerCssFile(Yii::app()->request->baseUrl."/css/style.css"); ?>
+<!--	<link rel="stylesheet/less" type="text/css" href="<?php //echo Yii::app()->request->baseUrl; ?>/css/style.less"  />-->
 	<title><?php echo CHtml::encode($this->pageTitle); ?></title>
 </head>
 <body>
 	<div id="mainmenu">
+
 		<?php
 		$accesos = Yii::app()->user->getState("accesos");
 		?>   
@@ -119,10 +122,9 @@ $this->widget('bootstrap.widgets.TbNavbar',array(
 </div><!-- footer -->
 
 
+<?php //Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl."/js/less.min.js",CClientScript::POS_HEAD); ?>
 <?php //Yii::app()->clientScript->registerCssFile(Yii::app()->request->baseUrl."/css/style.less",CClientScript::POS_END); ?>
-<?php Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl."/js/less.min.js",CClientScript::POS_HEAD); ?>
 <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/custom.css"  />
-<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/font-awesome.min.css"  />
 <?php 
 		if(Yii::app()->mobileDetect->isMobile())
 				Yii::app()->clientScript->registerCssFile(Yii::app()->request->baseUrl."/css/mobile.css",CClientScript::POS_BEGIN);

@@ -14,7 +14,7 @@ class FuncionesController extends Controller
 					array(':parent_id'=>(int) $_POST['evento_id']));
 
 			$data = CHtml::listData($data,'FuncionesId','funcionesTexto');
-			echo CHtml::tag('option',array('value' => ''),'Seleccione ...',true);
+			echo CHtml::tag('option',array('value' => ''),'TODAS',true);
 			foreach($data as $id => $value)
 			{
 					echo CHtml::tag('option',array('value' => $id),CHtml::encode($value),true);

@@ -23,7 +23,16 @@
 class Usuarios extends CActiveRecord
 {
     public $initialPassword;
-
+	private $_taquillaPrincipal=-1;
+	private $taquilla=null;
+	private $_permisos=array(
+			'boletos_duros'=>array('id'=>1,'valor'=>-1),
+			'cortesias'=>array('id'=>2,'valor'=>-1),
+			'cupones'=>array('id'=>3,'valor'=>-1),
+			'descuentos'=>array('id'=>4,'valor'=>-1),
+			'reservaciones'=>array('id'=>5,'valor'=>-1),
+			'reimpresiones'=>array('id'=>6,'valor'=>-1),
+	);
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return Usuarios the static model class
@@ -54,17 +63,20 @@ class Usuarios extends CActiveRecord
 						//'required',
                         //'on' => 'insert' 
                     //),
-			array('UsuariosId, TipUsrId, UsuariosNom, UsuariosNick, UsuariosPass, UsuariosPasCon, UsuariosEmail,UsuariosStatus', 'required'),
+			array(' UsuariosNom, UsuariosNick,UsuariosEmail,UsuariosStatus', 'required','message'=>'No puede dajarse vacio'),
+			array('TipUsrId,UsuariosPass, UsuariosPasCon', 'required','on'=>'insert', 'message'=>'No puede dajarse vacio'),
 			array('TipUsrId', 'numerical', 'integerOnly'=>true),
 			array('UsuariosId, UsuariosTelMov, UsuariosGruId, UsuariosStatus', 'length', 'max'=>20),
 			array('UsuariosNom, UsuariosNick, UsuariosPass, UsuariosPasCon', 'length', 'max'=>50),
 			array('UsuariosCiu', 'length', 'max'=>30),
+			array('UsuariosNick', 'unique'),
 			array('UsuariosEmail, UsuariosRegion', 'length', 'max'=>200),
-            array('UsuariosPass, UsuariosPasCon', 'required', 'on'=>'insert'),
-            array('UsuariosPass, UsuariosPasCon', 'length', 'min'=>6,'max'=>40),
+            array('UsuariosPass, UsuariosPasCon', 'required', 'on'=>'insert','message'=>'Las contraseñas deben coincidir'),
+            array('UsuariosPass, UsuariosPasCon', 'length', 'min'=>6,'message'=>'debe tener entre 6 y 40 caracteres'),
+            array('UsuariosPass, UsuariosPasCon', 'length', 'max'=>40,'message'=>'debe tener entre 6 y 40 caracteres'),
 
 			array (
-					'UsuarioPassCon',
+					'UsuariosPasCon',
 					'compare',
 					'compareAttribute' => 'UsuariosPass',
 					'on' => 'insert' 
@@ -84,6 +96,7 @@ class Usuarios extends CActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 				'tipusr'=>array(self::BELONGS_TO, 'Tipusr', array('TipUsrId')),
+				'maxid'=>array(self::STAT, 'Usuarios', array('select'=>'MAX(UsuariosId)')),
 		);
 	}
 
@@ -109,6 +122,13 @@ class Usuarios extends CActiveRecord
 			'UsuariosRegion' => 'Formato de impresión',
 			'UsuariosStatus' => 'Status',
 			'UsuariosVigencia' => 'Vigencia',
+			'taquillaPrincipal'=>'Taquilla principal',
+			'boleto_duro'=>'Boleto Duro',
+			'cortesias'=>'Cortesias',
+			'cupones'=>'Cupones',
+			'descuentos'=>'Descuentos',
+			'reimpresiones'=>'Reimpresiones',
+			'reservaciones'=>'Reservaciones',
 		);
 	}
 
@@ -116,6 +136,7 @@ class Usuarios extends CActiveRecord
 	 * Retrieves a list of models based on the current search/filter conditions.
 	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
 	 */
+
 	public function search()
 	{
 		// Warning: Please modify the following code to remove attributes that
@@ -142,17 +163,41 @@ class Usuarios extends CActiveRecord
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
-			'pagination'=>array('pageSize'=>20)
+			'pagination'=>array('pageSize'=>30)
 		));
+	}
+
+	public static function getMaxId()
+	{
+			//$criteria = new CDbCriteria;
+			//$user = self::model()->find(array('select'=>'MIN(UsuariosId) as maxid'));
+			//return $user['maxid'];
+	}
+	public function buscar($texto=null)
+	{
+			$texto=isset($texto)?$texto:$this->UsuariosNom;	
+			$criteria=new CDbCriteria;
+			$criteria->addSearchCondition('UsuariosNom',$texto,true,'AND','LIKE');
+			$criteria->addSearchCondition('UsuariosNick',$texto,true,'OR','LIKE');
+			return new CActiveDataProvider(get_class($this),array(
+					'criteria'=>$criteria,
+					'pagination'=>array('pageSize'=>25)
+			));
 	}
 	public function beforeSave()
 	{
         // in this case, we will use the old hashed password.
-        if(empty($this->UsuariosPass) && empty($this->UsuariosPasCon) && !empty($this->initialPassword))
-            $this->UsuariosPass=$this->UsuariosPasCon=$this->initialPassword;
- 
+        //if(empty($this->UsuariosPass) && empty($this->UsuariosPasCon) && !empty($this->initialPassword))
+            //$this->UsuariosPass=$this->UsuariosPasCon=$this->initialPassword;
+		$max=Usuarios::model()->find(array('order'=>'UsuariosId desc'));
+		$this->UsuariosId=isset($this->UsuariosId)?$this->UsuariosId:$max->UsuariosId+1;	
         return parent::beforeSave();
     }
+	//public function afterSave()
+	//{
+			//return parent::afterSave();
+		
+	//}
     public function afterFind()
     {
         //reset the password to null because we don't want the hash to be shown.
@@ -166,17 +211,26 @@ class Usuarios extends CActiveRecord
             //because the hashes needs to match
             if(!empty($data['UsuariosPass']) && !empty($data['UsuariosPasCon']))
             {
-                $data['UsuariosPass'] = Yii::app()->user->hashPassword($data['UsuariosPass']);
-                $data['UsuariosPasCon'] = Yii::app()->user->hashPassword($data['UsuariosPasCon']);
+                $data['UsuariosPass'] = $data['UsuariosPass'];
+                $data['UsuariosPasCon'] = $data['UsuariosPasCon'];
             }
  
             $this->attributes=$data;
+			foreach($data as $key=>$row)
+				$this->$key=$row;
+			$this->taquillaPrincipal=$data['taquillaPrincipal'];	
  
             if(!$this->save())
                 return CHtml::errorSummary($this);
+			else{
+					$this->savePermisos();	
+					return $this->UsuariosId;
+			} 
  
-         return true;
     }
+	/*
+	 *GETTERS AND SETTERS
+	 */
 	public function getUsuarios()
 	{
 		// Devuelve la lista de usuarios a los que tiene permitido ver sus operaciones
@@ -277,4 +331,138 @@ class Usuarios extends CActiveRecord
 			}	
 			else return 'Sin tipo';
 	}
+
+	public function conmutarEstatus(){
+			if ($this->UsuariosStatus=='ALTA') {
+					$this->UsuariosStatus='BAJA';
+			}	
+			else {
+				$this->UsuariosStatus='ALTA';
+			}
+			return $this->update('UsuariosStatus');
+	}
+
+	public function getTaquillaPrincipal()
+	{
+			if ($this->_taquillaPrincipal>=0) {
+				return $this->_taquillaPrincipal;
+			}	else{
+					if(is_null($this->taquilla))$this->taquilla=$this->getModeloTaquillaPrincipal();
+					$this->_taquillaPrincipal=is_object($this->taquilla)?$this->taquilla->usrValIdRef>0?$this->taquilla->usrValIdRef:0:0;
+					return $this->getTaquillaPrincipal();
+			}
+	}
+	public function setTaquillaPrincipal($valor)
+	{	
+
+			if(is_null($this->taquilla))$this->taquilla=$this->getModeloTaquillaPrincipal();
+			$usrval=$this->taquilla;
+			$usrval->usrValIdRef=$valor;
+			if ($usrval->save(false))
+						$this->_taquillaPrincipal=$valor;
+	}
+
+	public function getModeloTaquillaPrincipal()
+	{
+			$usrval=Usrval::model()->findByPk(
+					array(
+							'UsuarioId'=>$this->UsuariosId,
+							'UsrTipId'=>5,
+							'UsrSubTipId'=>9,
+							'UsrValPrivId'=>1,
+					));
+			if(is_null($usrval)) {
+					$usrval=new Usrval('insert');	
+					$usrval->UsrValRef='puntosventa.PuntosventaId';
+					$usrval->UsuarioId=$this->UsuariosId;
+					$usrval->UsrTipId=5;
+					$usrval->UsrSubTipId=9;
+					$usrval->UsrValPrivId=1;
+			}
+			return $usrval;
+	}
+	private function savePermiso($key){
+			//Se valida si la llave del permiso esta definida
+			if(array_key_exists($key,$this->_permisos)){
+					$permiso=5;
+					$id=$this->_permisos[$key]['id'];
+					$usrval=Usrval::model()->findByPk(
+							array(
+									'UsuarioId'=>$this->UsuariosId,
+									'UsrTipId'=>$permiso,
+									'UsrSubTipId'=>$id,
+									'UsrValPrivId'=>1,
+							));
+					if(is_null($usrval)) {
+							$usrval=new Usrval('insert');	
+							$usrval->UsuarioId=$this->UsuariosId;
+							$usrval->UsrTipId=$permiso;
+							$usrval->UsrSubTipId=$id;
+							$usrval->UsrValPrivId=1;
+					}
+					$usrval->usrValIdRef=$this->_permisos[$key]['valor']?'SI':'NO';
+					return $usrval->save(false);
+			}else{
+					return false;
+			}
+	}
+	public function savePermisos()
+	{
+		foreach ($this->_permisos as $key=>$row) {
+				$this->savePermiso($key);
+		}
+	}
+	//setters
+	private function setPermiso($key,$valor){
+			$this->_permisos[$key]['valor']=$valor;
+	}
+	public function setBoletosDuros($valor){
+			$this->setPermiso('boletos_duros',$valor);
+	} public function setCortesias($valor){
+			$this->setPermiso('cortesias',$valor);
+	}public function setCupones($valor){
+			$this->setPermiso('cupones',$valor);
+	}public function setDescuentos($valor){
+			$this->setPermiso('descuentos',$valor);
+	}public function setReimpresiones($valor){
+			$this->setPermiso('reimpresiones',$valor);
+	}public function setReservaciones($valor){
+			$this->setPermiso('reservaciones',$valor);
+	}
+	//getters
+	private function getPermiso($key)
+	{
+			if(array_key_exists($key,$this->_permisos)){
+					$permiso=5;
+					$id=$this->_permisos[$key]['id'];
+					if ($this->_permisos[$key]['valor']>=0) {
+							return $this->_permisos[$key]['valor'];
+					}	else{
+							$criteria=new CDbCriteria;
+							$criteria->select="usrValIdRef";
+							$criteria->addCondition("UsuarioId=:usuario");
+							$criteria->addCondition("UsrTipId=$permiso AND UsrSubTipId=$id ");
+							$criteria->params=array(':usuario'=>$this->UsuariosId);
+							$usrval= Usrval::model()->find($criteria);		
+							$this->_permisos[$key]['valor']=is_object($usrval)?strcasecmp($usrval->usrValIdRef,'SI')==0:0;
+							return $this->getPermiso($key);
+					}
+
+			}
+			else return false;
+	}
+	public function getBoletosDuros(){
+			return $this->getPermiso('boletos_duros');
+	} public function getCortesias(){
+			return $this->getPermiso('cortesias');
+	}public function getCupones(){
+			return $this->getPermiso('cupones');
+	}public function getDescuentos(){
+			return $this->getPermiso('descuentos');
+	}public function getReimpresiones(){
+			return $this->getPermiso('reimpresiones');
+	}public function getReservaciones(){
+			return $this->getPermiso('reservaciones');
+	}
+
 }

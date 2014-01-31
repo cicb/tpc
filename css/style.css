@@ -1,3 +1,10 @@
+.white-box {
+  background: #ecf0f1;
+  color: #333;
+  border-radius: 5px;
+  border: 1px solid #bdc3c7;
+  padding: 5px;
+}
 body {
   font: normal 9pt "Verdana";
 }
@@ -5,48 +12,41 @@ body {
   padding: 0;
   margin: 0;
   height: 100%;
-  background: #b8b8b8;
+  background: #e0d53b;
+  margin: 0px;
 }
 #pagina {
   padding: 0;
   margin: 0;
   background: #FFF;
+  margin: auto;
   height: 100%;
 }
 .navbar-inner {
   height: 39px;
 }
 .navbar-taquilla .navbar-inner {
-  background: #fce300;
-  background: -moz-linear-gradient(top, #fce300 0%, #e8b500 100%);
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #fce300), color-stop(100%, #e8b500));
-  background: -webkit-linear-gradient(top, #fce300 0%, #e8b500 100%);
-  background: -o-linear-gradient(top, #fce300 0%, #e8b500 100%);
-  background: -ms-linear-gradient(top, #fce300 0%, #e8b500 100%);
-  background: linear-gradient(to bottom, #fce300 0%, #e8b500 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fce300', endColorstr='#e8b500', GradientType=0);
-  color: #333;
+  background: #266088;
   color: #fff;
 }
 .navbar-taquilla .navbar-inner li a {
   color: #266088;
   text-shadow: 0 0px 0 #aaa;
+  background: #fff;
 }
 .dropdown-menu a:hover {
   color: #fff !important;
 }
 .brand {
   text-shadow: 1px 1px 2px #707070 !important;
-  color: #fff !important;
+  color: #FFF !important;
   font-weight: bolder;
 }
 .brand a {
   color: #000 !important;
   text-shadow: 0 1px 0 #6A6631 !important;
 }
-#mainmenu {
-  height: 30px;
-}
+/*#mainmenu{height:40px;}*/
 #sidebar {
   background: #ebebeb;
   margin-top: 5px;
@@ -56,11 +56,14 @@ body {
   height: auto !important;
   height: 100%;
   margin: 0 auto -60px;
+  margin-top: 40px;
 }
 #footer {
-  background: #ebebeb;
   color: #555;
   text-align: center;
+  background: #ebebeb;
+  background-image: url('../images/sos.png');
+  box-shadow: 0px -1px 5px;
 }
 #push,
 #footer {
@@ -79,18 +82,28 @@ body {
 }
 .controles {
   background: #ebebeb;
+  background-image: url('../images/sos.png');
   height: 100%;
   margin: 0px;
   width: 100%;
   text-align: center;
+  box-shadow: 0px 1px 5px;
 }
 .controles h2,
 .controles h1 {
   margin-top: 0 !important;
 }
-thead {
+.normal table thead {
+  background: #ececec;
+  color: #606a70;
+  text-transform: uppercase;
+  font-size: 80%;
+}
+.principal table thead {
   background: #2980b9;
-  color: #ecf0f1;
+  color: #fff;
+  text-transform: uppercase;
+  font-size: 80%;
 }
 .grid-view .table th > .sort-link {
   color: #ffffff !important;
@@ -98,4 +111,105 @@ thead {
 .flash-success {
   border-radius: 0px 0px 4px 4px;
   -moz-border-radius: 0px 0px 4px 4px;
+}
+.remark {
+  background: #ebebeb;
+}
+.nero {
+  background: #222;
+  color: #fff;
+}
+.panel-principal {
+  background: #2980b9;
+  color: #fff;
+}
+.panel-normal {
+  background: #ececec;
+  color: #606a70;
+}
+.panel-head {
+  background: #ececec;
+  color: #606a70;
+  font-weight: 800;
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 110%;
+}
+.panel-foot {
+  background: #2c3e50;
+  color: #fff;
+}
+.nav {
+  background: #266088 !important;
+}
+.nav-collapse {
+  background: #fff;
+}
+.navbar .nav > li > a {
+  color: #fff !important;
+  text-shadow: 0 1px 0 #2c3e50 !important;
+  background: #266088;
+}
+.navbar .nav > li.active > a {
+  color: #369 !important;
+  text-shadow: -1px 1px 0 #ffffff !important;
+}
+.nav-collapse .nav > li > a {
+  color: #cc5;
+}
+.navbar .nav > li > a:hover {
+  color: #2980b9;
+  /*text-shadow:0 1px 0 #fff !important;*/
+}
+.navbar .nav li.dropdown.open > .dropdown-toggle,
+.navbar .nav li.dropdown.active > .dropdown-toggle,
+.navbar .nav li.dropdown.open.active > .dropdown-toggle {
+  color: #555 !important;
+  text-shadow: -1px 1px 0 #ffffff !important;
+}
+.dropdown-backdrop {
+  position: static !important;
+}
+.btn {
+  padding: 7px;
+}
+/*//Tablas*/
+thead {
+  background: #2980b9;
+  color: #ecf0f1;
+}
+th {
+  text-align: center !important;
+}
+.table-condensed td,
+.table-condensed th {
+  margin: 1px;
+  padding: 1px !important;
+}
+.table {
+  font: normal 14px "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+}
+.table td,
+.table th {
+  margin: 1px;
+  padding: 1px !important;
+}
+.table TH A {
+  color: #ffffff;
+}
+.table-fit {
+  width: auto !important;
+  margin: auto;
+}
+/*\tablas*/
+.contenido {
+  margin: auto;
+  width: 1128px;
+}
+.centrado {
+  text-align: center;
+  margin: auto;
+}
+.caret {
+  border-top: 4px solid #ecf0f1 !important;
 }

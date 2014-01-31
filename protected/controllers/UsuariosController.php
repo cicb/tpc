@@ -9,7 +9,11 @@ class UsuariosController extends Controller {
                 'accessControl' 
             ); 
 	}
-	
+	public function validarUsuario(){
+			if(Yii::app()->user->isGuest OR !Yii::app()->user->getState("Admin")){
+			$this->redirect(array("site/logout"));
+		}
+	}
 	public function accessRules()
 	{
 			//$usuario = Usuarios::model()->findByPk(Yii::app()->user->id);
@@ -33,31 +37,7 @@ class UsuariosController extends Controller {
 	 * Si la creación es exitosa, el navegador será redirigido a la vista
 	 * 'Index'.
 	 */
-	public function actionActualizar() {
-		$model = $this->loadModel ();
-		
-		// Descomente la siguiente línea si la validación de AJAX es necesaria
-		// $this->performAjaxValidation($model);
-		
-		if (isset ( $_POST ['Usuarios'] )) {
-			$model->attributes = $_POST ['Usuarios'];
-			if ($model->save ())
-				$this->redirect ( array (
-						'index' 
-				) );
-		}
-		
-		/**
-		 * Cargar el perfil del Usuario
-		 */
-		$model->perfil_id = UsuariosPerfiles::model ()->find ( 'usuario_id = :param1', array (
-				':param1' => $model->id 
-		) );
-		
-		$this->render ( 'actualizar', array (
-				'model' => $model 
-		) );
-	}
+
 	
 	/**
 	 * Manages all models.
@@ -112,16 +92,15 @@ class UsuariosController extends Controller {
 	{
 			$model=new Usuarios('insert');	
 			$this->saveModel($model);
-			$this->render('_nuevo',compact('model'));
+			$this->render('form',compact('model'));
 	}
 
-	public function actionUpdate($id,$nick)
+	public function actionActualizar($id,$nick)
 	{
-			$user=$this->loadModel($id,$nick);
-			$user->scenario='update';
-			$this->saveModel($user);
-			$this->setViewData(compact('user'));
-			$this->render('update', $this->getViewData());
+			$model=$this->loadModel($id,$nick);
+			$model->scenario='update';
+			$this->saveModel($model);
+			$this->render('form', compact('model'));
 	}
 
 	protected function saveModel(Usuarios $usuario)
@@ -131,6 +110,21 @@ class UsuariosController extends Controller {
             $this->performAjaxValidation($usuario);
             $msg = $usuario->saveModel($_POST['Usuarios']);
             //check $msg here
-        }
+			//if ($msg>0) {
+					//echo $msg;
+			//}	
+		}
     }
+	public function actionConmutarEstatus()
+	{
+			if (Yii::app()->request->isAjaxRequest ) {
+					$model=$this->loadModel();
+					if ($model->UsuariosId>0) {
+							$model->conmutarEstatus();	
+					}	
+					echo $model->UsuariosStatus;
+			}	
+			else
+					throw new CHttpException ( 404, 'Petición incorrecta.' );
+	}
 }

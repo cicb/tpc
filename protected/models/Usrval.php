@@ -50,11 +50,13 @@ class Usrval extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-            //'author'=>array(self::BELONGS_TO, 'User', 'authorID'),
+			'evento'=>array(self::BELONGS_TO, 'Evento', 'usrValIdRef'),
+			'funcion'=>array(self::BELONGS_TO, 'Funciones', 'usrValIdRef2'),
+			'usuario'=>array(self::BELONGS_TO, 'Usuarios', 'UsuarioId'),
+			'tipusr'=>array(self::BELONGS_TO, 'Tipusr', 'UsrTipId'),
             'usrsubtip'=>array(self::BELONGS_TO, 'Usrsubtip', array('UsrTipId','UsrSubTipId')),
 		);
 	}
-
 	/**
 	 * @return array customized attribute labels (name=>label)
 	 */
@@ -105,6 +107,7 @@ class Usrval extends CActiveRecord
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
+			'pagination'=>false,
 		));
 	}
 
@@ -118,4 +121,31 @@ class Usrval extends CActiveRecord
 	{
 		return parent::model($className);
 	}
+
+	/*
+	 *Getters and setters
+	 */
+	public function getSubTipo()
+	{
+			return $this->tipusr;
+	}
+	public function getTipo()
+	{
+			return $this->tipusr;
+	}
+	public function getUsuario()
+	{
+			return $this->usuario;
+	}
+	public function getEvento()
+	{
+			return $this->evento;
+	}
+	public function getFuncion()
+	{
+			return $this->funcion;
+
+	}
+
+
 }
