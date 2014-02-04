@@ -1,12 +1,24 @@
+body {
+  font: normal 9pt "Verdana";
+}
 .white-box {
   background: #ecf0f1;
   color: #333;
   border-radius: 5px;
   border: 1px solid #bdc3c7;
   padding: 5px;
+  margin: 5px;
 }
-body {
-  font: normal 9pt "Verdana";
+.white-box h3 {
+  margin: -4px;
+  margin-bottom: 7px;
+  background: #266088;
+  color: #FFF;
+  border-radius: 5px 5px 0 0;
+  font-weight: 800;
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 110%;
 }
 .left-bar {
   padding: 0;
