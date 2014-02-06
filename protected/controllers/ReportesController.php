@@ -97,7 +97,7 @@ class ReportesController extends Controller
 				$model=new ReportesVentas;
 				$desde=date('Y-m-d',strtotime("-30 days"));
 				$hasta=date('Y-m-d');
-				$funciones=Funciones::model()->with('evento')->findAll(array('limit'=>3,'condition'=>'FuncionesFecHor>NOW()','order'=>'FuncionesFecHor','group'=>'t.EventoId','select'=>'t.EventoId'));
+				$funciones=Funciones::model()->with(array('evento'=>array('condition'=>"EventoSta='ALTA'")))->findAll(array('limit'=>3,'condition'=>'FuncionesFecHor>NOW()','order'=>'FuncionesFecHor','group'=>'t.EventoId','select'=>'t.EventoId'));
 				//var_dump($eventos);
 				//$eventos=Evento::model()->with('funciones')->findAll(array('limit'=>3,'condition'=>'FuncionesFecHor>NOW()'));
 				foreach ($funciones as $funcion) {

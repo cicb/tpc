@@ -1004,8 +1004,7 @@ class TbHtml extends CHtml // required in order to access the protected methods 
             $htmlOptions['value'] = 1;
             $htmlOptions['id'] = $id = $baseID . '_all';
             $option = self::checkBox($id, $checkAll, $htmlOptions);
-            $label = self::label($checkAllLabel, $id, $labelOptions);
-            $item = $option . ' ' . $label;
+            $item = self::label($option . ' ' . $checkAllLabel, false, $labelOptions);
             if ($checkAllLast) {
                 $items[] = $item;
             } else {
@@ -1707,9 +1706,9 @@ EOD;
         parent::resolveNameID($model, $attribute, $htmlOptions);
         $selection = parent::resolveValue($model, $attribute);
         $name = TbArray::popValue('name', $htmlOptions);
-        $unCheck = TbArray::popValue('uncheckValue', $htmlOptions, '');
+        $uncheckValue = isset($htmlOptions['uncheckValue']) ? TbArray::popValue('uncheckValue', $htmlOptions) : '';
         $hiddenOptions = isset($htmlOptions['id']) ? array('id' => parent::ID_PREFIX . $htmlOptions['id']) : array('id' => false);
-        $hidden = $unCheck !== null ? parent::hiddenField($name, $unCheck, $hiddenOptions) : '';
+        $hidden = isset($uncheckValue) ? parent::hiddenField($name, $uncheckValue, $hiddenOptions) : '';
         return $hidden . self::radioButtonList($name, $selection, $data, $htmlOptions);
     }
 
@@ -1743,9 +1742,9 @@ EOD;
             parent::addErrorCss($htmlOptions);
         }
         $name = TbArray::popValue('name', $htmlOptions);
-        $unCheck = TbArray::popValue('uncheckValue', $htmlOptions, '');
+        $uncheckValue = isset($htmlOptions['uncheckValue']) ? TbArray::popValue('uncheckValue', $htmlOptions) : '';
         $hiddenOptions = isset($htmlOptions['id']) ? array('id' => parent::ID_PREFIX . $htmlOptions['id']) : array('id' => false);
-        $hidden = $unCheck !== null ? parent::hiddenField($name, $unCheck, $hiddenOptions) : '';
+        $hidden = isset($uncheckValue) ? parent::hiddenField($name, $uncheckValue, $hiddenOptions) : '';
         return $hidden . self::checkBoxList($name, $selection, $data, $htmlOptions);
     }
 
@@ -2098,6 +2097,12 @@ EOD;
         $input = isset($htmlOptions['input'])
             ? $htmlOptions['input']
             : self::createActiveInput($type, $model, $attribute, $htmlOptions, $data);
+
+        $myappend_icon=TbArray::popValue('myappend_icon', $htmlOptions);
+        if (isset($htmlOptions['input']) && !empty($myappend_icon))
+         {
+           $input='<div class="input-append">'.$input.'<span class="add-on"><i class="'.$myappend_icon.'"></i></span></div>';
+         }
 
         self::addCssClass('control-group', $groupOptions);
         if (!empty($color)) {
@@ -2547,6 +2552,7 @@ EOD;
         }
         if (TbArray::popValue('disabled', $htmlOptions, false)) {
             self::addCssClass('disabled', $htmlOptions);
+            $htmlOptions['disabled'] = 'disabled';
         }
         $loading = TbArray::popValue('loading', $htmlOptions);
         if (!empty($loading)) {
@@ -2724,7 +2730,8 @@ EOD;
      */
     public static function icon($icon, $htmlOptions = array(), $tagName = 'i')
     {
-        if (is_string($icon)) {
+
+            if ((strpos($icon, 'icon') === false) && (strpos($icon, 'fa fa-') === false)) {
             if (strpos($icon, 'icon') === false) {
                 $icon = 'icon-' . implode(' icon-', explode(' ', $icon));
             }
@@ -3232,6 +3239,7 @@ EOD;
             $menuItem['active'] = TbArray::getValue('active', $tabOptions, false);
             $menuItem['disabled'] = TbArray::popValue('disabled', $tabOptions, false);
             $menuItem['linkOptions'] = TbArray::popValue('linkOptions', $tabOptions, array());
+            $menuItem['htmlOptions'] = TbArray::popValue('htmlOptions', $tabOptions, array());
             $items = TbArray::popValue('items', $tabOptions, array());
             if (!empty($items)) {
                 $menuItem['linkOptions']['data-toggle'] = 'dropdown';

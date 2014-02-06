@@ -127,4 +127,83 @@ class UsuariosController extends Controller {
 			else
 					throw new CHttpException ( 404, 'Petición incorrecta.' );
 	}
-}
+	public function actionAsignarEvento()
+	{
+			if (Yii::app()->request->isAjaxRequest ){
+					$model=$this->loadModel();
+					if (isset($_GET['eid']) and ($_GET['eid']>0 or (strlen($_GET['eid'])>0 and $_GET['eid']=="TODAS"))) {
+							echo  $model->asignarEvento($_GET['eid'])?'true':'false';
+					}	
+
+			} 
+			else
+					throw new CHttpException ( 404, 'Petición incorrecta.' );
+	}
+	public function actionDesasignarEvento()
+	{
+			if (Yii::app()->request->isAjaxRequest ){
+					$this->validarUsuario();
+					$model=$this->loadModel();
+					if (isset($_GET['evento'],$_GET['funcion']) and !is_null($_GET['evento'])) {
+							echo  $model->desasignarEvento($_GET['evento'],$_GET['funcion']);
+					}	
+			}
+			else
+					throw new CHttpException ( 404, 'Petición incorrecta.' );
+
+	}
+	public function actionEventosAsignados()
+	{
+			if (Yii::app()->request->isAjaxRequest ){
+					$this->validarUsuario();
+					$model=$this->loadModel();
+					if (is_object($model)) {
+							$data =$model->getEventosAsignados();
+							$lista = CHtml::listData($data,'EventoId','EventoNom');
+							foreach($lista as $id => $value)
+							{
+									echo CHtml::tag('option',array('value' => $id),CHtml::encode($value),true);
+							}
+					}	
+			}
+			else
+					throw new CHttpException ( 404, 'Petición incorrecta.' );
+	}
+	public function actionTablaReportes()
+	{
+			if (Yii::app()->request->isAjaxRequest ){
+					$this->validarUsuario();
+					if (isset($_GET['evento_id'])) {
+							$model=$this->loadModel();
+							$this->renderPartial('_tablaReportes',array('model'=>$model),false,true);
+					}else throw new CHttpException ( 404, 'Petición incompleta.' );
+						
+			}else
+					throw new CHttpException ( 404, 'Petición incorrecta.' );
+
+	}
+		public function actionAutorizarReporte()
+		{
+			if (Yii::app()->request->isAjaxRequest ){
+					$this->validarUsuario();
+					if (isset($_GET['id'],$_GET['nick'])) {
+							$model=$this->loadModel();
+							echo $model->autorizarReporte($_GET)	;
+					}else throw new CHttpException ( 404, 'Petición incompleta.' );
+
+			}else
+					throw new CHttpException ( 404, 'Petición incorrecta.' );	
+		}
+		public function actionDenegarReporte()
+		{
+			if (Yii::app()->request->isAjaxRequest ){
+					$this->validarUsuario();
+					if (isset($_GET['id'],$_GET['nick'])) {
+							$model=$this->loadModel();
+							echo $model->denegarReporte($_GET)	;
+					}else throw new CHttpException ( 404, 'Petición incompleta.' );
+
+			}else
+					throw new CHttpException ( 404, 'Petición incorrecta.' );	
+		}
+} 

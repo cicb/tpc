@@ -733,4 +733,11 @@ class TbActiveForm extends CActiveForm
         $options['helpOptions'] = $helpOptions;
         return $options;
     }
+	public function customControlGroup($input, $model, $attribute, $htmlOptions = array())
+	{
+
+			$htmlOptions = $this->processControlGroupOptions($model, $attribute, $htmlOptions);
+			//echo Yii::trace(CVarDumper::dumpAsString($htmlOptions),'vardump');
+			return TbHtml::customActiveControlGroup($input, $model, $attribute, $htmlOptions);
+	}
 }

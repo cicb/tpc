@@ -144,6 +144,47 @@ class Usrval extends CActiveRecord
 	public function getFuncion()
 	{
 			return $this->funcion;
+	}
+	public function getCompareCriteria()
+	{
+			$criteria=new CDbCriteria;
+			$criteria->compare('UsuarioId',$this->UsuarioId);
+			$criteria->compare('UsrTipId',$this->UsrTipId);
+			$criteria->compare('UsrSubTipId',$this->UsrSubTipId);
+			$criteria->compare('UsrValRef',$this->UsrValRef,true);
+			$criteria->compare('usrValIdRef',$this->usrValIdRef,true);
+			$criteria->compare('UsrValRef2',$this->UsrValRef2,true);
+			$criteria->compare('usrValIdRef2',$this->usrValIdRef2,true);
+			$criteria->order="UsrValPrivId desc";
+			return $criteria;
+	}
+	public function getExiste()
+	{
+			$criteria=$this->getCompareCriteria();
+			return $this->exists($criteria);	
+	}
+	public function getMaxPrivId(){
+			if ($this->UsrValPrivId>0) {
+				return $this->UsrValPrivId;
+			}	
+			else{
+				$criteria=new CDbCriteria;
+				$criteria->compare('UsuarioId',$this->UsuarioId);
+				$criteria->compare('UsrTipId',$this->UsrTipId);
+				$criteria->compare('UsrSubTipId',$this->UsrSubTipId);
+				$criteria->compare('UsrValRef',$this->UsrValRef,true);
+				//$criteria->compare('usrValIdRef',$this->usrValIdRef,true);
+				$criteria->compare('UsrValRef2',$this->UsrValRef2,true);
+				//$criteria->compare('usrValIdRef2',$this->usrValIdRef2,true);
+				$criteria->order="UsrValPrivId desc";
+				//$criteria->select="MAX(UsrValPrivId) as maxpriv";
+				$usrval= self::model()->find($criteria);
+				if (is_object($usrval)) {
+						return $usrval->UsrValPrivId;
+				}	
+				else
+							return 0;
+			}
 
 	}
 

@@ -97,6 +97,7 @@ class Usuarios extends CActiveRecord
 		return array(
 				'tipusr'=>array(self::BELONGS_TO, 'Tipusr', array('TipUsrId')),
 				'maxid'=>array(self::STAT, 'Usuarios', array('select'=>'MAX(UsuariosId)')),
+				//'usrval'=>array(self::HAS_MANY, 'Usrval', array('UsuariosId'),
 		);
 	}
 
@@ -191,6 +192,10 @@ class Usuarios extends CActiveRecord
             //$this->UsuariosPass=$this->UsuariosPasCon=$this->initialPassword;
 		$max=Usuarios::model()->find(array('order'=>'UsuariosId desc'));
 		$this->UsuariosId=isset($this->UsuariosId)?$this->UsuariosId:$max->UsuariosId+1;	
+		$this->UsuariosVigencia = date('Y-m-d',strtotime($this->UsuariosVigencia ));
+		if ($this->UsuariosVigencia=='1969-12-31') {
+			$this->UsuariosVigencia='0000-00-00';
+		}	
         return parent::beforeSave();
     }
 	//public function afterSave()
@@ -200,6 +205,8 @@ class Usuarios extends CActiveRecord
 	//}
     public function afterFind()
     {
+
+			$this->UsuariosVigencia = date('Y-m-d',strtotime($this->UsuariosVigencia));
         //reset the password to null because we don't want the hash to be shown.
         $this->initialPassword = $this->UsuariosPass;
         $this->UsuariosPass = null;
@@ -381,6 +388,7 @@ class Usuarios extends CActiveRecord
 			}
 			return $usrval;
 	}
+
 	private function savePermiso($key){
 			//Se valida si la llave del permiso esta definida
 			if(array_key_exists($key,$this->_permisos)){
@@ -465,4 +473,125 @@ class Usuarios extends CActiveRecord
 			return $this->getPermiso('reservaciones');
 	}
 
+	//private function getEvento($eventoId){
+
+	//}
+	public function asignarEvento($eventoId)
+	{
+
+
+			if ($eventoId>0 or $eventoId=='TODAS') {
+				$usrval=new Usrval();
+				$usrval->UsuarioId=$this->UsuariosId;
+				$usrval->UsrTipId=2;
+				$usrval->UsrSubTipId=4;
+				$usrval->UsrValRef='evento.EventoId';
+				$usrval->usrValIdRef=$eventoId;
+				$usrval->UsrValRef2='funciones.FuncionesId';
+				$usrval->usrValIdRef2='TODAS';
+				if (!$usrval->existe) {
+						$usrval->UsrValPrivId=$usrval->maxPrivId+1;
+						return $usrval->save(false);
+				}			
+
+			}
+				else return false;			
+	}
+	public function desasignarEvento($eventoId,$funcionesId)
+	{
+			if ($eventoId>0 or $eventoId=='TODAS') {
+					return Usrval::model()->deleteAllByAttributes(array(
+							'UsuarioId'=>$this->UsuariosId,
+							'UsrTipId'=>2,
+							'UsrSubTipId'=>4,
+							'UsrValRef'=>'evento.EventoId',
+							'UsrValRef2'=>'funciones.FuncionesId',
+							'usrValIdRef'=>$eventoId,
+							'usrValIdRef2'=>$funcionesId,
+					));
+			}	
+	}
+	public function getReportes($eventoId)
+	{
+			if ($eventoId>0 or $eventoId=="TODAS") {
+					$query=sprintf("
+							SELECT DISTINCT	t.UsrValMulId as id,  t.` usrValMulDes` as descripcion,ifnull(t2.UsrValPrivId,0) as estado,
+									t1.UsrValPrivId,t1.UsrTipId,
+									t1.UsrSubTipId FROM usrvalmul as t
+					LEFT JOIN  usrval AS t1
+						ON 	t1.UsuarioId=%d
+						AND t1.UsrTipId=2
+						AND t1.UsrSubTipId=4
+						AND t1.usrValIdRef='%s'
+					LEFT JOIN idvalopc AS t2 
+						ON   t2.UsrTipId=t.UsrTip
+						AND  t2.UsrSubTipId=t.UsrSubTip
+						AND  t2.UsrValMulId=t.usrValMulId
+						AND t1.UsrValPrivId=t2.UsrValPrivId
+						AND  t2.UsuarioId=t1.UsuarioId
+						",$this->UsuariosId,$eventoId);
+					return new CSqlDataProvider($query);
+			}	
+			else  return null;
+	}
+	public function denegarReporte($pks=null)
+	{
+			if (!is_null($pks)) {
+					if (
+							array_key_exists('id',$pks) and
+							array_key_exists('UsrValPrivId',$pks) and
+							array_key_exists('UsrValMulId',$pks)
+					) {
+							try{
+									$reporte=Idvalopc::model()->deleteAllByAttributes(array(
+									'UsuarioId'=>$pks['id'],	
+									'UsrValPrivId'=>$pks['UsrValPrivId'],
+									'UsrTipId'=>2,
+									'UsrSubTipId'=>4,
+									'UsrValMulId'=>$pks['UsrValMulId'],
+							));
+									return $reporte;
+							}
+							catch(Exception $e){
+									return $e;
+							}
+				}	
+					return false;
+			}	
+	}
+	public function autorizarReporte($pks=null)
+	{
+			if (!is_null($pks)) {
+					if (
+							array_key_exists('id',$pks) and
+							array_key_exists('UsrValMulId',$pks)
+					) {
+							try{
+									$usrval=Usrval::model()->findByAttributes(array(
+											'UsuarioId'=>$pks['id'],
+											'UsrTipId'=>2,
+											'UsrSubTipId'=>4,
+											'UsrValRef'=>'evento.EventoId',
+											'usrValIdRef'=>$pks['eid']
+									));
+									if (is_object($usrval)){
+											$reporte=new Idvalopc();
+											$reporte->UsuarioId=$pks['id'];	
+											$reporte->UsrValPrivId=$usrval->UsrValPrivId;
+											$reporte->UsrTipId=2;
+											$reporte->UsrSubTipId=4;
+											$reporte->UsrValMulId=$pks['UsrValMulId'];
+											return $reporte->save(false);
+									}
+									else{
+											return false;
+									}
+							}
+							catch(Exception $e){
+									return $e;
+							}
+				}	
+					return false;
+			}	
+	}
 }

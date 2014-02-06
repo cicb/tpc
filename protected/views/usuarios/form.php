@@ -18,6 +18,7 @@
 form .form-inline{text-align:right}
 .white-box{text-align:left}
 .row{ margin:5px; }
+td{font-family:FontAwesome !important;}
 </style>
 
 <div class='controles' style="min-height:100%">
@@ -98,28 +99,34 @@ form .form-inline{text-align:right}
 		<?php echo $form->numberField($model,'UsuariosRegion'); ?>
 		<?php echo $form->error($model,'UsuariosRegion'); ?>
 	</div>
+<?php $dateinput = $this->widget('yiiwheels.widgets.datepicker.WhDatePicker', array(
+		'attribute' => 'UsuariosVigencia',
+		'model'=>$model,
+		'pluginOptions' => array(
+				'format' => 'yyyy-mm-dd',
+				'language' => 'es',
+		),
+),true);
+                    ?>
+            <?php echo $form->customControlGroup($dateinput,$model,'UsuariosVigencia',array('myappend_icon'=>'fa fa-calendar')); ?>
 
-
-	<div class="row">
-		<?php echo $form->labelEx($model,'UsuariosVigencia'); ?>
-		<?php echo $form->dateField($model,'UsuariosVigencia'); ?>
-		<?php echo $form->error($model,'UsuariosVigencia'); ?>
-	</div>
 <br />
 		</div><!--Division de columna-->
+<?php if ($model->scenario=='update'): ?>
 	<div class=' white-box span5' >
 		<h3 >Permisos en taquilla</h4>
-<div class='row'>
-	<?php echo $form->labelEx($model,'taquillaPrincipal'); ?>
-	<?php echo $form->dropDownList($model,'taquillaPrincipal',
-			 CHtml::listData(
-					Puntosventa::model()->findAll(),
-					'PuntosventaId','PuntosventaNom'),
-			array('empty'=>'Sin taquilla','class'=>'span3')
-	) ; ?>
-	<?php echo $form->error($model,'taquillaPrincipal'); ?>
-
-</div>
+		<div class='row'>
+		
+			<?php echo $form->labelEx($model,'taquillaPrincipal'); ?>
+			<?php echo $form->dropDownList($model,'taquillaPrincipal',
+					 CHtml::listData(
+							Puntosventa::model()->findAll(),
+							'PuntosventaId','PuntosventaNom'),
+					array('empty'=>'Sin taquilla','class'=>'span3')
+			) ; ?>
+			<?php echo $form->error($model,'taquillaPrincipal'); ?>
+		
+		</div>
 		<div class='row' >
 				<?php echo $form->checkBox($model,'boletosDuros'); ?>
 				<?php echo $form->labelEx($model,'boletosDuros'); ?>
@@ -146,15 +153,15 @@ form .form-inline{text-align:right}
 		</div>
 
 </div>
-
-		<div class='span5 white-box'>
+		<div class='span5 white-box' style="text-align:center">
 				<h3 >Eventos asignados</h3>
 
-<label>Eventos activos:</label>
-<?php echo CHtml::dropDownList( 'evento_id','', CHtml::listData( 
+<label>Disponibles:</label>
+<?php echo CHtml::dropDownList( 'evento_id','0', CHtml::listData( 
 		Evento::model()->findAll( "EventoSta='ALTA'"),
 				'EventoId','EventoNom'),
 				array(
+						'empty'=>array('TODAS'=>'TODOS'),
 						'class'=>'chosen span3 ' ,
 						'ajax' => array(
 								'type' => 'POST',
@@ -165,8 +172,10 @@ form .form-inline{text-align:right}
 										$("#fspin").removeClass("fa fa-spinner fa-spin");
 										$("#funcion_id option:nth-child(2)").attr("selected", "selected");}',
 												'update' => '#funcion_id',
-										),'prompt' => 'TODOS'
+										)#,'prompt' => 'TODOS'
 								)); ?>
+  
+<?php echo TbHtml::button(' Asignar',array('id'=>'btn-asignar-evento','class'=>'btn-success fa fa-plus', 'style'=>'padding:3px')) ; ?>
 <br />
 <br />
 <?php
@@ -181,38 +190,10 @@ $this->widget('bootstrap.widgets.TbGridView', array(
    'template' => "{items}\n{pager}",
    'type'=>'striped hover',
    'columns' => array(
-		   //array(
-				   //'header'=>'Usuario','value'=>
-				   //'$data->usuario->UsuariosNom',
-		   //),
-		   //'UsuarioId',
-		   //array(
-				   //'header'=>'Tipo','value'=>
-				   //'$data->tipusr->tipUsrIdDes',
-		   //),
-		   array(
-				   'header'=>'Permiso','value'=>
-				   '$data->usrsubtip->UsrSubTipDes',
-		   ),
-		   //array(
-				   //'header'=>'UsrValRef',
-				   //'name'=>'UsrValRef'
-		   //),
-		   //array(
-				   //'header'=>'usrValIdRef',
-				   //'name'=>'usrValIdRef'
-		   //),
 		   array(
 				   'header'=>'Evento',
 				   'value'=>'coalesce(@$data->evento->EventoNom,$data->usrValIdRef)'
 		   ),
-		   //array(
-				   //'header'=>'UsrValRef2',
-				   //'name'=>'UsrValRef2'
-		   //),
-		   //array(
-				   //'name'=>'usrValIdRef2'
-		   //),
 		   array(
 				   'header'=>'Funcion',
 				   'value'=>'coalesce(@$data->funcion->funcionesTexto,$data->usrValIdRef2)'
@@ -224,10 +205,18 @@ $this->widget('bootstrap.widgets.TbGridView', array(
 							'template'=>'{eliminar}  ',
 							'buttons'=>array(
 									'eliminar'=>array(
-											'label'=>'<span class="text-error fa fa-times"> Eliminar</span>',
-											'url'=>'Yii::app()->createUrl("usuarios/actualizar")',
+											'label'=>'<span class="text-error fa fa-times-circle"> Quitar</span>',
+											'url'=>'Yii::app()->createUrl("usuarios/desasignarEvento",array(
+													"id"=>$data->UsuarioId,
+													"evento"=>$data->usrValIdRef,
+													"nick"=>"'.$model->UsuariosNick.'",
+													"funcion"=>$data->usrValIdRef2))',
+											'click'=>'function(event){
+													$.get( $(this).attr("href")).done( function(){ $.fn.yiiGridView.update("usrval-grid"); });
+													event.preventDefault(); }',
+
 									),
-						)
+							)
 
 					)
 
@@ -235,8 +224,26 @@ $this->widget('bootstrap.widgets.TbGridView', array(
    ),
 )); ?>
 		</div><!-- asignacion de eventos-->
+<div class='span5 white-box'>
+		<h3>Reportes permitidos</h3>
+<label>Disponibles:</label>
+<?php echo CHtml::dropDownList( 'eventos_asignados',0, CHtml::listData( 
+		$model->getEventosAsignados(),
+				'EventoId','EventoNom'),
+				array(
+						'class'=>'span3 ' ,
+				)); ?>
+<br />
+<br />
+		<div id="tabla-reportes">
+			
 </div>
+</div>
+<br />
+
+<?php endif;?>
 </div><!-- form -->
+<div class='row centrado' >
 			<?php echo CHtml::link(' Regresar',$this->createUrl('usuarios/index'),array('class'=>' fa fa-arrow-circle-left btn')) ?>
 		 	
 <?php
@@ -249,34 +256,45 @@ else{
 		
 }
 ?>
+</div>
 
 <?php $this->endWidget(); ?>
 <br />
 <br />
-	<div class="panel-head panel-foot" style="padding:9px">Permisos y asignaciones</div>
-<div id='asignaciones' class="span10" style="float:none;margin:auto">
-	<div class='row'>
-	<div class='span3 white-box'>
-				<h4 class="panel-head">Eventos</h4>
+<br />
 
-</div>
-	<div class='span3 white-box'>
-		<h4 class="panel-head">Funciones</h4>
-		<?php echo CHtml::dropDownList( 'funcion_id','', array(),array('empty'=>'TODAS')); ?>
-		<span class='fspin'></span>
-	</div>
-
-	<div class='span3 white-box'>
-		<h4 class="panel-head">Permisos</h4>
-		<?php echo CHtml::dropDownList( 'reporte','', CHtml::listData(Usrsubtip::model()->findAll(),'UsrSubTipDes','UsrSubTipDes'),array('empty'=>'TODOS')); ?>
-		<span class='fspin'></span>
-	</div>
-<div class='span3' style="float:none;margin:auto">
-		<?php echo CHtml::link(' Asignar','#',array('class'=>'btn btn-large fa fa-chevron-circle-down fa-3x')) ; ?>
-</div>
 
 	</div>
 </div>
 
 	</div>
-
+<?php 
+ if ($model->scenario=='update')
+Yii::app()->clientScript->registerScript('asignacion',"
+		$('#btn-asignar-evento').on('click',function(){
+				$.ajax({
+						url:'".$this->createUrl('usuarios/asignarEvento',
+								array('id'=>$model->UsuariosId,'nick'=>$model->UsuariosNick))."&eid='+$('#evento_id').val(),
+								type:'get',
+								dataType:'json',
+								success:function(data){
+										if(data==false) {alert('Esta asignación no esta permitida');}
+										else{
+												$('#evento_id option:nth-child(1)').attr('selected', 'selected');
+												$.fn.yiiGridView.update('usrval-grid');
+												$.get('".$this->createUrl('usuarios/eventosAsignados')."',
+										{id:".$model->UsuariosId.",nick:'".$model->UsuariosNick."'},
+										function(data){ $('#eventos_asignados').html(data)} );
+										}		
+								}
+				});
+});
+$('#eventos_asignados').change(function(){ 
+		$.get('".$this->createUrl('usuarios/tablaReportes')."',
+			{id:'".$model->UsuariosId."',nick:'".$model->UsuariosNick."',
+				'evento_id':$('#eventos_asignados option:selected').val() },
+		function(data){ $('#tabla-reportes').html(data);}
+		);
+ });
+		");
+?>

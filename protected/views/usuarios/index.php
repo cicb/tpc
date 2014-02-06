@@ -54,7 +54,7 @@
 							'template'=>'{editar} {alta}{baja}  ',
 							'buttons'=>array(
 									'alta'=>array(
-											'label'=>'<span class="text-success fa fa-arrow-down"> Dar Alta </span>',
+											'label'=>'<span class="text-success fa fa-arrow-up"> Dar Alta </span>',
 											'url'=>'Yii::app()->createUrl("usuarios/conmutarEstatus",array(
 													"id"=>$data["UsuariosId"],
 													"nick"=>$data["UsuariosNick"],
