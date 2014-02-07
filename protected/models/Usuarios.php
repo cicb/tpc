@@ -594,4 +594,18 @@ class Usuarios extends CActiveRecord
 					return false;
 			}	
 	}
+    public  function notificar($asunto,$mensaje){
+// //     Envia una notificacion al usuario.
+	  set_time_limit ( 0 );
+	  ini_set('max_execution_time', 0);
+  // 	$config=Yii::app()->getParams(false);
+	  $message = new YiiMailMessage();
+	  $message->setCharset('UTF8');
+	  $message->setTo( $this->UsuariosEmail);
+	  $message->setFrom('sistema@taquillacero.com');
+	  $message->setSubject($asunto);
+	  $message->setBody($mensaje, 'Text/HTML');
+	  
+	  return Yii::app()->mail->send($message) ? true : false;
+      }
 }

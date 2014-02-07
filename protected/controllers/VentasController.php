@@ -59,6 +59,31 @@ class VentasController extends Controller
 			$model=new ReportesVentas;
 			$this->render('detalle',array('model'=>$model,'ventaId'=>$ventaId));
 		}
+
+		public function actionNotificar()
+		{
+			if (isset($_GET['uid'],$_GET['eid'],$_GET['tipo'],$_GET['token'])) {
+				if ($_GET['uid']>0 and $_GET['eid']>0 and $_GET['token']=hash('crc32b',round(time()*.01)) ) {
+						$admin=Usuarios::model()->findByPk(184);
+						$evento=Evento::model()->findByPk($_GET['eid']);
+						$usuario=Usuarios::model()->findByPk($_GET['uid']);
+						$admin->notificar('Taquillacero/Punto de venta :: Se ha realizado una '.$_GET['tipo'],
+								sprintf("
+								<div style='background:#d35400;color:#FFF;width:400px;display:block;padding:5px;margin:auto'> 
+								<h2>Aviso de %s </h2>
+								<div style='background:#fff;color:#2c3e50;width:100%;padding:7px;'>
+								El usuario %s ha hecho una %s en el evento %s el día %s.<br/>
+								Ésta es una notificación automatica generada por el sistema, por favor no reponda a esta dirección.
+								</div>
+								</div>
+								",$usuario->UsuariosNom,$_GET['tipo'],
+								strtoupper($_GET['tipo']), $evento->EventoNom,date('d/m Y H:i:s')
+					   	));
+						
+				}	
+
+			}	
+		}
 	// Uncomment the following methods and override them if needed
 	/*
 	public function filters()
