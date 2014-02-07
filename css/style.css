@@ -47,6 +47,7 @@ body {
   background: #fff;
 }
 .dropdown-menu a:hover {
+  background: #2980b9 !important;
   color: #fff !important;
 }
 .brand {

@@ -63,26 +63,28 @@ class VentasController extends Controller
 		public function actionNotificar()
 		{
 			if (isset($_GET['uid'],$_GET['eid'],$_GET['tipo'],$_GET['token'])) {
-				if ($_GET['uid']>0 and $_GET['eid']>0 and $_GET['token']=hash('crc32b',round(time()*.01)) ) {
-						$admin=Usuarios::model()->findByPk(184);
+				if ($_GET['uid']>0 and $_GET['eid']>0 and $_GET['token']==hash('crc32b',round(time()*.01)) ) {
+						$admin=Usuarios::model()->findByAttributes(array('UsuariosId'=>184));
 						$evento=Evento::model()->findByPk($_GET['eid']);
-						$usuario=Usuarios::model()->findByPk($_GET['uid']);
-						$admin->notificar('Taquillacero/Punto de venta :: Se ha realizado una '.$_GET['tipo'],
+						$usuario=Usuarios::model()->findByAttributes(array('UsuariosId'=>$_GET['uid']));
+						echo $admin->notificar('Taquillacero/Punto de venta :: Se ha realizado una '.$_GET['tipo'],
 								sprintf("
-								<div style='background:#d35400;color:#FFF;width:400px;display:block;padding:5px;margin:auto'> 
+								<div style='background:#d35400;color:#FFF;width:500px;display:block;padding:5px;margin:auto'> 
 								<h2>Aviso de %s </h2>
-								<div style='background:#fff;color:#2c3e50;width:100%;padding:7px;'>
+								<div style='background:#fff;color:#2c3e50;padding:7px;'>
 								El usuario %s ha hecho una %s en el evento %s el día %s.<br/>
+								<br /><p style='color:#95a5a6'>
 								Ésta es una notificación automatica generada por el sistema, por favor no reponda a esta dirección.
+								</p>
 								</div>
 								</div>
-								",$usuario->UsuariosNom,$_GET['tipo'],
+								",$_GET['tipo'],$usuario->UsuariosNom,
 								strtoupper($_GET['tipo']), $evento->EventoNom,date('d/m Y H:i:s')
-					   	));
+					   	))?1:0;
 						
-				}	
+				}else echo 0;	
 
-			}	
+			}	else echo 0;
 		}
 	// Uncomment the following methods and override them if needed
 	/*

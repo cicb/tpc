@@ -72,8 +72,8 @@ class Usuarios extends CActiveRecord
 			array('UsuariosNick', 'unique'),
 			array('UsuariosEmail, UsuariosRegion', 'length', 'max'=>200),
             array('UsuariosPass, UsuariosPasCon', 'required', 'on'=>'insert','message'=>'Las contraseñas deben coincidir'),
-            array('UsuariosPass, UsuariosPasCon', 'length', 'min'=>6,'message'=>'debe tener entre 6 y 40 caracteres'),
-            array('UsuariosPass, UsuariosPasCon', 'length', 'max'=>40,'message'=>'debe tener entre 6 y 40 caracteres'),
+            array('UsuariosPass, UsuariosPasCon', 'length', 'on'=>'insert','min'=>6,'message'=>'debe tener entre 6 y 40 caracteres'),
+            array('UsuariosPass, UsuariosPasCon', 'length', 'on'=>'insert','max'=>40,'message'=>'debe tener entre 6 y 40 caracteres'),
 
 			array (
 					'UsuariosPasCon',
