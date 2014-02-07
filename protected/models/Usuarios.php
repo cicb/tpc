@@ -188,8 +188,10 @@ class Usuarios extends CActiveRecord
 	public function beforeSave()
 	{
         // in this case, we will use the old hashed password.
-        //if(empty($this->UsuariosPass) && empty($this->UsuariosPasCon) && !empty($this->initialPassword))
-            //$this->UsuariosPass=$this->UsuariosPasCon=$this->initialPassword;
+		if((is_null($this->UsuariosPass) or empty($this->UsuariosPass))  && !empty($this->initialPassword))
+			$this->UsuariosPass=$this->UsuariosPasCon=$this->initialPassword;
+		else
+			$this->UsuariosPass=$this->UsuariosPasCon=$this->hashPassword($this->UsuariosPass);	
 		$max=Usuarios::model()->find(array('order'=>'UsuariosId desc'));
 		$this->UsuariosId=isset($this->UsuariosId)?$this->UsuariosId:$max->UsuariosId+1;	
 		$this->UsuariosVigencia = date('Y-m-d',strtotime($this->UsuariosVigencia ));
@@ -210,7 +212,7 @@ class Usuarios extends CActiveRecord
         //reset the password to null because we don't want the hash to be shown.
         $this->initialPassword = $this->UsuariosPass;
         $this->UsuariosPass = null;
- 
+        $this->UsuariosPass = null;
         parent::afterFind();
     }
     public function saveModel($data=array())
@@ -221,11 +223,13 @@ class Usuarios extends CActiveRecord
                 $data['UsuariosPass'] = $data['UsuariosPass'];
                 $data['UsuariosPasCon'] = $data['UsuariosPasCon'];
             }
- 
+			if ($data['TipUsrId']<2) {
+				unset($data['TipUsrId']);
+			}	
             $this->attributes=$data;
 			foreach($data as $key=>$row)
 				$this->$key=$row;
-			$this->taquillaPrincipal=$data['taquillaPrincipal'];	
+			//$this->taquillaPrincipal=$data['taquillaPrincipal'];	
  
             if(!$this->save())
                 return CHtml::errorSummary($this);
@@ -267,7 +271,7 @@ class Usuarios extends CActiveRecord
     }
     public function hashPassword($password){
         //return md5($password);
-        return $password;
+        return hash('md5',$password);
     }
     public function Accesos(){
         $model = Usrval::model()->with('usrsubtip')->findAll(array('condition'=>"UsuarioId=$this->UsuariosId",'select'=>'t.UsrTipId,t.UsrSubTipId','distinct'=>true));
