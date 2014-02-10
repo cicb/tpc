@@ -61,15 +61,15 @@ class UsuariosController extends Controller {
 	 * variable.
 	 * If the data model is not found, an HTTP exception will be raised.
 	 */
-	public function loadModel($id=null,$nick=null) {
+	public function loadModel($id=null) {
             if ($this->_model === null) {
-					if (!isset($id,$nick)) {
-							if (isset ( $_GET ['id'],$_GET['nick'] )){
+					if (!isset($id)) {
+							if (isset ( $_GET ['id'] )){
 									$id=$_GET['id'];
-									$nick=$_GET['nick'];
-							}
+							}else
+									throw new CHttpException ( 404, 'El parametros incompletos.' );
 					}	
-                    $this->_model = Usuarios::model ()->findbyPk (array('UsuariosId'=>$id,'UsuariosNick'=>$nick ));
+                    $this->_model = Usuarios::model ()->findbyPk ($id);
                 if ($this->_model === null)
                     throw new CHttpException ( 404, 'El Usuario no existe.' );
             }
@@ -95,9 +95,9 @@ class UsuariosController extends Controller {
 			$this->render('form',compact('model'));
 	}
 
-	public function actionActualizar($id,$nick)
+	public function actionActualizar($id)
 	{
-			$model=$this->loadModel($id,$nick);
+			$model=$this->loadModel($id);
 			$model->scenario='update';
 			$this->saveModel($model);
 			$this->render('form', compact('model'));
@@ -186,10 +186,8 @@ class UsuariosController extends Controller {
 		{
 			if (Yii::app()->request->isAjaxRequest ){
 					$this->validarUsuario();
-					if (isset($_GET['id'],$_GET['nick'])) {
 							$model=$this->loadModel();
 							echo $model->autorizarReporte($_GET)	;
-					}else throw new CHttpException ( 404, 'Petición incompleta.' );
 
 			}else
 					throw new CHttpException ( 404, 'Petición incorrecta.' );	
@@ -198,20 +196,16 @@ class UsuariosController extends Controller {
 		{
 			if (Yii::app()->request->isAjaxRequest ){
 					$this->validarUsuario();
-					if (isset($_GET['id'],$_GET['nick'])) {
-							$model=$this->loadModel();
-							echo $model->denegarReporte($_GET)	;
-					}else throw new CHttpException ( 404, 'Petición incompleta.' );
+					$model=$this->loadModel();
+					echo $model->denegarReporte($_GET)	;
+			}else throw new CHttpException ( 404, 'Petición incompleta.' );
 
-			}else
-					throw new CHttpException ( 404, 'Petición incorrecta.' );	
 		}
 
-		public function actionCambiarClave($id,$nick)
+		public function actionCambiarClave($id)
 		{
 					$this->validarUsuario();
-					if (isset($id,$nick, $_POST['up'])) {
-							$model=$this->loadModel($id,$nick);
+							$model=$this->loadModel($id);
 							$model->UsuariosPass=$_POST['up'];
 							if ($model->update(array('UsuariosPass','UsuariosPasCon'))) {
 									Yii::app()->user->setFlash(TbHtml::ALERT_COLOR_SUCCESS,
@@ -220,6 +214,5 @@ class UsuariosController extends Controller {
 											'block'=>true,
 									));
 							}	
-					}else throw new CHttpException ( 404, 'Petición incompleta.');
 		}
 } 

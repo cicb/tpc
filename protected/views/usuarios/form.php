@@ -123,7 +123,6 @@ td{font-family:FontAwesome !important;}
 	<?php echo $form->error($model,'taquillaPrincipal'); ?>
 
 </div>
-<?php endif;?>
 		<div class='row' >
 				<?php echo $form->checkBox($model,'boletosDuros'); ?>
 				<?php echo $form->labelEx($model,'boletosDuros'); ?>
@@ -237,6 +236,8 @@ $this->widget('bootstrap.widgets.TbGridView', array(
 			
 		</div>
 </div>
+
+<?php endif;?>
 </div>
 <br />
 <?php
@@ -251,7 +252,7 @@ $this->widget('bootstrap.widgets.TbGridView', array(
 								)),
 					array(
                         'type'=>'POST',
-                        'data'=> 'js:{up: $("#Usuarios_UsuariosPass").val() }',                        
+                        'data'=> 'js:{up: $("#up").val() }',                        
 						'success'=>'js:function(string){ $("#formulario").html(string);
 													$("#yt1").attr("data-dismiss","modal");
 													$("#yt1").val("Continuar...");
@@ -263,11 +264,13 @@ $this->widget('bootstrap.widgets.TbGridView', array(
 
 
 </div><!-- form -->
+<div class='row-fluid'>
+		<div class='span6 center' >
 			<?php echo CHtml::link(' Regresar',$this->createUrl('usuarios/index'),array('class'=>' fa fa-arrow-circle-left btn')) ?>
-		 	
+
 <?php
 if($model->scenario=='insert')
-	echo	CHtml::submitButton('Registrar',array('class'=>'btn btn-primary'));
+		echo	CHtml::submitButton('Registrar',array('class'=>'btn btn-primary'));
 else{
 		echo TbHtml::button(' Cambiar contraseña', array(
 				'class' => 'btn btn-info fa fa-key ',
@@ -275,11 +278,14 @@ else{
 				'data-target' => '#conModal',
 		));  
 		echo " ". CHtml::submitButton('Guardar cambios',array('class'=>'btn btn-primary fa fa-save'));
-		
+
 }
 ?>
 
 <?php $this->endWidget(); ?>
+
+		</div>
+</div><!--botones-->
 <br />
 <br />
 <br />
@@ -320,8 +326,8 @@ $('#eventos_asignados').change(function(){
 		");
 ?>
  <?php Yii::app()->clientScript->registerScript('validacion',"
-		$('#UsuariosPasCon').keyup(function(){
-				if ($(this).val()==$('#Usuarios_UsuariosPass').val()) {
+		$('#upc').keyup(function(){
+				if ($(this).val()==$('#up').val()) {
 					$('#yt1').prop('disabled', false);
 				}	
 })
