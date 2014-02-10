@@ -99,34 +99,31 @@ td{font-family:FontAwesome !important;}
 		<?php echo $form->numberField($model,'UsuariosRegion'); ?>
 		<?php echo $form->error($model,'UsuariosRegion'); ?>
 	</div>
-<?php $dateinput = $this->widget('yiiwheels.widgets.datepicker.WhDatePicker', array(
-		'attribute' => 'UsuariosVigencia',
-		'model'=>$model,
-		'pluginOptions' => array(
-				'format' => 'yyyy-mm-dd',
-				'language' => 'es',
-		),
-),true);
-                    ?>
-            <?php echo $form->customControlGroup($dateinput,$model,'UsuariosVigencia',array('myappend_icon'=>'fa fa-calendar')); ?>
 
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'UsuariosVigencia'); ?>
+		<?php echo $form->dateField($model,'UsuariosVigencia'); ?>
+		<?php echo $form->error($model,'UsuariosVigencia'); ?>
+	</div>
 <br />
 		</div><!--Division de columna-->
-<?php if ($model->scenario=='update'): ?>
 	<div class=' white-box span5' >
 		<h3 >Permisos en taquilla</h4>
-		<div class='row'>
-		
-			<?php echo $form->labelEx($model,'taquillaPrincipal'); ?>
-			<?php echo $form->dropDownList($model,'taquillaPrincipal',
-					 CHtml::listData(
-							Puntosventa::model()->findAll(),
-							'PuntosventaId','PuntosventaNom'),
-					array('empty'=>'Sin taquilla','class'=>'span3')
-			) ; ?>
-			<?php echo $form->error($model,'taquillaPrincipal'); ?>
-		
-		</div>
+<?php if ($model->scenario=='update'): ?>
+<div class='row'>
+
+	<?php echo $form->labelEx($model,'taquillaPrincipal'); ?>
+	<?php echo $form->dropDownList($model,'taquillaPrincipal',
+			 CHtml::listData(
+					Puntosventa::model()->findAll(),
+					'PuntosventaId','PuntosventaNom'),
+			array('empty'=>'Sin taquilla','class'=>'span3')
+	) ; ?>
+	<?php echo $form->error($model,'taquillaPrincipal'); ?>
+
+</div>
+<?php endif;?>
 		<div class='row' >
 				<?php echo $form->checkBox($model,'boletosDuros'); ?>
 				<?php echo $form->labelEx($model,'boletosDuros'); ?>
@@ -153,6 +150,7 @@ td{font-family:FontAwesome !important;}
 		</div>
 
 </div>
+
 		<div class='span5 white-box' style="text-align:center">
 				<h3 >Eventos asignados</h3>
 
@@ -237,26 +235,49 @@ $this->widget('bootstrap.widgets.TbGridView', array(
 <br />
 		<div id="tabla-reportes">
 			
+		</div>
 </div>
 </div>
 <br />
+<?php
+	$this->widget('bootstrap.widgets.TbModal', array(
+    'id' => 'conModal',
+    'header' => 'Cambio de contraseña',
+    'content' => $this->renderPartial('_cambioContrasena',array('model'=>$model),true,true),
+    'footer' => implode(' ', array(
+			CHtml::ajaxSubmitButton('Confirmar',Yii::app()->createUrl('usuarios/cambiarClave',array(
+					'id'=>$model->UsuariosId,
+										'nick'=>$model->UsuariosNick
+								)),
+					array(
+                        'type'=>'POST',
+                        'data'=> 'js:{up: $("#Usuarios_UsuariosPass").val() }',                        
+						'success'=>'js:function(string){ $("#formulario").html(string);
+													$("#yt1").attr("data-dismiss","modal");
+													$("#yt1").val("Continuar...");
+						 }'           
+                    ),array('class'=>'btn btn-primary ','disabled'=>true,'data-dismiss'=>false)),
+							TbHtml::button('Close', array('data-dismiss' => 'modal')),
+     )),
+)); ?>
 
-<?php endif;?>
+
 </div><!-- form -->
-<div class='row centrado' >
 			<?php echo CHtml::link(' Regresar',$this->createUrl('usuarios/index'),array('class'=>' fa fa-arrow-circle-left btn')) ?>
 		 	
 <?php
 if($model->scenario=='insert')
 	echo	CHtml::submitButton('Registrar',array('class'=>'btn btn-primary'));
 else{
-		echo CHtml::link(' Cambiar contraseña',$this->createUrl('usuarios/index'),array('class'=>'btn fa fa-key fa-1x')) ;
-		echo " ";
-	echo CHtml::submitButton('Guardar cambios',array('class'=>'btn btn-primary'));
+		echo TbHtml::button(' Cambiar contraseña', array(
+				'class' => 'btn btn-info fa fa-key ',
+				'data-toggle' => 'modal',
+				'data-target' => '#conModal',
+		));  
+		echo " ". CHtml::submitButton('Guardar cambios',array('class'=>'btn btn-primary fa fa-save'));
 		
 }
 ?>
-</div>
 
 <?php $this->endWidget(); ?>
 <br />
@@ -298,3 +319,10 @@ $('#eventos_asignados').change(function(){
  });
 		");
 ?>
+ <?php Yii::app()->clientScript->registerScript('validacion',"
+		$('#UsuariosPasCon').keyup(function(){
+				if ($(this).val()==$('#Usuarios_UsuariosPass').val()) {
+					$('#yt1').prop('disabled', false);
+				}	
+})
+		"); ?>
