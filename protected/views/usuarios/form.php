@@ -253,8 +253,8 @@ $this->widget('bootstrap.widgets.TbGridView', array(
                         'type'=>'POST',
                         'data'=> 'js:{up: $("#Usuarios_UsuariosPass").val() }',                        
 						'success'=>'js:function(string){ $("#formulario").html(string);
-													$("#yt1").attr("data-dismiss","modal");
-													$("#yt1").val("Continuar...");
+													$("#btn-cambiar-clave").attr("data-dismiss","modal");
+													$("#btn-cambiar-clave").val("Continuar...");
 						 }'           
                     ),array('class'=>'btn btn-primary ','disabled'=>true,'data-dismiss'=>false)),
 							TbHtml::button('Close', array('data-dismiss' => 'modal')),
@@ -271,6 +271,7 @@ if($model->scenario=='insert')
 else{
 		echo TbHtml::button(' Cambiar contraseña', array(
 				'class' => 'btn btn-info fa fa-key ',
+				'id'=>'btn-cambiar-clave',
 				'data-toggle' => 'modal',
 				'data-target' => '#conModal',
 		));  
@@ -322,7 +323,7 @@ $('#eventos_asignados').change(function(){
  <?php Yii::app()->clientScript->registerScript('validacion',"
 		$('#UsuariosPasCon').keyup(function(){
 				if ($(this).val()==$('#Usuarios_UsuariosPass').val()) {
-					$('#yt1').prop('disabled', false);
+					$('#btn-cambiar-clave').prop('disabled', false);
 				}	
 })
 		"); ?>
