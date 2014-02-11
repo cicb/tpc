@@ -108,9 +108,9 @@ td{font-family:FontAwesome !important;}
 	</div>
 <br />
 		</div><!--Division de columna-->
+<?php if ($model->scenario=='update'): ?>
 	<div class=' white-box span5' >
 		<h3 >Permisos en taquilla</h4>
-<?php if ($model->scenario=='update'): ?>
 <div class='row'>
 
 	<?php echo $form->labelEx($model,'taquillaPrincipal'); ?>
@@ -123,7 +123,6 @@ td{font-family:FontAwesome !important;}
 	<?php echo $form->error($model,'taquillaPrincipal'); ?>
 
 </div>
-<?php endif;?>
 		<div class='row' >
 				<?php echo $form->checkBox($model,'boletosDuros'); ?>
 				<?php echo $form->labelEx($model,'boletosDuros'); ?>
@@ -251,7 +250,7 @@ $this->widget('bootstrap.widgets.TbGridView', array(
 								)),
 					array(
                         'type'=>'POST',
-                        'data'=> 'js:{up: $("#Usuarios_UsuariosPass").val() }',                        
+                        'data'=> 'js:{up: $("#up").val() }',                        
 						'success'=>'js:function(string){ $("#formulario").html(string);
 													$("#btn-cambiar-clave").attr("data-dismiss","modal");
 													$("#btn-cambiar-clave").val("Continuar...");
@@ -265,7 +264,11 @@ $this->widget('bootstrap.widgets.TbGridView', array(
 )); ?>
 
 
+
+<?php endif;?>
 </div><!-- form -->
+<div class='row'>
+		<div class='span6 centrado' style="float:none">
 			<?php echo CHtml::link(' Regresar',$this->createUrl('usuarios/index'),array('class'=>' fa fa-arrow-circle-left btn')) ?>
 		 	
 <?php
@@ -281,14 +284,16 @@ else{
 		
 }
 ?>
+<br />
+<br />
+<br />
+		</div>
+</div>
 
+		</div>
 <?php $this->endWidget(); ?>
-<br />
-<br />
-<br />
 
 
-	</div>
 </div>
 
 	</div>
