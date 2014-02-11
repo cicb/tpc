@@ -256,7 +256,10 @@ $this->widget('bootstrap.widgets.TbGridView', array(
 													$("#btn-cambiar-clave").attr("data-dismiss","modal");
 													$("#btn-cambiar-clave").val("Continuar...");
 						 }'           
-                    ),array('class'=>'btn btn-primary ','disabled'=>true,'data-dismiss'=>false)),
+						 ),array('class'=>'btn btn-primary ',
+								 'disabled'=>true,'data-dismiss'=>false,
+								 'id'=>'btn-cambiar-clave',
+						 )),
 							TbHtml::button('Close', array('data-dismiss' => 'modal')),
      )),
 )); ?>
@@ -271,7 +274,6 @@ if($model->scenario=='insert')
 else{
 		echo TbHtml::button(' Cambiar contraseña', array(
 				'class' => 'btn btn-info fa fa-key ',
-				'id'=>'btn-cambiar-clave',
 				'data-toggle' => 'modal',
 				'data-target' => '#conModal',
 		));  
@@ -321,8 +323,8 @@ $('#eventos_asignados').change(function(){
 		");
 ?>
  <?php Yii::app()->clientScript->registerScript('validacion',"
-		$('#UsuariosPasCon').keyup(function(){
-				if ($(this).val()==$('#Usuarios_UsuariosPass').val()) {
+		$('#upc').keyup(function(){
+				if ($(this).val()==$('#up').val()) {
 					$('#btn-cambiar-clave').prop('disabled', false);
 				}	
 })
