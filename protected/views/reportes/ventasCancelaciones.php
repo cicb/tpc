@@ -11,7 +11,7 @@
 		)); ?>
 
 		<div class="row form-search">
-				<?//php echo $form->labelEx($model,'buscar'); ?>
+				<?php echo $form->labelEx($model,'buscar'); ?>
 				
 				<?php echo CHtml::textField('buscar',$ref,array('placeholder'=>'Número de reservacion','required'=>'required')); ?>
 				<?php echo CHtml::submitButton('Buscar', array('class'=>'btn btn-primary')); ?>
