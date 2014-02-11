@@ -43,13 +43,19 @@ class FarmatodoController extends Controller
                                     if($status > 0):
                                //Se eliminan las reservaciones de la tabla templugares     
                                             Yii::app()->db->createCommand("DELETE FROM templugares  WHERE EventoId = ".$vl1['EventoId']." AND FuncionesId = ".$vl1['FuncionesId']." AND ZonasId = ".$vl1['ZonasId']." AND SubzonaId = ".$vl1['SubzonaId']." AND FilasId = ".$vl1['FilasId']." AND LugaresId = ".$vl1['LugaresId'])->execute();
+                                           
                                     endif;    
                                endforeach;
                     else:
                         $error .=  "El boleto con referencia ".$referencia." y numero de asiento ".$lugares." no fue cancelado";
                     endif; 
                 endif;
-                
+                //Se cambia VentasSta='CANCELADO' cuando todas sus ventas son Canceladas en ventaslevel1
+                $ventasSta = new CSqlDataProvider("SELECT * FROM ventas INNER JOIN ventaslevel1 on ventaslevel1.VentasId = ventas.VentasId WHERE VentasNumRef='$referencia' AND  ventaslevel1.VentasSta NOT IN('CANCELADO','BOLETO DURO','RESERVADO','NORMAL','CORTESIA')");
+                $ventasSta = $ventasSta->getData();
+                if(empty($ventasSta[0])){
+                    Yii::app()->db->createCommand("UPDATE ventas SET VentasSta='CANCELADO' WHERE VentasNumRef='$referencia'")->execute();
+                }
                 //$cancelacion = Yii::app()->db->createCommand("update ventaslevel1 set VentasSta='CANCELADO',CancelUsuarioId ='".Yii::app()->user->id."',CancelFecHor = '".date("Y-m-d H:i:s")."' where ventaslevel1.LugaresId = $lugares AND VentasId in (select VentasId from ventas where ventas.VentasNumRef='$referencia')")->execute();
                 //echo $cancelacion;
                 //print_r(preg_split("_",$del));
