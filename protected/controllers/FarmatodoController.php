@@ -35,7 +35,7 @@ class FarmatodoController extends Controller
                     if($cancelacion > 0):
                         $success .= "Zona: ".$ref[5]." Fila: ".$ref[6]." Asiento: ".$ref[7]."<br/>";
                         $data .= "cancelado";
-                        $query = "select * from ventaslevel1 where VentasId in (select VentasId from ventas where ventas.VentasNumRef='$referencia')";
+                        $query = "SELECT * FROM ventaslevel1 WHERE VentasId IN (SELECT VentasId FROM ventas WHERE ventas.VentasNumRef='$referencia') AND ventaslevel1.LugaresId=$lugares";
                             $ventaslevel1 = new CSqlDataProvider($query); 
                                foreach($ventaslevel1->getData() as $key => $vl1):
                                //Se cambia el LugaresStatus a TRUE en la Tabla lugares
