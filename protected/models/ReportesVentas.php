@@ -65,7 +65,7 @@ class ReportesVentas extends CFormModel
 		//Primer Ciclo de la matrix
 		foreach ($matrix as $key=>&$value) {
 				$value['titulo']=ucfirst($key);
-				$value['porc']=number_format(($value['boletos']*100)/max($matrix['total']['boletos'],2));
+				$value['porc']=number_format(($value['boletos']*100)/max($matrix['total']['boletos'],1));
 				$value['boletos']=number_format($value['boletos']);
 				$value['ventas']=number_format($value['ventas']);
 				$value['car serv']=number_format($value['car serv']);
@@ -124,7 +124,7 @@ class ReportesVentas extends CFormModel
 					}	
 					$matrix['subtotal']['boletos']	+=$temp['boletos']	=$fila['cantidad'];
 					$matrix['subtotal']['importe']	+=$temp['importe']	=$fila['total'];
-					$temp['porcentaje']	=number_format(($temp['boletos']*100)/max($matrix['aforo']['boletos'],2));
+					$temp['porcentaje']	=number_format(($temp['boletos']*100)/max($matrix['aforo']['boletos'],1));
 						
 					$matrix['tipos'][]=$temp;
 
@@ -142,11 +142,11 @@ class ReportesVentas extends CFormModel
 					$matrix['tipos'][]	=$temp;
 				}
 			$matrix['por vender']['boletos']	=$matrix['aforo']['boletos'] - $matrix['subtotal']['boletos']	;
-			$matrix['por vender']['importe']	=$matrix['aforo']['importe'] - $matrix['subtotal']['importe']	;
+			$matrix['por vender']['importe']	=$matrix['aforo']['precio'] * $matrix['por vender']['boletos']	;
 			 //$matrix['por vender']['porcentaje']	=$matrix['por vender']['boletos'] / max($matrix['aforo']['boletos'],1)	;
 			foreach ($matrix as $key=>$fila) {
 				if ($key!="tipos") {
-						$matrix[$key]['porcentaje']=number_format($fila['boletos']*100/max($matrix['aforo']['boletos'],1),2);					
+						$matrix[$key]['porcentaje']=number_format($fila['boletos']*100/max($matrix['aforo']['boletos'],1),0);					
 				}	
 
 			}
@@ -198,6 +198,7 @@ class ReportesVentas extends CFormModel
 			'normal'      => array('titulo' => 'Ventas','boletos'        => 0,'importe'          => 0,'porcentaje' => 0),
 			'total'       => array('titulo' => 'Total','boletos'         => 0,'importe'          => 0,'porcentaje' => 0),
 	);
+			//$matrix['por vender']['importe'] = Lugares::model()->count(sprintf("EventoId = '%s' AND LugaresStatus='TRUE'  %s",$eventoId,$funcion) );
 			$model=new Ventas;
 			$matrix['aforo']['importe']=$model->getDbConnection()->createCommand(sprintf("
 					SELECT count(t.LugaresId)*ZonasCosBol as ventas FROM lugares as t
@@ -205,30 +206,38 @@ class ReportesVentas extends CFormModel
 						ON t.EventoId     = t2.EventoId
 						AND t.FuncionesId = t2.FuncionesId
 						AND t.ZonasId     = t2.ZonasId
-					WHERE t.EventoId      = %d
+					WHERE t.EventoId      = %d and t.LugaresStatus NOT IN('OFF','SYS')
+					GROUP BY t.EventoId;",$eventoId))->queryScalar();
+			$matrix['por vender']['importe']=$model->getDbConnection()->createCommand(sprintf("
+					SELECT count(t.LugaresId)*ZonasCosBol as ventas FROM lugares as t
+					INNER JOIN zonas as t2 
+						ON t.EventoId     = t2.EventoId
+						AND t.FuncionesId = t2.FuncionesId
+						AND t.ZonasId     = t2.ZonasId
+					WHERE t.EventoId      = %d and t.LugaresStatus='TRUE'
 					GROUP BY t.EventoId;",$eventoId))->queryScalar();
 
-			$matrix['por vender']['importe']=$matrix['aforo']['importe']-$model->getDbConnection()->createCommand(sprintf("
-					SELECT sum(VentasCosBol-VentasMonDes) as ventas FROM ventaslevel1 as t
-					INNER JOIN zonas as t2 
-						ON t.EventoId                     = t2.EventoId
-						AND t.FuncionesId                 = t2.FuncionesId
-						AND t.ZonasId                     = t2.ZonasId
-				    INNER JOIN ventas as t3 ON t.VentasId = t3.VentasId
-					WHERE t.EventoId                      = %d
-				   	AND t3.VentasSta <> 'CANCELADO' AND  t.VentasSta<>'CANCELADO'
-					GROUP BY t.EventoId;",$eventoId))->queryScalar();
+			//$matrix['por vender']['importe']=$matrix['aforo']['importe']-$model->getDbConnection()->createCommand(sprintf("
+					//SELECT sum(VentasCosBol-VentasMonDes) as ventas FROM ventaslevel1 as t
+					//INNER JOIN zonas as t2 
+						//ON t.EventoId                     = t2.EventoId
+						//AND t.FuncionesId                 = t2.FuncionesId
+						//AND t.ZonasId                     = t2.ZonasId
+					//INNER JOIN ventas as t3 ON t.VentasId = t3.VentasId
+					//WHERE t.EventoId                      = %d
+					   //AND t3.VentasSta <> 'CANCELADO' AND  t.VentasSta<>'CANCELADO'
+					//GROUP BY t.EventoId;",$eventoId))->queryScalar();
 			$reporte=$modelo->getReporte($eventoId,$funcionId,$desde,$hasta,false, 'NORMAL,CORTESIA,BOLETO DURO','', 'VentasBolTip');
 			if (is_object($reporte)) {
 					foreach ($reporte->getData() as $fila) {
 							$index=strtolower($fila['VentasBolTip']);
-							$matrix[$index]=array('boleto'=>0,'importe'=>0,'porcentaje'=>0);
+							$matrix[$index]=array('boleto'=>0,'titulo'=>$index, 'importe'=>0,'porcentaje'=>0);
 							$matrix['total']['boletos']+=$matrix[$index]['boletos']=$fila['cantidad'];
 							$matrix['total']['importe']+=$matrix[$index]['importe']=$fila['total'];
 					}
 			}	
 			foreach ($matrix as &$fila) {
-				$fila['porcentaje']=number_format($fila['boletos']*100/max($aforo,1),2);
+				$fila['porcentaje']=number_format($fila['boletos']*100/max($aforo,1),0);
 				$fila['boletos']=number_format( $fila['boletos'],0);
 				$fila['importe']=number_format( $fila['importe'],0);
 			}
@@ -248,10 +257,10 @@ class ReportesVentas extends CFormModel
 					$desde=date('Y-m-d',strtotime("-1 week")),
 					$hasta=date("Y-m-d"));
 
-			$matrix['promedio acumulado']['boletos']=number_format($acumulado['boletos'],3);
-			$matrix['promedio acumulado']['importe']=number_format($acumulado['importe'],3);
-			$matrix['promedio semana']['boletos']=number_format($usemana['boletos'],3);
-			$matrix['promedio semana']['importe']=number_format($usemana['importe'],3);
+			$matrix['promedio acumulado']['boletos']=number_format($acumulado['boletos'],0);
+			$matrix['promedio acumulado']['importe']=number_format($acumulado['importe'],0);
+			$matrix['promedio semana']['boletos']=number_format($usemana['boletos'],0);
+			$matrix['promedio semana']['importe']=number_format($usemana['importe'],0);
 			return $matrix;	
 	}
 

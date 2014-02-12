@@ -5,7 +5,7 @@ echo CHtml::closeTag('h3');
 $resumenEvento=$model->getResumenEvento($evento->EventoId,$funcionesId,$desde,$hasta);
 	$data=array();
 	foreach (array_slice($resumenEvento,1,4) as $key=>$fila) {
-			$label=strcasecmp($key,'NORMAL')==0?'Ventas':ucwords($key);		
+			$label=strcasecmp($key,'NORMAL')==0?'Ventas':@ucwords($resumenEvento[$key]['titulo']);		
 			$data[]=array('label'=>$label,'value'=>(int)str_replace(',','',$fila['boletos']));
 	}
 					$this->widget('application.extensions.morris.MorrisChartWidget', array(
