@@ -143,7 +143,7 @@ class CrugeUser extends CActiveRecord
 		$criteria->compare('email',$this->email,true);
 		//$criteria->compare('password',$this->password,true);
 		//$criteria->compare('authkey',$this->authkey,true);
-		$criteria->compare('state',$this->state);
+		//$criteria->compare('state',$this->state);
 		//$criteria->compare('totalsessioncounter',$this->totalsessioncounter);
 		//$criteria->compare('currentsessioncounter',$this->currentsessioncounter);
 		$criteria->compare('nombre',$this->nombre,true);

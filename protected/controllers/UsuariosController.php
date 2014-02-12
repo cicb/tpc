@@ -229,4 +229,8 @@ class UsuariosController extends Controller {
 				}	
 				$this->render('usuariosWeb',array('model'=>$model));	
 		}
+		public function actionHistorialCompras()
+		{
+			$this->render('historialCompras');
+		}
 } 

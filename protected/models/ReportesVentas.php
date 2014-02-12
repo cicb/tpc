@@ -193,7 +193,7 @@ class ReportesVentas extends CFormModel
 			$matrix=array(
 			'aforo'       => array('titulo' => 'Aforo','boletos'         => $aforo,'importe'     => 0,'porcentaje' => 100),
 			'por vender'  => array('titulo' => 'Por vender','boletos'    => $porvender,'importe' => 0,'porcentaje' => $porvender/max($aforo,1)),
-			'cortesía'    => array('titulo' => 'Cortesías','boletos'     => 0,'importe'          => 0,'porcentaje' => 0),
+			'cortesia'    => array('titulo' => 'Cortesías','boletos'     => 0,'importe'          => 0,'porcentaje' => 0),
 			'boleto duro' => array('titulo' => 'Boletos duros','boletos' => 0,'importe'          => 0,'porcentaje' => 0),
 			'normal'      => array('titulo' => 'Ventas','boletos'        => 0,'importe'          => 0,'porcentaje' => 0),
 			'total'       => array('titulo' => 'Total','boletos'         => 0,'importe'          => 0,'porcentaje' => 0),
@@ -676,5 +676,12 @@ class ReportesVentas extends CFormModel
 		ORDER BY VentasId,fecha",$eventoId,$funcion ,$eventoId);
 			return new CSqlDataProvider($sql, array('keyField'=>'VentasId'));
 	}
+
+	public function getAnomalos($eventoId,$functionesId="TODAS",$desde=0, $hasta=0)
+	{
+			
+		// code...
+	}
+
 }
  ?>

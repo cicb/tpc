@@ -212,7 +212,6 @@ class Usuarios extends CActiveRecord
         //reset the password to null because we don't want the hash to be shown.
         $this->initialPassword = $this->UsuariosPass;
         $this->UsuariosPass = null;
-        $this->UsuariosPass = null;
         parent::afterFind();
     }
     public function saveModel($data=array())

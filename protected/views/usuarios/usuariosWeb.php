@@ -12,8 +12,7 @@
 						'id'=>'filtro-usuario'
 				)); ?>		
 <?php $this->endWidget(); ?>
-<?php echo TbHtml::link('<span class="fa fa-plus-circle"> Registrar nuevo</span>',$this->createUrl('usuarios/registro'),array('class'=>'btn btn-primary')); ?>
-<br />
+
 <br />
 </div>
 <div id='tabla-usuarios'>
@@ -27,10 +26,7 @@
 			'type'=>'condensed hover striped',
             'htmlOptions'=>array('class'=>'primario'),
 			'columns'=>array(
-					array(
-							'header'=>'Id',
-							'name'=>'iduser',
-					),
+					'iduser',
 					'username',
 					'nombre',
 					'apellido_paterno',
@@ -39,11 +35,11 @@
 					'state',
 					'telefono',
 					'sexo',
-					'direccion',
+					//'direccion',
 					'codigo_postal',
 					'colonia',
 					'ciudad_municipio',
-					'estadoNom',
+					//'estadoNom',
 					'pais',
 					'regdate',
 					'actdate',
@@ -56,8 +52,57 @@
 		?>
 </div>
 <?php 
-Yii::app()->clientScript->registerCss('tablas','
-		TD{padding:5px !important;}
-		FORM {margin:5px;}
-		',CClientScript::POS_END)
+Yii::app()->clientScript->registerScript('ddown','
+$currentId=-1;
+$(function() {
+		var $contextMenu = $("#contextMenu");
+		$("body").on("contextmenu", "table tr", function(e) {
+				var id=	$(this).children(":first").text();
+				if ($.isNumeric(id)){
+						currentId=parseInt(id);
+						//console.log(currentId);
+						$contextMenu.css({
+								display: "block",
+										left: e.pageX,
+										top: e.pageY
+	});
+	}	  
+	return false;
+  });
+
+	$("body").on("click", "table tr", function(e) {
+				$contextMenu.hide();
+		});
+
+  $contextMenu.on("click", "a", function() {
+		  $contextMenu.hide();
+  });
+	$("#contextual li a").on("click",function(){
+
+		return true;
+   }); 
+});	 
+		');
+//Yii::app()->clientScript->registerCss('tablas','
+		//TD{padding:5px !important;}
+		//FORM {margin:5px;}
+		//',CClientScript::POS_END)
 ?>
+<style type='text/css'>
+#contextMenu {
+  position: absolute;
+  display:none;
+
+}
+table{cursor:default;}
+</style>
+  <div id="contextMenu" class="dropdown clearfix">
+    <ul class="dropdown-menu" id="contextual" role="menu" aria-labelledby="dropdownMenu" style="display:block;position:static;margin-bottom:5px;">
+	  <li><a tabindex="-1" href='<?php echo $this->createUrl('usuarios/historialCompras') ; ?>' class="fa fa-dollar">
+ Historial de compras</a></li>
+	  <li><a tabindex="-1" href="#" class="fa fa-credit-card"> Tarjetas de credito.
+			</a></li>
+	  <li class="divider"></li>
+	  <li><a tabindex="-1" href="#" class="fa fa-arrow-down"> Dar de baja</a></li>
+    </ul>
+  </div>
