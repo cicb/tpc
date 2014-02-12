@@ -221,4 +221,10 @@ class UsuariosController extends Controller {
 							}	
 					}else throw new CHttpException ( 404, 'Petición incompleta.');
 		}
+		public function actionUsuariosWeb()
+		{
+				$model=new CrugeUser('search');
+				$model->attributes = $_POST ['CrugeUser'];
+				$this->render('usuariosWeb',array('model'=>$model));	
+		}
 } 

@@ -64,9 +64,12 @@ $this->widget('bootstrap.widgets.TbNavbar',array(
 												'visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
 										array('label' => 'Ventas Diarias',
 												'url' =>  $this->createUrl('reportes/ventasDiarias'),
-												'visible' => !Yii::app()->user->isGuest AND (Yii::app()->user->getState("Admin"))?true:false), 
-										array('label' => 'Cancelaciones y reimpresiones',
+												'visible' => !Yii::app()->user->isGuest AND (Yii::app()->user->getState("Admin"))?true:false),
+										array('label' => 'Cancelaciones y Reimpresiones',
 												'url' =>  $this->createUrl('reportes/cancelacionesReimpresiones'),
+												'visible' => !Yii::app()->user->isGuest AND (Yii::app()->user->getState("Admin"))?true:false), 
+										array('label' => 'Usuarios Web',
+												'url' =>  $this->createUrl('usuarios/usuariosWeb'),
 												'visible' => !Yii::app()->user->isGuest AND (Yii::app()->user->getState("Admin"))?true:false), 
 										),
 								),
@@ -119,7 +122,7 @@ $this->widget('bootstrap.widgets.TbNavbar',array(
 </div>
 <div id="footer">
 	<div class='container'>
-		Copyright &copy; <?php echo date('Y'); ?> Taquilla Cero.<br/>
+		Copyright &copy; <?php echo date('Y'); ?> por Taquilla Cero.<br/>
 		Reservados todos los derechos.<br/>
 	</div>
 </div><!-- footer -->

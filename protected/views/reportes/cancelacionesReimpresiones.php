@@ -78,7 +78,7 @@
 						$this->widget('bootstrap.widgets.TbGridView', array(
 								'id'=>'usrval-grid',
 								'dataProvider' => $model->getCancelacionesYReimpresiones($eventoId,$funcionesId),
-								'template' => "{items}\n{pager}",
+								'template' => "{filters}\n{items}\n{pager}",
 								'type'=>'striped hover',
 								'columns' => array(
 										array(
