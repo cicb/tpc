@@ -1012,6 +1012,16 @@ $objWriter->save('php://output');
 			//}
 
 	}
+	public function actionCancelacionesReimpresiones()
+	{
+		$model=new ReportesVentas;
+		$eventoId=isset($_POST['evento_id'])?$_POST['evento_id']:0;
+		$funcionesId=isset($_POST['funcion_id'])?$_POST['funcion_id']:"TODAS";
+		$desde=isset($_POST['desde'])?$_POST['desde']:0;
+		$hasta=isset($_POST['hasta'])?$_POST['hasta']:0;
+		$this->render('cancelacionesReimpresiones',array('model'=>$model,'eventoId'=>$eventoId,'funcionesId'=>$funcionesId,
+		'desde'=>$desde,'hasta'=>$hasta));
+	}
 	// Uncomment the following methods and override them if needed
 	/*
 	public function filters()

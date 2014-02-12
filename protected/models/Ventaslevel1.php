@@ -84,6 +84,7 @@ class Ventaslevel1 extends CActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
         'venta' => array(self::BELONGS_TO, 'Ventas', 'VentasId'),
+		'cancelo'=>array(self::BELONGS_TO, 'Usuarios', 'CancelUsuarioId'),
 		);
 	}
 

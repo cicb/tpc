@@ -228,3 +228,11 @@ th {
 .caret {
   border-top: 4px solid #ecf0f1 !important;
 }
+.col-4 {
+  float: none;
+  margin: auto;
+  display: inline-block;
+  width: 260;
+  padding: 5px;
+  margin: 5px;
+}
