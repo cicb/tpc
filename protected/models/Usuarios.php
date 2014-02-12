@@ -534,7 +534,7 @@ class Usuarios extends CActiveRecord
 						AND t1.UsrValPrivId=t2.UsrValPrivId
 						AND  t2.UsuarioId=t1.UsuarioId
 						",$this->UsuariosId,$eventoId);
-					return new CSqlDataProvider($query);
+					return new CSqlDataProvider($query,array('pagination'=>false));
 			}	
 			else  return null;
 	}

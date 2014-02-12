@@ -214,7 +214,7 @@ class UsuariosController extends Controller {
 							$model->UsuariosPass=$_POST['up'];
 							if ($model->update(array('UsuariosPass','UsuariosPasCon'))) {
 									Yii::app()->user->setFlash(TbHtml::ALERT_COLOR_SUCCESS,
-											sprintf('<h3>Contraseña cambiada</h3> Se ha modificado exitosamente la contraseña del usuario %s.',$model->UsuariosNom));
+											sprintf('<h3>Contraseña cambiada</h3> <br/>	Se ha modificado exitosamente la contraseña del usuario %s.',$model->UsuariosNom));
 									$this->widget('bootstrap.widgets.TbAlert', array(
 											'block'=>true,
 									));
