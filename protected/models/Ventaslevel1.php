@@ -85,6 +85,7 @@ class Ventaslevel1 extends CActiveRecord
 		return array(
         'venta' => array(self::BELONGS_TO, 'Ventas', 'VentasId'),
 		'cancelo'=>array(self::BELONGS_TO, 'Usuarios', 'CancelUsuarioId'),
+		//'reimpresiones'=>array(self::HAS_MANY, 'Reimpresiones', array('EventoId','FuncionesId','ZonasId','SubzonaId','FilasId','LugaresId')),
 		);
 	}
 

@@ -647,24 +647,33 @@ class ReportesVentas extends CFormModel
 			if ($funcionesId>0) {
 						$funcion=sprintf("t1.FuncionesId = %s ",$funcionesId);
 				}
-			$sql=sprintf("(select t1.VentasId, VentasSta, UsuariosNom, ReimpresionesFecHor as fecha, 'REIMPRESION' as tipo from reimpresiones as t
+			$sql=sprintf("(select t1.VentasId, t1.VentasSta, t2.UsuariosNom, ReimpresionesFecHor as fecha, 'REIMPRESION' as tipo, 
+				t.LugaresNumBol, t4.PuntosventaNom, t5.UsuariosNom  as vendio, t3.VentasFecHor 
+					from reimpresiones as t
 					inner join ventaslevel1 as t1 on t1.EventoId=t.EventoId
 				AND t1.FuncionesId=t.FuncionesId
 				AND t1.ZonasId=t.ZonasId
 				AND t1.SubzonaId=t.SubzonaId
 				AND t1.FilasId=t.FilasId
 				AND t1.LugaresId=t.LugaresId
-				inner join usuarios as t2 on t2.UsuariosId=t.UsuarioId
+				INNER JOIN ventas 		as	t3 on t3.VentasId=t1.VentasId
+				INNER JOIN puntosventa 	as	t4 on t4.PuntosventaId=t3.PuntosventaId
+				INNER JOIN usuarios 	as	t2 on t2.UsuariosId=t.UsuarioId
+				LEFT JOIN usuarios 		as	t5 on t5.UsuariosId=t3.UsuariosId
 				where t.EventoId=%s
 				AND %s
 		)union
 		(
-				select VentasId, VentasSta, UsuariosNom, CancelFecHor as fecha, 'CANCELACION' as tipo from ventaslevel1 
-				inner join usuarios as t3 on t3.UsuariosId=CancelUsuarioId
-				where 
-				VentasSta='CANCELADO' _ and EventoId=%s
+				SELECT t.VentasId, t.VentasSta, t3.UsuariosNom, CancelFecHor as fecha, 'CANCELACION' as tipo,
+				t.LugaresNumBol, t4.PuntosventaNom, t5.UsuariosNom as vendio, t2.VentasFecHor
+				FROM ventaslevel1 as  t 
+				INNER JOIN ventas 		as	t2	ON	t2.VentasId=t.VentasId
+				INNER JOIN usuarios 	as	t3	ON	t3.UsuariosId=CancelUsuarioId
+				INNER JOIN puntosventa 	as	t4 on t4.PuntosventaId=t2.PuntosventaId
+				LEFT JOIN usuarios 		as	t5	ON	t5.UsuariosId=t2.UsuariosId
+				WHERE t.VentasSta='CANCELADO'  and EventoId=%s
 		)
-		order by VentasId",$eventoId,$funcion ,$eventoId);
+		ORDER BY VentasId,fecha",$eventoId,$funcion ,$eventoId);
 			return new CSqlDataProvider($sql, array('keyField'=>'VentasId'));
 	}
 }
