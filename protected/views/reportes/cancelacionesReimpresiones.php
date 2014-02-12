@@ -86,9 +86,18 @@
 												'name'=>'VentasId'
 										),
 										array(
-												'header'=>'Usuario Que Realizo',
+												'header'=>'Numero de Boleto',
+												'name'=>'LugaresNumBol'
+										),
+										array(
+												'header'=>'Usuario',
 												'name'=>'UsuariosNom'
 										),
+										//array(
+												//'header'=>'Usuario Que Vendio',
+												//'name'=>'vendio'
+										//),
+
 										array(
 												'header'=>'Cancel/Reimpr',
 												'name'=>'tipo',
@@ -96,6 +105,14 @@
 										array(
 												'header'=>'Fecha/Hora',
 												'name'=>'fecha'
+										),
+										array(
+												'header'=>'Estatus actual',
+												'name'=>'VentasSta'
+										),
+										array(
+												'header'=>'Punto de Venta',
+												'name'=>'PuntosventaNom'
 										),
 
 										//array(
