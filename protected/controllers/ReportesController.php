@@ -914,7 +914,7 @@ $objWriter->save('php://output');
                 	) );
          
          $html2pdf->writeHTML ($documento, false );
-         $path='..'. Yii::app()->request->baseUrl . '/doctos';
+         $path=$_SERVER["DOCUMENT_ROOT"].'/'. Yii::app()->request->baseUrl . '/doctos';
     				$html2pdf->Output ($path.'/boletos.pdf', 'F' );
         }
         
