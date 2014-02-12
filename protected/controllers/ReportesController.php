@@ -896,12 +896,12 @@ $objWriter->save('php://output');
             $imagen = Evento::model()->findByAttributes(array('EventoId'=>$_POST['EventoId']));//$data->getData();
             
                 if($imagen->EventoImaBol==""){
-                    if(!file_exists('..' . Yii::app ()->baseUrl . '/imagesbd/blanco.jpg')){
-                        copy('https://taquillacero.com/imagesbd/blanco.jpg','..' . Yii::app ()->baseUrl . '/imagesbd/blanco.jpg' );
+                    if(!file_exists($_SERVER["DOCUMENT_ROOT"].'/'. Yii::app ()->baseUrl . '/imagesbd/blanco.jpg')){
+                        copy('https://taquillacero.com/imagesbd/blanco.jpg',$_SERVER["DOCUMENT_ROOT"].'/'. Yii::app ()->baseUrl . '/imagesbd/blanco.jpg' );
                     }
                 }else{
-                    if(!file_exists('..' . Yii::app ()->baseUrl . '/imagesbd/'.$imagen[0]['EventoImaBol'])){
-                        copy('https://taquillacero.com/imagesbd/'.$imagen[0]['EventoImaBol'],'..' . Yii::app ()->baseUrl . '/imagesbd/'.$imagen->EventoImaBol );
+                    if(!file_exists($_SERVER["DOCUMENT_ROOT"].'/'. Yii::app ()->baseUrl . '/imagesbd/'.$imagen[0]['EventoImaBol'])){
+                        copy('https://taquillacero.com/imagesbd/'.$imagen[0]['EventoImaBol'],$_SERVER["DOCUMENT_ROOT"].'/'. Yii::app ()->baseUrl . '/imagesbd/'.$imagen->EventoImaBol );
                     }
                 }
             $documento = $this->renderPartial('_impresionBoletosAjax', array('formato'=>$formato,'data'=>$data,'FormatoId'=>$_POST['formatoId']), true, false);

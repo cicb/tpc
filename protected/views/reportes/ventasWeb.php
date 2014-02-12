@@ -347,7 +347,7 @@ endif;
     height: 320px;
     top: 45%;
     left: 35%;
-    background: url('<?php echo '..' . Yii::app ()->baseUrl . '/images/loading.gif'; ?>') no-repeat center ;
+    background: url('<?php echo $_SERVER["DOCUMENT_ROOT"].'/'. Yii::app ()->baseUrl . '/images/loading.gif'; ?>') no-repeat center ;
     text-align: center;
     color: blue;
     font-size: 20pt;
@@ -385,7 +385,7 @@ $("#imprimir_boletos").click(function(){
                         boletos.close();
                     }catch(err){}
                     if(data.ok=="si"){
-                        window.open('<?php echo '..' . Yii::app ()->baseUrl . '/doctos/boletos.pdf'?>', 'boletos', 'width=960,height=600');
+                        window.open('<?php echo $_SERVER["DOCUMENT_ROOT"].'/'. Yii::app ()->baseUrl . '/doctos/boletos.pdf'?>', 'boletos', 'width=960,height=600');
                     }else{
                         alert("No hay boletos para imprimir");
                      }
@@ -410,7 +410,7 @@ $("#imprimir_boletos").click(function(){
                     }catch(err){}
                      console.log(data);
                      if(data.ok=="si"){
-                        window.open('<?php echo '..' . Yii::app ()->baseUrl . '/doctos/boletos.pdf'?>', 'boletos', 'width=960,height=600');
+                        window.open('<?php echo $_SERVER["DOCUMENT_ROOT"].'/'. Yii::app ()->baseUrl . '/doctos/boletos.pdf'?>', 'boletos', 'width=960,height=600');
                     
                      }else{
                         alert("No hay boletos NO impresos para imprimir");
