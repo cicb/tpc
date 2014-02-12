@@ -325,6 +325,8 @@ $('#eventos_asignados').change(function(){
 		function(data){ $('#tabla-reportes').html(data);}
 		);
  });
+
+$('#eventos_asignados').change();
 		");
 ?>
  <?php Yii::app()->clientScript->registerScript('validacion',"

@@ -623,5 +623,49 @@ class ReportesVentas extends CFormModel
 					'pagination'=>false,
 					));
 	}
+
+		public function getCancelacionesReimpresiones($eventoId,$funcionesId="TODAS", $desde=0,$hasta=0)
+		{
+				$criteria=new CDbCriteria;
+				$criteria->addCondition("t.VentasSta like 'CANCELADO'");
+				$criteria->addCondition("t.EventoId=:evento ");
+				$funcion="";
+				if ($funcionesId>0) {
+					$funcion=sprintf("t.FuncionesId = %s ",$funcionesId);
+					//$criteria->addCondition($funcion);
+				}
+				$criteria->params=array(':evento'=>$eventoId);
+				return new CActiveDataProvider('Ventaslevel1',array(
+						'criteria'=>$criteria,
+								//'with'=>array('ventas')
+						));
+
+		}
+	public function getCancelacionesYReimpresiones($eventoId,$funcionesId="TODAS", $desde=0,$hasta=0)
+	{
+			$funcion="1";
+			if ($funcionesId>0) {
+						$funcion=sprintf("t1.FuncionesId = %s ",$funcionesId);
+				}
+			$sql=sprintf("(select t1.VentasId, VentasSta, UsuariosNom, ReimpresionesFecHor as fecha, 'REIMPRESION' as tipo from reimpresiones as t
+					inner join ventaslevel1 as t1 on t1.EventoId=t.EventoId
+				AND t1.FuncionesId=t.FuncionesId
+				AND t1.ZonasId=t.ZonasId
+				AND t1.SubzonaId=t.SubzonaId
+				AND t1.FilasId=t.FilasId
+				AND t1.LugaresId=t.LugaresId
+				inner join usuarios as t2 on t2.UsuariosId=t.UsuarioId
+				where t.EventoId=%s
+				AND %s
+		)union
+		(
+				select VentasId, VentasSta, UsuariosNom, CancelFecHor as fecha, 'CANCELACION' as tipo from ventaslevel1 
+				inner join usuarios as t3 on t3.UsuariosId=CancelUsuarioId
+				where 
+				VentasSta='CANCELADO' _ and EventoId=%s
+		)
+		order by VentasId",$eventoId,$funcion ,$eventoId);
+			return new CSqlDataProvider($sql, array('keyField'=>'VentasId'));
+	}
 }
  ?>
