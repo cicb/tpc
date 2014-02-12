@@ -422,7 +422,7 @@ class DescuentosController extends Controller
                         $subzonasId       = $data['SubzonaId'];
                         $filasId          = $data['FilasId'];
                         $lugaresId        = $data['LugaresId'];
-                        /*$descuentoslevel1 = Descuentoslevel1::model()->findAll("EventoId = $key");
+                        $descuentoslevel1 = Descuentoslevel1::model()->findAll("EventoId = $key");
                         if(!empty($descuentoslevel1[0]->DescuentosId)){
                             foreach($descuentoslevel1 as $key2 => $desc):
                                 if($desc->DescuentosNum > $descuentosNum){
@@ -430,9 +430,9 @@ class DescuentosController extends Controller
                                 }
                             endforeach;
                             $descuentosNum = $descuentosNum+1;
-                        }*/
+                        }
                         $descuentoCargoCan   = $data['DescuentoCargoCan'];
-                        if(is_array($funcionesId)){//if(count($funcionesId)>0){
+                        if(is_array($funcionesId) AND count($funcionesId)>0){//if(count($funcionesId)>0){
                             foreach($funcionesId as $keyf => $funciones):
                                 if(count($funciones)>0){
                                     foreach($funciones as $keyz => $zonas):
