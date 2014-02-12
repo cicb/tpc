@@ -44,6 +44,7 @@ class FarmatodoController extends Controller
                                     if($status > 0){
                                //Se eliminan las reservaciones de la tabla templugares     
                                             Yii::app()->db->createCommand("DELETE FROM templugares  WHERE EventoId = ".$ventaslevel1[0]['EventoId']." AND FuncionesId = ".$ventaslevel1[0]['FuncionesId']." AND ZonasId = ".$ventaslevel1[0]['ZonasId']." AND SubzonaId = ".$ventaslevel1[0]['SubzonaId']." AND FilasId = ".$ventaslevel1[0]['FilasId']." AND LugaresId = ".$ventaslevel1[0]['LugaresId'])->execute();
+                                            Yii::app()->db->createCommand("DELETE FROM preciostemplugares  WHERE EventoId = ".$ventaslevel1[0]['EventoId']." AND FuncionesId = ".$ventaslevel1[0]['FuncionesId']." AND ZonasId = ".$ventaslevel1[0]['ZonasId']." AND SubzonaId = ".$ventaslevel1[0]['SubzonaId']." AND FilasId = ".$ventaslevel1[0]['FilasId']." AND LugaresId = ".$ventaslevel1[0]['LugaresId'])->execute();
                                      } 
                             }
                     }else{
