@@ -347,7 +347,7 @@ endif;
     height: 320px;
     top: 45%;
     left: 35%;
-    background: url('<?php echo $_SERVER["DOCUMENT_ROOT"].'/'. Yii::app ()->baseUrl . '/images/loading.gif'; ?>') no-repeat center ;
+    background: url('<?php echo  Yii::app ()->baseUrl . '/images/loading.gif'; ?>') no-repeat center ;
     text-align: center;
     color: blue;
     font-size: 20pt;
