@@ -4,7 +4,7 @@
  * This is the model class for table "distribucionpuerta".
  *
  * The followings are the available columns in table 'distribucionpuerta':
- * @property integer $idDistribucionPuerta
+ * @property integer $IdDistribucionPuerta
  * @property integer $ForoId
  * @property integer $ForoIntMapId
  * @property integer $DistribucionPuertaSta
@@ -43,7 +43,7 @@ class Distribucionpuerta extends CActiveRecord
 			array('DistribucionPuertaNom', 'length', 'max'=>65),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('idDistribucionPuerta, ForoId, ForoIntMapId, DistribucionPuertaSta, DistribucionPuertaNom', 'safe', 'on'=>'search'),
+			array('IdDistribucionPuerta, ForoId, ForoIntMapId, DistribucionPuertaSta, DistribucionPuertaNom', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -64,7 +64,7 @@ class Distribucionpuerta extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'idDistribucionPuerta' => 'Id Distribucion Puerta',
+			'IdDistribucionPuerta' => 'Id Distribucion Puerta',
 			'ForoId' => 'Foro',
 			'ForoIntMapId' => 'Foro Int Map',
 			'DistribucionPuertaSta' => 'Distribucion Puerta Sta',
@@ -83,7 +83,7 @@ class Distribucionpuerta extends CActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('idDistribucionPuerta',$this->idDistribucionPuerta);
+		$criteria->compare('IdDistribucionPuerta',$this->IdDistribucionPuerta);
 		$criteria->compare('ForoId',$this->ForoId);
 		$criteria->compare('ForoIntMapId',$this->ForoIntMapId);
 		$criteria->compare('DistribucionPuertaSta',$this->DistribucionPuertaSta);

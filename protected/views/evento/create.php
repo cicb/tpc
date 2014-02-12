@@ -71,7 +71,7 @@ $cs = Yii::app()->getClientScript();
                </div>
                <select class="row puertas" style="width: 280px;" multiple="" size="20" >
                     <?php  foreach($puertas as $key => $puerta): ?>
-                    <option value="<?php echo $puerta['idCatPuerta'];?>" id="puerta_<?php echo $puerta['idCatPuerta'];?>" data_id_puerta='<?php echo $puerta['idCatPuerta'];?>' data-eventoId='<?php echo $_GET['EventoId'];?>' data-funcionId='<?php echo $_GET['funciones'] ?>' data-distribucionId='<?php echo $id_distribucion_nueva;?>' >
+                    <option value="<?php echo $puerta['IdCatPuerta'];?>" id="puerta_<?php echo $puerta['IdCatPuerta'];?>" data_id_puerta='<?php echo $puerta['IdCatPuerta'];?>' data-eventoId='<?php echo $_GET['EventoId'];?>' data-funcionId='<?php echo $_GET['funciones'] ?>' data-distribucionId='<?php echo $id_distribucion_nueva;?>' >
                              <?php echo $puerta['CatPuertaNom']; ?>
                     </option>    
                      <?php endforeach; ?>
@@ -251,7 +251,7 @@ $cs = Yii::app()->getClientScript();
                                 beforeSend:function(){
                                      $("#loading").show();
                                 },
-                                data:'id_distribucion=<?php echo $id_distribucion_nueva ?>&idCatPuerta='+id,
+                                data:'id_distribucion=<?php echo $id_distribucion_nueva ?>&IdCatPuerta='+id,
                                 success:function(data){
                                     $("#loading").hide();
                                     if(data.ok=="0")
@@ -317,7 +317,7 @@ $cs = Yii::app()->getClientScript();
                         <td>
                             <table border='0'>
                                 <?php
-                                  $valuez = $model->getZonas($puerta['idCatPuerta'],$id_distribucion_nueva,$_GET['EventoId']);
+                                  $valuez = $model->getZonas($puerta['IdCatPuerta'],$id_distribucion_nueva,$_GET['EventoId']);
                                   foreach($valuez as $key => $zonas):
                                  ?>               
                                  <tr style=''>
@@ -327,7 +327,7 @@ $cs = Yii::app()->getClientScript();
                                     <td>
                                         <table border='1'>
                                         <?php
-                                        $values = $model->getSubZonas($_GET['EventoId'],$zonas['ZonasId'],$id_distribucion_nueva,$puerta['idCatPuerta']);
+                                        $values = $model->getSubZonas($_GET['EventoId'],$zonas['ZonasId'],$id_distribucion_nueva,$puerta['IdCatPuerta']);
                                         foreach($values as $key => $subzonas):
                                         ?>
                                           <tr>

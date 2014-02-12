@@ -104,7 +104,7 @@ class Evento extends CActiveRecord
 			'PuntosventaId' => 'Puntosventa',
 			'EventoSta2' => 'Evento Sta2',
 			'FuncionesId' => 'Funciones',
-			'idDistribucionPuerta' => 'Distribucion Puerta'
+			'IdDistribucionPuerta' => 'Distribucion Puerta'
 		);
 	}
 	
@@ -149,9 +149,9 @@ class Evento extends CActiveRecord
 	}
 	
 	public function getAsignaciones($EventoId){
-		$query = "SELECT DISTINCT idAsignacion,idCatTerminal,AsignacionFecha,asignacion.idCatPuerta,CatPuertaNom
-				 FROM asignacion INNER JOIN catpuerta ON catpuerta.idCatPuerta=asignacion.idCatPuerta
-                 INNER JOIN distribucionpuertalevel1 ON distribucionpuertalevel1.idDistribucionPuerta=asignacion.idDistribucionPuerta
+		$query = "SELECT DISTINCT idAsignacion,idCatTerminal,AsignacionFecha,asignacion.IdCatPuerta,CatPuertaNom
+				 FROM asignacion INNER JOIN catpuerta ON catpuerta.IdCatPuerta=asignacion.IdCatPuerta
+                 INNER JOIN distribucionpuertalevel1 ON distribucionpuertalevel1.IdDistribucionPuerta=asignacion.IdDistribucionPuerta
                  WHERE distribucionpuertalevel1.EventoId = '$EventoId'";
         return new CSqlDataProvider($query, array(
 					//		'totalItemCount'=>$count,//$count,
@@ -160,10 +160,10 @@ class Evento extends CActiveRecord
      }
      
      public function getPuertas($DistribucionId){
-		$query = "SELECT DISTINCT catpuerta.CatPuertaNom,catpuerta.idCatPuerta,ZonasId,SubzonaId
-                 FROM catpuerta INNER JOIN distribucionpuertalevel1 ON distribucionpuertalevel1.idCatPuerta=catpuerta.idCatPuerta
-				 WHERE distribucionpuertalevel1.idDistribucionPuerta='$DistribucionId' AND EventoId=(SELECT EventoId
-                 FROM distribucionpuertalevel1 where idDistribucionPuerta='$DistribucionId' order by iddistribucionpuertalevel1 LIMIT 1) order by catpuerta.idCatPuerta";
+		$query = "SELECT DISTINCT catpuerta.CatPuertaNom,catpuerta.IdCatPuerta,ZonasId,SubzonaId
+                 FROM catpuerta INNER JOIN distribucionpuertalevel1 ON distribucionpuertalevel1.IdCatPuerta=catpuerta.IdCatPuerta
+				 WHERE distribucionpuertalevel1.IdDistribucionPuerta='$DistribucionId' AND EventoId=(SELECT EventoId
+                 FROM distribucionpuertalevel1 where IdDistribucionPuerta='$DistribucionId' order by IdDistribucionPuertalevel1 LIMIT 1) order by catpuerta.IdCatPuerta";
         $data= new CSqlDataProvider($query, array(
 					//		'totalItemCount'=>$count,//$count,
                             'pagination'=>false,
@@ -172,10 +172,10 @@ class Evento extends CActiveRecord
      }
      
      public static function getCargarPuertas($DistribucionId){
-		$query = "SELECT DISTINCT catpuerta.CatPuertaNom,catpuerta.idCatPuerta
-                 FROM catpuerta INNER JOIN distribucionpuertalevel1 ON distribucionpuertalevel1.idCatPuerta=catpuerta.idCatPuerta
-				 WHERE distribucionpuertalevel1.idDistribucionPuerta='$DistribucionId' AND EventoId=(SELECT EventoId
-                 FROM distribucionpuertalevel1 where idDistribucionPuerta='$DistribucionId' order by iddistribucionpuertalevel1 LIMIT 1) order by catpuerta.idCatPuerta";
+		$query = "SELECT DISTINCT catpuerta.CatPuertaNom,catpuerta.IdCatPuerta
+                 FROM catpuerta INNER JOIN distribucionpuertalevel1 ON distribucionpuertalevel1.IdCatPuerta=catpuerta.IdCatPuerta
+				 WHERE distribucionpuertalevel1.IdDistribucionPuerta='$DistribucionId' AND EventoId=(SELECT EventoId
+                 FROM distribucionpuertalevel1 where IdDistribucionPuerta='$DistribucionId' order by IdDistribucionPuertalevel1 LIMIT 1) order by catpuerta.IdCatPuerta";
         $data= new CSqlDataProvider($query, array(
 					//		'totalItemCount'=>$count,//$count,
                             'pagination'=>false,
@@ -184,9 +184,9 @@ class Evento extends CActiveRecord
      }
      
      public function getCatPuertas($DistribucionId,$PuertaId){
-		$query = "SELECT DISTINCT catpuerta.CatPuertaNom,catpuerta.idCatPuerta
+		$query = "SELECT DISTINCT catpuerta.CatPuertaNom,catpuerta.IdCatPuerta
                  FROM catpuerta
-				 WHERE idDistribucionPuerta='$DistribucionId' AND idCatPuerta='$PuertaId'";
+				 WHERE IdDistribucionPuerta='$DistribucionId' AND IdCatPuerta='$PuertaId'";
         $data= new CSqlDataProvider($query, array(
 					//		'totalItemCount'=>$count,//$count,
                             'pagination'=>false,
@@ -194,12 +194,12 @@ class Evento extends CActiveRecord
         return $data->getData();
      }
      
-     public function getZonas($idCatPuerta,$distribucionId,$eventoId){
+     public function getZonas($IdCatPuerta,$distribucionId,$eventoId){
 		$query = "SELECT DISTINCT ZonasAli,ZonasId
 				 FROM zonas
                  WHERE ZonasId IN(SELECT DISTINCT ZonasId
-                 FROM distribucionpuertalevel1 WHERE idCatPuerta='$idCatPuerta' AND idDistribucionPuerta='$distribucionId'
-                 AND EventoId=(SELECT EventoId FROM distribucionpuertalevel1 WHERE idDistribucionPuerta='$distribucionId' ORDER BY idDistribucionPuerta LIMIT 1))
+                 FROM distribucionpuertalevel1 WHERE IdCatPuerta='$IdCatPuerta' AND IdDistribucionPuerta='$distribucionId'
+                 AND EventoId=(SELECT EventoId FROM distribucionpuertalevel1 WHERE IdDistribucionPuerta='$distribucionId' ORDER BY IdDistribucionPuerta LIMIT 1))
                  AND EventoId='$eventoId'";
         $data= new CSqlDataProvider($query, array(
 					//		'totalItemCount'=>$count,//$count,
@@ -221,12 +221,12 @@ class Evento extends CActiveRecord
         return $data->getData();
      }
      
-      public function getSubZonas($EventoId,$ZonaId,$distribucionId,$idCatPuerta){
+      public function getSubZonas($EventoId,$ZonaId,$distribucionId,$IdCatPuerta){
 		 $query = "SELECT DISTINCT SubzonaAcc,SubzonaId
 				 FROM subzona
                  WHERE SubzonaId IN(SELECT DISTINCT SubzonaId
-                 FROM distribucionpuertalevel1 WHERE idCatPuerta='$idCatPuerta' AND idDistribucionPuerta='$distribucionId' AND ZonasId='$ZonaId'
-                 AND EventoId=(SELECT EventoId FROM distribucionpuertalevel1 WHERE idDistribucionPuerta='$distribucionId' ORDER BY idDistribucionPuerta LIMIT 1))
+                 FROM distribucionpuertalevel1 WHERE IdCatPuerta='$IdCatPuerta' AND IdDistribucionPuerta='$distribucionId' AND ZonasId='$ZonaId'
+                 AND EventoId=(SELECT EventoId FROM distribucionpuertalevel1 WHERE IdDistribucionPuerta='$distribucionId' ORDER BY IdDistribucionPuerta LIMIT 1))
                  AND EventoId='$EventoId' AND ZonasId='$ZonaId'";
          $data= new CSqlDataProvider($query, array(
 					//		'totalItemCount'=>$count,//$count,
@@ -236,12 +236,12 @@ class Evento extends CActiveRecord
      }
      
      public function getDistribucionForo($EventoId,$FuncionesId){
-        $query = "SELECT DISTINCT distribucionpuertalevel1.EventoId,distribucionpuerta.idDistribucionPuerta,DistribucionPuertaNom
+        $query = "SELECT DISTINCT distribucionpuertalevel1.EventoId,distribucionpuerta.IdDistribucionPuerta,DistribucionPuertaNom
         FROM distribucionpuerta inner join funciones on funciones.ForoId=distribucionpuerta.ForoId and funciones.ForoMapIntId=distribucionpuerta.ForoIntMapId
-        INNER JOIN distribucionpuertalevel1 ON distribucionpuerta.idDistribucionPuerta =  distribucionpuertalevel1.idDistribucionPuerta                
+        INNER JOIN distribucionpuertalevel1 ON distribucionpuerta.IdDistribucionPuerta =  distribucionpuertalevel1.IdDistribucionPuerta                
         WHERE funciones.EventoId='$EventoId' AND funciones.FuncionesId IN ('$FuncionesId') AND DistribucionPuertaNom NOT LIKE '%DISTRIBUCION_TEMP_%'
-        GROUP BY distribucionpuertalevel1.idCatPuerta,distribucionpuertalevel1.idDistribucionPuerta";
-		/*$query = "SELECT DISTINCT EventoId,idDistribucionPuerta,DistribucionPuertaNom
+        GROUP BY distribucionpuertalevel1.IdCatPuerta,distribucionpuertalevel1.IdDistribucionPuerta";
+		/*$query = "SELECT DISTINCT EventoId,IdDistribucionPuerta,DistribucionPuertaNom
                  FROM distribucionpuerta inner join funciones on funciones.ForoId=distribucionpuerta.ForoId and funciones.ForoMapIntId=distribucionpuerta.ForoIntMapId
                  WHERE funciones.EventoId='$EventoId' AND funciones.FuncionesId IN ('$FuncionesId') AND DistribucionPuertaNom NOT LIKE '%DISTRIBUCION_TEMP_%'";
         */
@@ -253,9 +253,9 @@ class Evento extends CActiveRecord
      }
      
      public function getValidacion($distribucionId,$eventoId,$funcion,$ZonasId,$SubzonaId){
-		$query = "SELECT Count(idDistribucionPuerta) As Total
+		$query = "SELECT Count(IdDistribucionPuerta) As Total
                  FROM distribucionpuertalevel1
-                 WHERE idDistribucionPuerta = '$distribucionId' AND EventoId = '$eventoId' AND FuncionesId = '$funcion'
+                 WHERE IdDistribucionPuerta = '$distribucionId' AND EventoId = '$eventoId' AND FuncionesId = '$funcion'
                  AND ZonasId = '$ZonasId' AND SubzonaId = '$SubzonaId'";
                  
         $data= new CSqlDataProvider($query, array(

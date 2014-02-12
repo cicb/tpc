@@ -224,7 +224,9 @@ class UsuariosController extends Controller {
 		public function actionUsuariosWeb()
 		{
 				$model=new CrugeUser('search');
-				$model->attributes = $_POST ['CrugeUser'];
+				if (isset($_POST) and array_key_exists('CrugeUser',$_POST)) {
+						$model->attributes = $_POST ['CrugeUser'];
+				}	
 				$this->render('usuariosWeb',array('model'=>$model));	
 		}
 } 

@@ -4,8 +4,8 @@
  * This is the model class for table "catpuerta".
  *
  * The followings are the available columns in table 'catpuerta':
- * @property integer $idCatPuerta
- * @property integer $idDistribucionPuerta
+ * @property integer $IdCatPuerta
+ * @property integer $IdDistribucionPuerta
  * @property string $CatPuertaNom
  */
 class Catpuerta extends CActiveRecord
@@ -36,12 +36,12 @@ class Catpuerta extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('idDistribucionPuerta', 'required'),
-			array('idDistribucionPuerta', 'numerical', 'integerOnly'=>true),
+			array('IdDistribucionPuerta', 'required'),
+			array('IdDistribucionPuerta', 'numerical', 'integerOnly'=>true),
 			array('CatPuertaNom', 'length', 'max'=>45),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('idCatPuerta, idDistribucionPuerta, CatPuertaNom', 'safe', 'on'=>'search'),
+			array('IdCatPuerta, IdDistribucionPuerta, CatPuertaNom', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -62,8 +62,8 @@ class Catpuerta extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'idCatPuerta' => 'Id Cat Puerta',
-			'idDistribucionPuerta' => 'Id Distribucion Puerta',
+			'IdCatPuerta' => 'Id Cat Puerta',
+			'IdDistribucionPuerta' => 'Id Distribucion Puerta',
 			'CatPuertaNom' => 'Cat Puerta Nom',
 		);
 	}
@@ -79,8 +79,8 @@ class Catpuerta extends CActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('idCatPuerta',$this->idCatPuerta);
-		$criteria->compare('idDistribucionPuerta',$this->idDistribucionPuerta);
+		$criteria->compare('IdCatPuerta',$this->IdCatPuerta);
+		$criteria->compare('IdDistribucionPuerta',$this->IdDistribucionPuerta);
 		$criteria->compare('CatPuertaNom',$this->CatPuertaNom,true);
 
 		return new CActiveDataProvider($this, array(

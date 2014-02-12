@@ -4,9 +4,9 @@
  * This is the model class for table "distribucionpuertalevel1".
  *
  * The followings are the available columns in table 'distribucionpuertalevel1':
- * @property integer $iddistribucionpuertalevel1
- * @property integer $idCatPuerta
- * @property integer $idDistribucionPuerta
+ * @property integer $IdDistribucionPuertalevel1
+ * @property integer $IdCatPuerta
+ * @property integer $IdDistribucionPuerta
  * @property integer $EventoId
  * @property integer $FuncionesId
  * @property integer $ZonasId
@@ -40,11 +40,11 @@ class Distribucionpuertalevel1 extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('idCatPuerta, idDistribucionPuerta, ZonasId, SubzonaId', 'required'),
-			array('idCatPuerta, idDistribucionPuerta, EventoId, FuncionesId, ZonasId, SubzonaId', 'numerical', 'integerOnly'=>true),
+			array('IdCatPuerta, IdDistribucionPuerta, ZonasId, SubzonaId', 'required'),
+			array('IdCatPuerta, IdDistribucionPuerta, EventoId, FuncionesId, ZonasId, SubzonaId', 'numerical', 'integerOnly'=>true),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('iddistribucionpuertalevel1, idCatPuerta, idDistribucionPuerta, EventoId, FuncionesId, ZonasId, SubzonaId', 'safe', 'on'=>'search'),
+			array('IdDistribucionPuertalevel1, IdCatPuerta, IdDistribucionPuerta, EventoId, FuncionesId, ZonasId, SubzonaId', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -65,9 +65,9 @@ class Distribucionpuertalevel1 extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'iddistribucionpuertalevel1' => 'Iddistribucionpuertalevel1',
-			'idCatPuerta' => 'Id Cat Puerta',
-			'idDistribucionPuerta' => 'Id Distribucion Puerta',
+			'IdDistribucionPuertalevel1' => 'Iddistribucionpuertalevel1',
+			'IdCatPuerta' => 'Id Cat Puerta',
+			'IdDistribucionPuerta' => 'Id Distribucion Puerta',
 			'EventoId' => 'Evento',
 			'FuncionesId' => 'Funciones',
 			'ZonasId' => 'Zonas',
@@ -86,9 +86,9 @@ class Distribucionpuertalevel1 extends CActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('iddistribucionpuertalevel1',$this->iddistribucionpuertalevel1);
-		$criteria->compare('idCatPuerta',$this->idCatPuerta);
-		$criteria->compare('idDistribucionPuerta',$this->idDistribucionPuerta);
+		$criteria->compare('IdDistribucionPuertalevel1',$this->IdDistribucionPuertalevel1);
+		$criteria->compare('IdCatPuerta',$this->IdCatPuerta);
+		$criteria->compare('IdDistribucionPuerta',$this->IdDistribucionPuerta);
 		$criteria->compare('EventoId',$this->EventoId);
 		$criteria->compare('FuncionesId',$this->FuncionesId);
 		$criteria->compare('ZonasId',$this->ZonasId);

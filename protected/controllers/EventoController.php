@@ -76,13 +76,13 @@ class EventoController extends Controller
         $distribucion_id = Distribucionpuerta::model()->find("ForoId=$ForoId AND ForoIntMapId=$ForoMapIntId AND DistribucionPuertaNom='DISTRIBUCION_TEMP_$user_id'");
        
         if(!empty($distribucion_id)){
-        $catpuertas = Catpuerta::model()->findAll("idDistribucionPuerta=$distribucion_id->idDistribucionPuerta");
+        $catpuertas = Catpuerta::model()->findAll("IdDistribucionPuerta=$distribucion_id->IdDistribucionPuerta");
    		$distribucion                  = Distribucionpuerta::model()->deleteAll("ForoId=$ForoId AND ForoIntMapId=$ForoMapIntId AND DistribucionPuertaNom='DISTRIBUCION_TEMP_$user_id'"); 
             if($distribucion >0){  
-                $puertas_eliminadas            = CatPuerta::model()->deleteAll("idDistribucionPuerta=$distribucion_id->idDistribucionPuerta"); 
+                $puertas_eliminadas            = CatPuerta::model()->deleteAll("IdDistribucionPuerta=$distribucion_id->IdDistribucionPuerta"); 
                 if($puertas_eliminadas>0){
                     foreach($catpuertas as $key => $catpuerta):
-                          $distribucionlevel1_eliminadas = Distribucionpuertalevel1::model()->deleteAll("idCatPuerta = $catpuerta->idCatPuerta AND IdDistribucionPuerta=$distribucion_id->idDistribucionPuerta "); 
+                          $distribucionlevel1_eliminadas = Distribucionpuertalevel1::model()->deleteAll("IdCatPuerta = $catpuerta->IdCatPuerta AND IdDistribucionPuertalevel1=$distribucion_id->IdDistribucionPuerta "); 
                     endforeach;
                 }   
              }        
@@ -95,7 +95,7 @@ class EventoController extends Controller
         $distribucion_nueva->DistribucionPuertaNom = "DISTRIBUCION_TEMP_$user_id";
         $distribucion_nueva->save();
         
-        $id_distribucion_nueva = $distribucion_nueva->idDistribucionPuerta;
+        $id_distribucion_nueva = $distribucion_nueva->IdDistribucionPuerta;
                   
         $model=new Evento;
         $resumen_distribucion = $model->getCargarPuertas($IdDistribucion);
@@ -104,22 +104,22 @@ class EventoController extends Controller
         
         foreach( $resumen_distribucion as $key => $resumen):
             $catpuerta = new Catpuerta;
-            $catpuerta->idDistribucionPuerta = $id_distribucion_nueva;
+            $catpuerta->IdDistribucionPuerta = $id_distribucion_nueva;
             $catpuerta->CatPuertaNom = $resumen['CatPuertaNom'];
             $catpuerta->save();
-            $catpuerta_id_nuevo = $catpuerta->idCatPuerta;
+            $catpuerta_id_nuevo = $catpuerta->IdCatPuerta;
             foreach($funciones_id as $f_ids):
                 if($f_ids!="0"){
                     
-                    $distribucionpl1_old = Distribucionpuertalevel1::model()->findAll(array('condition'=>"idCatPuerta=".$resumen['idCatPuerta']." AND idDistribucionPuerta=$IdDistribucion AND EventoId=$EventoDistribucionId"));
+                    $distribucionpl1_old = Distribucionpuertalevel1::model()->findAll(array('condition'=>"IdCatPuerta=".$resumen['IdCatPuerta']." AND IdDistribucionPuerta=$IdDistribucion AND EventoId=$EventoDistribucionId"));
                     
                     foreach($distribucionpl1_old as $level1_old):
                     
-                            $distribucionpl1_new = Distribucionpuertalevel1::model()->findAll(array('condition'=>"idCatPuerta=$catpuerta_id_nuevo AND idDistribucionPuerta=$id_distribucion_nueva AND EventoId=$EventoId AND FuncionesId IN($f_ids) AND ZonasId=$level1_old->ZonasId AND SubzonaId=$level1_old->SubzonaId"));
+                            $distribucionpl1_new = Distribucionpuertalevel1::model()->findAll(array('condition'=>"IdCatPuerta=$catpuerta_id_nuevo AND IdDistribucionPuerta=$id_distribucion_nueva AND EventoId=$EventoId AND FuncionesId IN($f_ids) AND ZonasId=$level1_old->ZonasId AND SubzonaId=$level1_old->SubzonaId"));
                             if(empty($distribucionpl1_new)){
                                 $distlevel1 = new Distribucionpuertalevel1;
-                                $distlevel1->idCatPuerta          = $catpuerta_id_nuevo;
-                                $distlevel1->idDistribucionPuerta = $id_distribucion_nueva;
+                                $distlevel1->IdCatPuerta          = $catpuerta_id_nuevo;
+                                $distlevel1->IdDistribucionPuerta = $id_distribucion_nueva;
                                 $distlevel1->EventoId             = $EventoId;
                                 $distlevel1->FuncionesId          = $level1_old->FuncionesId;
                                 $distlevel1->ZonasId              = $level1_old->ZonasId;
@@ -133,7 +133,7 @@ class EventoController extends Controller
             endforeach;
         endforeach;
         
-        $distribucionpl1 = Distribucionpuertalevel1::model()->findAll(array('condition'=>"idDistribucionPuerta=$id_distribucion_nueva AND EventoId=$EventoId AND FuncionesId IN($funciones)")); 
+        $distribucionpl1 = Distribucionpuertalevel1::model()->findAll(array('condition'=>"IdDistribucionPuerta=$id_distribucion_nueva AND EventoId=$EventoId AND FuncionesId IN($funciones)")); 
         $funcion=$this->loadFuncion($EventoId,$funcionId);
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
@@ -158,14 +158,14 @@ class EventoController extends Controller
         //print_r($_GET);
         $nombre_puerta   = $_GET['nombre_puerta'];
         $id_distribucion = $_GET['id_distribucion'];
-        $puerta = Catpuerta::model()->find("CatPuertaNom='$nombre_puerta' AND idDistribucionPuerta=$id_distribucion");
+        $puerta = Catpuerta::model()->find("CatPuertaNom='$nombre_puerta' AND IdDistribucionPuerta=$id_distribucion");
         if(empty($puerta)){
             $catpuerta =new Catpuerta;
-            $catpuerta->idDistribucionPuerta = $id_distribucion;
+            $catpuerta->IdDistribucionPuerta = $id_distribucion;
             $catpuerta->CatPuertaNom = $nombre_puerta;
             $catpuerta->save();
             
-            $data =  array('ok'=>1,'id_puerta'=>$catpuerta->idCatPuerta);
+            $data =  array('ok'=>1,'id_puerta'=>$catpuerta->IdCatPuerta);
         }else{
             $data =  array('ok'=>0,'id_puerta'=>0);
         }
@@ -173,10 +173,10 @@ class EventoController extends Controller
     }
     public function actionDeletePuerta(){
         //print_r($_GET);
-        $idCatPuerta   = $_GET['idCatPuerta'];
+        $IdCatPuerta   = $_GET['IdCatPuerta'];
         $id_distribucion = $_GET['id_distribucion'];
-        $puerta = Catpuerta::model()->deleteAll("idCatPuerta=$idCatPuerta");
-        $distribucionpuetalevel1 = Distribucionpuertalevel1::model()->deleteAll("idCatPuerta=$idCatPuerta AND idDistribucionPuerta=$id_distribucion");
+        $puerta = Catpuerta::model()->deleteAll("IdCatPuerta=$IdCatPuerta");
+        $distribucionpuetalevel1 = Distribucionpuertalevel1::model()->deleteAll("IdCatPuerta=$IdCatPuerta AND IdDistribucionPuerta=$id_distribucion");
         if($puerta>0){
             $data =  array('ok'=>1);
         }else{
@@ -201,7 +201,7 @@ class EventoController extends Controller
         $funciones = end($funciones);
         $data = array();
         
-        $distribucionpl1 = Distribucionpuertalevel1::model()->findAll("EventoId=$id_evento AND idCatPuerta=$id_puerta AND idDistribucionPuerta=$id_distribucion ");
+        $distribucionpl1 = Distribucionpuertalevel1::model()->findAll("EventoId=$id_evento AND IdCatPuerta=$id_puerta AND IdDistribucionPuerta=$id_distribucion ");
         foreach($distribucionpl1 as $key => $level1):
             $coordenadas = ConfigurlMapaGrandeCoordenadas::model()->with('mapa')->findAll(array('condition'=>"mapa.EventoId=$id_evento AND mapa.FuncionId=$funciones AND t.ZonasId=$level1->ZonasId AND t.SubzonaId=$level1->SubzonaId"));
             foreach($coordenadas as $keycoords => $coordenada):
@@ -254,8 +254,8 @@ class EventoController extends Controller
         foreach($funciones as $funcion):
             if($funcion!="0"){
                 $distribucion    = new Distribucionpuertalevel1;
-                $distribucion->idCatPuerta          = $puertaId;
-                $distribucion->idDistribucionPuerta = $distribucionId;
+                $distribucion->IdCatPuerta          = $puertaId;
+                $distribucion->IdDistribucionPuerta = $distribucionId;
                 $distribucion->EventoId             = $eventoId;
                 $distribucion->FuncionesId          = $funcion;
                 $distribucion->ZonasId              = $zonaId;
@@ -279,7 +279,7 @@ class EventoController extends Controller
         $subzonaId       = $_GET['id_subzona'];
         foreach($funciones as $funcion):
             if($funcion!="0"){
-                $distribucion  = Distribucionpuertalevel1::model()->deleteAll("idCatPuerta=$puertaId AND idDistribucionPuerta=$distribucionId AND EventoId=$eventoId AND FuncionesId=$funcion AND ZonasId=$zonaId AND SubzonaId=$subzonaId");
+                $distribucion  = Distribucionpuertalevel1::model()->deleteAll("IdCatPuerta=$puertaId AND IdDistribucionPuerta=$distribucionId AND EventoId=$eventoId AND FuncionesId=$funcion AND ZonasId=$zonaId AND SubzonaId=$subzonaId");
                 if($distribucion>0){
                     $data =array('ok'=>1);
                 }else{
@@ -336,19 +336,19 @@ class EventoController extends Controller
         $temps = Distribucionpuerta::model()->findAll("DistribucionPuertaNom LIKE '%DISTRIBUCION_TEMP_%'");
         if(!empty($temps)){
             foreach($temps as $temp):
-                $puertas = Catpuerta::model()->findAll("idDistribucionPuerta=$temp->idDistribucionPuerta");
+                $puertas = Catpuerta::model()->findAll("IdDistribucionPuerta=$temp->IdDistribucionPuerta");
                 if(!empty($puertas)){
                     foreach($puertas as $puerta):
-                         $level1s = Distribucionpuertalevel1::model()->findAll("idDistribucionPuerta=$temp->idDistribucionPuerta AND idCatPuerta=$puerta->idCatPuerta");
+                         $level1s = Distribucionpuertalevel1::model()->findAll("IdDistribucionPuerta=$temp->IdDistribucionPuerta AND IdCatPuerta=$puerta->IdCatPuerta");
                          if(!empty($level1s)){
                             foreach($level1s as $level1):
-                                Distribucionpuertalevel1::model()->deleteAll("iddistribucionpuertalevel1=$level1->iddistribucionpuertalevel1");
+                                Distribucionpuertalevel1::model()->deleteAll("IdDistribucionPuertalevel1=$level1->IdDistribucionPuertalevel1");
                             endforeach;
                          }
-                         Catpuerta::model()->deleteAll("idCatPuerta=$puerta->idCatPuerta");
+                         Catpuerta::model()->deleteAll("IdCatPuerta=$puerta->IdCatPuerta");
                     endforeach;
                 }
-            Distribucionpuerta::model()->deleteAll("idDistribucionPuerta=$temp->idDistribucionPuerta");    
+            Distribucionpuerta::model()->deleteAll("IdDistribucionPuerta=$temp->IdDistribucionPuerta");    
             endforeach;
         }
         

@@ -113,7 +113,7 @@ class FuncionesController extends Controller
                 //   print_r($evento->getDistribucionForo($eventoId,$funcion));
                 echo "<tr>";
                      echo "<td>";
-                          echo CHtml::label($value[0]['CatPuertaNom'].": ","#",array('id'=>"resumen_asignacion","id_puerta"=>$value[0]['idCatPuerta']));
+                          echo CHtml::label($value[0]['CatPuertaNom'].": ","#",array('id'=>"resumen_asignacion","id_puerta"=>$value[0]['IdCatPuerta']));
                       echo "</td>";
                   echo "</tr>";
             //echo $eventoId."-".$funcion."\n";
@@ -132,11 +132,11 @@ class FuncionesController extends Controller
      $distribucionlevel1 =  Distribucionpuertalevel1::model()->find(" EventoId= $eventoId AND FuncionesId IN($funciones)");
      foreach($value as $key => $distribucion):
           if(!empty($distribucionlevel1))
-                $estilo = $distribucionlevel1->idDistribucionPuerta ==$distribucion['idDistribucionPuerta']?'distribucion_asignada':'';
+                $estilo = $distribucionlevel1->IdDistribucionPuerta ==$distribucion['IdDistribucionPuerta']?'distribucion_asignada':'';
        //   print_r($evento->getDistribucionForo($eventoId,$funcion));
                  echo "<tr>";
                       echo "<td class='$estilo' width='300'>";
-                           echo CHtml::link ($distribucion['DistribucionPuertaNom'],"#",array('id'=>"dist_puerta","data_id"=>$distribucion['idDistribucionPuerta'],"data_evento_id"=>$distribucion['EventoId'],"data_funcion_id"=>$funciones));
+                           echo CHtml::link ($distribucion['DistribucionPuertaNom'],"#",array('id'=>"dist_puerta","data_id"=>$distribucion['IdDistribucionPuerta'],"data_evento_id"=>$distribucion['EventoId'],"data_funcion_id"=>$funciones));
                       echo "</td>";
                   echo "</tr>";
             //echo $eventoId."-".$funcion."\n";
@@ -149,12 +149,12 @@ class FuncionesController extends Controller
            $eventoId = $_GET['EventoId'];
          //  $funcionId = $_GET['Idfuncion'];
            $funciones = explode(',',$_GET['Idfuncion']);
-           Distribucionpuertalevel1::model()->deleteAll("idDistribucionPuerta NOT IN($distribucionId) AND EventoId=$eventoId AND FuncionesId IN(".$_GET['Idfuncion'].")");
-           $distribucion = Distribucionpuerta::model()->findAll("idDistribucionPuerta NOT IN(SELECT idDistribucionPuerta FROM distribucionpuertalevel1)");
+           Distribucionpuertalevel1::model()->deleteAll("IdDistribucionPuerta NOT IN($distribucionId) AND EventoId=$eventoId AND FuncionesId IN(".$_GET['Idfuncion'].")");
+           $distribucion = Distribucionpuerta::model()->findAll("IdDistribucionPuerta NOT IN(SELECT IdDistribucionPuerta FROM distribucionpuertalevel1)");
            if(!empty($distribucion)){
                foreach($distribucion as $dist):
-                    Distribucionpuerta::model()->deleteAll("idDistribucionPuerta=$dist->idDistribucionPuerta");
-                    Catpuerta::model()->deleteAll("idDistribucionPuerta=$dist->idDistribucionPuerta");
+                    Distribucionpuerta::model()->deleteAll("IdDistribucionPuerta=$dist->IdDistribucionPuerta");
+                    Catpuerta::model()->deleteAll("IdDistribucionPuerta=$dist->IdDistribucionPuerta");
                endforeach; 
            }
            $evento = new Evento;
@@ -163,14 +163,14 @@ class FuncionesController extends Controller
              if($funcion!=0){
               $valuep = $evento->getCargarPuertas($distribucionId);
               foreach($valuep as $key => $puerta):
-                  $valuez = $evento->getZonas($puerta['idCatPuerta'],$distribucionId,$eventoId);
+                  $valuez = $evento->getZonas($puerta['IdCatPuerta'],$distribucionId,$eventoId);
                   foreach($valuez as $key => $zonas):
-                         $values = $evento->getSubZonas($eventoId,$zonas['ZonasId'],$distribucionId,$puerta['idCatPuerta']);
+                         $values = $evento->getSubZonas($eventoId,$zonas['ZonasId'],$distribucionId,$puerta['IdCatPuerta']);
                          foreach($values as $key => $subzonas):
                          $valueval = $evento->getValidacion($distribucionId,$eventoId,$funcion,$zonas['ZonasId'],$subzonas['SubzonaId']);
                          if ($valueval[0]['Total']==0)
                          {
-                             Yii::app()->db->createCommand("INSERT INTO distribucionpuertalevel1 (idCatPuerta,idDistribucionPuerta,EventoId,FuncionesId,ZonasId,SubzonaId) VALUES ('".$puerta['idCatPuerta']."','".$distribucionId."','".$eventoId."','".$funcion."','".$zonas['ZonasId']."','".$subzonas['SubzonaId']."')")->execute();
+                             Yii::app()->db->createCommand("INSERT INTO distribucionpuertalevel1 (IdCatPuerta,IdDistribucionPuerta,EventoId,FuncionesId,ZonasId,SubzonaId) VALUES ('".$puerta['IdCatPuerta']."','".$distribucionId."','".$eventoId."','".$funcion."','".$zonas['ZonasId']."','".$subzonas['SubzonaId']."')")->execute();
                          }
                          endforeach;
                   endforeach;
@@ -184,8 +184,8 @@ class FuncionesController extends Controller
         $nombre_distribucion     = $_GET['nombre_distribucion'];
         $eventoId                = $_GET['EventoId'];
         $distribucion            = Distribucionpuerta::model()->find("DistribucionPuertaNom='$nombre_distribucion'");
-        $distribucionpuertalvel1 = Distribucionpuertalevel1::model()->find("idDistribucionPuerta=$distribucionId AND EventoId=$eventoId");
-        $catpuerta               = Catpuerta::model()->findAll("idDistribucionPuerta=$distribucionId AND idCatPuerta NOT IN(SELECT idCatPuerta FROM distribucionpuertalevel1)"); 
+        $distribucionpuertalvel1 = Distribucionpuertalevel1::model()->find("IdDistribucionPuerta=$distribucionId AND EventoId=$eventoId");
+        $catpuerta               = Catpuerta::model()->findAll("IdDistribucionPuerta=$distribucionId AND IdCatPuerta NOT IN(SELECT IdCatPuerta FROM distribucionpuertalevel1)"); 
         if(!empty($catpuerta)){
             $p = "";
             foreach($catpuerta as $puerta):
@@ -196,12 +196,12 @@ class FuncionesController extends Controller
         }elseif(empty($distribucionpuertalvel1)){
             $data =  array('ok'=>-1);
         }elseif(empty($distribucion)){
-           Distribucionpuertalevel1::model()->deleteAll("idDistribucionPuerta NOT IN($distribucionId) AND EventoId=$eventoId AND FuncionesId IN(".$_GET['funciones'].")");
-           $distribucion = Distribucionpuerta::model()->findAll("idDistribucionPuerta NOT IN(SELECT idDistribucionPuerta FROM distribucionpuertalevel1)");
+           Distribucionpuertalevel1::model()->deleteAll("IdDistribucionPuerta NOT IN($distribucionId) AND EventoId=$eventoId AND FuncionesId IN(".$_GET['funciones'].")");
+           $distribucion = Distribucionpuerta::model()->findAll("IdDistribucionPuerta NOT IN(SELECT IdDistribucionPuerta FROM distribucionpuertalevel1)");
            if(!empty($distribucion)){
                foreach($distribucion as $dist):
-                    Distribucionpuerta::model()->deleteAll("idDistribucionPuerta=$dist->idDistribucionPuerta");
-                    Catpuerta::model()->deleteAll("idDistribucionPuerta=$dist->idDistribucionPuerta");
+                    Distribucionpuerta::model()->deleteAll("IdDistribucionPuerta=$dist->IdDistribucionPuerta");
+                    Catpuerta::model()->deleteAll("IdDistribucionPuerta=$dist->IdDistribucionPuerta");
                endforeach; 
            }
             $distribucionpuerta = Distribucionpuerta::model()->findByPk($distribucionId);
@@ -232,7 +232,7 @@ class FuncionesController extends Controller
                       echo "</td>";
                       echo "<td>";
                            echo "<table border='1'>";
-                                 $valuez = $evento->getZonas($puerta['idCatPuerta'],$distribucion,$eventoId);
+                                 $valuez = $evento->getZonas($puerta['IdCatPuerta'],$distribucion,$eventoId);
                                 // print_r($valuez);
                                     //      echo  $eventoId."-".$funcionId."-".$puerta['ZonasId'] ;
                                         foreach($valuez as $key => $zonas):
@@ -242,7 +242,7 @@ class FuncionesController extends Controller
                                              echo "</td>";
                                              echo "<td>";
                                              echo "<table border='1'>";
-                                                 $values = $evento->getSubZonas($eventoId,$zonas['ZonasId'],$distribucion,$puerta['idCatPuerta']);
+                                                 $values = $evento->getSubZonas($eventoId,$zonas['ZonasId'],$distribucion,$puerta['IdCatPuerta']);
                                                //  echo  $eventoId."-".$funcionId."-".$zonas['ZonasId']."-".$puerta['SubzonaId'] ;
 
                                                  foreach($values as $key => $subzonas):
@@ -281,7 +281,7 @@ class FuncionesController extends Controller
                       echo "</td>";
                       echo "<td>";
                            echo "<table class='table table-bordered table-striped'";
-                                 $valuez = $evento->getZonas($puerta['idCatPuerta'],$distribucionId,$eventoId);
+                                 $valuez = $evento->getZonas($puerta['IdCatPuerta'],$distribucionId,$eventoId);
                                     //      echo  $eventoId."-".$funcionId."-".$puerta['ZonasId'] ;
                                         foreach($valuez as $key => $zonas):
                                              echo "<tr style=''>";
@@ -290,7 +290,7 @@ class FuncionesController extends Controller
                                              echo "</td>";
                                              echo "<td>";
                                              echo "<table class='table table-bordered table-striped'>";
-                                                 $values = $evento->getSubZonas($eventoId,$zonas['ZonasId'],$distribucionId,$puerta['idCatPuerta']);
+                                                 $values = $evento->getSubZonas($eventoId,$zonas['ZonasId'],$distribucionId,$puerta['IdCatPuerta']);
                                                //  echo  $eventoId."-".$funcionId."-".$zonas['ZonasId']."-".$puerta['SubzonaId'] ;
 
                                                  foreach($values as $key => $subzonas):
