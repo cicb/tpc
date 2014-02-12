@@ -5,9 +5,9 @@
 		'layout' => TbHtml::FORM_LAYOUT_HORIZONTAL,
 
 )); ?>
-<?php echo $form->passwordFieldControlGroup($model,'UsuariosPass',
+<?php echo TbHtml::passwordFieldControlGroup('up','',
 		array('label' => 'Nueva contraseña', 'placeholder' => 'Escriba la nueva contraseña')); ?>
-<?php echo TbHtml::passwordFieldControlGroup('UsuariosPasCon', '',
+<?php echo TbHtml::passwordFieldControlGroup('upc', '',
 		array('label' => 'Confirme la nueva contraseña', 'placeholder' => 'Repita la contraseña')); ?>
 
 		</div>
