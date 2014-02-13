@@ -376,6 +376,10 @@ $("#imprimir_boletos").click(function(){
                 beforeSend:function(){
                     $("body").append("<div class='loading'>Generando pdf</div>");
                 },
+                error: function(objeto, quepaso, otroobj){
+                    $(".loading").remove();
+                    alert("Ha ocurrido un error por favor trate de nuevo: "+objeto+"-"+quepaso);
+                },
                 url:'<?php echo $this->createUrl('reportes/ImpresionBoletosAjax') ?>',
                 data:"formatoId="+formatoId+"&tipo_impresion=todos"+"&EventoId="+EventoId+"&FuncionId="+FuncionId+"&pv="+pvs,
                 success:function(data){
@@ -400,6 +404,10 @@ $("#imprimir_boletos").click(function(){
                 beforeSend:function(){
                     $("body").append("<div class='loading'>Generando pdf</div>");
                 },
+                error: function(objeto, quepaso, otroobj){
+                    $(".loading").remove();
+                    alert("Ha ocurrido un error por favor trate de nuevo: "+objeto+"-"+quepaso);
+                },
                 url:'<?php echo $this->createUrl('reportes/ImpresionBoletosAjax') ?>',
                 data:"formatoId="+formatoId+"&tipo_impresion=no_impresos"+"&EventoId="+EventoId+"&FuncionId="+FuncionId+"&pv="+pvs,
                 success:function(data){
@@ -410,7 +418,7 @@ $("#imprimir_boletos").click(function(){
                     }catch(err){}
                      console.log(data);
                      if(data.ok=="si"){
-                        window.open('<?php echo $_SERVER["DOCUMENT_ROOT"].'/'. Yii::app ()->baseUrl . '/doctos/boletos.pdf'?>', 'boletos', 'width=960,height=600');
+                        window.open('<?php echo "http://".$_SERVER['SERVER_NAME']. Yii::app ()->baseUrl . '/doctos/boletos.pdf'?>', 'boletos', 'width=960,height=600');
                     
                      }else{
                         alert("No hay boletos NO impresos para imprimir");

@@ -882,7 +882,7 @@ $objWriter->save('php://output');
                     if(empty($boletoreimpresion['LugaresNumBol'])){
                         $this->imprimeBoleto($codigo,$boletoreimpresion['id'],$boletoreimpresion['EventoId'],$boletoreimpresion['FuncionesId'],$boletoreimpresion['ZonasId'],$boletoreimpresion['SubzonaId'],$boletoreimpresion['FilasId'],$boletoreimpresion['LugaresId'],$boletoreimpresion['UsuariosId']);
                     }else{
-                        $this->reimprimeBoleto($codigo,$boletoreimpresion['id'],$boletoreimpresion['EventoId'],$boletoreimpresion['FuncionesId'],$boletoreimpresion['ZonasId'],$boletoreimpresion['SubzonaId'],$boletoreimpresion['FilasId'],$boletoreimpresion['LugaresId'],$boletoreimpresion['UsuariosId'],$boletoreimpresion['LugaresNumBol']);
+                        $this->reimprimeBoleto($codigo,$boletoreimpresion['id'],$boletoreimpresion['EventoId'],$boletoreimpresion['FuncionesId'],$boletoreimpresion['ZonasId'],$boletoreimpresion['SubzonaId'],$boletoreimpresion['FilasId'],$boletoreimpresion['LugaresId'],$boletoreimpresion['UsuariosId'],$boletoreimpresion['LugaresNumBol'],$boletoreimpresion['VentasBolTip'],$boletoreimpresion['cosBol']);
                     }
                 endforeach;
             if(empty($data)){
@@ -943,11 +943,11 @@ $objWriter->save('php://output');
         
         Yii::app()->db->createCommand("INSERT INTO reimpresiones VALUES($ultimo,$eventoId,$funcionesId,$zonasId,$subzonaId,$filasId,$lugaresId,'PANEL ADMINISTRATIVO','', $usuariosId,'$hoy','$codigo')")->execute();*/
     }
-    public function reimprimeBoleto($codigo,$ventasId,$eventoId,$funcionesId,$zonasId,$subzonaId,$filasId,$lugaresId,$usuariosId,$ultimocodigo="26"){
+    public function reimprimeBoleto($codigo,$ventasId,$eventoId,$funcionesId,$zonasId,$subzonaId,$filasId,$lugaresId,$usuariosId,$ultimocodigo="26",$tip="NORMAL",$cosBol=0){
         $reimpresiones = Reimpresiones::model()->count(array('condition'=>"EventoId=$eventoId AND FuncionesId=$funcionesId AND ZonasId=$zonasId AND SubzonaId=$subzonaId AND FilasId=$filasId AND LugaresId=$lugaresId"));
         $contra = $eventoId.".".$funcionesId.".".$zonasId.".".$subzonaId;
 	    $contra .= ".".$filasId.".".$lugaresId."-".date("m").".".date("d")."-".$usuariosId;
-	    $contra .= "TR$reimpresiones";
+	    $contra .= "PR$reimpresiones";
         $ventaslevel1 = Ventaslevel1::model()->findByAttributes(array('VentasId'=>$ventasId,'EventoId'=>$eventoId,'FuncionesId'=>$funcionesId,'ZonasId'=>$zonasId,'SubzonaId'=>$subzonaId,'FilasId'=>$filasId,'LugaresId'=>$lugaresId));
    	    $ventaslevel1->LugaresNumBol = $codigo;
         $ventaslevel1->VentasCon = $contra;
@@ -955,8 +955,13 @@ $objWriter->save('php://output');
         $ultimo = Reimpresiones::model()->findAll(array('limit'=>1,'order'=>'t.ReimpresionesId DESC'));
         $ultimo = $ultimo[0]->ReimpresionesId + 1;
         $hoy    = date("Y-m-d G:i:s"); 
+        $user_id = Yii::app()->user->id;
+        Yii::app()->db->createCommand("INSERT INTO reimpresiones VALUES($ultimo,$eventoId,$funcionesId,$zonasId,$subzonaId,$filasId,$lugaresId,'PANEL ADMINISTRATIVO','',$user_id,'$hoy','$ultimocodigo')")->execute();
         
-        Yii::app()->db->createCommand("INSERT INTO reimpresiones VALUES($ultimo,$eventoId,$funcionesId,$zonasId,$subzonaId,$filasId,$lugaresId,'PANEL ADMINISTRATIVO','', $usuariosId,'$hoy','$ultimocodigo')")->execute();
+        $ultimologreimp = Logreimp::model()->findAll(array('limit'=>1,'order'=>'t.LogReimpId DESC'));
+        $ultimologreimp = $ultimologreimp[0]->LogReimpId + 1;
+        
+        Yii::app()->db->createCommand("INSERT INTO logreimp VALUES($ultimologreimp,'$hoy','$tip',$cosBol,'$tip',$user_id,0,$eventoId,$funcionesId,$zonasId,$subzonaId,$filasId,$lugaresId)")->execute();
        
     }
     public function verificaCodigos(){
