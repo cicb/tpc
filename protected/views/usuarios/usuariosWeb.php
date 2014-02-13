@@ -22,7 +22,7 @@
             'emptyText'=>'No se encontraron coincidencias',
             'dataProvider'=>$model->search(),
 			//'filter'=>$model,
-			'template'=>'{items}<div class="col-2 centrado"> {pager}</div>',
+			'template'=>'{items}<div class="col-4 centrado"> {pager}</div>',
 			'type'=>'condensed hover striped',
             'htmlOptions'=>array('class'=>'primario'),
 			'columns'=>array(
@@ -78,7 +78,6 @@ $(function() {
 		  $contextMenu.hide();
   });
 	$("#contextual li a").on("click",function(){
-
 		return true;
    }); 
 });	 
@@ -98,7 +97,7 @@ table{cursor:default;}
 </style>
   <div id="contextMenu" class="dropdown clearfix">
     <ul class="dropdown-menu" id="contextual" role="menu" aria-labelledby="dropdownMenu" style="display:block;position:static;margin-bottom:5px;">
-	  <li><a tabindex="-1" href='<?php echo $this->createUrl('usuarios/historialCompras') ; ?>' class="fa fa-dollar">
+	  <li><a tabindex="-1" href='#' onclick="window.location.href='<?php echo $this->createUrl('usuarios/historialCompras') ; ?>&id='+currentId;" class="fa fa-dollar">
  Historial de compras</a></li>
 	  <li><a tabindex="-1" href="#" class="fa fa-credit-card"> Tarjetas de credito.
 			</a></li>

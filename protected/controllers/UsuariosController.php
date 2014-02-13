@@ -231,6 +231,9 @@ class UsuariosController extends Controller {
 		}
 		public function actionHistorialCompras()
 		{
-			$this->render('historialCompras');
+				if (isset($_GET['id']) and $_GET['id']>0) {
+						$model=CrugeUser::model()->findByPk($_GET['id']);
+						$this->render('historialCompras',compact('model'));
+				}else throw new CHttpException ( 404, 'Petición incompleta.');
 		}
 } 

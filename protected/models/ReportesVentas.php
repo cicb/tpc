@@ -656,7 +656,9 @@ class ReportesVentas extends CFormModel
 			if ($funcionesId>0) {
 						$funcion=sprintf("t1.FuncionesId = %s ",$funcionesId);
 				}
-			$sql=sprintf("(select t1.VentasId, t1.VentasSta, t2.UsuariosNom, ReimpresionesFecHor as fecha, 'REIMPRESION' as tipo, 
+			$sql=sprintf("(select t1.VentasId,
+				CONCAT(t.EventoId,t.FuncionesId,t.ZonasId,t.SubzonaId,t.FilasId,t.LugaresId) as boleto,   
+					t1.VentasSta, t2.UsuariosNom, ReimpresionesFecHor as fecha, 'REIMPRESION' as tipo, 
 				t.LugaresNumBol, t4.PuntosventaNom, t5.UsuariosNom  as vendio, t3.VentasFecHor 
 					from reimpresiones as t
 					inner join ventaslevel1 as t1 on t1.EventoId=t.EventoId
@@ -670,10 +672,11 @@ class ReportesVentas extends CFormModel
 				INNER JOIN usuarios 	as	t2 on t2.UsuariosId=t.UsuarioId
 				LEFT JOIN usuarios 		as	t5 on t5.UsuariosId=t3.UsuariosId
 				where t.EventoId=%s
-				AND %s
 		)union
 		(
-				SELECT t.VentasId, t.VentasSta, t3.UsuariosNom, CancelFecHor as fecha, 'CANCELACION' as tipo,
+				SELECT t.VentasId,
+				CONCAT(t.EventoId,t.FuncionesId,t.ZonasId,t.SubzonaId,t.FilasId,t.LugaresId) as boleto,   
+			   	t.VentasSta, t3.UsuariosNom, CancelFecHor as fecha, 'CANCELACION' as tipo,
 				t.LugaresNumBol, t4.PuntosventaNom, t5.UsuariosNom as vendio, t2.VentasFecHor
 				FROM ventaslevel1 as  t 
 				INNER JOIN ventas 		as	t2	ON	t2.VentasId=t.VentasId
@@ -682,8 +685,10 @@ class ReportesVentas extends CFormModel
 				LEFT JOIN usuarios 		as	t5	ON	t5.UsuariosId=t2.UsuariosId
 				WHERE t.VentasSta='CANCELADO'  and EventoId=%s
 		)
-		ORDER BY VentasId,fecha",$eventoId,$funcion ,$eventoId);
-			return new CSqlDataProvider($sql, array('keyField'=>'VentasId'));
+		ORDER BY VentasId,boleto,fecha",$eventoId ,$eventoId);
+			return new CSqlDataProvider($sql, array(
+					'pagination'=>array('pageSize'=>10),
+					'keyField'=>'VentasId'));
 	}
 
 	public function getAnomalos($eventoId,$functionesId="TODAS",$desde=0, $hasta=0)

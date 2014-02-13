@@ -160,7 +160,7 @@ class CrugeUser extends CActiveRecord
 		$criteria->compare('ciudad_municipio',$this->ciudad_municipio,true);
 		$criteria->compare('pais',$this->pais,true);
 		$criteria->compare('codigo_postal',$this->codigo_postal,true);
-		$criteria->compare('estado_id',$this->estado_id);
+		//$criteria->compare('estado_id',$this->estado_id);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,

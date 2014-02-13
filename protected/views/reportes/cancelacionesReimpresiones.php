@@ -75,16 +75,18 @@
 <div id='reporte'>
 <?php 
 				if (isset($eventoId) and $eventoId>0) {
-						$this->widget('bootstrap.widgets.TbGridView', array(
-								'id'=>'usrval-grid',
+						$this->widget('yiiwheels.widgets.grid.WhGroupGridView', array(
+								'id'=>'cancel-reimp-grid',
 								'dataProvider' => $model->getCancelacionesYReimpresiones($eventoId,$funcionesId),
-								'template' => "{filters}\n{items}\n{pager}",
+								'template'=>'{items}<div class="col-4 centrado"> {pager}</div>',
 								'type'=>'striped hover',
+								'mergeColumns'=>array('VentasId','boleto'),
 								'columns' => array(
 										array(
 												'header'=>'Venta',
 												'name'=>'VentasId'
 										),
+										'boleto',
 										array(
 												'header'=>'Numero de Boleto',
 												'name'=>'LugaresNumBol'
