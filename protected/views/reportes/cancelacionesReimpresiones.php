@@ -95,14 +95,10 @@
 												'header'=>'Usuario',
 												'name'=>'UsuariosNom'
 										),
-										//array(
-												//'header'=>'Usuario Que Vendio',
-												//'name'=>'vendio'
-										//),
-
 										array(
-												'header'=>'Cancel/Reimpr',
-												'name'=>'tipo',
+												'header'=>'Tipo',
+												'type'=>'html',
+												'value'=>'"<span class=\'\'>".$data["tipo"]."</span>"',
 										),
 										array(
 												'header'=>'Fecha/Hora',
