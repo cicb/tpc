@@ -201,15 +201,15 @@ class ReportesVentas extends CFormModel
 			//$matrix['por vender']['importe'] = Lugares::model()->count(sprintf("EventoId = '%s' AND LugaresStatus='TRUE'  %s",$eventoId,$funcion) );
 			$model=new Ventas;
 			$matrix['aforo']['importe']=$model->getDbConnection()->createCommand(sprintf("
-					SELECT count(t.LugaresId)*ZonasCosBol as ventas FROM lugares as t
+					SELECT SUM(ZonasCosBol) as ventas FROM lugares as t
 					INNER JOIN zonas as t2 
 						ON t.EventoId     = t2.EventoId
 						AND t.FuncionesId = t2.FuncionesId
 						AND t.ZonasId     = t2.ZonasId
-					WHERE t.EventoId      = %d and t.LugaresStatus NOT IN('OFF','SYS')
+					WHERE t.EventoId      = %d and t.LugaresStatus<>'OFF'
 					GROUP BY t.EventoId;",$eventoId))->queryScalar();
 			$matrix['por vender']['importe']=$model->getDbConnection()->createCommand(sprintf("
-					SELECT count(t.LugaresId)*ZonasCosBol as ventas FROM lugares as t
+					SELECT SUM(ZonasCosBol) as ventas FROM lugares as t
 					INNER JOIN zonas as t2 
 						ON t.EventoId     = t2.EventoId
 						AND t.FuncionesId = t2.FuncionesId
