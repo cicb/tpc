@@ -97,7 +97,7 @@ class Usuarios extends CActiveRecord
 		return array(
 				'tipusr'=>array(self::BELONGS_TO, 'Tipusr', array('TipUsrId')),
 				'maxid'=>array(self::STAT, 'Usuarios', array('select'=>'MAX(UsuariosId)')),
-				//'usrval'=>array(self::HAS_MANY, 'Usrval', array('UsuariosId'),
+				//'ventas'=>array(self::HAS_MANY, 'CrugeUser','', array('UsuariosId'),
 		);
 	}
 

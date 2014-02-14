@@ -659,15 +659,21 @@ class ReportesVentas extends CFormModel
 			$sql=sprintf("(select t1.VentasId, t1.VentasSta, t2.UsuariosNom, ReimpresionesFecHor as fecha, 'REIMPRESION' as tipo, 
 				t.LugaresNumBol, t4.PuntosventaNom,
 				CONCAT(t3.VentasId,t.EventoId,t.FuncionesId,t.ZonasId,t.SubzonaId,t.FilasId,t.LugaresId) as boleto   
-					from reimpresiones as t
-					inner join ventaslevel1 as t1 on t1.EventoId=t.EventoId
-				AND t1.FuncionesId=t.FuncionesId
-				AND t1.ZonasId=t.ZonasId
-				AND t1.SubzonaId=t.SubzonaId
-				AND t1.FilasId=t.FilasId
-				AND t1.LugaresId=t.LugaresId
+					FROM reimpresiones as t
+					INNER JOIN ventaslevel1 as t1 on t1.EventoId=t.EventoId
+						AND t1.FuncionesId=t.FuncionesId
+						AND t1.ZonasId=t.ZonasId
+						AND t1.SubzonaId=t.SubzonaId
+						AND t1.FilasId=t.FilasId
+						AND t1.LugaresId=t.LugaresId
+					LEFT JOIN logreimp as t5 on t5.EventoId=t.EventoId
+						AND t5.FuncionesId=t.FuncionesId
+						AND t5.ZonasId=t.ZonasId
+						AND t5.SubzonaId=t.SubzonaId
+						AND t5.FilasId=t.FilasId
+						AND t5.LugaresId=t.LugaresId
 				INNER JOIN ventas 		as	t3 on t3.VentasId=t1.VentasId
-				LEFT JOIN puntosventa 	as	t4 on t4.PuntosventaId=t3.PuntosventaId
+				LEFT JOIN puntosventa 	as	t4 on t4.PuntosventaId=t5.LogReimpPunVenId
 				LEFT JOIN usuarios 	as	t2 on t2.UsuariosId=t.UsuarioId
 				where t.EventoId=%d
 				

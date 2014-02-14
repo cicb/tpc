@@ -158,4 +158,5 @@ class Ventaslevel1 extends CActiveRecord
 		)); 
 	}
 
+
 }

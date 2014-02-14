@@ -193,4 +193,8 @@ class CrugeUser extends CActiveRecord
 					return $this->estado->nombre;
 			}
 	}
+	public function getHistorico()
+	{
+			Ventaslevel1::model()->with('venta')->findAllByAttributes(array('UsuariosId'=>$this->iduser,'TempLugaresTipUsr'=>))
+	}
 }
