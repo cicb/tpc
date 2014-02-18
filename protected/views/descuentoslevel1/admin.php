@@ -48,7 +48,6 @@ $this->menu=array(
 	
 	    
 	</div>
-</div>
     <!--<a id="abrir_cupon"  class="btn btn-success" data-placement='top' title="" style="margin-right: 0px;"><i class="icon-folder-open icon-white"></i>&nbsp;Abrir cup&oacute;n seleccinado</a>-->
     
     
@@ -60,8 +59,9 @@ $this->menu=array(
     }
 ?>
 <div id="resultado_elimnar"></div>
+</div>
 <div id="evento-grid" class="">
-    <table class="table table-bordered table-hover">
+    <table class="table table-bordered table-hover elementos">
         <thead>
         <th>Activo</th>
         <th>Selecci&oacute;n</th>
@@ -95,7 +95,7 @@ $this->menu=array(
             <td><?php echo $descuentos->descuentos->DescuentosUso; ?></td>
             <td><?php echo $descuentos->descuentos->DescuentoCargo; ?></td>
             <td>
-                <a data-toggle="modal" data-target="#myModal" data-id="<?php echo $descuentos->DescuentosId;  ?>" data-cupon="<?php echo $descuentos->descuentos->CuponesCod;  ?>"  title="view" class="" id="evento_view"><i class="icon-eye-open"></i></a>
+                <a data-toggle="modal" data-target="#myModal" data-id="<?php echo $descuentos->DescuentosId;  ?>" data-cupon="<?php echo $descuentos->descuentos->CuponesCod;  ?>"  class="" id="evento_view"><i class="icon-eye-open"></i></a>
                 <?php echo CHtml::link("<i class='icon-pencil'></i>",array('descuentos/update','id'=>$descuentos->descuentos->DescuentosId,'cupon'=>$descuentos->descuentos->CuponesCod,'EventoId'=>$descuentos->EventoId),array('title'=>'update')); ?>
                 <?php echo $descuentos->descuentos->DescuentosFecIni=="0000-00-00 00:00:00"?"<i class='icon-white icon-trash'></i>":CHtml::link("<i class='icon-trash'></i>",array('delete','id'=>$descuentos->descuentos->DescuentosId,'idnum'=>$descuentos->DescuentosNum),array('title'=>'delete','onclick'=>'return confirm("Deseas eliminar el registro seleccionado?")')); ?>
             </td>
@@ -132,18 +132,18 @@ $("#tipo").change(function(){
     var url = '<?php echo Yii::app()->createUrl('descuentoslevel1/admin&');  ?>query=&tipo='+this.value;
     window.location.href = url; 
 });
-$("table.items").dataTable({
-        "oLanguage": {
-            "sLengthMenu"   : "Mostrar _MENU_ registros por p&aacute;gina",
-            "sZeroRecords"  : "Sin resultados",
-            "sInfo"         : "Mostrando _START_ de _END_ de un total de _TOTAL_ registros",
-            "sInfoEmpty"    : "Mostrando 0 / 0 de 0 registros",
-            "sInfoFiltered" : "(filtrado de _MAX_  registros)",
-            "sSearch"       : "B&uacute;squeda",
-            "sPrevious"     : "Anterior",
-            "sNext"         : "Siguiente",
-        }
-    });
+//$("table.elementos").dataTable({
+        //"oLanguage": {
+            //"sLengthMenu"   : "Mostrar _MENU_ registros por p&aacute;gina",
+            //"sZeroRecords"  : "Sin resultados",
+            //"sInfo"         : "Mostrando _START_ de _END_ de un total de _TOTAL_ registros",
+            //"sInfoEmpty"    : "Mostrando 0 / 0 de 0 registros",
+            //"sInfoFiltered" : "(filtrado de _MAX_  registros)",
+            //"sSearch"       : "B&uacute;squeda",
+            //"sPrevious"     : "Anterior",
+            //"sNext"         : "Siguiente",
+        //}
+    //});
 /*$("#boton_query").click(function(event){
     $("#descuentos-form").submit();
 });*/
@@ -163,7 +163,7 @@ $("#abrir_cupon").click(function(){
     }
     
 });
-$(".grid-view table.items a#evento_view").click(function(evento){
+$("#evento-grid table.elementos a#evento_view").click(function(evento){
     var id    = $(this).attr("data-id");
     var cupon = $(this).attr("data-cupon");
     $.ajax({
@@ -205,7 +205,7 @@ $("#desactivar_seleccion").click(function(){
     
 });
 $("tr").click(function(event){
-    $(".grid-view table.items tr").each(function(){
+    $("#evento-grid table.elementos tr").each(function(){
         $(this).removeClass("selected");
     });
     $(this).addClass("selected");
@@ -214,151 +214,4 @@ $("tr").click(function(event){
 });
 </script>
 
-<style>
-.ocultar{
-    display: none;
-}
-.dataTables_length {
-	width: 40%;
-	float: right;
-    text-align: right;
-}
-.dataTables_length select{
-    width: 70px;
-}
-.dataTables_filter {
-	width: 50%;
-	float: left;
-	text-align: left;
-}
-.dataTables_info {
-	width: 60%;
-	float: left;
-}
-
-.dataTables_paginate {
-	float: right;
-	text-align: right;
-}
-.grid-view
-{
-	padding: 15px 0;
-}
-
-.grid-view table.items
-{
-	background: white;
-	border-collapse: collapse;
-	width: 100%;
-	border: 1px #D0E3EF solid;
-}
-
-.grid-view table.items th, .grid-view table.items td
-{
-	font-size: 0.9em;
-	border: 1px white solid;
-	padding: 0.3em;
-}
-
-.grid-view table.items th
-{
-	color: white;
-	background-color:#65BAFA ;
-	text-align: center;
-}
-
-.grid-view table.items th a
-{
-	color: #EEE;
-	font-weight: bold;
-	text-decoration: none;
-}
-
-.grid-view table.items th a:hover
-{
-	color: #FFF;
-}
-
-.grid-view table.items th a.asc
-{
-	background:url(up.gif) right center no-repeat;
-	padding-right: 10px;
-}
-
-.grid-view table.items th a.desc
-{
-	background:url(down.gif) right center no-repeat;
-	padding-right: 10px;
-}
-
-.grid-view table.items tr.even
-{
-	background: #F8F8F8;
-}
-
-.grid-view table.items tr.odd
-{
-	background: #E5F1F4;
-}
-
-.grid-view table.items tr.selected
-{
-	background: #BCE774;
-}
-.grid-view table.items tr.selected td { background: #EA635B; }
-.grid-view table.items tr:hover.selected
-{
-	background: #CCFF66;
-}
-
-.grid-view table.items tbody tr:hover
-{
-	background: #ECFBD4;
-}
-
-.grid-view .link-column img
-{
-	border: 0;
-}
-
-.grid-view .button-column
-{
-	text-align: center;
-	width: 60px;
-}
-
-.grid-view .button-column img
-{
-	border: 0;
-}
-
-.grid-view .checkbox-column
-{
-	width: 15px;
-}
-
-.grid-view .summary
-{
-	margin: 0 0 5px 0;
-	text-align: right;
-}
-
-.grid-view .pager
-{
-	margin: 5px 0 0 0;
-	text-align: right;
-}
-
-.grid-view .empty
-{
-	font-style: italic;
-}
-
-.grid-view .filters input,
-.grid-view .filters select
-{
-	width: 100%;
-	border: 1px solid #ccc;
-}
-</style>
 
