@@ -1,28 +1,28 @@
 <div class='controles'>
-        <h2>Ventas y cancelaciones</h2>
+        <h2>Cancelar Venta Farmatodo</h2>
 		<div class="form">
 
-		<?php $form=$this->beginWidget('CActiveForm', array(
+<?php $form=$this->beginWidget('bootstrap.widgets.TbActiveForm', array(
 		'id'=>'form-ventaslevel1',
 		'enableClientValidation'=>true,
+		'layout' => TbHtml::FORM_LAYOUT_HORIZONTAL,
 		'clientOptions'=>array(
 				'validateOnSubmit'=>true,
 		),
 		)); ?>
 
-		<div class="row form-search">
-				<?php echo $form->labelEx($model,'buscar'); ?>
-				
-				<?php echo CHtml::textField('buscar',$ref,array('placeholder'=>'Número de reservacion','required'=>'required')); ?>
-				<?php echo CHtml::submitButton('Buscar', array('class'=>'btn btn-primary')); ?>
-		</div>
-
-
-		<div class="row buttons">
-		</div>
-
+		<div class='col-4'>
+				<?php echo TbHtml::textFieldControlGroup('buscar',$ref,
+						array(
+								'append' => TbHtml::submitButton('Buscar',array('class'=>'btn btn-primary')), 
+								'span' => 3,
+								'placeholder'=>'Número de reservación',
+								'label'=>'Buscar por reservación:',
+								'id'=>'filtro-usuario',
+								'autofocus'=>"autofocus",
+						)); ?>		
 		<?php $this->endWidget(); ?>
-
+		</div>
 		</div><!-- form -->
 
 
@@ -72,19 +72,19 @@ $this->widget('zii.widgets.grid.CGridView', array(
 )); 
 endif;*/
 ?>
+</div>
 <?php
 
 if(!is_null($ref)):
-$form=$this->beginWidget('CActiveForm', array(
-	'id'=>'form-ventaslevel1',
-    'action'=>Yii::app()->createUrl('/farmatodo/delete'),
-	'enableClientValidation'=>true,
-	'clientOptions'=>array(
-		'validateOnSubmit'=>false,
-	),
-)); 
+		$form=$this->beginWidget('CActiveForm', array(
+				'id'=>'form-ventaslevel1',
+				'action'=>Yii::app()->createUrl('/farmatodo/delete'),
+				'enableClientValidation'=>true,
+				'clientOptions'=>array(
+						'validateOnSubmit'=>false,
+				),
+		)); 
 ?>
-</div>
 <?php
 //$this->widget('bootstrap.widgets.TbGridView', array(
    //'dataProvider' => $model->getReservacionesFarmatodo($ref),

@@ -8,7 +8,7 @@
 		<h2>Usuarios Web</h2>
 
 <div class='col-4'>
-		<?php echo tbHtml::textFieldControlGroup('filtro','',
+		<?php echo TbHtml::textFieldControlGroup('filtro','',
 				array(
 						'append' => TbHtml::submitButton('Buscar',array('class'=>'btn btn-primary')), 
 						'span' => 3,

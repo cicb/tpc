@@ -277,7 +277,7 @@ class ReportesController extends Controller
 
 	}
 
-	public function actionVentasCancelaciones()
+	public function actionCancelarVentaFarmatodo()
 	{
 		$this->perfil();
 		$model=new ReportesVentas;
@@ -285,7 +285,7 @@ class ReportesController extends Controller
 		if(!empty($_POST['buscar'])){
 			$ref = $_POST['buscar'];
 		}
-		$this->render('ventasCancelaciones',array('model'=>$model, 'ref'=>$ref)); 
+		$this->render('cancelarVentaFarmatodo',array('model'=>$model, 'ref'=>$ref)); 
 		//$this->render('reservacionesFarmatodo');
 	}
 
@@ -984,7 +984,7 @@ $objWriter->save('php://output');
          return strtoupper($key);
     }
 
-	public function actionVentasPorRef()
+	public function actionBuscarBoleto()
 	{
 		$model=new ReportesVentas;	
 		$ref=null;	
@@ -996,7 +996,7 @@ $objWriter->save('php://output');
 			}
 		}
 
-			$this->render('ventasPorRef',array('model'=>$model,'ref'=>$ref,'tipo'=>$tipo));
+			$this->render('buscarBoleto',array('model'=>$model,'ref'=>$ref,'tipo'=>$tipo));
 	}
 	public function actionAccesos()
 	{

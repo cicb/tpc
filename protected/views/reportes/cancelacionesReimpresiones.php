@@ -1,5 +1,5 @@
 <div class='controles'>
-<h2>Cancelaciones Y Reimpresiones</h2>
+<h2>Historial De Cancelaciones Y Reimpresiones</h2>
     <?php 
     $form=$this->beginWidget('CActiveForm', array(
      'id'=>'controles',

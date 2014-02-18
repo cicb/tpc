@@ -34,6 +34,13 @@ $this->widget('bootstrap.widgets.TbNavbar',array(
 										array('label' => 'Accesos',
 												'url' =>  $this->createUrl('reportes/accesos'),
 												'visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
+										array(
+												'label' => 'Buscar Boleto Y Referencias',
+												'url' =>  $this->createUrl('reportes/buscarBoleto'),
+												'visible' => !Yii::app()->user->isGuest AND (Yii::app()->user->getState("Admin"))?true:false), 
+										array('label' => 'Cancelar Venta Farmatodo',
+												'url' =>  $this->createUrl('reportes/cancelarVentaFarmatodo'),
+												'visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
 										array('label' => 'Desglose De Ventas', 
 												'url' =>  $this->createUrl('reportes/desgloseVentas'),'visible'
 												=> !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
@@ -44,12 +51,7 @@ $this->widget('bootstrap.widgets.TbNavbar',array(
 												'url' =>  $this->createUrl('reportes/lugaresVendidos'),
 												'visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
 												//array('label' => 'Cortes diarios', 			'url' =>  $this->createUrl('reportes/cortesDiarios'),'visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
-										array('label' => 'Ref/Num. Boleto',
-												'url' =>  $this->createUrl('reportes/ventasPorRef'),
-												'visible' => !Yii::app()->user->isGuest AND (Yii::app()->user->getState("Admin"))?true:false), 
-										array('label' => 'Ventas y cancelaciones',
-												'url' =>  $this->createUrl('reportes/ventasCancelaciones'),
-												'visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
+
 										array('label' => 'Ventas Web Y CallCenter', 
 												'url' =>  $this->createUrl('reportes/ventasWeb'),
 												'visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
@@ -65,11 +67,11 @@ $this->widget('bootstrap.widgets.TbNavbar',array(
 										array('label' => 'Ventas Diarias',
 												'url' =>  $this->createUrl('reportes/ventasDiarias'),
 												'visible' => !Yii::app()->user->isGuest AND (Yii::app()->user->getState("Admin"))?true:false),
-										array('label' => 'Cancelaciones y Reimpresiones',
+										array('label' => 'Historial De Cancelaciones Y Reimpresiones',
 												'url' =>  $this->createUrl('reportes/cancelacionesReimpresiones'),
 												'visible' => !Yii::app()->user->isGuest AND (Yii::app()->user->getState("Admin"))?true:false), 
 								),
-								),
+						),
 
 								array(
 										'label' => 'Cupones Y Descuentos', 
