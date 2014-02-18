@@ -654,13 +654,13 @@ class ReportesVentas extends CFormModel
 	{
 			$funcion="1";
 			if ($funcionesId>0) {
-						$funcion=sprintf("t1.FuncionesId = %s ",$funcionesId);
+						$funcion=sprintf("t.FuncionesId = %s ",$funcionesId);
 				}
 			$sql=sprintf("(select t1.VentasId, t1.VentasSta, t2.UsuariosNom, ReimpresionesFecHor as fecha, 'REIMPRESION' as tipo, 
 				t1.LugaresNumBol, t4.PuntosventaNom,
 				CONCAT(t.EventoId,t.FuncionesId,t.ZonasId,t.SubzonaId,t.FilasId,t.LugaresId) as boleto,   
 				CONCAT(t6.UsuariosNom,' ',CancelFecHor) as cancelacion,
-				t.LugaresNumBol as NumBol
+				t.LugaresNumBol as NumBol, t1.FilasId, t1.LugaresId
 					FROM reimpresiones as t
 					INNER JOIN ventaslevel1 as t1 on t1.EventoId=t.EventoId
 						AND t1.FuncionesId=t.FuncionesId
@@ -678,34 +678,31 @@ class ReportesVentas extends CFormModel
 				LEFT JOIN puntosventa 	as	t4 on t4.PuntosventaId=t5.LogReimpPunVenId
 				LEFT JOIN usuarios 	as	t2 on t2.UsuariosId=t.UsuarioId
 				LEFT JOIN usuarios 	as	t6 on CancelUsuarioId=t6.UsuariosId
-				where t.EventoId=%d
+				where t.EventoId=%d AND %s
 				
 		) union(
 				SELECT t.VentasId, t.VentasSta, t5.UsuariosNom, t2.VentasFecHor as fecha, 'VENTA' as tipo,
 				t.LugaresNumBol, t4.PuntosventaNom,
 				CONCAT(t.EventoId,t.FuncionesId,t.ZonasId,t.SubzonaId,t.FilasId,t.LugaresId) as boleto,   
 				CONCAT(t6.UsuariosNom,' ',CancelFecHor) as cancelacion,
-				'' as NumBol
+				'' as NumBol, t.FilasId, t.LugaresId
 				FROM ventaslevel1 as  t 
 				INNER JOIN ventas 		as	t2	ON	t2.VentasId=t.VentasId
 				LEFT JOIN puntosventa 	as	t4 on t4.PuntosventaId=t2.PuntosventaId
 				LEFT JOIN usuarios 		as	t5	ON	t5.UsuariosId=t2.UsuariosId
 				LEFT JOIN usuarios 	as	t6 on CancelUsuarioId=t6.UsuariosId
 				WHERE   EventoId=%d and (t.VentasSta='CANCELADO' OR VentasCon rlike '.*[R][0-9][0-9]*$')
+				AND %s
 
 		)
 
-		ORDER BY  boleto,VentasId,fecha",$eventoId ,$eventoId,$eventoId);
+		ORDER BY  boleto,VentasId,fecha",$eventoId ,$funcion,$eventoId,$funcion);
 			return new CSqlDataProvider($sql, array(
 					'pagination'=>false,
 					'keyField'=>'VentasId'));
 	}
 
-	public function getAnomalos($eventoId,$functionesId="TODAS",$desde=0, $hasta=0)
-	{
-			
-		// code...
-	}
+
 
 }
  ?>

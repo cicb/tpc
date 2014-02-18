@@ -84,33 +84,41 @@
 								'columns' => array(
 										'boleto',
 										array(
+												'header'=>'Fila',
+												'name'=>'FilasId',
+										),
+										array(
+												'header'=>'Lugar',
+												'name'=>'LugaresId',
+										),
+										array(
 												'header'=>'Venta',
 												'name'=>'VentasId'
 										),
 										array(
-												'header'=>'Num.Boleto Actual',
+												'header'=>'NumBol Ventaslevel1 ',
 												'name'=>'LugaresNumBol'
+										),
+										array(
+												'header'=>'Estatus Ventaslevel1',
+												'name'=>'VentasSta'
 										),
 										array(
 												'header'=>'Usuario',
 												'name'=>'UsuariosNom'
 										),
 										array(
-												'header'=>'Tipo',
+												'header'=>'Reimpresion',
 												'type'=>'html',
 												'value'=>'"<span class=\'\'>".$data["tipo"]."</span>"',
 										),
 										array(
-												'header'=>'Num. Bol Anterior',
+												'header'=>'NumBol Anterior',
 												'name'=>'NumBol'
 										),
 										array(
 												'header'=>'Fecha/Hora',
 												'name'=>'fecha'
-										),
-										array(
-												'header'=>'Estatus actual',
-												'name'=>'VentasSta'
 										),
 										array(
 												'header'=>'Cancelacion',
