@@ -82,13 +82,13 @@
 								'type'=>'striped hover',
 								'mergeColumns'=>array('VentasId','boleto'),
 								'columns' => array(
+										'boleto',
 										array(
 												'header'=>'Venta',
 												'name'=>'VentasId'
 										),
-										'boleto',
 										array(
-												'header'=>'Numero de Boleto',
+												'header'=>'Num.Boleto Actual',
 												'name'=>'LugaresNumBol'
 										),
 										array(
@@ -101,12 +101,20 @@
 												'value'=>'"<span class=\'\'>".$data["tipo"]."</span>"',
 										),
 										array(
+												'header'=>'Num. Bol Anterior',
+												'name'=>'NumBol'
+										),
+										array(
 												'header'=>'Fecha/Hora',
 												'name'=>'fecha'
 										),
 										array(
 												'header'=>'Estatus actual',
 												'name'=>'VentasSta'
+										),
+										array(
+												'header'=>'Cancelacion',
+												'name'=>'cancelacion'
 										),
 										array(
 												'header'=>'Punto de Venta',

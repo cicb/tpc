@@ -223,9 +223,17 @@ class UsuariosController extends Controller {
 		}
 		public function actionUsuariosWeb()
 		{
+				$this->validarUsuario();
 				$model=new CrugeUser('search');
-				if (isset($_POST) and array_key_exists('CrugeUser',$_POST)) {
-						$model->attributes = $_POST ['CrugeUser'];
+				if (isset($_GET) and array_key_exists('filtro',$_GET)) {
+						//$model->attributes = $_GET ['CrugeUser'];
+								//$model->iduser=$_GET['filtro'];
+
+								$model->nombre=$_GET['filtro'];
+								$model->apellido_paterno=$_GET['filtro'];
+								$model->apellido_materno=$_GET['filtro'];
+								$model->username=$_GET['filtro'];
+								$model->email=$_GET['filtro'];
 				}	
 				$this->render('usuariosWeb',array('model'=>$model));	
 		}
@@ -235,5 +243,16 @@ class UsuariosController extends Controller {
 						$model=CrugeUser::model()->findByPk($_GET['id']);
 						$this->render('historialCompras',compact('model'));
 				}else throw new CHttpException ( 404, 'Petición incompleta.');
+		}
+		public function actionVerTarjetas()
+		{
+				if (Yii::app()->request->isAjaxRequest){
+						$this->validarUsuario();
+						if (isset($_GET['id']) and $_GET['id']>0) {
+								$model=CrugeUser::model()->findByPk($_GET['id']);
+								$this->renderPartial('_tarjetas',compact('model'));
+						}else throw new CHttpException ( 404, 'Petición incompleta.');
+				}	
+			
 		}
 } 

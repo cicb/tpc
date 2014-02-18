@@ -657,8 +657,10 @@ class ReportesVentas extends CFormModel
 						$funcion=sprintf("t1.FuncionesId = %s ",$funcionesId);
 				}
 			$sql=sprintf("(select t1.VentasId, t1.VentasSta, t2.UsuariosNom, ReimpresionesFecHor as fecha, 'REIMPRESION' as tipo, 
-				t.LugaresNumBol, t4.PuntosventaNom,
-				CONCAT(t3.VentasId,t.EventoId,t.FuncionesId,t.ZonasId,t.SubzonaId,t.FilasId,t.LugaresId) as boleto   
+				t1.LugaresNumBol, t4.PuntosventaNom,
+				CONCAT(t.EventoId,t.FuncionesId,t.ZonasId,t.SubzonaId,t.FilasId,t.LugaresId) as boleto,   
+				CONCAT(t6.UsuariosNom,' ',CancelFecHor) as cancelacion,
+				t.LugaresNumBol as NumBol
 					FROM reimpresiones as t
 					INNER JOIN ventaslevel1 as t1 on t1.EventoId=t.EventoId
 						AND t1.FuncionesId=t.FuncionesId
@@ -675,32 +677,25 @@ class ReportesVentas extends CFormModel
 				INNER JOIN ventas 		as	t3 on t3.VentasId=t1.VentasId
 				LEFT JOIN puntosventa 	as	t4 on t4.PuntosventaId=t5.LogReimpPunVenId
 				LEFT JOIN usuarios 	as	t2 on t2.UsuariosId=t.UsuarioId
+				LEFT JOIN usuarios 	as	t6 on CancelUsuarioId=t6.UsuariosId
 				where t.EventoId=%d
 				
-		)union
-		(
-				SELECT t.VentasId, t.VentasSta, t3.UsuariosNom, CancelFecHor as fecha, 'CANCELACION' as tipo,
-				t.LugaresNumBol, t4.PuntosventaNom,
-				CONCAT(t2.VentasId,t.EventoId,t.FuncionesId,t.ZonasId,t.SubzonaId,t.FilasId,t.LugaresId) as boleto   
-				FROM ventaslevel1 as  t 
-				INNER JOIN ventas 		as	t2	ON	t2.VentasId=t.VentasId
-				LEFT JOIN usuarios 	as	t3	ON	t3.UsuariosId=CancelUsuarioId
-				LEFT JOIN puntosventa 	as	t4 on t4.PuntosventaId=t2.PuntosventaId
-				WHERE t.VentasSta='CANCELADO'  and EventoId=%d
-		)
-		union(
+		) union(
 				SELECT t.VentasId, t.VentasSta, t5.UsuariosNom, t2.VentasFecHor as fecha, 'VENTA' as tipo,
 				t.LugaresNumBol, t4.PuntosventaNom,
-				CONCAT(t2.VentasId,t.EventoId,t.FuncionesId,t.ZonasId,t.SubzonaId,t.FilasId,t.LugaresId) as boleto   
+				CONCAT(t.EventoId,t.FuncionesId,t.ZonasId,t.SubzonaId,t.FilasId,t.LugaresId) as boleto,   
+				CONCAT(t6.UsuariosNom,' ',CancelFecHor) as cancelacion,
+				'' as NumBol
 				FROM ventaslevel1 as  t 
 				INNER JOIN ventas 		as	t2	ON	t2.VentasId=t.VentasId
 				LEFT JOIN puntosventa 	as	t4 on t4.PuntosventaId=t2.PuntosventaId
 				LEFT JOIN usuarios 		as	t5	ON	t5.UsuariosId=t2.UsuariosId
-				WHERE   EventoId=%d and (t.VentasSta='CANCELADO' OR VentasCon rlike '.*[R][1-9][0-9]*$')
+				LEFT JOIN usuarios 	as	t6 on CancelUsuarioId=t6.UsuariosId
+				WHERE   EventoId=%d and (t.VentasSta='CANCELADO' OR VentasCon rlike '.*[R][0-9][0-9]*$')
 
 		)
 
-		ORDER BY VentasId, boleto,fecha",$eventoId ,$eventoId,$eventoId);
+		ORDER BY  boleto,VentasId,fecha",$eventoId ,$eventoId,$eventoId);
 			return new CSqlDataProvider($sql, array(
 					'pagination'=>false,
 					'keyField'=>'VentasId'));

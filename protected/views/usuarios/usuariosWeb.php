@@ -1,17 +1,23 @@
 <?php $form=$this->beginWidget('bootstrap.widgets.TbActiveForm', array(
     'id'=>'agregar-usuario-form',
-    'enableAjaxValidation'=>false,
+	'enableAjaxValidation'=>false,
+    'layout' => TbHtml::FORM_LAYOUT_HORIZONTAL,
+	'method'=>'get',
 )); ?>
 <div class='controles'>
 		<h2>Usuarios Web</h2>
-		<?php echo $form->textFieldControlGroup($model,'nombre',
+
+<div class='col-4'>
+		<?php echo tbHtml::textFieldControlGroup('filtro','',
 				array(
-						'append' => TbHtml::submitButton('Buscar',array('class'=>'btn')), 
+						'append' => TbHtml::submitButton('Buscar',array('class'=>'btn btn-primary')), 
 						'span' => 3,
-						'placeholder'=>'Nombre del usuario o Nick',
+						'placeholder'=>'Nombre del usuario o Nick o Email ',
+						'label'=>'Buscar:',
 						'id'=>'filtro-usuario'
 				)); ?>		
 <?php $this->endWidget(); ?>
+</div>
 
 <br />
 </div>
@@ -20,7 +26,7 @@
              $this->widget('bootstrap.widgets.TbGridView', array(
             'id'=>'usuarios-grid',
             'emptyText'=>'No se encontraron coincidencias',
-            'dataProvider'=>$model->search(),
+            'dataProvider'=>$model->buscar(),
 			//'filter'=>$model,
 			'template'=>'{items}<div class="col-4 centrado"> {pager}</div>',
 			'type'=>'condensed hover striped',
@@ -95,12 +101,33 @@ $(function() {
 }
 table{cursor:default;}
 </style>
+<?php $this->widget('bootstrap.widgets.TbModal', array(
+    'id' => 'modalTarjetas',
+    'header' => 'Tarjetas de credito',
+    'content' => '<div id="tarjetas"></div>',
+    'footer' => implode(' ', array(
+        TbHtml::button('Close', array('data-dismiss' => 'modal')),
+     )),
+)); ?>
+ 
+
   <div id="contextMenu" class="dropdown clearfix">
     <ul class="dropdown-menu" id="contextual" role="menu" aria-labelledby="dropdownMenu" style="display:block;position:static;margin-bottom:5px;">
 	  <li><a tabindex="-1" href='#' onclick="window.location.href='<?php echo $this->createUrl('usuarios/historialCompras') ; ?>&id='+currentId;" class="fa fa-dollar">
  Historial de compras</a></li>
-	  <li><a tabindex="-1" href="#" class="fa fa-credit-card"> Tarjetas de credito.
-			</a></li>
+	  <li>
+<?php echo TbHtml::link(' Tarjetas registradas','#', array(
+    'style' => TbHtml::BUTTON_COLOR_PRIMARY,
+	'class'=> 'fa fa-credit-card',	
+    'size' => TbHtml::BUTTON_SIZE_LARGE,
+	'onclick'=>"$.ajax({
+			url:'".$this->createUrl('usuarios/verTarjetas')."&id='+currentId,
+			success:function(data){ $('#tarjetas').html(data);},
+	})",
+	'data-toggle' => 'modal',
+    'data-target' => '#modalTarjetas',
+)); ?>
+			</li>
 	  <li class="divider"></li>
 	  <li><a tabindex="-1" href="#" class="fa fa-arrow-down"> Dar de baja</a></li>
     </ul>

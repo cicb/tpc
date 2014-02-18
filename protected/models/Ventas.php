@@ -89,7 +89,7 @@ class Ventas extends CActiveRecord
 			'VentasFecHor' => 'Ventas Fec Hor',
 			'TempLugaresTipUsr' => 'Temp Lugares Tip Usr',
 			'UsuariosId' => 'Usuarios',
-			'VentasSta' => 'Ventas Sta',
+			'VentasSta' => 'Estatus',
 			'VentasNomDerTar' => 'Ventas Nom Der Tar',
 			'VentasMesExpTar' => 'Ventas Mes Exp Tar',
 			'VentasAniExpTar' => 'Ventas Ani Exp Tar',
@@ -136,5 +136,9 @@ class Ventas extends CActiveRecord
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
 		));
+	}
+	public function getTarjeta()
+	{
+			return 'XXXX-XXXX-XXXX-'.substr($this->VentasNumTar,-4);
 	}
 }
