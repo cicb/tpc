@@ -80,7 +80,8 @@
 								'dataProvider' => $model->getCancelacionesYReimpresiones($eventoId,$funcionesId),
 								'template'=>'{items}<div class="col-4 centrado"> {pager}</div>',
 								'type'=>'striped hover',
-								'mergeColumns'=>array('VentasId','boleto'),
+								'mergeColumns'=>array('VentasId','boleto','FilasId','LugaresId'),
+								'ajaxUpdate'=>false,
 								'columns' => array(
 										'boleto',
 										array(

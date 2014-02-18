@@ -234,8 +234,10 @@ class UsuariosController extends Controller {
 								$model->apellido_materno=$_GET['filtro'];
 								$model->username=$_GET['filtro'];
 								$model->email=$_GET['filtro'];
-				}	
-				$this->render('usuariosWeb',array('model'=>$model));	
+				}
+				else
+					$model=false;	
+				$this->render('usuariosWeb',compact('model'));	
 		}
 		public function actionHistorialCompras()
 		{

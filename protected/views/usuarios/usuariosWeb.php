@@ -14,7 +14,8 @@
 						'span' => 3,
 						'placeholder'=>'Nombre del usuario o Nick o Email ',
 						'label'=>'Buscar:',
-						'id'=>'filtro-usuario'
+						'id'=>'filtro-usuario',
+						'autofocus'=>"autofocus",
 				)); ?>		
 <?php $this->endWidget(); ?>
 </div>
@@ -23,6 +24,8 @@
 </div>
 <div id='tabla-usuarios'>
 		<?php 
+if ($model) {
+	// code...
              $this->widget('bootstrap.widgets.TbGridView', array(
             'id'=>'usuarios-grid',
             'emptyText'=>'No se encontraron coincidencias',
@@ -55,6 +58,7 @@
 
 			)
 	));
+}	
 		?>
 </div>
 <?php 

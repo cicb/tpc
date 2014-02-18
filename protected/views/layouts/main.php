@@ -68,11 +68,9 @@ $this->widget('bootstrap.widgets.TbNavbar',array(
 										array('label' => 'Cancelaciones y Reimpresiones',
 												'url' =>  $this->createUrl('reportes/cancelacionesReimpresiones'),
 												'visible' => !Yii::app()->user->isGuest AND (Yii::app()->user->getState("Admin"))?true:false), 
-										array('label' => 'Usuarios Web',
-												'url' =>  $this->createUrl('usuarios/usuariosWeb'),
-												'visible' => !Yii::app()->user->isGuest AND (Yii::app()->user->getState("Admin"))?true:false), 
-										),
 								),
+								),
+
 								array(
 										'label' => 'Cupones Y Descuentos', 
 										//'url' => $this->createUrl('descuentoslevel1/admin',array('tipo'=>'descuento','query'=>'')),
@@ -95,8 +93,17 @@ $this->widget('bootstrap.widgets.TbNavbar',array(
 										array('label'=>'Configurador de accesos', 'url'=>$this->createUrl('evento/index')),
 								),
 								'url' => '#','visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
-								array('label' => 'Usuarios', 	'url' => $this->createUrl('usuarios/index'),'visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
-								array('label' => 'Boletos', 	'url' => '#','visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
+								array('label'=>'Usuarios','items'=>array(
+										array('label' => 'Usuarios del Sistema',
+										'url' => $this->createUrl('usuarios/index'),
+										'visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
+										array('label' => 'Usuarios Web',
+										'url' => $this->createUrl('usuarios/usuariosWeb'),
+										'visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
+
+								)
+								),
+										array('label' => 'Boletos', 	'url' => '#','visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
 						),
 				),
 				array(
