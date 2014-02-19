@@ -6,6 +6,17 @@ class VentasController extends Controller
 	{
 		$this->render('index');
 	}
+	public function validarUsuario(){
+			if(Yii::app()->user->isGuest OR !Yii::app()->user->getState("Admin")){
+			$this->redirect(array("site/logout"));
+		}
+	}
+	public function validarAjax()
+	{
+		if (!Yii::app()->request->isAjaxRequest) {
+				throw new CHttpException ( 404, 'Petición incorrecta.' );
+		}	
+	}
     public function actionReimpresionBoletos(){
         $region = null;
         $dataProvider = null;
@@ -117,6 +128,8 @@ class VentasController extends Controller
 		public function actionHistorialBoleto()
 		{
 		//El Id que recibe debe ser una expresion regular formada por el eventoid la funcionid la zonaid la subzonaid la filaid y el lugarid
+				$this->validarUsuario();
+				$this->validarAjax();
 			if (isset($_GET['id']) and preg_match("(\d{2,}-\d{1,}-\d{1,}-\d{1,}-\d{1,}-\d{1,})",$_GET['id'])==1) {
 					$ids=explode('-',$_GET['id']);//Contiene todas las id en un arreglo
 					$eventoId=$ids[0];

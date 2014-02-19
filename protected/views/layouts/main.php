@@ -26,6 +26,10 @@ $this->widget('bootstrap.widgets.TbNavbar',array(
 				array(
 						'class' => 'bootstrap.widgets.TbNav',
 						'items' => array(
+								//Estos son los elementos del menu que dirigen hacia modulos especificos del panel de control
+								 //!!! Si se desea cambiar el nombre de un reporte o de cualquier otro modulo en particular 
+								 //es necesario que se cambie tambien en el encabezado de la vista asi también es recomendado
+								 //que se cambie el nombre de la cccion del controller para que la direccion URL sea semanticamente correcta
 							array('label' => 'Reportes',
 								'url' => $this->createUrl('reportes/index'),
 								'active' => Yii::app()->controller->id=='reportes',

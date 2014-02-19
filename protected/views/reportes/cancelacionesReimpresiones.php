@@ -234,7 +234,7 @@ table{cursor:default;}
 </style>
 <?php $this->widget('bootstrap.widgets.TbModal', array(
     'id' => 'modal',
-    'header' => 'Historial de boleto',
+    'header' => 'Historial del boleto',
     'content' => '<div id="tablaModal">'.TbHtml::animatedProgressBar(50).'</div>',
     'htmlOptions' => array('style'=>'width:60%;left:38%'),
     'footer' => implode(' ', array(

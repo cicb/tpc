@@ -10,19 +10,26 @@
             'target' => '.chosen',
       ));
 ?>
-<div class="span-16">
-    <a id="boton_ayuda"  class="btn btn-primary" style="float: right;margin-right: 37px;"><i class="icon-wrench icon-white"></i>&nbsp;Ayuda</a>
-</div>
-<br /><br />
-<!--obtencion del cupon-->
-<div class="span-16" style="margin: 0;padding-bottom: 3px; border-bottom: silver solid 1px;text-align: right;">
-    <!--<i class="icon-barcode"></i>-->
-    <strong style="<?php echo empty($_GET['cupon'])?"visibility:hidden;":""; ?>">C&oacute;digo del Cup&oacute;n:</strong>
-    <input id="codigo" title="" class="" data-placement='top' data-id="<?php echo $EventoId; ?>" readonly="readonly" name="CuponesCod" style="margin:0;height:20px;<?php echo empty($_GET['cupon'])?"visibility:hidden;":""; ?>" type="text" value="<?php echo $cupon; ?>" placeholder="Cupon" value="<?php  ?>" />&nbsp;&nbsp;&nbsp;
-    <a id="generar_cupon"  class="btn btn-success" style="margin-right: 17px;display: none;"><i class="icon-repeat icon-white"></i>&nbsp;Generar Cup&oacute;n</a>
-</div><!--fin de obtencion del cupon-->
-<!-- Evento y eventosn relacionados -->
-<div class="span-6" style="margin: 0;border-right: silver solid 1px;">
+
+<!-- INICIO DE CONTROL-->
+<div class="box5">
+	
+<div class="span3">
+		<?php echo TbHtml::textField('CuponesCod', '',
+				array(
+					'data-placement'=>'left',
+					'data-id'=>-1,		
+					'data-tipo'=>'cupon',		
+					'id'=>'codigo',
+					'append' => TbHtml::button('Generar cupón',array(
+							'id'=>'generar_cupon',
+							'class'=>empty($_GET['cupon'])?'hidden':'',
+					)),
+					'span' => 3,
+					'class'=>empty($_GET['cupon'])?'hidden':'',
+					'placeholder'=>'Código del cupón')
+			); ?>
+
     <label><strong>Eventos</strong></label>
     <label>Seleciona por lo menos un evento</label>
     <select id="lista_eventos" multiple="" size="11">
@@ -30,13 +37,13 @@
         <option data-db="1" data-db-id="<?php echo $evento->DescuentosId; ?>" id="<?php echo $evento->EventoId; ?>" <?php echo $evento->EventoId==$EventoId?"selected='selected'":""; ?> value="<?php echo $evento->evento->EventoId; ?>"><?php echo $evento->evento->EventoNom; ?></option>
         <?php endforeach; ?>
     </select>
-    <table>
+    <table width="100%">
         <tr>
         	<td>
-            <a data-toggle="modal" data-target="#myModal_eventos" class="btn btn-primary" id="boton_eventos"><i class="icon-plus icon-white"></i>&nbsp;Agregar</a>
+			<a id="eliminar_lista_evento" class="btn btn-danger"><i class="icon-remove icon-white"></i>&nbsp;Eliminar</a>
             </td>
         	<td>
-            <a id="eliminar_lista_evento" class="btn btn-danger"><i class="icon-remove icon-white"></i>&nbsp;Eliminar</a>
+			<a data-toggle="modal" data-target="#myModal_eventos" class="btn btn-primary" id="boton_eventos"><i class="icon-plus icon-white"></i>&nbsp;Agregar</a>
             </td>
         </tr>
     </table>
@@ -48,21 +55,22 @@
             <option data-db="1"  value="<?php echo $evento->EventoId; ?>" id="<?php echo $evento->EventoId; ?>"><?php echo $evento->evento->EventoNom; ?></option>
             <?php endforeach; ?>
         </select>
-        <table>
+        <table with="100%">
             <tr>
             	<td>
-                <a data-toggle="modal" data-target="#myModal" class="btn btn-primary" id="boton_eventos_relacionados"><i class="icon-plus icon-white"></i>&nbsp;Agregar</a>
+				<a id="eliminar_lista_evento_releacionado" class="btn btn-danger"><i class="icon-remove icon-white"></i>&nbsp;Eliminar</a>
                 </td>
             	<td>
-                <a id="eliminar_lista_evento_releacionado" class="btn btn-danger"><i class="icon-remove icon-white"></i>&nbsp;Eliminar</a>
+				<a data-toggle="modal" data-target="#myModal" class="btn btn-primary" id="boton_eventos_relacionados"><i class="icon-plus icon-white"></i>&nbsp;Agregar</a>
                 </td>
             </tr>
         </table>
     </div>
-</div><!-- fin de evento y eventosrelacionados -->
-<!-- informacion de eventos -->
-<div class="span-10" style="margin: 0 0 0 6px;">
-<table border="1">
+<!-- fin de evento y eventosrelacionados -->
+</div>
+<div class="col-2">
+	
+<table border="0" width="90%">
     <tr>
     	<td>Descripci&oacute;n:</td>
     	<td><input data-log="1"  type="text" id="descripcion" class="data-id save_temp" data-id="<?php echo $EventoId; ?>" value="<?php echo $CuponActual[0]->DescuentosDes; ?>" name="DescuentosDes" /></td>
@@ -88,37 +96,13 @@
     	<td>
         <input data-log="1" type="checkbox" name="DescuentoCargo" value="<?php echo $CuponActual[0]->DescuentoCargo=="si"?"no":"si"; ?>" <?php echo $CuponActual[0]->DescuentoCargo=="si"?"checked":""; ?> id="cargo" class="data-id save_temp" data-id="<?php echo $EventoId; ?>" />
         <label style="display: inline;" title="Al marcar esta opci&oacute;n se aplica el mismo descuento al cargo por servicio" for="cargo">Aplica a cargo por servicio</label>
+<br/>
         </td>
    	</tr>
     <tr>
     	<td>Fecha de inicio:</td>
     	<td>
             <?php
-            /*$modelo=new Descuentos;
-              $this->widget('ext.CJuiDateTimePicker.CJuiDateTimePicker',array(
-                            'model'=>$modelo, //Model object
-                            'id'=>'fecha_inicio',
-                            'name'=>'DescuentosFecIni',
-                            'attribute'=>'DescuentosFecIni', //attribute name
-                            'language'=>'es',
-                            'mode'=>'datetime', //use "time","date" or "datetime" (default)
-                            'value'=>"",//date("Y-m-d H:i:s"),//$CuponActual[0]->DescuentosFecIni,                            
-                            'options'=>array(   'showAnim'=>'fold',
-                                                'dateFormat' => 'yy-mm-dd ',
-                                                'changeMonth'=>true,
-                                                'changeYear'=>true,
-                                                'timeFormat'=>"hh:mm:ss",
-                                                'timeText'=>"Hora",
-                                                'hourText'=>"Hora",
-                                                'minuteText'=>"Minuto",
-                                                ), // jquery plugin options
-                            'htmlOptions'=>array(
-                            'style'=>'height:20px;',
-                            'readonly'=>'readonly',
-                            'class'=>'data-id save_temp',
-                            'data-id'=>$EventoId,
-                            ),
-                        ));*/
                          $this->widget('zii.widgets.jui.CJuiDatePicker',array(
                         'language'=>'es',
                         'id'=>'fecha_inicio',
@@ -146,30 +130,6 @@
     	<td>Caducidad:</td>
     	<td>
             <?php
-              /* $this->widget('ext.CJuiDateTimePicker.CJuiDateTimePicker',array(
-                            'model'=>$modelo, //Model object
-                            'id'=>'fecha_fin',
-                            'name'=>'DescuentosFecFin',
-                            'attribute'=>'DescuentosFecFin', //attribute name
-                            'language'=>'es',
-                            'mode'=>'datetime', //use "time","date" or "datetime" (default)
-                            'value'=>"",//date("Y-m-d H:i:s"),//$CuponActual[0]->DescuentosFecFin,                            
-                            'options'=>array(   'showAnim'=>'fold',
-                                                'dateFormat' => 'yy-mm-dd ',
-                                                'changeMonth'=>true,
-                                                'changeYear'=>true,
-                                                'timeFormat'=>"hh:mm:ss",
-                                                'timeText'=>"Hora",
-                                                'hourText'=>"Hora",
-                                                'minuteText'=>"Minuto",
-                                                ), // jquery plugin options
-                            'htmlOptions'=>array(
-                            'style'=>'height:20px;',
-                            'readonly'=>'readonly',
-                            'class'=>'data-id save_temp',
-                            'data-id'=>$EventoId,
-                        ),
-                        ));*/
                          $this->widget('zii.widgets.jui.CJuiDatePicker',array(
                         'language'=>'es',
                         'id'=>'fecha_fin',
@@ -199,48 +159,9 @@
         <input data-log="1" type="text" id="cantidad_descuentos" value="<?php echo $CuponActual[0]->DescuentosExis; ?>" class="data-id save_temp" data-id="<?php echo $EventoId; ?>" style="width: 178px;"  name="DescuentosExis" value="0"/>
         </td>
     </tr>
-    <!--<tr>
-    	<td>Funci&oacute;n:</td>
-    	<td>
-        <select data-log="1" id="funcion" class="data-id save_temp" data-id="<?php echo $EventoId; ?>" name="FuncionesId">
-            <option value="0">Todas las funciones</option>
-        </select>
-        </td>
-    </tr>
     <tr>
-    	<td>Zona:</td>
-    	<td>
-            <select data-log="1" id="zona" class="data-id save_temp" data-id="<?php echo $EventoId; ?>" name="ZonasId">
-                <option value="0">Todas las zonas</option>
-            </select>
-        </td>
-    </tr>
-    <tr>
-    	<td>Subzona:</td>
-    	<td>
-            <select data-log="1" id="subzona" class="data-id save_temp" data-id="<?php echo $EventoId; ?>" name="SubzonaId">
-                <option value="0">Todas las subzonas</option>
-            </select>
-        </td>
-    </tr>
-    <tr>
-    	<td>Fila:</td>
-    	<td>
-            <select data-log="1" id="fila" class="data-id save_temp" data-id="<?php echo $EventoId; ?>" name="FilasId">
-                <option value="0">Todas las filas</option>
-            </select>
-        </td>
-    </tr>
-    <tr>
-    	<td>Lugar:</td>
-    	<td>
-            <select data-log="1" id="lugar" class="data-id save_temp" data-id="<?php echo $EventoId; ?>" name="LugaresId">
-                <option value="0">Todos los lugares</option>
-            </select>
-     </td>
-    </tr>-->
-    <tr>
-    	<td colspan="2" style="text-align: right;">
+		<td colspan="2" style="text-align: right;">
+<br/></br>
         &nbsp;&nbsp;
         <a data-toggle="modal" data-target="#myModal_resultado" id="previsualizar" class="btn btn-default"><i class="icon-th-list icon-black"></i>&nbsp;Ver lista de eventos</a>
         <a data-toggle="modal" data-target="#myModal_continuar" id="continuar" class="btn btn-success">Continuar&nbsp;<i class="icon-play icon-white"></i></a>
@@ -255,9 +176,13 @@
     <?php
            // echo CHtml::dateField('fecha','',array());
     ?>
-</div><!-- fin de informacion de eventos -->
-<br />
+<!-- fin de informacion de eventos -->
+</div>
 
+
+
+</div> <!---FIN de controles-->
+<!-- informacion de eventos -->
 <?php
 $eventos=Evento::model()->findAll("EventoSta='ALTA'",array('order'=>'EventoNom'));
 ?>
@@ -1416,3 +1341,5 @@ $("#boton_ayuda").click(function(event){
 .filetree li.expandable span.folder { background: url(<?php echo $baseUrl; ?>/images/images/folder-closed.gif) 0 0 no-repeat; }
 .filetree span.file { background: url(<?php echo $baseUrl; ?>/images/images/file.gif) 0 0 no-repeat; }
 </style>
+
+</div>
