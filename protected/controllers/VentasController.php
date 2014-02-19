@@ -114,4 +114,20 @@ class VentasController extends Controller
 		);
 	}
 	*/
+		public function actionHistorialBoleto()
+		{
+		//El Id que recibe debe ser una expresion regular formada por el eventoid la funcionid la zonaid la subzonaid la filaid y el lugarid
+			if (isset($_GET['id']) and preg_match("(\d{2,}-\d{1,}-\d{1,}-\d{1,}-\d{1,}-\d{1,})",$_GET['id'])==1) {
+					$ids=explode('-',$_GET['id']);//Contiene todas las id en un arreglo
+					$eventoId=$ids[0];
+					$funcionesId=$ids[1];
+					$zonasId=$ids[2];
+					$subzonaId=$ids[3];
+					$filasId=$ids[4];
+					$lugaresId=$ids[5];
+				$model=new ReportesVentas;
+				$this->renderPartial('_historialBoleto',compact('eventoId','funcionesId','zonasId','subzonaId','filasId','lugaresId','model'));
+
+			}	
+		}
 }

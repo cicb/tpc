@@ -75,89 +75,190 @@
 <div id='reporte'>
 <?php 
 				if (isset($eventoId) and $eventoId>0) {
-						$this->widget('yiiwheels.widgets.grid.WhGroupGridView', array(
-								'id'=>'cancel-reimp-grid',
-								'dataProvider' => $model->getCancelacionesYReimpresiones($eventoId,$funcionesId),
-								'template'=>'{items}<div class="col-4 centrado"> {pager}</div>',
-								'type'=>'striped hover',
-								'mergeColumns'=>array('VentasId','boleto','FilasId','LugaresId'),
-								'ajaxUpdate'=>false,
-								'columns' => array(
-										'boleto',
-										array(
-												'header'=>'Fila',
-												'name'=>'FilasId',
-										),
-										array(
-												'header'=>'Lugar',
-												'name'=>'LugaresId',
-										),
-										array(
-												'header'=>'Venta',
-												'name'=>'VentasId'
-										),
-										array(
-												'header'=>'NumBol Ventaslevel1 ',
-												'name'=>'LugaresNumBol'
-										),
-										array(
-												'header'=>'Estatus Ventaslevel1',
-												'name'=>'VentasSta'
-										),
-										array(
-												'header'=>'Usuario',
-												'name'=>'UsuariosNom'
-										),
-										array(
-												'header'=>'Reimpresion',
-												'type'=>'html',
-												'value'=>'"<span class=\'\'>".$data["tipo"]."</span>"',
-										),
-										array(
-												'header'=>'NumBol Anterior',
-												'name'=>'NumBol'
-										),
-										array(
-												'header'=>'Fecha/Hora',
-												'name'=>'fecha'
-										),
-										array(
-												'header'=>'Cancelacion',
-												'name'=>'cancelacion'
-										),
-										array(
-												'header'=>'Punto de Venta',
-												'name'=>'PuntosventaNom'
-										),
-
+						//$this->widget('yiiwheels.widgets.grid.WhGroupGridView', array(
+								//'id'=>'cancel-reimp-grid',
+								//'dataProvider' => $model->getCancelacionesYReimpresiones($eventoId,$funcionesId,$desde,$hasta),
+								//'template'=>'{items}<div class="col-4 centrado"> {pager}</div>',
+								//'type'=>'striped hover',
+								//'mergeColumns'=>array('VentasId','boleto','FilasId','LugaresId'),
+								//'ajaxUpdate'=>false,
+								//'columns' => array(
+										//'boleto',
 										//array(
-												//'header'=>'C',
+												//'header'=>'Fila',
+												//'name'=>'FilasId',
+										//),
+										//array(
+												//'header'=>'Lugar',
+												//'name'=>'LugaresId',
+										//),
+										//array(
+												//'header'=>'Venta',
+												//'name'=>'VentasId'
+										//),
+										//array(
+												//'header'=>'NumBol Ventaslevel1 ',
+												//'name'=>'LugaresNumBol'
+										//),
+										//array(
+												//'header'=>'Estatus Ventaslevel1',
+												//'name'=>'VentasSta'
+										//),
+										//array(
+												//'header'=>'Usuario',
+												//'name'=>'UsuariosNom'
+										//),
+										//array(
+												//'header'=>'Reimpresion',
+												//'type'=>'html',
+												//'value'=>'"<span class=\'\'>".$data["tipo"]."</span>"',
+										//),
+										//array(
+												//'header'=>'NumBol Anterior',
+												//'name'=>'NumBol'
+										//),
+										//array(
+												//'header'=>'Fecha/Hora',
 												//'name'=>'fecha'
 										//),
 										//array(
-										//'class'=>'CButtonColumn',
-										//'header'=>'',
-										//'template'=>'{eliminar}  ',
-										//'buttons'=>array(
-										//'eliminar'=>array(
-										//'label'=>'<span class="text-error fa fa-times-circle"> Quitar</span>',
-										//'url'=>'Yii::app()->createUrl("usuarios/desasignarEvento",array(
-										//"id"=>$data->UsuarioId,
-										//"evento"=>$data->usrValIdRef,
-										//"nick"=>"'.$model->UsuariosNick.'",
-										//"funcion"=>$data->usrValIdRef2))',
-										//'click'=>'function(event){
-										//$.get( $(this).attr("href")).done( function(){ $.fn.yiiGridView.update("usrval-grid"); });
-										//event.preventDefault(); }',
-
+												//'header'=>'Fec/Hor Cancelacion',
+												//'name'=>'CancelFecHor'
 										//),
-										//)
+										//array(
+												//'header'=>'Cancelo',
+												//'name'=>'CancelUsuarioId'
+										//),
+										//array(
+												//'header'=>'PV. Ventaslevel1',
+												//'name'=>'PuntosventaId'
+										//),
+										//array(
+												//'header'=>'PV. Ventaslevel1',
+												//'name'=>'PuntosventaId'
+										//),
+										////array(
+												////'header'=>'C',
+												////'name'=>'fecha'
+										////),
+										////array(
+										////'class'=>'CButtonColumn',
+										////'header'=>'',
+										////'template'=>'{eliminar}  ',
+										////'buttons'=>array(
+										////'eliminar'=>array(
+										////'label'=>'<span class="text-error fa fa-times-circle"> Quitar</span>',
+										////'url'=>'Yii::app()->createUrl("usuarios/desasignarEvento",array(
+										////"id"=>$data->UsuarioId,
+										////"evento"=>$data->usrValIdRef,
+										////"nick"=>"'.$model->UsuariosNick.'",
+										////"funcion"=>$data->usrValIdRef2))',
+										////'click'=>'function(event){
+										////$.get( $(this).attr("href")).done( function(){ $.fn.yiiGridView.update("usrval-grid"); });
+										////event.preventDefault(); }',
 
-										//)
+										////),
+										////)
+
+										////)
 
 
-								),
+								//),
+						//));
+						$this->widget('yiiwheels.widgets.grid.WhGroupGridView', array(
+								'id'=>'cancel-reimp-grid',
+								'dataProvider' => $model->getAnomalos($eventoId,$funcionesId,$desde,$hasta),
+								'template'=>'{items}<div class="col-4 centrado"> {pager}</div>',
+								'type'=>'striped hover',
+								'mergeColumns'=>array('VentasId','ZonasAli','SubzonaId','FilasAli','LugaresLug','VentasFecHor'),
+								'ajaxUpdate'=>false,
+								'columns' => array(
+										'boleto',
+										'ZonasAli',
+										'SubzonaId',
+										'FilasAli',
+										'LugaresLug',
+										'VentasId',
+										'VentasFecHor',
+										'VentasSta',
+										'VentasCon',
+										array(
+												'header'=>'Reimpresiones',
+												'type'=>'raw',
+												'value'=>'is_numeric($data["reimpresiones"])?$data["reimpresiones"]+1:"0"',
+										)
+								)
 						));
 				}
+				
 ?>
 </div>
+<?php 
+Yii::app()->clientScript->registerScript('ddown','
+$currentId=-1;
+$(function() {
+		var $contextMenu = $("#contextMenu");
+		$("body").on("contextmenu", "table tr", function(e) {
+				var id=	$(this).children(":first").text();
+						currentId=id;
+						//console.log(currentId);
+						$contextMenu.css({
+								display: "block",
+										left: e.pageX,
+										top: e.pageY
+	});
+	return false;
+  });
+
+	$("body").on("click", "table tr", function(e) {
+				$contextMenu.hide();
+		});
+
+  $contextMenu.on("click", "a", function() {
+		  $contextMenu.hide();
+  });
+	$("#contextual li a").on("click",function(){
+		return true;
+   }); 
+});	 
+		');
+
+?>
+<style type='text/css'>
+#contextMenu {
+  position: absolute;
+  display:none;
+
+}
+table{cursor:default;}
+</style>
+<?php $this->widget('bootstrap.widgets.TbModal', array(
+    'id' => 'modal',
+    'header' => 'Historial de boleto',
+    'content' => '<div id="tablaModal">'.TbHtml::animatedProgressBar(50).'</div>',
+    'htmlOptions' => array('style'=>'width:60%;left:38%'),
+    'footer' => implode(' ', array(
+        TbHtml::button('Cerrar', array('data-dismiss' => 'modal')),
+     )),
+)); ?>
+ 
+
+  <div id="contextMenu" class="dropdown clearfix">
+    <ul class="dropdown-menu" id="contextual" role="menu" aria-labelledby="dropdownMenu" style="display:block;position:static;margin-bottom:5px;">
+	  <li>
+<?php echo TbHtml::link(' Historial del boleto','#', array(
+    'style' => TbHtml::BUTTON_COLOR_PRIMARY,
+	'class'=> 'fa fa-calendar-o',	
+    'size' => TbHtml::BUTTON_SIZE_LARGE,
+	'onclick'=>"$.ajax({
+			url:'".$this->createUrl('ventas/historialBoleto')."&id='+currentId,
+			success:function(data){ $('#tablaModal').html(data);},
+	})",
+	'data-toggle' => 'modal',
+    'data-target' => '#modal',
+)); ?>
+			</li>
+	  <li class="divider"></li>
+	 <!-- <li><a tabindex="-1" href="#" class="fa fa-arrow-down"> Dar de baja</a></li>-->
+    </ul>
+  </div>

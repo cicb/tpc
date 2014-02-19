@@ -44,6 +44,9 @@ $this->widget('bootstrap.widgets.TbNavbar',array(
 										array('label' => 'Desglose De Ventas', 
 												'url' =>  $this->createUrl('reportes/desgloseVentas'),'visible'
 												=> !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
+										array('label' => 'Historial De Cancelaciones Y Reimpresiones',
+												'url' =>  $this->createUrl('reportes/cancelacionesReimpresiones'),
+												'visible' => !Yii::app()->user->isGuest AND (Yii::app()->user->getState("Admin"))?true:false), 
 										array('label' => 'Lugares',
 												'url' =>  $this->createUrl('reportes/lugares'),
 												'visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
@@ -67,9 +70,6 @@ $this->widget('bootstrap.widgets.TbNavbar',array(
 										array('label' => 'Ventas Diarias',
 												'url' =>  $this->createUrl('reportes/ventasDiarias'),
 												'visible' => !Yii::app()->user->isGuest AND (Yii::app()->user->getState("Admin"))?true:false),
-										array('label' => 'Historial De Cancelaciones Y Reimpresiones',
-												'url' =>  $this->createUrl('reportes/cancelacionesReimpresiones'),
-												'visible' => !Yii::app()->user->isGuest AND (Yii::app()->user->getState("Admin"))?true:false), 
 								),
 						),
 

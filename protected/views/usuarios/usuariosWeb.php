@@ -110,7 +110,7 @@ table{cursor:default;}
     'header' => 'Tarjetas de credito',
     'content' => '<div id="tarjetas"></div>',
     'footer' => implode(' ', array(
-        TbHtml::button('Close', array('data-dismiss' => 'modal')),
+        TbHtml::button('Cerrar', array('data-dismiss' => 'modal')),
      )),
 )); ?>
  

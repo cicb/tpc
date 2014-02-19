@@ -104,7 +104,8 @@ class UsuariosController extends Controller {
 
 	protected function saveModel(Usuarios $usuario)
 	{
-        if(isset($_POST['Usuarios']))
+			$this->validarUsuario();
+			if(isset($_POST['Usuarios']))
         {
             $this->performAjaxValidation($usuario);
             $msg = $usuario->saveModel($_POST['Usuarios']);
@@ -116,6 +117,7 @@ class UsuariosController extends Controller {
     }
 	public function actionConmutarEstatus()
 	{
+			$this->validarUsuario();
 			if (Yii::app()->request->isAjaxRequest ) {
 					$model=$this->loadModel();
 					if ($model->UsuariosId>0) {
@@ -128,6 +130,8 @@ class UsuariosController extends Controller {
 	}
 	public function actionAsignarEvento()
 	{
+
+			$this->validarUsuario();
 			if (Yii::app()->request->isAjaxRequest ){
 					$model=$this->loadModel();
 					if (isset($_GET['eid']) and ($_GET['eid']>0 or (strlen($_GET['eid'])>0 and $_GET['eid']=="TODAS"))) {
@@ -140,6 +144,7 @@ class UsuariosController extends Controller {
 	}
 	public function actionDesasignarEvento()
 	{
+
 			if (Yii::app()->request->isAjaxRequest ){
 					$this->validarUsuario();
 					$model=$this->loadModel();

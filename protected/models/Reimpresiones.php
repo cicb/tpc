@@ -62,6 +62,11 @@ class Reimpresiones extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+				'ventalevel1'=>array(self::BELONGS_TO,'Ventaslevel1', array('EventoId','FuncionesId','ZonasId',
+				'SubzonaId','FilasId','LugaresId') ),
+				'log'=>array(self::BELONGS_TO,'Logreimp', array('EventoId','FuncionesId','ZonasId',
+				'SubzonaId','FilasId','LugaresId') ),
+				'usuario'=>array(self::BELONGS_TO,'Usuarios','UsuarioId')
 		);
 	}
 
@@ -97,7 +102,7 @@ class Reimpresiones extends CActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('ReimpresionesId',$this->ReimpresionesId,true);
+		//$criteria->compare('ReimpresionesId',$this->ReimpresionesId,true);
 		$criteria->compare('EventoId',$this->EventoId,true);
 		$criteria->compare('FuncionesId',$this->FuncionesId,true);
 		$criteria->compare('ZonasId',$this->ZonasId,true);

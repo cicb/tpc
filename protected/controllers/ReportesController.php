@@ -1019,6 +1019,8 @@ $objWriter->save('php://output');
 	}
 	public function actionCancelacionesReimpresiones()
 	{
+
+		$this->perfil();
 		$model=new ReportesVentas;
 		$eventoId=isset($_POST['evento_id'])?$_POST['evento_id']:0;
 		$funcionesId=isset($_POST['funcion_id'])?$_POST['funcion_id']:"TODAS";
