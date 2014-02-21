@@ -80,6 +80,7 @@ $this->menu=array(
         <tbody>
         <?php
             foreach($model as $key =>$descuentos ):
+				if (is_object($descuentos->evento)) :
         ?>
         <tr class="<?php echo ($key%2)==0?'odd':"even"; ?>">
             <td data-cupon="<?php echo $descuentos->descuentos->CuponesCod;  ?>" data-id="<?php echo $descuentos->descuentos->DescuentosId;  ?>" data-EventoId="<?php echo $descuentos->EventoId;  ?>"><?php echo $descuentos->descuentos->DescuentosFecIni=="0000-00-00 00:00:00"?"<i class='icon-remove'></i>":""; ?></td>
@@ -101,6 +102,7 @@ $this->menu=array(
             </td>
         </tr>
         <?php
+						endif;
             endforeach;
         ?>
         </tbody>    

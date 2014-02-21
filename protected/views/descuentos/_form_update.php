@@ -15,7 +15,7 @@
 <div class="box5">
 	
 <div class="span3">
-		<?php echo TbHtml::textField('CuponesCod', '',
+		<?php echo TbHtml::textField('CuponesCod', @$_GET['cupon'],
 				array(
 					'data-placement'=>'left',
 					'data-id'=>-1,		
@@ -25,7 +25,7 @@
 							'id'=>'generar_cupon',
 							'class'=>empty($_GET['cupon'])?'hidden':'',
 					)),
-					'span' => 3,
+					'span' => 2,
 					'class'=>empty($_GET['cupon'])?'hidden':'',
 					'placeholder'=>'Código del cupón')
 			); ?>
@@ -43,7 +43,7 @@
 			<a id="eliminar_lista_evento" class="btn btn-danger"><i class="icon-remove icon-white"></i>&nbsp;Eliminar</a>
             </td>
         	<td>
-			<a data-toggle="modal" data-target="#myModal_eventos" class="btn btn-primary" id="boton_eventos"><i class="icon-plus icon-white"></i>&nbsp;Agregar</a>
+			<a data-toggle="modal" data-target="#myModal_eventos" class="btn btn-success" id="boton_eventos"><i class="icon-plus icon-white"></i>&nbsp;Agregar</a>
             </td>
         </tr>
     </table>
@@ -55,13 +55,13 @@
             <option data-db="1"  value="<?php echo $evento->EventoId; ?>" id="<?php echo $evento->EventoId; ?>"><?php echo $evento->evento->EventoNom; ?></option>
             <?php endforeach; ?>
         </select>
-        <table with="100%">
+        <table width="100%">
             <tr>
             	<td>
 				<a id="eliminar_lista_evento_releacionado" class="btn btn-danger"><i class="icon-remove icon-white"></i>&nbsp;Eliminar</a>
                 </td>
             	<td>
-				<a data-toggle="modal" data-target="#myModal" class="btn btn-primary" id="boton_eventos_relacionados"><i class="icon-plus icon-white"></i>&nbsp;Agregar</a>
+				<a data-toggle="modal" data-target="#myModal" class="btn btn-success" id="boton_eventos_relacionados"><i class="icon-plus icon-white"></i>&nbsp;Agregar</a>
                 </td>
             </tr>
         </table>
@@ -164,7 +164,7 @@
 <br/></br>
         &nbsp;&nbsp;
         <a data-toggle="modal" data-target="#myModal_resultado" id="previsualizar" class="btn btn-default"><i class="icon-th-list icon-black"></i>&nbsp;Ver lista de eventos</a>
-        <a data-toggle="modal" data-target="#myModal_continuar" id="continuar" class="btn btn-success">Continuar&nbsp;<i class="icon-play icon-white"></i></a>
+        <a data-toggle="modal" data-target="#myModal_continuar" id="continuar" class="btn btn-primary">Continuar&nbsp;<i class="icon-play icon-white"></i></a>
         </td>
     </tr>
     <tr>
