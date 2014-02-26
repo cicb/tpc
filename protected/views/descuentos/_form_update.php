@@ -15,8 +15,8 @@
 <div class="box5">
 	
 <div class="span3">
-		<?php echo TbHtml::textField('CuponesCod', @$_GET['cupon'],
-				array(
+<?php echo TbHtml::textField('CuponesCod',  $CuponActual[0]->CuponesCod,
+		array(
 					'data-placement'=>'left',
 					'data-id'=>-1,		
 					'data-tipo'=>'cupon',		
