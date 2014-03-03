@@ -236,7 +236,7 @@ if(!$esMovil): ?>
         </td>
         <td>
             <?php 
-            $arreglo=$model->getReporte($eventoId,$funcionesId,'curdate()','curdate()',$cargo=false,'NORMAL','and t3.FuncPuntosventaId<>t.PuntosventaId');
+            $arreglo=$model->getReporte($eventoId,$funcionesId,'CURDATE()','CURDATE()');
             Yii::app()->mustache->render('tablaVentasHoySin', $arreglo);
              ?>
         </td>

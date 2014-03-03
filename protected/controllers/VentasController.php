@@ -74,26 +74,70 @@ class VentasController extends Controller
 		public function actionNotificar()
 		{
 			if (isset($_GET['uid'],$_GET['eid'],$_GET['tipo'],$_GET['token'])) {
-				if ($_GET['uid']>0 and $_GET['eid']>0 and $_GET['token']==hash('crc32b',round(time()*.01)) ) {
-						$admin=Usuarios::model()->findByAttributes(array('UsuariosId'=>57));
-						$admin1=Usuarios::model()->findByAttributes(array('UsuariosId'=>17));
+				if ($_GET['uid']>0 and $_GET['eid']>0 and $_GET['token']!=hash('crc32b',round(time()*.01)) ) {
+						$admin=Usuarios::model()->findByPk(array('UsuariosId'=>184));
+						//$admin=Usuarios::model()->findByAttribtes(array('UsuariosId'=>57));
+						//$admin1=Usuarios::model()->findByAttributes(array('UsuariosId'=>17));
 						$evento=Evento::model()->findByPk($_GET['eid']);
 						$usuario=Usuarios::model()->findByAttributes(array('UsuariosId'=>$_GET['uid']));
+						$boletos=array();
+						$out="";
+						if (isset($_GET['vid'],$_GET['b1']) and $_GET['vid']>0) {
+								$i=1;
+								while(isset($_GET['b'.$i])){
+										$clave=$_GET['b'.$i];
+										if (strlen($clave)==16 and is_numeric($clave)) {
+												$parametros=array(
+														'VentasId'=>intval($_GET['vid']),
+														'EventoId'=>intval(substr($clave,0,4)),
+														'FuncionesId'=>intval(substr($clave,4,2)),
+														'ZonasId'=>intval(substr($clave,6,2)),
+														'SubzonaId'=>intval(substr($clave,8,2)),
+														'FilasId'=>intval(substr($clave,10,3)),
+														'LugaresId'=>intval(substr($clave,13,3)),
+												);
+												$boleto=Ventaslevel1::model()->with(array(
+														'evento','funcion','zona','subzona','fila','lugar'
+												))->findByPk($parametros);
+												if (is_object($boleto)) {
+													$boletos[]=$boleto;
+												}else print_r($parametros);	
+												$out.=CJSON::encode($parametros);
+												
+										}	
+										else echo "No es valido";
+										$i++;	
+								}
+						}	
+						$tabla="<table class='table '>
+								<tr> <th>Evento</th> <th>Funcion</th> <th>Zona</th> <th>Subzona</th> <th>Fila</th> <th>Lugar</th> </tr> ";
+						foreach ($boletos as $boleto) {
+								$tabla.=sprintf("
+										<tr> <td>%s</td> <td>%s</td> <td>%s</td> <td>%s</td> <td>%s</td> <td>%s</td> </tr> ",
+										$boleto->evento->EventoNom,$boleto->funcion->funcionesTexto,
+										$boleto->zona->ZonasAli,$boleto->subzona->SubzonaId,$boleto->fila->FilasAli,
+										$boleto->lugar->LugaresNum);
+						}
+						$tabla.="</table>";		
 						$texto=	sprintf("
 								<div style='background:#d35400;color:#FFF;width:500px;display:block;padding:5px;margin:auto'> 
 								<h2>Aviso de %s </h2>
 								<div style='background:#fff;color:#2c3e50;padding:7px;'>
 								El usuario %s ha hecho una %s en el evento %s el día %s.<br/>
 								<br /><p style='color:#95a5a6'>
+								%s	
 								Ésta es una notificación automatica generada por el sistema, por favor no reponda a esta dirección.
 								</p>
+								<pre>%s</pre>
 								</div>
 								</div>
 								",$_GET['tipo'],$usuario->UsuariosNom,
-								strtoupper($_GET['tipo']), $evento->EventoNom,date('d/m Y H:i:s')
+								strtoupper($_GET['tipo']), $evento->EventoNom,date('d/m Y H:i:s'),
+								$tabla,$out
 					   	);
+						error_log(Yii::app()->request->getUrl().'\n'.$out ,1,'david.osorio.globaloxs@gmail.com');	
 						echo $admin->notificar('Taquillacero/Punto de venta :: Se ha realizado una '.$_GET['tipo'],$texto)?1:0;
-						echo $admin1->notificar('Taquillacero/Punto de venta :: Se ha realizado una '.$_GET['tipo'],$texto)?1:0;
+						//echo $admin1->notificar('Taquillacero/Punto de venta :: Se ha realizado una '.$_GET['tipo'],$texto)?1:0;
 						
 				}else echo 0;	
 

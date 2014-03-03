@@ -212,7 +212,11 @@ class ReportesFlex extends CFormModel
 			$cargo=$cargo?" + t2.VentasCarSer ":'';
 			$rango="";
 			if (strlen($desde.$hasta)>2) {
-				$rango=" AND DATE(t.VentasFecHor) BETWEEN '$desde'  AND '$hasta' ";
+					if ($desde==$hasta)
+								$rango=" AND DATE(t.VentasFecHor) = $desde";
+					elseif(preg_match("(\d{4}-\d{2}-\d{2})",$desde)==1) {
+							$rango=" AND DATE(t.VentasFecHor) BETWEEN '$desde'  AND '$hasta' ";
+					}
 			}
 			$tipoBoleto="('".implode(explode(',',$tipoBoleto),'\',\'')."')";
 			if ($funcion>0) $funcion=" AND t2.FuncionesId=$funcion ";
