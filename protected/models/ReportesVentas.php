@@ -174,7 +174,7 @@ class ReportesVentas extends CFormModel
 		}
 	}
 
-	public function getResumenEvento($eventoId,$funcionId='TODAS',$desde,$hasta)
+	public function getResumenEvento($eventoId,$funcionId='TODAS',$desde=0,$hasta=0)
 	{
 			$modelo=new ReportesFlex;
 			$funcion="";

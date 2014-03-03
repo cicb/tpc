@@ -2,7 +2,7 @@
 echo CHtml::openTag('h3',array('style'=>'text-align:center'));
 echo $evento->EventoNom;
 echo CHtml::closeTag('h3');
-$resumenEvento=$model->getResumenEvento($evento->EventoId,$funcionesId,$desde,$hasta);
+$resumenEvento=$model->getResumenEvento($evento->EventoId,'TODAS');
 	$data=array();
 	foreach (array_slice($resumenEvento,1,4) as $key=>$fila) {
 			$label=strcasecmp($key,'NORMAL')==0?'Ventas':@ucwords($resumenEvento[$key]['titulo']);		

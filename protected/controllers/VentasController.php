@@ -74,12 +74,12 @@ class VentasController extends Controller
 		public function actionNotificar()
 		{
 			if (isset($_GET['uid'],$_GET['eid'],$_GET['tipo'],$_GET['token'])) {
-				if ($_GET['uid']>0 and $_GET['eid']>0 and $_GET['token']!=hash('crc32b',round(time()*.01)) ) {
-						$admin=Usuarios::model()->findByPk(array('UsuariosId'=>184));
-						//$admin=Usuarios::model()->findByAttribtes(array('UsuariosId'=>57));
-						//$admin1=Usuarios::model()->findByAttributes(array('UsuariosId'=>17));
+				if ($_GET['uid']>0 and $_GET['eid']>0 and $_GET['token']==hash('crc32b',round(time()*.01)) ) {
+						//$admin=Usuarios::model()->findByPk(184);
+						$admin=Usuarios::model()->findByPk(57);
+						$admin2=Usuarios::model()->findByPk(17);
 						$evento=Evento::model()->findByPk($_GET['eid']);
-						$usuario=Usuarios::model()->findByAttributes(array('UsuariosId'=>$_GET['uid']));
+						$usuario=Usuarios::model()->findByPk($_GET['uid']);
 						$boletos=array();
 						$out="";
 						if (isset($_GET['vid'],$_GET['b1']) and $_GET['vid']>0) {
@@ -135,11 +135,10 @@ class VentasController extends Controller
 								strtoupper($_GET['tipo']), $evento->EventoNom,date('d/m Y H:i:s'),
 								$tabla,$out
 					   	);
-						error_log(Yii::app()->request->getUrl().'\n'.$out ,1,'david.osorio.globaloxs@gmail.com');	
 						echo $admin->notificar('Taquillacero/Punto de venta :: Se ha realizado una '.$_GET['tipo'],$texto)?1:0;
-						//echo $admin1->notificar('Taquillacero/Punto de venta :: Se ha realizado una '.$_GET['tipo'],$texto)?1:0;
+						echo $admin1->notificar('Taquillacero/Punto de venta :: Se ha realizado una '.$_GET['tipo'],$texto)?1:0;
 						
-				}else echo 0;	
+				}else echo -1;	
 
 			}	else echo 0;
 		}

@@ -111,7 +111,7 @@ class Evento extends CActiveRecord
     public function getListaEvento()
     {
         return array(
-                CHtml::listData(evento::model()->findAll(), 'EventoId','name'),array('empty'=>array(NULL=>'-- Seleccione --')),
+                CHtml::listData(evento::model()->findAll(array('order'=>'EventoId desc')), 'EventoId','name'),array('empty'=>array(NULL=>'-- Seleccione --')),
         );
     }
 
