@@ -69,12 +69,12 @@ class FarmatodoController extends Controller
             endif;
                         
             //Yii::app()->user->setFlash('success2',$data.'<br/>'.$sucursal.'<br/>'.$evento.'<br/>'.$funcion.'<br/>'.$zona.'<br/>'.$fila.'<br/>'.$asiento.'<br/><br/><input type="button" value="OK" onClick="document.location.reload(true)">');
-            $this->redirect(array("reportes/ventasCancelaciones"));
+            $this->redirect(array("reportes/cancelarVentaFarmatodo",array('ref'=>null)));
         else:
         Yii::app()->user->setFlash('error', 'No se mand&oacute; informaci&oacute;n para procesar <br/><br/><input type="button" value="OK" onClick="document.location.reload(true)">');    
         endif;
         //$this->render("index");
-        $this->redirect(array("reportes/ventasCancelaciones"));
+        $this->redirect(array("reportes/cancelarVentaFarmatodo",array('ref'=>null)));
     }
    /* public function actionDelete($id){
         if(Yii::app()->user->isGuest)
