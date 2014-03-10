@@ -74,6 +74,10 @@ $this->widget('bootstrap.widgets.TbNavbar',array(
 										array('label' => 'Ventas Diarias',
 												'url' =>  $this->createUrl('reportes/ventasDiarias'),
 												'visible' => !Yii::app()->user->isGuest AND (Yii::app()->user->getState("Admin"))?true:false),
+
+										array('label' => 'Conciliación Farmatodo',
+												'url' =>  $this->createUrl('reportes/conciliacionFarmatodo'),
+												'visible' => !Yii::app()->user->isGuest AND (Yii::app()->user->getState("Admin"))?true:false),
 								),
 						),
 

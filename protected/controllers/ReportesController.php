@@ -1029,6 +1029,67 @@ $objWriter->save('php://output');
 		$this->render('cancelacionesReimpresiones',array('model'=>$model,'eventoId'=>$eventoId,'funcionesId'=>$funcionesId,
 		'desde'=>$desde,'hasta'=>$hasta));
 	}
+
+	public function actionConciliacionFarmatodo()
+	{
+			//$model= new ReportesVentas;
+			$fecha=isset($_GET['fecha'])?$_GET['fecha']:0;
+			$this->render('conciliacion',compact('fecha'));
+			
+	}
+	public function actionConciliar()
+	{
+		
+		$this->perfil();
+		if (isset($_GET['fecha']) and strlen($_GET['fecha'])==10) {
+			$data=array();
+			if (($gestor = fopen($_FILES['archivo']['tmp_name'], "r")) !== FALSE) {
+					while (($datos = fgetcsv($gestor, 1000, ",")) !== FALSE) {
+							if ($datos[0]==1) {
+								// Si se trata de un registro se incluye en la matriz de data
+									$data[]=array(
+											'sucursal'=>$datos[1],
+											'fecha'=>strtotime($datos[2]." ".$datos[3]),
+											'clave'=>substr($datos[4],0,16),
+											'monto'=>(int)$datos[6],
+											'total'=>0,
+								   	);
+
+							}	
+					}
+					fclose($gestor);
+			}
+			foreach ($data	as $i=>$fila) {
+				$venta=Ventas::model()->with('total')->findByAttributes(array('VentasNumRef'=>$fila['clave']));
+				if (is_object($venta)) {
+					$data[$i]['total']=$venta->total;
+					$data[$i]['estatus']=true;
+					$data[$i]['id']=$venta->VentasId;
+				}	
+				else
+						$data[$i]['estatus']=false;
+			}
+			$this->widget('bootstrap.widgets.TbGridView', array(
+					'id'=>'evento-grid',
+					'dataProvider'=>new CArrayDataProvider($data,array('pagination'=>false)),
+					'summaryText'=>'',
+					'type'=>array('condensed table-hover table-striped'),
+					'emptyText'=>'No se encontraron resultados',
+					'columns'=>array(
+							array('name'=>'id','header'=>'VentasId'),
+							array('name'=>'sucursal','header'=>'Sucursal'),
+							array('name'=>'monto','header'=>'Monto en archivo','htmlOptions'=>array('style'=>'text-align:right')),
+							array('name'=>'total','header'=>'Total en TC','htmlOptions'=>array('style'=>'text-align:right')),
+							array('value'=>'$data["total"]-$data["monto"]','header'=>'Diferencia','htmlOptions'=>array('style'=>'text-align:right')),
+
+							array('value'=>'date("d/M/Y H:i",$data["fecha"])','header'=>'Fecha','htmlOptions'=>array('style'=>'text-align:center')),
+					),
+			));
+
+		//	echo "<pre>";print_r($data);echo "</pre>";
+		}	
+
+	}
 	// Uncomment the following methods and override them if needed
 	/*
 	public function filters()
