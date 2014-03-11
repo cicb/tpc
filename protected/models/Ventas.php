@@ -72,8 +72,9 @@ class Ventas extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-				'ventaslevel1' => array(self::HAS_MANY, 'Ventaslevel1', 'VentasId'),
-				'total'	=>	array(self::STAT,'Ventaslevel1','VentasId','select'=>'SUM(VentasCosBol+VentasCarSer-VentasMondes)', 'group'=>'VentasId'),
+				'ventaslevel1' 	=> array(self::HAS_MANY, 	'Ventaslevel1', 'VentasId'),
+				'puntoventa'	=> array(self::BELONGS_TO, 	'Puntosventa',	'PuntosventaId'),
+				'total'			=> array(self::STAT,'Ventaslevel1','VentasId','select'=>'SUM(VentasCosBol+VentasCarSer-VentasMondes)', 'group'=>'VentasId'),
 		);
 	}
 

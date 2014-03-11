@@ -182,6 +182,7 @@
 										'VentasFecHor',
 										'VentasSta',
 										'VentasCon',
+										'LugaresNumBol',
 										array(
 												'header'=>'Reimpresiones',
 												'type'=>'raw',
