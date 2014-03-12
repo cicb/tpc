@@ -26,6 +26,10 @@ $this->widget('bootstrap.widgets.TbNavbar',array(
 				array(
 						'class' => 'bootstrap.widgets.TbNav',
 						'items' => array(
+								//Estos son los elementos del menu que dirigen hacia modulos especificos del panel de control
+								 //!!! Si se desea cambiar el nombre de un reporte o de cualquier otro modulo en particular 
+								 //es necesario que se cambie tambien en el encabezado de la vista asi también es recomendado
+								 //que se cambie el nombre de la cccion del controller para que la direccion URL sea semanticamente correcta
 							array('label' => 'Reportes',
 								'url' => $this->createUrl('reportes/index'),
 								'active' => Yii::app()->controller->id=='reportes',
@@ -34,9 +38,19 @@ $this->widget('bootstrap.widgets.TbNavbar',array(
 										array('label' => 'Accesos',
 												'url' =>  $this->createUrl('reportes/accesos'),
 												'visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
+										array(
+												'label' => 'Buscar Boleto Y Referencias',
+												'url' =>  $this->createUrl('reportes/buscarBoleto'),
+												'visible' => !Yii::app()->user->isGuest AND (Yii::app()->user->getState("Admin"))?true:false), 
+										array('label' => 'Cancelar Venta Farmatodo',
+												'url' =>  $this->createUrl('reportes/cancelarVentaFarmatodo'),
+												'visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
 										array('label' => 'Desglose De Ventas', 
 												'url' =>  $this->createUrl('reportes/desgloseVentas'),'visible'
 												=> !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
+										array('label' => 'Historial De Cancelaciones Y Reimpresiones',
+												'url' =>  $this->createUrl('reportes/cancelacionesReimpresiones'),
+												'visible' => !Yii::app()->user->isGuest AND (Yii::app()->user->getState("Admin"))?true:false), 
 										array('label' => 'Lugares',
 												'url' =>  $this->createUrl('reportes/lugares'),
 												'visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
@@ -44,12 +58,7 @@ $this->widget('bootstrap.widgets.TbNavbar',array(
 												'url' =>  $this->createUrl('reportes/lugaresVendidos'),
 												'visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
 												//array('label' => 'Cortes diarios', 			'url' =>  $this->createUrl('reportes/cortesDiarios'),'visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
-										array('label' => 'Ref/Num. Boleto',
-												'url' =>  $this->createUrl('reportes/ventasPorRef'),
-												'visible' => !Yii::app()->user->isGuest AND (Yii::app()->user->getState("Admin"))?true:false), 
-										array('label' => 'Ventas y cancelaciones',
-												'url' =>  $this->createUrl('reportes/ventasCancelaciones'),
-												'visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
+
 										array('label' => 'Ventas Web Y CallCenter', 
 												'url' =>  $this->createUrl('reportes/ventasWeb'),
 												'visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
@@ -65,14 +74,13 @@ $this->widget('bootstrap.widgets.TbNavbar',array(
 										array('label' => 'Ventas Diarias',
 												'url' =>  $this->createUrl('reportes/ventasDiarias'),
 												'visible' => !Yii::app()->user->isGuest AND (Yii::app()->user->getState("Admin"))?true:false),
-										array('label' => 'Cancelaciones y Reimpresiones',
-												'url' =>  $this->createUrl('reportes/cancelacionesReimpresiones'),
-												'visible' => !Yii::app()->user->isGuest AND (Yii::app()->user->getState("Admin"))?true:false), 
-										array('label' => 'Usuarios Web',
-												'url' =>  $this->createUrl('usuarios/usuariosWeb'),
-												'visible' => !Yii::app()->user->isGuest AND (Yii::app()->user->getState("Admin"))?true:false), 
-										),
+
+										array('label' => 'Conciliación Farmatodo',
+												'url' =>  $this->createUrl('reportes/conciliacionFarmatodo'),
+												'visible' => !Yii::app()->user->isGuest AND (Yii::app()->user->getState("Admin"))?true:false),
 								),
+						),
+
 								array(
 										'label' => 'Cupones Y Descuentos', 
 										//'url' => $this->createUrl('descuentoslevel1/admin',array('tipo'=>'descuento','query'=>'')),
@@ -95,8 +103,17 @@ $this->widget('bootstrap.widgets.TbNavbar',array(
 										array('label'=>'Configurador de accesos', 'url'=>$this->createUrl('evento/index')),
 								),
 								'url' => '#','visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
-								array('label' => 'Usuarios', 	'url' => $this->createUrl('usuarios/index'),'visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
-								array('label' => 'Boletos', 	'url' => '#','visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
+								array('label'=>'Usuarios','items'=>array(
+										array('label' => 'Usuarios del Sistema',
+										'url' => $this->createUrl('usuarios/index'),
+										'visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
+										array('label' => 'Usuarios Web',
+										'url' => $this->createUrl('usuarios/usuariosWeb'),
+										'visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
+
+								)
+								),
+										array('label' => 'Boletos', 	'url' => '#','visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
 						),
 				),
 				array(

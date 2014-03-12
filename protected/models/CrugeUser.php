@@ -165,6 +165,23 @@ class CrugeUser extends CActiveRecord
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
 			'pagination'=>array(
+					'pageSize'=>50,),
+		));
+	}
+
+	public function buscar()
+	{
+
+		$criteria=new CDbCriteria;
+		//$criteria->compare('iduser',$this->iduser,true,'OR');
+		$criteria->compare('username',$this->username,true,'OR');
+		$criteria->compare('email',$this->email,true,'OR');
+		$criteria->compare('nombre',$this->nombre,true,'OR');
+		$criteria->compare('apellido_paterno',$this->apellido_paterno,true,'OR');
+		$criteria->compare('apellido_materno',$this->apellido_materno,true,'OR');
+		return new CActiveDataProvider($this, array(
+			'criteria'=>$criteria,
+			'pagination'=>array(
 					'pageSize'=>20,),
 		));
 	}
@@ -172,6 +189,7 @@ class CrugeUser extends CActiveRecord
 	{
 		return sprintf("%s %s %s",$this->nombre,$this->apellido_paterno,$this->apellido_materno);
 	}
+
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -192,5 +210,21 @@ class CrugeUser extends CActiveRecord
 			if(isset($this->estado)){
 					return $this->estado->nombre;
 			}
+	}
+	public function getHistorico()
+	{
+			//Ventaslevel1::model()->with('venta')->findAllByAttributes(array('UsuariosId'=>$this->iduser,'TempLugaresTipUsr'=>'usuarios'));
+			$criteria=new CDbCriteria;
+			$criteria->join='INNER JOIN  ventas as t1 ON t1.VentasId=t.VentasId';
+			//$criteria->with=array('ventas'=>array('condition'=>))));
+			$criteria->compare('t1.UsuariosId',$this->iduser);
+			$criteria->compare('t1.TempLugaresTipUsr','clientes',true);
+			$criteria->with=array('evento','funcion','zona','subzona','fila','lugar');
+			return new CActiveDataProvider(
+					'Ventaslevel1',array(
+							'criteria'=>$criteria,
+							'pagination'=>false,
+							)
+					);
 	}
 }

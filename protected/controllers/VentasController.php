@@ -6,6 +6,17 @@ class VentasController extends Controller
 	{
 		$this->render('index');
 	}
+	public function validarUsuario(){
+			if(Yii::app()->user->isGuest OR !Yii::app()->user->getState("Admin")){
+			$this->redirect(array("site/logout"));
+		}
+	}
+	public function validarAjax()
+	{
+		if (!Yii::app()->request->isAjaxRequest) {
+				throw new CHttpException ( 404, 'Petición incorrecta.' );
+		}	
+	}
     public function actionReimpresionBoletos(){
         $region = null;
         $dataProvider = null;
@@ -64,25 +75,70 @@ class VentasController extends Controller
 		{
 			if (isset($_GET['uid'],$_GET['eid'],$_GET['tipo'],$_GET['token'])) {
 				if ($_GET['uid']>0 and $_GET['eid']>0 and $_GET['token']==hash('crc32b',round(time()*.01)) ) {
-						$admin=Usuarios::model()->findByAttributes(array('UsuariosId'=>184));
+						//$admin=Usuarios::model()->findByPk(184);
+						$admin=Usuarios::model()->findByPk(57);
+						$admin2=Usuarios::model()->findByPk(17);
 						$evento=Evento::model()->findByPk($_GET['eid']);
-						$usuario=Usuarios::model()->findByAttributes(array('UsuariosId'=>$_GET['uid']));
-						echo $admin->notificar('Taquillacero/Punto de venta :: Se ha realizado una '.$_GET['tipo'],
-								sprintf("
+						$usuario=Usuarios::model()->findByPk($_GET['uid']);
+						$boletos=array();
+						$out="";
+						if (isset($_GET['vid'],$_GET['b1']) and $_GET['vid']>0) {
+								$i=1;
+								while(isset($_GET['b'.$i])){
+										$clave=$_GET['b'.$i];
+										if (strlen($clave)==16 and is_numeric($clave)) {
+												$parametros=array(
+														'VentasId'=>intval($_GET['vid']),
+														'EventoId'=>intval(substr($clave,0,4)),
+														'FuncionesId'=>intval(substr($clave,4,2)),
+														'ZonasId'=>intval(substr($clave,6,2)),
+														'SubzonaId'=>intval(substr($clave,8,2)),
+														'FilasId'=>intval(substr($clave,10,3)),
+														'LugaresId'=>intval(substr($clave,13,3)),
+												);
+												$boleto=Ventaslevel1::model()->with(array(
+														'evento','funcion','zona','subzona','fila','lugar'
+												))->findByPk($parametros);
+												if (is_object($boleto)) {
+													$boletos[]=$boleto;
+												}else print_r($parametros);	
+												$out.=CJSON::encode($parametros);
+												
+										}	
+										else echo "No es valido";
+										$i++;	
+								}
+						}	
+						$tabla="<table class='table '>
+								<tr> <th>Evento</th> <th>Funcion</th> <th>Zona</th> <th>Subzona</th> <th>Fila</th> <th>Lugar</th> </tr> ";
+						foreach ($boletos as $boleto) {
+								$tabla.=sprintf("
+										<tr> <td>%s</td> <td>%s</td> <td>%s</td> <td>%s</td> <td>%s</td> <td>%s</td> </tr> ",
+										$boleto->evento->EventoNom,$boleto->funcion->funcionesTexto,
+										$boleto->zona->ZonasAli,$boleto->subzona->SubzonaId,$boleto->fila->FilasAli,
+										$boleto->lugar->LugaresNum);
+						}
+						$tabla.="</table>";		
+						$texto=	sprintf("
 								<div style='background:#d35400;color:#FFF;width:500px;display:block;padding:5px;margin:auto'> 
 								<h2>Aviso de %s </h2>
 								<div style='background:#fff;color:#2c3e50;padding:7px;'>
 								El usuario %s ha hecho una %s en el evento %s el día %s.<br/>
 								<br /><p style='color:#95a5a6'>
+								%s	
 								Ésta es una notificación automatica generada por el sistema, por favor no reponda a esta dirección.
 								</p>
+								<pre>%s</pre>
 								</div>
 								</div>
 								",$_GET['tipo'],$usuario->UsuariosNom,
-								strtoupper($_GET['tipo']), $evento->EventoNom,date('d/m Y H:i:s')
-					   	))?1:0;
+								strtoupper($_GET['tipo']), $evento->EventoNom,date('d/m Y H:i:s'),
+								$tabla,$out
+					   	);
+						echo $admin->notificar('Taquillacero/Punto de venta :: Se ha realizado una '.$_GET['tipo'],$texto)?1:0;
+						echo $admin1->notificar('Taquillacero/Punto de venta :: Se ha realizado una '.$_GET['tipo'],$texto)?1:0;
 						
-				}else echo 0;	
+				}else echo -1;	
 
 			}	else echo 0;
 		}
@@ -112,4 +168,22 @@ class VentasController extends Controller
 		);
 	}
 	*/
+		public function actionHistorialBoleto()
+		{
+		//El Id que recibe debe ser una expresion regular formada por el eventoid la funcionid la zonaid la subzonaid la filaid y el lugarid
+				$this->validarUsuario();
+				$this->validarAjax();
+			if (isset($_GET['id']) and preg_match("(\d{2,}-\d{1,}-\d{1,}-\d{1,}-\d{1,}-\d{1,})",$_GET['id'])==1) {
+					$ids=explode('-',$_GET['id']);//Contiene todas las id en un arreglo
+					$eventoId=$ids[0];
+					$funcionesId=$ids[1];
+					$zonasId=$ids[2];
+					$subzonaId=$ids[3];
+					$filasId=$ids[4];
+					$lugaresId=$ids[5];
+				$model=new ReportesVentas;
+				$this->renderPartial('_historialBoleto',compact('eventoId','funcionesId','zonasId','subzonaId','filasId','lugaresId','model'));
+
+			}	
+		}
 }

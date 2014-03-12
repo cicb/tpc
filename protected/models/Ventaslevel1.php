@@ -85,6 +85,12 @@ class Ventaslevel1 extends CActiveRecord
 		return array(
         'venta' => array(self::BELONGS_TO, 'Ventas', 'VentasId'),
 		'cancelo'=>array(self::BELONGS_TO, 'Usuarios', 'CancelUsuarioId'),
+		'evento'=>array(self::BELONGS_TO, 'Evento','EventoId'),
+		'funcion'=>array(self::BELONGS_TO, 'Funciones',array('EventoId','FuncionesId')),
+		'zona'=>array(self::BELONGS_TO, 'Zonas',array('EventoId','FuncionesId','ZonasId')),
+		'subzona'=>array(self::BELONGS_TO, 'Subzona',array('EventoId','FuncionesId','ZonasId','SubzonaId')),
+		'fila'=>array(self::BELONGS_TO, 'Filas',array('EventoId','FuncionesId','ZonasId','SubzonaId','FilasId')),
+		'lugar'=>array(self::BELONGS_TO, 'Lugares',array('EventoId','FuncionesId','ZonasId','SubzonaId','FilasId','LugaresId')),
 		//'reimpresiones'=>array(self::HAS_MANY, 'Reimpresiones', array('EventoId','FuncionesId','ZonasId','SubzonaId','FilasId','LugaresId')),
 		);
 	}
@@ -157,5 +163,6 @@ class Ventaslevel1 extends CActiveRecord
 			'criteria'=>$criteria,
 		)); 
 	}
+
 
 }

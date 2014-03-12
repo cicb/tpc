@@ -268,7 +268,7 @@ $eventos=Evento::model()->findAll("EventoSta='ALTA'",array('order'=>'EventoNom')
 
 </div>
 
-</div> <!---FIN de cntroles-->
+</div> <!---FIN de controles-->
 <style>
 .resultado{
 }

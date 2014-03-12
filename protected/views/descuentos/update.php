@@ -13,6 +13,7 @@ $this->menu=array(
 );
 ?>
 
+<div class='controles'>
 <h1>Modificar Descuentos: <?php echo $cupon ?> </h1>
 
 <?php echo $this->renderPartial('_form_update', array('model'               => $model,

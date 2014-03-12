@@ -65,6 +65,7 @@ body {
   margin-top: 5px;
 }
 #wrap {
+  color: #2a6274;
   min-height: 100%;
   height: auto !important;
   height: 100%;
@@ -228,11 +229,65 @@ th {
 .caret {
   border-top: 4px solid #ecf0f1 !important;
 }
+.col-5 {
+  float: none;
+  margin: auto;
+  display: inline-block;
+  width: 222px;
+  padding: 5px;
+  margin: 5px;
+}
 .col-4 {
   float: none;
   margin: auto;
   display: inline-block;
-  width: 260;
+  width: 260px;
   padding: 5px;
   margin: 5px;
+}
+.col-2 {
+  float: none;
+  margin: auto;
+  display: inline-block;
+  width: 48%;
+  padding: 5px;
+  margin: 5px;
+}
+.col-3 {
+  float: none;
+  margin: auto;
+  display: inline-block;
+  width: 20%;
+  padding: 5px;
+  margin: 5px;
+}
+.box1 {
+  float: none;
+  margin: auto;
+  display: inline-block;
+  width: 125px;
+}
+.box2 {
+  float: none;
+  margin: auto;
+  display: inline-block;
+  width: 202px;
+}
+.box3 {
+  float: none;
+  margin: auto;
+  display: inline-block;
+  width: 328px;
+}
+.box4 {
+  float: none;
+  margin: auto;
+  display: inline-block;
+  width: 530px;
+}
+.box5 {
+  float: none;
+  margin: auto;
+  display: inline-block;
+  width: 856px;
 }

@@ -1,31 +1,32 @@
 <div class='controles'>
-<h2>Referencia / Numero De Boleto</h2>
+<h2>Buscar Boleto Y Referencias</h2>
 <div class="form">
-
-<?php $form=$this->beginWidget('CActiveForm', array(
+<?php $form=$this->beginWidget('bootstrap.widgets.TbActiveForm', array(
 	'id'=>'form-ventaslevel1',
 	'enableClientValidation'=>true,
+	'layout' => TbHtml::FORM_LAYOUT_HORIZONTAL,
 	'clientOptions'=>array(
 		'validateOnSubmit'=>true,
+
 	),
 )); ?>
-
-	<div class="row">
-<b>Buscar</b>
-		<?php echo CHtml::textField('buscar',$ref>0?$ref:'',array('placeholder'=>'Referencia o número de boleto')); ?>
-
-	</div>
+<div class='col-4'>
+		<?php echo TbHtml::textFieldControlGroup('buscar',$ref>0?$ref:'',
+				array(
+						'append' => TbHtml::submitButton('Buscar',array('class'=>'btn btn-primary')), 
+						'span' => 3,
+						'placeholder'=>'Referencia o número de boleto',
+						'label'=>'Ingrese la referencia o el número de boleto:',
+						'id'=>'filtro',
+						'autofocus'=>"autofocus",
+				)); ?>	
     <div class="row">
          Rerefencia: <input type="radio" name="tipo" value="referencia" id="RadioGroup1_0" checked="checked" />
          No. de boleto <input type="radio" name="tipo" value="boleto" id="RadioGroup1_1" />
     </div>
 
-	<br />
-	<div class="row buttons">
-		<?php echo CHtml::submitButton('Buscar',array('class'=>'btn btn-primary')); ?>
-	</div>
-
 <?php $this->endWidget(); ?>
+</div>
 
 </div><!-- form -->
 </div><!-- Controles -->

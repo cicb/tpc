@@ -73,6 +73,7 @@ class Ventas extends CActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 				'ventaslevel1' => array(self::HAS_MANY, 'Ventaslevel1', 'VentasId'),
+				'total'	=>	array(self::STAT,'Ventaslevel1','VentasId','select'=>'SUM(VentasCosBol+VentasCarSer-VentasMondes)', 'group'=>'VentasId'),
 		);
 	}
 
@@ -89,7 +90,7 @@ class Ventas extends CActiveRecord
 			'VentasFecHor' => 'Ventas Fec Hor',
 			'TempLugaresTipUsr' => 'Temp Lugares Tip Usr',
 			'UsuariosId' => 'Usuarios',
-			'VentasSta' => 'Ventas Sta',
+			'VentasSta' => 'Estatus',
 			'VentasNomDerTar' => 'Ventas Nom Der Tar',
 			'VentasMesExpTar' => 'Ventas Mes Exp Tar',
 			'VentasAniExpTar' => 'Ventas Ani Exp Tar',
@@ -136,5 +137,9 @@ class Ventas extends CActiveRecord
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
 		));
+	}
+	public function getTarjeta()
+	{
+			return 'XXXX-XXXX-XXXX-'.substr($this->VentasNumTar,-4);
 	}
 }

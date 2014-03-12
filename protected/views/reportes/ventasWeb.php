@@ -389,7 +389,8 @@ $("#imprimir_boletos").click(function(){
                         boletos.close();
                     }catch(err){}
                     if(data.ok=="si"){
-                        window.open('<?php echo "http://".$_SERVER['SERVER_NAME']. Yii::app ()->baseUrl . '/doctos/boletos.pdf'?>', 'boletos', 'width=960,height=600');
+                        window.open('<?php echo "http://".$_SERVER['SERVER_NAME'].":".$_SERVER['SERVER_PORT'].Yii::app ()->baseUrl . '/doctos/boletos.pdf'?>', 'boletos', 'width=960,height=600');
+                        
                     }else{
                         alert("No hay boletos para imprimir");
                      }
@@ -418,8 +419,8 @@ $("#imprimir_boletos").click(function(){
                     }catch(err){}
                      console.log(data);
                      if(data.ok=="si"){
-                        window.open('<?php echo "http://".$_SERVER['SERVER_NAME']. Yii::app ()->baseUrl . '/doctos/boletos.pdf'?>', 'boletos', 'width=960,height=600');
-                    
+                        window.open('<?php echo "http://".$_SERVER['SERVER_NAME'].":".$_SERVER['SERVER_PORT'].Yii::app ()->baseUrl . '/doctos/boletos.pdf'?>', 'boletos', 'width=960,height=600');
+                        
                      }else{
                         alert("No hay boletos NO impresos para imprimir");
                      }

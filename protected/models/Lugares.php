@@ -158,4 +158,8 @@ class Lugares extends CActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
+	public function getAsiento()
+	{
+		return sprintf("%s, %s",$this->fila->FilasAli,$this->LugaresLug);
+	}
 }

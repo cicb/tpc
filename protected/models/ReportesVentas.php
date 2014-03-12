@@ -174,7 +174,7 @@ class ReportesVentas extends CFormModel
 		}
 	}
 
-	public function getResumenEvento($eventoId,$funcionId='TODAS',$desde,$hasta)
+	public function getResumenEvento($eventoId,$funcionId='TODAS',$desde=0,$hasta=0)
 	{
 			$modelo=new ReportesFlex;
 			$funcion="";
@@ -402,7 +402,7 @@ class ReportesVentas extends CFormModel
 					ventaslevel1.LugaresId Lug
 					from templugares
 					LEFT JOIN ventas ON ventas.VentasNumRef = templugares.tempLugaresNumRef
-					inner join ventaslevel1 on ventas.VentasId=ventaslevel1.VentasId
+					inner join ventaslevel1 ON ventas.VentasId=ventaslevel1.VentasId
 					inner join lugares on lugares.EventoId=ventaslevel1.EventoId and lugares.FuncionesId=ventaslevel1.FuncionesId and lugares.ZonasId=ventaslevel1.ZonasId and lugares.SubzonaId=ventaslevel1.SubzonaId and lugares.FilasId=ventaslevel1.FilasId and lugares.LugaresId=ventaslevel1.LugaresId
 					inner join evento on evento.EventoId=ventaslevel1.EventoId
 					inner join funciones on funciones.EventoId=ventaslevel1.EventoId and funciones.FuncionesId=ventaslevel1.FuncionesId
@@ -650,51 +650,113 @@ class ReportesVentas extends CFormModel
 						));
 
 		}
-	public function getCancelacionesYReimpresiones($eventoId,$funcionesId="TODAS", $desde=0,$hasta=0)
+	public function getCancelacionesYReimpresiones($eventoId,$funcionesId, $zonasId,$subzonaId,$filasId,$lugaresId)
 	{
-			$funcion="1";
-			if ($funcionesId>0) {
-						$funcion=sprintf("t1.FuncionesId = %s ",$funcionesId);
-				}
-			$sql=sprintf("(select t1.VentasId,
+			//$rango=$funcion=" AND 1";
+			//if ($funcionesId>0) {
+						//$funcion=sprintf(" AND t.FuncionesId = %s ",$funcionesId);
+				//}
+			//if ($desde and $hasta 
+			//and preg_match("(\d{4}-\d{2}-\d{2})",$desde)==1 
+			//and preg_match("(\d{4}-\d{2}-\d{2})",$hasta)==1){
+					//$rango=sprintf(" AND VentasFecHor BETWEEN '%s' and '%s' ",$desde,$hasta);
+			//}
+			$sql=sprintf("(SELECT  t1.VentasId, t1.VentasSta, t2.UsuariosNom, ReimpresionesFecHor as fecha, 'REIMPRESION' as tipo, 
+				t1.LugaresNumBol, t3.PuntosventaId, LogReimpPunVenId as pv,
 				CONCAT(t.EventoId,t.FuncionesId,t.ZonasId,t.SubzonaId,t.FilasId,t.LugaresId) as boleto,   
-					t1.VentasSta, t2.UsuariosNom, ReimpresionesFecHor as fecha, 'REIMPRESION' as tipo, 
-				t.LugaresNumBol, t4.PuntosventaNom, t5.UsuariosNom  as vendio, t3.VentasFecHor 
-					from reimpresiones as t
-					inner join ventaslevel1 as t1 on t1.EventoId=t.EventoId
-				AND t1.FuncionesId=t.FuncionesId
-				AND t1.ZonasId=t.ZonasId
-				AND t1.SubzonaId=t.SubzonaId
-				AND t1.FilasId=t.FilasId
-				AND t1.LugaresId=t.LugaresId
+				'' as CancelFecHor,CancelUsuarioId, '' as Cancelo,
+				t.LugaresNumBol as NumBol, PuntosventaNom as punto
+				FROM reimpresiones as t
+					INNER JOIN ventaslevel1 as t1 on t1.EventoId=t.EventoId
+						AND t1.FuncionesId=t.FuncionesId
+						AND t1.ZonasId=t.ZonasId
+						AND t1.SubzonaId=t.SubzonaId
+						AND t1.FilasId=t.FilasId
+						AND t1.LugaresId=t.LugaresId
+					LEFT JOIN logreimp as t5 on t5.EventoId=t.EventoId
+						AND t5.FuncionesId=t.FuncionesId
+						AND t5.ZonasId=t.ZonasId
+						AND t5.SubzonaId=t.SubzonaId
+						AND t5.FilasId=t.FilasId
+						AND t5.LugaresId=t.LugaresId
 				INNER JOIN ventas 		as	t3 on t3.VentasId=t1.VentasId
-				INNER JOIN puntosventa 	as	t4 on t4.PuntosventaId=t3.PuntosventaId
-				INNER JOIN usuarios 	as	t2 on t2.UsuariosId=t.UsuarioId
-				LEFT JOIN usuarios 		as	t5 on t5.UsuariosId=t3.UsuariosId
-				where t.EventoId=%s
-		)union
-		(
-				SELECT t.VentasId,
+				LEFT JOIN usuarios 	as	t2 on t2.UsuariosId=t.UsuarioId
+				LEFT JOIN puntosventa as t4 ON t4.PuntosventaId=LogReimpPunVenId
+				WHERE t.EventoId=%d and  t.FuncionesId=%d and t.ZonasId=%d and t.SubzonaId=%d
+				AND t.FilasId=%d AND t.LugaresId=%d
+		) UNION(
+				SELECT t.VentasId, t.VentasSta, t5.UsuariosNom, t2.VentasFecHor as fecha, 'VENTA' as tipo,
+				t.LugaresNumBol, t2.PuntosventaId, t2.PuntosventaId as pv,
 				CONCAT(t.EventoId,t.FuncionesId,t.ZonasId,t.SubzonaId,t.FilasId,t.LugaresId) as boleto,   
-			   	t.VentasSta, t3.UsuariosNom, CancelFecHor as fecha, 'CANCELACION' as tipo,
-				t.LugaresNumBol, t4.PuntosventaNom, t5.UsuariosNom as vendio, t2.VentasFecHor
+				CancelFecHor,CancelUsuarioId, t3.UsuariosNom as Cancelo,
+				t.LugaresNumBol as NumBol, PuntosventaNom
 				FROM ventaslevel1 as  t 
-				INNER JOIN ventas 		as	t2	ON	t2.VentasId=t.VentasId
-				INNER JOIN usuarios 	as	t3	ON	t3.UsuariosId=CancelUsuarioId
-				INNER JOIN puntosventa 	as	t4 on t4.PuntosventaId=t2.PuntosventaId
-				LEFT JOIN usuarios 		as	t5	ON	t5.UsuariosId=t2.UsuariosId
-				WHERE t.VentasSta='CANCELADO'  and EventoId=%s
+				INNER JOIN ventas as t2	ON t2.VentasId=t.VentasId
+				LEFT JOIN usuarios 	as t5 ON t5.UsuariosId=t2.UsuariosId
+				LEFT JOIN usuarios 	as	t3 on t3.UsuariosId=t.CancelUsuarioId
+				LEFT JOIN puntosventa as t4 ON t4.PuntosventaId=t2.PuntosventaId
+				WHERE  t.EventoId=%d and  t.FuncionesId=%d and t.ZonasId=%d and t.SubzonaId=%d
+				AND t.FilasId=%d AND t.LugaresId=%d
 		)
-		ORDER BY VentasId,boleto,fecha",$eventoId ,$eventoId);
+		ORDER BY  boleto,VentasId,fecha",$eventoId,$funcionesId, $zonasId,$subzonaId,$filasId,$lugaresId,
+		$eventoId,$funcionesId, $zonasId,$subzonaId,$filasId,$lugaresId
+);
 			return new CSqlDataProvider($sql, array(
-					'pagination'=>array('pageSize'=>10),
+					'pagination'=>false,
 					'keyField'=>'VentasId'));
 	}
 
-	public function getAnomalos($eventoId,$functionesId="TODAS",$desde=0, $hasta=0)
+		public function getHistoricoReimpresiones($eventoId, $funcionesId, $zonasId,$subzonaId, $filasId, $lugaresId)
+		{
+				$rps=Reimpresiones::model()->with(
+						array('usuario','log',))->findAllByAttributes(
+								array(
+										'EventoId'=>$eventoId,
+										'FuncionesId'=>$funcionesId,
+										'ZonasId'=>$zonasId,
+										'SubzonaId'=>$subzonaId,
+										'FilasId'=>$filasId,
+										'LugaresId'=>$lugaresId,
+				));
+				return $rps;
+		}
+	public function getAnomalos($eventoId,$funcionesId="TODAS", $desde=0,$hasta=0)
 	{
-			
-		// code...
+			$rango=$funcion=" AND 1";
+			if ($funcionesId>0) {
+						$funcion=sprintf(" AND t.FuncionesId = %s ",$funcionesId);
+				}
+			if ($desde and $hasta 
+			and preg_match("(\d{4}-\d{2}-\d{2})",$desde)==1 
+			and preg_match("(\d{4}-\d{2}-\d{2})",$hasta)==1){
+					$rango=sprintf(" AND VentasFecHor BETWEEN '%s' and '%s' ",$desde,$hasta);
+			}
+			$sql=sprintf("
+					SELECT CONCAT_WS('-',t.EventoId,t.FuncionesId,t.ZonasId,t.SubzonaId,t.FilasId,t.LugaresId) as boleto, 
+					ZonasAli,t.SubzonaId, FilasAli, LugaresLug, t.VentasId,CancelUsuarioId, t2.VentasFecHor,
+					t.VentasSta,SUBSTRING_INDEX(VentasCon,'R',-1) as reimpresiones,
+					VentasCon	
+					FROM ventaslevel1 as  t 
+				INNER JOIN zonas as t5 ON 	t5.EventoId=t.EventoId
+						AND t5.FuncionesId=t.FuncionesId
+						AND t5.ZonasId=t.ZonasId
+				INNER JOIN filas as t4 ON 	t4.EventoId=t.EventoId
+						AND t4.FuncionesId=t.FuncionesId
+						AND t4.ZonasId=t.ZonasId
+						AND t4.SubzonaId=t.SubzonaId
+						AND t4.FilasId=t.FilasId
+				INNER JOIN lugares as t3 ON 	t3.EventoId=t.EventoId
+						AND t3.FuncionesId=t.FuncionesId
+						AND t3.ZonasId=t.ZonasId
+						AND t3.SubzonaId=t.SubzonaId
+						AND t3.FilasId=t.FilasId
+						AND t3.LugaresId=t.LugaresId
+				INNER JOIN ventas 		as	t2	ON	t2.VentasId=t.VentasId
+				WHERE   t.EventoId=%d and (t.VentasSta='CANCELADO' OR VentasCon rlike '.*[R][0-9][0-9]*$')
+				%s %s 
+				ORDER BY boleto
+				 ",$eventoId,$funcion,$rango);	
+			return new CSqlDataProvider($sql,array('pagination'=>false,	'keyField'=>'VentasId'));
 	}
 
 }
