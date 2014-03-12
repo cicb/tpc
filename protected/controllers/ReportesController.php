@@ -1113,37 +1113,12 @@ $objWriter->save('php://output');
 	{
 		
 		$this->perfil();
-		if (isset($_GET['fecha']) and strlen($_GET['fecha'])==10) {
-			$data=array();
-			if (($gestor = fopen($_FILES['archivo']['tmp_name'], "r")) !== FALSE) {
-					while (($datos = fgetcsv($gestor, 1000, ",")) !== FALSE) {
-							if ($datos[0]==1) {
-								// Si se trata de un registro se incluye en la matriz de data
-									$data[]=array(
-											'sucursal'=>$datos[1],
-											'fecha'=>strtotime($datos[2]." ".$datos[3]),
-											'clave'=>substr($datos[4],0,16),
-											'monto'=>(int)$datos[6],
-											'total'=>0,
-								   	);
-
-							}	
-					}
-					fclose($gestor);
-			}
-			foreach ($data	as $i=>$fila) {
-				$venta=Ventas::model()->with('total')->findByAttributes(array('VentasNumRef'=>$fila['clave']));
-				if (is_object($venta)) {
-					$data[$i]['total']=$venta->total;
-					$data[$i]['estatus']=true;
-					$data[$i]['id']=$venta->VentasId;
-				}	
-				else
-						$data[$i]['estatus']=false;
-			}
+		if (isset($_POST['desde']) and strlen($_POST['desde'])==10) {
+			$model=new Reportes;
+			$data=$model->conciliarFarmatodo($_FILES['archivo']['tmp_name'],$_POST['desde'],$_POST['hasta']);		
 			$this->widget('bootstrap.widgets.TbGridView', array(
 					'id'=>'evento-grid',
-					'dataProvider'=>new CArrayDataProvider($data,array('pagination'=>false)),
+					'dataProvider'=>$data,
 					'summaryText'=>'',
 					'type'=>array('condensed table-hover table-striped'),
 					'emptyText'=>'No se encontraron resultados',
@@ -1155,7 +1130,14 @@ $objWriter->save('php://output');
 							array('value'=>'$data["total"]-$data["monto"]','header'=>'Diferencia','htmlOptions'=>array('style'=>'text-align:right')),
 
 							array('value'=>'date("d/M/Y H:i",$data["fecha"])','header'=>'Fecha','htmlOptions'=>array('style'=>'text-align:center')),
-					),
+
+							array(
+									'value'=>'TbHtml::i("",array("class"=>$data["farmatodo"]?"fa fa-check":"fa fa-times text-error"))',
+									'type'=>'raw', 'header'=>'Frmtd.'),
+							array(
+									'value'=>'TbHtml::i("",array("class"=>$data["taquillacero"]?"fa fa-check":"fa fa-times text-error"))',
+									'type'=>'raw', 'header'=>'Tqllcr.'),
+							),
 			));
 
 		//	echo "<pre>";print_r($data);echo "</pre>";

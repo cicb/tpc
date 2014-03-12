@@ -735,7 +735,7 @@ class ReportesVentas extends CFormModel
 					SELECT CONCAT_WS('-',t.EventoId,t.FuncionesId,t.ZonasId,t.SubzonaId,t.FilasId,t.LugaresId) as boleto, 
 					ZonasAli,t.SubzonaId, FilasAli, LugaresLug, t.VentasId,CancelUsuarioId, t2.VentasFecHor,
 					t.VentasSta,SUBSTRING_INDEX(VentasCon,'R',-1) as reimpresiones,
-					VentasCon	
+					VentasCon, t.LugaresNumBol	
 					FROM ventaslevel1 as  t 
 				INNER JOIN zonas as t5 ON 	t5.EventoId=t.EventoId
 						AND t5.FuncionesId=t.FuncionesId
