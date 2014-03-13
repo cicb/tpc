@@ -35,7 +35,7 @@ class EAN13 {
 
       $this->_createImage();
       $this->_drawBars();
-      $this->_drawText();
+      //$this->_drawText();
    }
 
    /**
@@ -63,8 +63,6 @@ class EAN13 {
             $barcode[] = $GUARD['middle'];
       }
       $barcode[] = $GUARD['end'];
-	  error_log($this->_key."\n",3,'/tmp/error.log');
-
       return $barcode;
    }
 
@@ -80,6 +78,7 @@ class EAN13 {
 		   
       $this->_height = $this->scale*60;
       $this->_width  = 1.8*$this->_height;
+	  $this->_height *= .3;
 
       $this->_image = imagecreate($this->_width, $this->_height);
       $bg_color=ImageColorAllocate($this->_image, 0xFF, 0xFF, 0xFF);
@@ -108,9 +107,9 @@ class EAN13 {
    {
       $bar_color=ImageColorAllocate($this->_image, 0x00, 0x00, 0x00);
 
-      define("MAX", $this->_height*0.025);
-      define("FLOOR", $this->_height*0.825);
-      define("WIDTH", $this->scale);
+      @define("MAX", $this->_height*0.025);
+      @define("FLOOR", $this->_height*0.825);
+      @define("WIDTH", $this->scale);
       
       $x = ($this->_height*0.2)-WIDTH;
 

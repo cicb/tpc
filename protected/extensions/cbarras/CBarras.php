@@ -1,6 +1,7 @@
 <?php
 //Widget para la renderizacion de codigos de barras
 
+require_once('ean.php');
 
 class CBarras extends CWidget{
 
@@ -10,6 +11,7 @@ class CBarras extends CWidget{
 	public	$code_type = "code128";
 	public	$code_string = "";
 	public	$htmlOptions = array();
+	private $_encoder;
 
 public function init()
 {
@@ -25,7 +27,11 @@ public function init()
 					}
 				$this->htmlOptions=$html;
 		}
+		if ( strtolower($this->code_type) == "ean13" ) {
+				$this->_encoder = new EAN13($this->code_string, $this->size);
+		
 
+		}
 }
 
 public function run()
@@ -44,9 +50,7 @@ public function run()
         // Translate the $this->text into barcode the correct $this->code_type
 		
 		if ( strtolower($this->code_type) == "ean13" ) {
-				include(dirname(__FILE__).'/ean.php');
-				$encoder = new EAN13($this->code_string, $this->size);
-				$image_data=$encoder->display();
+				$image_data=$this->_encoder->display();
 		}
 		else{
 				if ( strtolower($this->code_type) == "code128" ) {
