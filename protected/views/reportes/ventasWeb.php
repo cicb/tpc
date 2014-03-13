@@ -180,12 +180,12 @@ $this->widget('application.extensions.EExcelView', array(
     <tr>
         <td style="text-align: left;">
         <button class="btn btn-success" id="imprimir-boletos-no-impresos">
-            <i class="icon-print icon-white"></i>&nbsp;Imprimir Boletos NO Impresos
+            <i class="icon-repeat icon-white"></i>&nbsp;Generar Boletos NO Impresos
         </button>
         </td>
         <td style="text-align: right;">
         <button class="btn btn-success" id="imprimir-todos-boletos" >
-            <i class="icon-print icon-white"></i>&nbsp;Imprimir TODOS los Boletos
+            <i class="icon-repeat icon-white"></i>&nbsp;Generar TODOS los Boletos
         </button>
         </td>
     </tr>
