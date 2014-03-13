@@ -2,6 +2,8 @@
 //autoload
 include("ean.php");
 
+
+
 class Barcode
 {
    public $number;

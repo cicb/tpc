@@ -1,9 +1,8 @@
 <?php
 //include("ean_parity.php");
-include(dirname(__FILE__).'/ean_parity.php');
+require('ean_parity.php');
 
-class EAN13 extends Barcode
-{
+class EAN13 {
    private $_key;
    private $_checksum; 
    private $_bars;
@@ -14,13 +13,18 @@ class EAN13 extends Barcode
 
    public function __construct($number, $scale)
    {
-      global $PARITY_KEY;
 
+      global $LEFT_PARITY, $RIGHT_PARITY, $GUARD;
+	  global $PARITY_KEY;
+	  $PARITY_KEY   = unserialize(PARITY_KEY);
+	  $LEFT_PARITY  = unserialize(LEFT_PARITY);
+	  $RIGHT_PARITY = unserialize(RIGHT_PARITY);
+	  $GUARD        = unserialize(GUARDS);
       // if $number.length() < 12 || >= 13  error
 
       // Get the parity key, which is based on the first digit.
       $this->_key = $PARITY_KEY[substr($number,0,1)];
-
+	//echo $PARITY_KEY;	 
       // The checksum is appended to the 12 digit string
       $this->_checksum = ean_checksum($number);
       $this->number = $number.$this->_checksum;
@@ -28,6 +32,7 @@ class EAN13 extends Barcode
       $this->scale = $scale;
 
       $this->_bars = $this->_encode();
+
       $this->_createImage();
       $this->_drawBars();
       $this->_drawText();
@@ -46,7 +51,7 @@ class EAN13 extends Barcode
    protected function _encode()
    {
       global $LEFT_PARITY, $RIGHT_PARITY, $GUARD;
-
+	  $barcode=array();	
       $barcode[] = $GUARD['start'];
       for($i=1;$i<=strlen($this->number)-1;$i++)
       {
@@ -58,6 +63,7 @@ class EAN13 extends Barcode
             $barcode[] = $GUARD['middle'];
       }
       $barcode[] = $GUARD['end'];
+	  error_log($this->_key."\n",3,'/tmp/error.log');
 
       return $barcode;
    }
@@ -71,6 +77,7 @@ class EAN13 extends Barcode
 
    protected function _createImage()
    {
+		   
       $this->_height = $this->scale*60;
       $this->_width  = 1.8*$this->_height;
 
@@ -146,7 +153,7 @@ class EAN13 extends Barcode
 
       $text_color=ImageColorAllocate($this->_image, 0x00, 0x00, 0x00);
 
-      $font=dirname(__FILE__)."/"."FreeSansBold.ttf";
+      $font=realpath(__DIR__)."/FreeSansBold.ttf";
       $fontsize = $this->scale*(7);
       $kerning = $fontsize*1;
 
@@ -167,8 +174,14 @@ class EAN13 extends Barcode
 
    public function display()
    {
-      header("Content-Type: image/png; name=\"barcode.png\"");
-      imagepng($this->_image);
-      imagedestroy($this->_image);
+	  //header("Content-Type: image/png; name=\"barcode.png\"");
+
+		   ob_start ();
+		   imagepng($this->_image);
+		   $image_data = ob_get_contents (); 
+		   ob_end_clean (); 
+		   imagedestroy($this->_image);
+		   return $image_data;
    }
 }
+?>

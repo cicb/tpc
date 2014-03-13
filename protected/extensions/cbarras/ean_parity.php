@@ -75,3 +75,4 @@ function ean_checksum($ean){
   }
   return (10-((3*$esum+$osum)%10))%10;
 }
+?>

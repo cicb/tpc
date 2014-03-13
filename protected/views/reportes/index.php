@@ -1,7 +1,14 @@
 
 <div class='controles'>
 		<h2>Tablero</h2>
-
+<?php 
+//$this->widget('application.extensions.cbarras.CBarras',array(
+		//'code_type'=> 'ean13',
+		//'code_string'=>'1234567890123',
+		//'size'=>4,
+		//'htmlOptions'=>array('width'=>'30px')
+//));
+?>
 </div>
 <div class='span9' style="margin:auto;float:none">
 <div class='row-fluid'>
