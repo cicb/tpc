@@ -1,5 +1,31 @@
 <?php
 //Widget para la renderizacion de codigos de barras
+
+include(dirname(__FILE__).'/ean.php');
+class Barcode extends CWidget
+{
+   public $number;
+   public $encoding;
+   public $scale;
+
+   protected $_encoder;
+
+   function init($encoding, $number, $scale=null)
+   {
+      $this->number = $number;
+      $this->scale = ($scale==null || $scale<4) ? 4 : $scale;
+
+      // Reflection Class : Method
+
+      $this->_encoder = new EAN13($this->number, $this->scale);
+   }
+
+   function run()
+   {
+      $this->_encoder->display();
+   }
+
+}
 class CBarras extends CWidget{
 
 	public 	$text = "0";
