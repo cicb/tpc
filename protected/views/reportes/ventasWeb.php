@@ -328,7 +328,44 @@ elseif(!empty($itemselected)):
     echo "No hay informacion para Ventas en Web y Call Center";
 endif;
 ?>
-<div id="wrapper" style=""><div class="area_impresion"></div></div>
+<button id="boton_wrapper" style="width: 75mm;">prueba pdf</button>
+<script>
+$("#boton_wrapper").click(function(){
+        var EventoId  = $("#evento_id option:selected").val();
+        var formatoId = 2; //$("#formatos input[type=radio]:checked").val();
+        var FuncionId  = $("#Ventaslevel1_funcion option:selected").val();
+        var pvs  = $("#pvs option:checked").val();
+          $.ajax({
+                type: "POST",
+                beforeSend:function(){
+                    $("body").append("<div class='loading'>Generando pdf</div>");
+                },
+                error: function(objeto, quepaso, otroobj){
+                    $(".loading").remove();
+                    alert("Ha ocurrido un error por favor trate de nuevo: "+objeto+"-"+quepaso);
+                },
+                url:'<?php echo $this->createUrl('reportes/ImpresionBoletosAjax2') ?>',
+                data:"formatoId="+formatoId+"&tipo_impresion=todos"+"&EventoId="+EventoId+"&FuncionId="+FuncionId+"&pv="+pvs,
+                success:function(data){
+                    $("#wrapper").html(data);
+                    $(".loading").remove();
+                    /*try{
+                        boletos.close();
+                    }catch(err){}
+                    if(data.ok=="si"){
+                        window.open('<?php echo "http://".$_SERVER['SERVER_NAME'].":".$_SERVER['SERVER_PORT'].Yii::app ()->baseUrl . '/doctos/boletos.pdf'?>', 'boletos', 'width=960,height=600');
+                        
+                    }else{
+                        alert("No hay boletos para imprimir");
+                     }*/
+                    imprSelec('wrapper');
+                }
+                
+            });
+            return false;
+});
+</script>
+<div id="wrapper" style="width: 75mm;border: black solid 1px;"><div class="area_impresion"></div></div>
 <style type="text/css" media="print">
 @media print {
 #parte1 {display:none;}
@@ -389,7 +426,8 @@ $("#imprimir_boletos").click(function(){
                         boletos.close();
                     }catch(err){}
                     if(data.ok=="si"){
-                        window.open('<?php echo "http://".$_SERVER['SERVER_NAME']. Yii::app ()->baseUrl . '/doctos/boletos.pdf'?>', 'boletos', 'width=960,height=600');
+                        window.open('<?php echo "http://".$_SERVER['SERVER_NAME'].":".$_SERVER['SERVER_PORT'].Yii::app ()->baseUrl . '/doctos/boletos.pdf'?>', 'boletos', 'width=960,height=600');
+                        
                     }else{
                         alert("No hay boletos para imprimir");
                      }
@@ -418,8 +456,8 @@ $("#imprimir_boletos").click(function(){
                     }catch(err){}
                      console.log(data);
                      if(data.ok=="si"){
-                        window.open('<?php echo "http://".$_SERVER['SERVER_NAME']. Yii::app ()->baseUrl . '/doctos/boletos.pdf'?>', 'boletos', 'width=960,height=600');
-                    
+                        window.open('<?php echo "http://".$_SERVER['SERVER_NAME'].":".$_SERVER['SERVER_PORT'].Yii::app ()->baseUrl . '/doctos/boletos.pdf'?>', 'boletos', 'width=960,height=600');
+                        
                      }else{
                         alert("No hay boletos NO impresos para imprimir");
                      }
@@ -461,7 +499,7 @@ function imprSelec(nombre){
       var ventimp = window.open('', 'popimpr');
       ventimp.document.write( ficha.innerHTML );
       ventimp.document.close();
-      ventimp.print( );
+      ventimp.print();
       ventimp.close();
 } 
 try{

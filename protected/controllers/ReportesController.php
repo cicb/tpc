@@ -626,7 +626,6 @@ class ReportesController extends Controller
 									AND (zonas.EventoId=subzona.EventoId)
 									AND (zonas.FuncionesId=subzona.FuncionesId)
 									AND (zonas.ZonasId=subzona.ZonasId)
-									INNER JOIN cruge_user ON (cruge_user.iduser=ventas.UsuariosId)
 									WHERE
 									(lugares.EventoId = $venta) AND
 									$funcion
@@ -797,6 +796,7 @@ $objWriter->save('php://output');
  
     public function actionImpresionBoletosAjax()
     {
+        ini_set('memory_limit', '-1');
         set_time_limit(0);
         if(!empty($_POST['formatoId'])){
             $pv = $_POST['pv'];
@@ -855,7 +855,6 @@ $objWriter->save('php://output');
 									AND (zonas.FuncionesId=filas.FuncionesId)
 									AND (zonas.ZonasId=filas.ZonasId)
 									INNER JOIN ventas ON (ventas.VentasId=ventaslevel1.VentasId)
-									INNER JOIN puntosventa ON (puntosventa.PuntosventaId=ventas.PuntosventaId)
 									INNER JOIN subzona ON (subzona.EventoId=filas.EventoId)
 									AND (subzona.FuncionesId=filas.FuncionesId)
 									AND (subzona.ZonasId=filas.ZonasId)
@@ -863,13 +862,12 @@ $objWriter->save('php://output');
 									AND (zonas.EventoId=subzona.EventoId)
 									AND (zonas.FuncionesId=subzona.FuncionesId)
 									AND (zonas.ZonasId=subzona.ZonasId)
-									INNER JOIN cruge_user ON (cruge_user.iduser=ventas.UsuariosId)
 									WHERE
                                     $todos 
                                     ventaslevel1.VentasSta not like '%CANCELADO%' AND 
 									(lugares.EventoId = $EventoId ) AND 
 									(lugares.FuncionesId = $FuncionId ) AND
-									((puntosventa.PuntosventaId = '$pv')) AND 
+									((ventas.PuntosventaId = '$pv')) AND 
 									NOT (ventas.VentasNumRef = ''))
 									ORDER BY  fnc ,ZonasAli,filasAli,LugaresLug;";
                 $dataCodigo = new CSqlDataProvider($query, array(
@@ -877,15 +875,88 @@ $objWriter->save('php://output');
 							'pagination'=>false,
 					)); 
                 $data =   $dataCodigo->getData(); 
+                $newdata = array();
                 foreach($data as $key => $boletoreimpresion):
                     $codigo = $this->verificaCodigos();
                     if(empty($boletoreimpresion['LugaresNumBol'])){
-                        $this->imprimeBoleto($codigo,$boletoreimpresion['id'],$boletoreimpresion['EventoId'],$boletoreimpresion['FuncionesId'],$boletoreimpresion['ZonasId'],$boletoreimpresion['SubzonaId'],$boletoreimpresion['FilasId'],$boletoreimpresion['LugaresId'],$boletoreimpresion['UsuariosId']);
+                        //$this->imprimeBoleto($codigo,$boletoreimpresion['id'],$boletoreimpresion['EventoId'],$boletoreimpresion['FuncionesId'],$boletoreimpresion['ZonasId'],$boletoreimpresion['SubzonaId'],$boletoreimpresion['FilasId'],$boletoreimpresion['LugaresId'],$boletoreimpresion['UsuariosId']);
+                        
+                        $contra = $boletoreimpresion['EventoId'].".".$boletoreimpresion['FuncionesId'].".".$boletoreimpresion['ZonasId'].".".$boletoreimpresion['SubzonaId'];
+                	    $contra .= ".".$boletoreimpresion['FilasId'].".".$boletoreimpresion['LugaresId']."-".date("m").".".date("d")."-".$boletoreimpresion['UsuariosId'];
+                	    $contra .= "R";
+                        /*$ventaslevel1 = Ventaslevel1::model()->findByAttributes(array('VentasId'=>$boletoreimpresion['id'],'EventoId'=>$boletoreimpresion['EventoId'],'FuncionesId'=>$boletoreimpresion['FuncionesId'],'ZonasId'=>$boletoreimpresion['ZonasId'],'SubzonaId'=>$boletoreimpresion['SubzonaId'],'FilasId'=>$boletoreimpresion['FilasId'],'LugaresId'=>$boletoreimpresion['LugaresId']));
+                   	    $ventaslevel1->LugaresNumBol = $codigo;
+                        $ventaslevel1->VentasCon = $contra;
+                        $ventaslevel1->update();*/
+                        
+                        $newdata[$key]['LugaresNumBol'] = $codigo;
+                        $newdata[$key]['VentasCon'] = $contra;
+                        $newdata[$key]['cosBolCargo'] = $boletoreimpresion['cosBolCargo'];
+                        $newdata[$key]['FilasAli']   = $boletoreimpresion['FilasAli'];
+                        $newdata[$key]['LugaresLug'] = $boletoreimpresion['LugaresLug'];
+                        $newdata[$key]['ZonasAli'] = $boletoreimpresion['ZonasAli'];
+                        $newdata[$key]['VentasNumRef'] = $boletoreimpresion['VentasNumRef'];
+                        $newdata[$key]['EventoNom'] = $boletoreimpresion['EventoNom'];
+                        $newdata[$key]['ForoNom'] = $boletoreimpresion['ForoNom'];
+                        $newdata[$key]['SubzonaAcc'] = $boletoreimpresion['SubzonaAcc'];
+                        $newdata[$key]['EventoDesBol'] = $boletoreimpresion['EventoDesBol'];
+                        $newdata[$key]['fnc'] = $boletoreimpresion['fnc'];
+                        $newdata[$key]['VentasBolTip'] = $boletoreimpresion['VentasBolTip'];
+                        $newdata[$key]['cosBol'] = $boletoreimpresion['cosBol'];
+                        $newdata[$key]['VentasCarSer'] = $boletoreimpresion['VentasCarSer'];
+                        $newdata[$key]['EventoImaBol'] = $boletoreimpresion['EventoImaBol'];
+                        $newdata[$key]['id'] = $boletoreimpresion['id'];
+                        $newdata[$key]['PuntosventaId'] = $boletoreimpresion['PuntosventaId'];
+                        $newdata[$key]['VentasFecHor'] = $boletoreimpresion['VentasFecHor'];
+                        $newdata[$key]['VentasNumTar'] = $boletoreimpresion['VentasNumTar'];
+                        $newdata[$key]['VentasNomDerTar'] = $boletoreimpresion['VentasNomDerTar'];
                     }else{
-                        $this->reimprimeBoleto($codigo,$boletoreimpresion['id'],$boletoreimpresion['EventoId'],$boletoreimpresion['FuncionesId'],$boletoreimpresion['ZonasId'],$boletoreimpresion['SubzonaId'],$boletoreimpresion['FilasId'],$boletoreimpresion['LugaresId'],$boletoreimpresion['UsuariosId'],$boletoreimpresion['LugaresNumBol'],$boletoreimpresion['VentasBolTip'],$boletoreimpresion['cosBol']);
+                        //$this->reimprimeBoleto($codigo,$boletoreimpresion['id'],$boletoreimpresion['EventoId'],$boletoreimpresion['FuncionesId'],$boletoreimpresion['ZonasId'],$boletoreimpresion['SubzonaId'],$boletoreimpresion['FilasId'],$boletoreimpresion['LugaresId'],$boletoreimpresion['UsuariosId'],$boletoreimpresion['LugaresNumBol'],$boletoreimpresion['VentasBolTip'],$boletoreimpresion['cosBol']);
+                        
+                        $reimpresiones = Reimpresiones::model()->count(array('condition'=>"EventoId=".$boletoreimpresion['EventoId']." AND FuncionesId=".$boletoreimpresion['FuncionesId']." AND ZonasId=".$boletoreimpresion['ZonasId']." AND SubzonaId=".$boletoreimpresion['SubzonaId']." AND FilasId=".$boletoreimpresion['FilasId']." AND LugaresId=".$boletoreimpresion['LugaresId']));
+                        $contra = $boletoreimpresion['EventoId'].".".$boletoreimpresion['FuncionesId'].".".$boletoreimpresion['ZonasId'].".".$boletoreimpresion['SubzonaId'];
+                	    $contra .= ".".$boletoreimpresion['FilasId'].".".$boletoreimpresion['LugaresId']."-".date("m").".".date("d")."-".$boletoreimpresion['UsuariosId'];
+                	    $contra .= "PR$reimpresiones";
+                        /*$ventaslevel1 = Ventaslevel1::model()->findByAttributes(array('VentasId'=>$boletoreimpresion['id'],'EventoId'=>$boletoreimpresion['EventoId'],'FuncionesId'=>$boletoreimpresion['FuncionesId'],'ZonasId'=>$boletoreimpresion['ZonasId'],'SubzonaId'=>$boletoreimpresion['SubzonaId'],'FilasId'=>$boletoreimpresion['FilasId'],'LugaresId'=>$boletoreimpresion['LugaresId']));
+                   	    $ventaslevel1->LugaresNumBol = $codigo;
+                        $ventaslevel1->VentasCon = $contra;
+                        $ventaslevel1->update();
+                        $ultimo = Reimpresiones::model()->findAll(array('limit'=>1,'order'=>'t.ReimpresionesId DESC'));
+                        $ultimo = $ultimo[0]->ReimpresionesId + 1;
+                        $hoy    = date("Y-m-d G:i:s"); 
+                        $user_id = Yii::app()->user->id;
+                        Yii::app()->db->createCommand("INSERT INTO reimpresiones VALUES($ultimo,".$boletoreimpresion['EventoId'].",".$boletoreimpresion['FuncionesId'].",".$boletoreimpresion['ZonasId'].",".$boletoreimpresion['SubzonaId'].",".$boletoreimpresion['FilasId'].",".$boletoreimpresion['LugaresId'].",'PANEL ADMINISTRATIVO','',$user_id,'$hoy','".$boletoreimpresion['LugaresNumBol']."')")->execute();
+                        
+                        $ultimologreimp = Logreimp::model()->findAll(array('limit'=>1,'order'=>'t.LogReimpId DESC'));
+                        $ultimologreimp = $ultimologreimp[0]->LogReimpId + 1;
+                        
+                        Yii::app()->db->createCommand("INSERT INTO logreimp VALUES($ultimologreimp,'$hoy','".$boletoreimpresion['VentasBolTip']."',".$boletoreimpresion['cosBol'].",'".$boletoreimpresion['VentasBolTip']."',$user_id,0,".$boletoreimpresion['EventoId'].",".$boletoreimpresion['FuncionesId'].",".$boletoreimpresion['ZonasId'].",".$boletoreimpresion['SubzonaId'].",".$boletoreimpresion['FilasId'].",".$boletoreimpresion['LugaresId'].")")->execute();
+                        */
+                        $newdata[$key]['LugaresNumBol'] = $codigo;
+                        $newdata[$key]['VentasCon'] = $contra;
+                        $newdata[$key]['cosBolCargo'] = $boletoreimpresion['cosBolCargo'];
+                        $newdata[$key]['FilasAli']   = $boletoreimpresion['FilasAli'];
+                        $newdata[$key]['LugaresLug'] = $boletoreimpresion['LugaresLug'];
+                        $newdata[$key]['ZonasAli'] = $boletoreimpresion['ZonasAli'];
+                        $newdata[$key]['VentasNumRef'] = $boletoreimpresion['VentasNumRef'];
+                        $newdata[$key]['EventoNom'] = $boletoreimpresion['EventoNom'];
+                        $newdata[$key]['ForoNom'] = $boletoreimpresion['ForoNom'];
+                        $newdata[$key]['SubzonaAcc'] = $boletoreimpresion['SubzonaAcc'];
+                        $newdata[$key]['EventoDesBol'] = $boletoreimpresion['EventoDesBol'];
+                        $newdata[$key]['fnc'] = $boletoreimpresion['fnc'];
+                        $newdata[$key]['VentasBolTip'] = $boletoreimpresion['VentasBolTip'];
+                        $newdata[$key]['cosBol'] = $boletoreimpresion['cosBol'];
+                        $newdata[$key]['VentasCarSer'] = $boletoreimpresion['VentasCarSer'];
+                        $newdata[$key]['EventoImaBol'] = $boletoreimpresion['EventoImaBol'];
+                        $newdata[$key]['id'] = $boletoreimpresion['id'];
+                        $newdata[$key]['PuntosventaId'] = $boletoreimpresion['PuntosventaId'];
+                        $newdata[$key]['VentasFecHor'] = $boletoreimpresion['VentasFecHor'];
+                        $newdata[$key]['VentasNumTar'] = $boletoreimpresion['VentasNumTar'];
+                        $newdata[$key]['VentasNomDerTar'] = $boletoreimpresion['VentasNomDerTar'];
+                    
                     }
-                endforeach;
-            if(empty($data)){
+                endforeach;         
+            if(empty($newdata)){
                 $ok = array('ok'=>'no');
                 echo json_encode($ok);
             }else{
@@ -904,7 +975,7 @@ $objWriter->save('php://output');
                         copy('https://taquillacero.com/imagesbd/'.$imagen[0]['EventoImaBol'],$_SERVER["DOCUMENT_ROOT"].'/'. Yii::app ()->baseUrl . '/imagesbd/'.$imagen->EventoImaBol );
                     }
                 }
-            $documento = $this->renderPartial('_impresionBoletosAjax', array('formato'=>$formato,'data'=>$data,'FormatoId'=>$_POST['formatoId']), true, false);
+            $documento = $this->renderPartial('_impresionBoletosAjax', array('formato'=>$formato,'data'=>$newdata,'FormatoId'=>$_POST['formatoId']), true, false);
             $pdf = Yii::createComponent ( 'application.extensions.html2pdf.html2pdf' );
             $html2pdf = new HTML2PDF ( 'P', array(75,180), 'es', true, 'UTF-8', array (
                 			0,
@@ -915,7 +986,185 @@ $objWriter->save('php://output');
          
          $html2pdf->writeHTML ($documento, false );
          $path=$_SERVER["DOCUMENT_ROOT"].'/'. Yii::app()->request->baseUrl . '/doctos';
-    				$html2pdf->Output ($path.'/boletos.pdf', 'F' );
+    	 $html2pdf->Output ($path.'/boletos.pdf', 'F' );
+        }
+        
+    }
+     public function actionImpresionBoletosAjax2()
+    {
+        ini_set('memory_limit', '-1');
+        set_time_limit(0);
+        if(!empty($_POST['formatoId'])){
+            $pv = $_POST['pv'];
+            $EventoId = $_POST['EventoId'];
+            $FuncionId = $_POST['FuncionId'];
+            $todos = "";
+            if($_POST['tipo_impresion']=="no_impresos"){
+                $todos = "  ventaslevel1.VentasCon='' AND ";
+            }
+            $data=array();
+            $query ="(SELECT  ventas.VentasId as id, 
+                                    funciones.funcionesTexto as fnc, 
+                                    lugares.LugaresLug,
+                                    filas.FilasAli,
+                                    zonas.ZonasAli,
+                                    subzona.SubzonaAcc,
+                                    evento.EventoDesBol,
+                                    evento.EventoNom,
+                                    evento.EventoImaBol,
+                                    foro.ForoNom,
+                                    ventaslevel1.EventoId,
+                                    ventaslevel1.FuncionesId,
+                                    ventaslevel1.ZonasId,
+                                    ventaslevel1.SubzonaId,
+                                    ventaslevel1.FilasId,
+                                    ventaslevel1.LugaresId,
+                                    ventaslevel1.VentasBolTip,
+                                    ventaslevel1.VentasCon,
+                                    ventaslevel1.VentasCarSer,
+                                    ventaslevel1.LugaresNumBol,
+                                    (ventaslevel1.VentasCosBol-ventaslevel1.VentasMonDes) as cosBol,
+                                    (ventaslevel1.VentasCosBol-ventaslevel1.VentasMonDes + ventaslevel1.VentasCarSer) as cosBolCargo,
+                                    ventas.UsuariosId,
+                                    ventas.VentasNumRef,
+                                    ventas.PuntosventaId,
+                                    ventas.VentasFecHor,
+                                    ventas.VentasNumTar,
+                                    ventas.VentasNomDerTar
+									FROM
+									lugares
+									INNER JOIN funciones ON funciones.FuncionesId = lugares.FuncionesId AND funciones.EventoId = lugares.EventoId
+									INNER JOIN ventaslevel1 ON (lugares.EventoId=ventaslevel1.EventoId)
+									AND (lugares.FuncionesId=ventaslevel1.FuncionesId)
+									AND (lugares.ZonasId=ventaslevel1.ZonasId)
+									AND (lugares.SubzonaId=ventaslevel1.SubzonaId)
+									AND (lugares.FilasId=ventaslevel1.FilasId)
+									AND (lugares.LugaresId=ventaslevel1.LugaresId)
+                                    INNER JOIN evento ON evento.EventoId = ventaslevel1.EventoId
+                                    INNER JOIN foro ON foro.ForoId = evento.ForoId
+									INNER JOIN filas ON (filas.EventoId=lugares.EventoId)
+									AND (filas.FuncionesId=lugares.FuncionesId)
+									AND (filas.ZonasId=lugares.ZonasId)
+									AND (filas.SubzonaId=lugares.SubzonaId)
+									AND (filas.FilasId=lugares.FilasId)
+									INNER JOIN zonas ON (zonas.EventoId=filas.EventoId)
+									AND (zonas.FuncionesId=filas.FuncionesId)
+									AND (zonas.ZonasId=filas.ZonasId)
+									INNER JOIN ventas ON (ventas.VentasId=ventaslevel1.VentasId)
+									INNER JOIN subzona ON (subzona.EventoId=filas.EventoId)
+									AND (subzona.FuncionesId=filas.FuncionesId)
+									AND (subzona.ZonasId=filas.ZonasId)
+									AND (subzona.SubzonaId=filas.SubzonaId)
+									AND (zonas.EventoId=subzona.EventoId)
+									AND (zonas.FuncionesId=subzona.FuncionesId)
+									AND (zonas.ZonasId=subzona.ZonasId)
+									WHERE
+                                    $todos 
+                                    ventaslevel1.VentasSta not like '%CANCELADO%' AND 
+									(lugares.EventoId = $EventoId ) AND 
+									(lugares.FuncionesId = $FuncionId ) AND
+									((ventas.PuntosventaId = '$pv')) AND 
+									NOT (ventas.VentasNumRef = ''))
+									ORDER BY  fnc ,ZonasAli,filasAli,LugaresLug;";
+                $dataCodigo = new CSqlDataProvider($query, array(
+							//'totalItemCount'=>$count,//$count,	
+							'pagination'=>false,
+					)); 
+                $data =   $dataCodigo->getData(); 
+                $newdata = array();
+                foreach($data as $key => $boletoreimpresion):
+                    $codigo = $this->verificaCodigos();
+                    if(empty($boletoreimpresion['LugaresNumBol'])){
+                        //$this->imprimeBoleto($codigo,$boletoreimpresion['id'],$boletoreimpresion['EventoId'],$boletoreimpresion['FuncionesId'],$boletoreimpresion['ZonasId'],$boletoreimpresion['SubzonaId'],$boletoreimpresion['FilasId'],$boletoreimpresion['LugaresId'],$boletoreimpresion['UsuariosId']);
+                        
+                        $contra = $boletoreimpresion['EventoId'].".".$boletoreimpresion['FuncionesId'].".".$boletoreimpresion['ZonasId'].".".$boletoreimpresion['SubzonaId'];
+                	    $contra .= ".".$boletoreimpresion['FilasId'].".".$boletoreimpresion['LugaresId']."-".date("m").".".date("d")."-".$boletoreimpresion['UsuariosId'];
+                	    $contra .= "R";
+                        /*$ventaslevel1 = Ventaslevel1::model()->findByAttributes(array('VentasId'=>$boletoreimpresion['id'],'EventoId'=>$boletoreimpresion['EventoId'],'FuncionesId'=>$boletoreimpresion['FuncionesId'],'ZonasId'=>$boletoreimpresion['ZonasId'],'SubzonaId'=>$boletoreimpresion['SubzonaId'],'FilasId'=>$boletoreimpresion['FilasId'],'LugaresId'=>$boletoreimpresion['LugaresId']));
+                   	    $ventaslevel1->LugaresNumBol = $codigo;
+                        $ventaslevel1->VentasCon = $contra;
+                        $ventaslevel1->update();*/
+                        
+                        $newdata[$key]['LugaresNumBol'] = $codigo;
+                        $newdata[$key]['VentasCon'] = $contra;
+                        $newdata[$key]['cosBolCargo'] = $boletoreimpresion['cosBolCargo'];
+                        $newdata[$key]['FilasAli']   = $boletoreimpresion['FilasAli'];
+                        $newdata[$key]['LugaresLug'] = $boletoreimpresion['LugaresLug'];
+                        $newdata[$key]['ZonasAli'] = $boletoreimpresion['ZonasAli'];
+                        $newdata[$key]['VentasNumRef'] = $boletoreimpresion['VentasNumRef'];
+                        $newdata[$key]['EventoNom'] = $boletoreimpresion['EventoNom'];
+                        $newdata[$key]['ForoNom'] = $boletoreimpresion['ForoNom'];
+                        $newdata[$key]['SubzonaAcc'] = $boletoreimpresion['SubzonaAcc'];
+                        $newdata[$key]['EventoDesBol'] = $boletoreimpresion['EventoDesBol'];
+                        $newdata[$key]['fnc'] = $boletoreimpresion['fnc'];
+                        $newdata[$key]['VentasBolTip'] = $boletoreimpresion['VentasBolTip'];
+                        $newdata[$key]['cosBol'] = $boletoreimpresion['cosBol'];
+                        $newdata[$key]['VentasCarSer'] = $boletoreimpresion['VentasCarSer'];
+                        $newdata[$key]['EventoImaBol'] = $boletoreimpresion['EventoImaBol'];
+                        $newdata[$key]['id'] = $boletoreimpresion['id'];
+                        $newdata[$key]['PuntosventaId'] = $boletoreimpresion['PuntosventaId'];
+                        $newdata[$key]['VentasFecHor'] = $boletoreimpresion['VentasFecHor'];
+                        $newdata[$key]['VentasNumTar'] = $boletoreimpresion['VentasNumTar'];
+                        $newdata[$key]['VentasNomDerTar'] = $boletoreimpresion['VentasNomDerTar'];
+                    }else{
+                        //$this->reimprimeBoleto($codigo,$boletoreimpresion['id'],$boletoreimpresion['EventoId'],$boletoreimpresion['FuncionesId'],$boletoreimpresion['ZonasId'],$boletoreimpresion['SubzonaId'],$boletoreimpresion['FilasId'],$boletoreimpresion['LugaresId'],$boletoreimpresion['UsuariosId'],$boletoreimpresion['LugaresNumBol'],$boletoreimpresion['VentasBolTip'],$boletoreimpresion['cosBol']);
+                        
+                        $reimpresiones = Reimpresiones::model()->count(array('condition'=>"EventoId=".$boletoreimpresion['EventoId']." AND FuncionesId=".$boletoreimpresion['FuncionesId']." AND ZonasId=".$boletoreimpresion['ZonasId']." AND SubzonaId=".$boletoreimpresion['SubzonaId']." AND FilasId=".$boletoreimpresion['FilasId']." AND LugaresId=".$boletoreimpresion['LugaresId']));
+                        $contra = $boletoreimpresion['EventoId'].".".$boletoreimpresion['FuncionesId'].".".$boletoreimpresion['ZonasId'].".".$boletoreimpresion['SubzonaId'];
+                	    $contra .= ".".$boletoreimpresion['FilasId'].".".$boletoreimpresion['LugaresId']."-".date("m").".".date("d")."-".$boletoreimpresion['UsuariosId'];
+                	    $contra .= "PR$reimpresiones";
+                        /*$ventaslevel1 = Ventaslevel1::model()->findByAttributes(array('VentasId'=>$boletoreimpresion['id'],'EventoId'=>$boletoreimpresion['EventoId'],'FuncionesId'=>$boletoreimpresion['FuncionesId'],'ZonasId'=>$boletoreimpresion['ZonasId'],'SubzonaId'=>$boletoreimpresion['SubzonaId'],'FilasId'=>$boletoreimpresion['FilasId'],'LugaresId'=>$boletoreimpresion['LugaresId']));
+                   	    $ventaslevel1->LugaresNumBol = $codigo;
+                        $ventaslevel1->VentasCon = $contra;
+                        $ventaslevel1->update();
+                        $ultimo = Reimpresiones::model()->findAll(array('limit'=>1,'order'=>'t.ReimpresionesId DESC'));
+                        $ultimo = $ultimo[0]->ReimpresionesId + 1;
+                        $hoy    = date("Y-m-d G:i:s"); 
+                        $user_id = Yii::app()->user->id;
+                        Yii::app()->db->createCommand("INSERT INTO reimpresiones VALUES($ultimo,".$boletoreimpresion['EventoId'].",".$boletoreimpresion['FuncionesId'].",".$boletoreimpresion['ZonasId'].",".$boletoreimpresion['SubzonaId'].",".$boletoreimpresion['FilasId'].",".$boletoreimpresion['LugaresId'].",'PANEL ADMINISTRATIVO','',$user_id,'$hoy','".$boletoreimpresion['LugaresNumBol']."')")->execute();
+                        
+                        $ultimologreimp = Logreimp::model()->findAll(array('limit'=>1,'order'=>'t.LogReimpId DESC'));
+                        $ultimologreimp = $ultimologreimp[0]->LogReimpId + 1;
+                        
+                        Yii::app()->db->createCommand("INSERT INTO logreimp VALUES($ultimologreimp,'$hoy','".$boletoreimpresion['VentasBolTip']."',".$boletoreimpresion['cosBol'].",'".$boletoreimpresion['VentasBolTip']."',$user_id,0,".$boletoreimpresion['EventoId'].",".$boletoreimpresion['FuncionesId'].",".$boletoreimpresion['ZonasId'].",".$boletoreimpresion['SubzonaId'].",".$boletoreimpresion['FilasId'].",".$boletoreimpresion['LugaresId'].")")->execute();
+                        */
+                        $newdata[$key]['LugaresNumBol'] = $codigo;
+                        $newdata[$key]['VentasCon'] = $contra;
+                        $newdata[$key]['cosBolCargo'] = $boletoreimpresion['cosBolCargo'];
+                        $newdata[$key]['FilasAli']   = $boletoreimpresion['FilasAli'];
+                        $newdata[$key]['LugaresLug'] = $boletoreimpresion['LugaresLug'];
+                        $newdata[$key]['ZonasAli'] = $boletoreimpresion['ZonasAli'];
+                        $newdata[$key]['VentasNumRef'] = $boletoreimpresion['VentasNumRef'];
+                        $newdata[$key]['EventoNom'] = $boletoreimpresion['EventoNom'];
+                        $newdata[$key]['ForoNom'] = $boletoreimpresion['ForoNom'];
+                        $newdata[$key]['SubzonaAcc'] = $boletoreimpresion['SubzonaAcc'];
+                        $newdata[$key]['EventoDesBol'] = $boletoreimpresion['EventoDesBol'];
+                        $newdata[$key]['fnc'] = $boletoreimpresion['fnc'];
+                        $newdata[$key]['VentasBolTip'] = $boletoreimpresion['VentasBolTip'];
+                        $newdata[$key]['cosBol'] = $boletoreimpresion['cosBol'];
+                        $newdata[$key]['VentasCarSer'] = $boletoreimpresion['VentasCarSer'];
+                        $newdata[$key]['EventoImaBol'] = $boletoreimpresion['EventoImaBol'];
+                        $newdata[$key]['id'] = $boletoreimpresion['id'];
+                        $newdata[$key]['PuntosventaId'] = $boletoreimpresion['PuntosventaId'];
+                        $newdata[$key]['VentasFecHor'] = $boletoreimpresion['VentasFecHor'];
+                        $newdata[$key]['VentasNumTar'] = $boletoreimpresion['VentasNumTar'];
+                        $newdata[$key]['VentasNomDerTar'] = $boletoreimpresion['VentasNomDerTar'];
+                    
+                    }
+                endforeach;                                                
+            $formato = Formatosimpresionlevel1::model()->findAll(array('condition'=>'FormatoId='.$_POST['formatoId']));
+            $imagen = Evento::model()->findByAttributes(array('EventoId'=>$_POST['EventoId']));//$data->getData();
+            
+                if($imagen->EventoImaBol==""){
+                    if(!file_exists($_SERVER["DOCUMENT_ROOT"].'/'. Yii::app ()->baseUrl . '/imagesbd/blanco.jpg')){
+                        copy('https://taquillacero.com/imagesbd/blanco.jpg',$_SERVER["DOCUMENT_ROOT"].'/'. Yii::app ()->baseUrl . '/imagesbd/blanco.jpg' );
+                    }
+                }else{
+                    if(!file_exists($_SERVER["DOCUMENT_ROOT"].'/'. Yii::app ()->baseUrl . '/imagesbd/'.$imagen[0]['EventoImaBol'])){
+                        copy('https://taquillacero.com/imagesbd/'.$imagen[0]['EventoImaBol'],$_SERVER["DOCUMENT_ROOT"].'/'. Yii::app ()->baseUrl . '/imagesbd/'.$imagen->EventoImaBol );
+                    }
+                }
+            $this->renderPartial('_impresionBoletosAjax', array('formato'=>$formato,'data'=>$newdata,'FormatoId'=>$_POST['formatoId']));
         }
         
     }
@@ -932,7 +1181,7 @@ $objWriter->save('php://output');
         $contra = $eventoId.".".$funcionesId.".".$zonasId.".".$subzonaId;
 	    $contra .= ".".$filasId.".".$lugaresId."-".date("m").".".date("d")."-".$usuariosId;
 	    $contra .= "R";
-        $ventaslevel1 = Ventaslevel1::model()->findByAttributes(array('VentasId'=>$ventasId,'EventoId'=>$eventoId,'FuncionesId'=>$funcionesId,'ZonasId'=>$zonasId,'SubzonaId'=>$subzonaId,'FilasId'=>$filasId,'LugaresId'=>$lugaresId,));
+        $ventaslevel1 = Ventaslevel1::model()->findByAttributes(array('VentasId'=>$ventasId,'EventoId'=>$eventoId,'FuncionesId'=>$funcionesId,'ZonasId'=>$zonasId,'SubzonaId'=>$subzonaId,'FilasId'=>$filasId,'LugaresId'=>$lugaresId));
    	    $ventaslevel1->LugaresNumBol = $codigo;
         $ventaslevel1->VentasCon = $contra;
         $ventaslevel1->update();
@@ -944,6 +1193,7 @@ $objWriter->save('php://output');
         Yii::app()->db->createCommand("INSERT INTO reimpresiones VALUES($ultimo,$eventoId,$funcionesId,$zonasId,$subzonaId,$filasId,$lugaresId,'PANEL ADMINISTRATIVO','', $usuariosId,'$hoy','$codigo')")->execute();*/
     }
     public function reimprimeBoleto($codigo,$ventasId,$eventoId,$funcionesId,$zonasId,$subzonaId,$filasId,$lugaresId,$usuariosId,$ultimocodigo="26",$tip="NORMAL",$cosBol=0){
+        
         $reimpresiones = Reimpresiones::model()->count(array('condition'=>"EventoId=$eventoId AND FuncionesId=$funcionesId AND ZonasId=$zonasId AND SubzonaId=$subzonaId AND FilasId=$filasId AND LugaresId=$lugaresId"));
         $contra = $eventoId.".".$funcionesId.".".$zonasId.".".$subzonaId;
 	    $contra .= ".".$filasId.".".$lugaresId."-".date("m").".".date("d")."-".$usuariosId;
