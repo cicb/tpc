@@ -293,17 +293,17 @@ echo "Se muestran ".count($dataProvider->getData())." resultados(s)" ;
     </table>
 <?php
 
-?>
+?>  
 <table style="width: 100%;">
     <tr>
         <td style="text-align: left;">
         <button class="btn btn-success" id="imprimir-boletos-no-impresos">
-            <i class="icon-repeat icon-white"></i>&nbsp;Generar Boletos NO Impresos
+            <i class="icon-print icon-white"></i>&nbsp;Imprimir Boletos NO Impresos
         </button>
         </td>
         <td style="text-align: right;">
         <button class="btn btn-success" id="imprimir-todos-boletos" >
-            <i class="icon-repeat icon-white"></i>&nbsp;Generar TODOS los Boletos
+            <i class="icon-print icon-white"></i>&nbsp;Imprimir TODOS los Boletos
         </button>
         </td>
     </tr>
@@ -328,8 +328,55 @@ elseif(!empty($itemselected)):
     echo "No hay informacion para Ventas en Web y Call Center";
 endif;
 ?>
-<button id="print_pdf" style="display: none;" class="btn btn-warning"><i class="icon-print icon-white"></i>&nbsp;Inprimir pdf</button>
-<div id="wrapper" style="width: 90mm;border: black solid 1px;display: none;"><div class="area_impresion"></div></div>
+<button id="boton_wrapper" style="width: 75mm;">prueba pdf</button>
+<button id="print_pdf" style="width: 75mm;">print pdf</button>
+<script>
+$("#print_pdf").click(function(){
+    imprSelec('wrapper');
+});
+$("#boton_wrapper").click(function(){
+        var EventoId  = $("#evento_id option:selected").val();
+        var formatoId = 2; //$("#formatos input[type=radio]:checked").val();
+        var FuncionId  = $("#Ventaslevel1_funcion option:selected").val();
+        var pvs  = $("#pvs option:checked").val();
+          $.ajax({
+                type: "POST",
+                beforeSend:function(){
+                    $("body").append("<div class='loading'>Generando pdf</div>");
+                },
+                error: function(objeto, quepaso, otroobj){
+                    $(".loading").remove();
+                    alert("Ha ocurrido un error por favor trate de nuevo: "+objeto+"-"+quepaso);
+                },
+                url:'<?php echo $this->createUrl('reportes/ImpresionBoletosAjax2') ?>',
+                data:"formatoId="+formatoId+"&tipo_impresion=todos"+"&EventoId="+EventoId+"&FuncionId="+FuncionId+"&pv="+pvs,
+                success:function(data){
+                    $("#wrapper").html(data);
+                    $(".loading").remove();
+                    /*try{
+                        boletos.close();
+                    }catch(err){}
+                    if(data.ok=="si"){
+                        window.open('<?php echo "http://".$_SERVER['SERVER_NAME'].":".$_SERVER['SERVER_PORT'].Yii::app ()->baseUrl . '/doctos/boletos.pdf'?>', 'boletos', 'width=960,height=600');
+                        
+                    }else{
+                        alert("No hay boletos para imprimir");
+                     }*/
+                    //imprSelec('wrapper');
+                }
+                
+            });
+            return false;
+});
+</script>
+<div id="wrapper" style="width: 90mm;border: black solid 1px;"><div class="area_impresion"></div></div>
+<style type="text/css" media="print">
+@media print {
+#comprobante{
+    font-size: 5px;
+}
+
+</style>
 <style>
 .loading{
     position: fixed;
@@ -346,9 +393,7 @@ endif;
 }
 </style>
 <script>
-$("#print_pdf").click(function(){
-    imprSelec('wrapper');
-});
+
 $("#formatos input[type=radio]").click(function(){
     $("#formatos img").removeClass("formato_seleccionado");
     $("#formatos img#imagen_formato"+this.value).addClass("formato_seleccionado");
@@ -365,23 +410,20 @@ $("#imprimir_boletos").click(function(){
         if(tipo=="todos"){
             $.ajax({
                 type: "POST",
-                //dataType:'json',
+                dataType:'json',
                 beforeSend:function(){
-                    $("body").append("<div class='loading'>Generando Boletos</div>");
-                    $("#print_pdf").hide();
+                    $("body").append("<div class='loading'>Generando pdf</div>");
                 },
                 error: function(objeto, quepaso, otroobj){
                     $(".loading").remove();
                     alert("Ha ocurrido un error por favor trate de nuevo: "+objeto+"-"+quepaso);
                 },
-                url:'<?php echo $this->createUrl('reportes/ImpresionBoletosAjax2') ?>',
+                url:'<?php echo $this->createUrl('reportes/ImpresionBoletosAjax') ?>',
                 data:"formatoId="+formatoId+"&tipo_impresion=todos"+"&EventoId="+EventoId+"&FuncionId="+FuncionId+"&pv="+pvs,
                 success:function(data){
                     //$(".area_impresion").html(data);
-                    $("#wrapper").html(data);
                     $(".loading").remove();
-                    $("#print_pdf").show();
-                    /*try{
+                    try{
                         boletos.close();
                     }catch(err){}
                     if(data.ok=="si"){
@@ -390,37 +432,27 @@ $("#imprimir_boletos").click(function(){
                     }else{
                         alert("No hay boletos para imprimir");
                      }
-                    //imprSelec('wrapper');*/
+                    //imprSelec('wrapper');
                 }
                 
             });
         }else{
             $.ajax({
                 type: "POST",
-                //dataType:'json',
+                dataType:'json',
                 beforeSend:function(){
                     $("body").append("<div class='loading'>Generando pdf</div>");
-                    $("#print_pdf").hide();
                 },
                 error: function(objeto, quepaso, otroobj){
                     $(".loading").remove();
                     alert("Ha ocurrido un error por favor trate de nuevo: "+objeto+"-"+quepaso);
                 },
-                url:'<?php echo $this->createUrl('reportes/ImpresionBoletosAjax2') ?>',
+                url:'<?php echo $this->createUrl('reportes/ImpresionBoletosAjax') ?>',
                 data:"formatoId="+formatoId+"&tipo_impresion=no_impresos"+"&EventoId="+EventoId+"&FuncionId="+FuncionId+"&pv="+pvs,
                 success:function(data){
                     //$(".area_impresion").html(data);
-                    if(data==""){
-                        $(".loading").remove();
-                        $("#print_pdf").hide();
-                        alert('No hay boletos para generar');
-                    }else{
-                        $("#wrapper").html(data);
-                        $(".loading").remove();
-                        $("#print_pdf").show();
-                    }
-                    
-                    /*try{
+                    $(".loading").remove();
+                    try{
                         boletos.close();
                     }catch(err){}
                      console.log(data);
@@ -431,7 +463,7 @@ $("#imprimir_boletos").click(function(){
                         alert("No hay boletos NO impresos para imprimir");
                      }
                                           //imprSelec('wrapper');
-                    //imprSelec('wrapper');*/
+                    //imprSelec('wrapper');
                 }
                 
             });
