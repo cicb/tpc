@@ -90,13 +90,13 @@ class Evento extends CActiveRecord
 		return array(
 			'EventoId' => 'Evento',
 			'EventoNom' => 'Nombre del Evento: ',
-			'EventoSta' => 'Evento Sta',
-			'EventoFecIni' => 'Evento Fec Ini',
-			'EventoFecFin' => 'Evento Fec Fin',
+			'EventoSta' => 'Estatus',
+			'EventoFecIni' => 'Fecha Inicio',
+			'EventoFecFin' => 'Fecha Fin',
 			'CategoriaId' => 'Categoria',
-			'CategoriaSubId' => 'Categoria Sub',
+			'CategoriaSubId' => 'Sub Categoria ',
 			'EventoTemFecFin' => 'Evento Tem Fec Fin',
-			'EventoDesBol' => 'Evento Des Bol',
+			'EventoDesBol' => 'Descripción de Boleto',
 			'EventoImaBol' => 'Evento Ima Bol',
 			'EventoImaMin' => 'Evento Ima Min',
 			'EventoDesWeb' => 'Evento Des Web',
@@ -268,4 +268,13 @@ class Evento extends CActiveRecord
 			));
        return $data->getData();
      }
+	public function conmutarEstatus(){
+			if ($this->EventoSta=='ALTA') {
+					$this->EventoSta='BAJA';
+			}	
+			else {
+				$this->EventoSta='ALTA';
+			}
+			return $this->update('EventoSta');
+	}
 }

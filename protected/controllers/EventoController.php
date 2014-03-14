@@ -49,8 +49,16 @@ class EventoController extends Controller
 	public function actionIndex()
 	{
 			$model=new Evento('search');
-			$model->attributes=$_POST['Evento'];
+			if (isset($_POST['Evento'])) {
+					$model->attributes=$_POST['Evento'];
+			}
 			$this->render('index',compact('model'));
+	}
+	public function actionActualizar($id)
+	{
+
+			$model=$this->loadModel($id);
+			$this->render('form',compact('model'));
 	}
 	/**
 	 * Displays a particular model.
@@ -88,8 +96,13 @@ class EventoController extends Controller
 	 * @return Evento the loaded model
 	 * @throws CHttpException
 	 */
-	public function loadModel($id)
+	public function loadModel($id=null)
 	{
+			if (!isset($id)) {
+					if (isset ( $_GET ['id'] )){
+							$id=$_GET['id'];
+					}
+			}	
 		$model=Evento::model()->findByPk($id);
 		if($model===null)
 			throw new CHttpException(404,'The requested page does not exist.');
@@ -135,5 +148,18 @@ class EventoController extends Controller
             }
 
     }
+	public function actionConmutarEstatus()
+	{
+			$this->perfil();
+			if (Yii::app()->request->isAjaxRequest ) {
+					$model=$this->loadModel();
+					if ($model->EventoId>0) {
+							$model->conmutarEstatus();	
+					}	
+					echo $model->EventoSta;
+			}	
+			else
+					throw new CHttpException ( 404, 'Petición incorrecta.' );
+	}
 
 }

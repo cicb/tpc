@@ -55,7 +55,7 @@
 							'buttons'=>array(
 									'alta'=>array(
 											'label'=>'<span class="text-success fa fa-arrow-up"> Dar Alta </span>',
-											'url'=>'Yii::app()->createUrl("usuarios/conmutarEstatus",array(
+											'url'=>'Yii::app()->createUrl("evento/conmutarEstatus",array(
 													"id"=>$data["EventoId"],
 											))',
 											'visible'=>'$data["EventoSta"]!="ALTA"',
@@ -63,14 +63,14 @@
 											{ $.ajax({
 													url:$(this).attr("href"),
 															success: function(data){
-																	$.fn.yiiGridView.update("usuarios-grid");
+																	$.fn.yiiGridView.update("eventos-grid");
 															}		
 												 });
 												event.preventDefault(); }',
 									),
 										'baja'=>array(
 											'label'=>'<span class="text-error fa fa-arrow-down"> Dar Baja </span>',
-											'url'=>'Yii::app()->createUrl("usuarios/conmutarEstatus",array(
+											'url'=>'Yii::app()->createUrl("evento/conmutarEstatus",array(
 													"id"=>$data["EventoId"],
 											))',
 											'visible'=>'$data["EventoSta"]=="ALTA"',
@@ -78,14 +78,14 @@
 											{ $.ajax({
 													url:$(this).attr("href"),
 															success: function(data){
-																	$.fn.yiiGridView.update("usuarios-grid");
+																	$.fn.yiiGridView.update("eventos-grid");
 															}		
 												 });
 												event.preventDefault(); }',
 									),
 									'editar'=>array(
 											'label'=>'<span class="text-info fa fa-pencil"> Editar </span>',
-											'url'=>'Yii::app()->createUrl("usuarios/actualizar",array(
+											'url'=>'Yii::app()->createUrl("evento/actualizar",array(
 													"id"=>$data["EventoId"],
 											))',
 									),
