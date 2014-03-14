@@ -89,7 +89,7 @@ class Evento extends CActiveRecord
 	{
 		return array(
 			'EventoId' => 'Evento',
-			'EventoNom' => 'Evento Nom',
+			'EventoNom' => 'Nombre del Evento: ',
 			'EventoSta' => 'Evento Sta',
 			'EventoFecIni' => 'Evento Fec Ini',
 			'EventoFecFin' => 'Evento Fec Fin',
@@ -126,7 +126,7 @@ class Evento extends CActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('EventoId',$this->EventoId,true);
+		//$criteria->compare('EventoId',$this->EventoId,true);
 		$criteria->compare('EventoNom',$this->EventoNom,true);
 		$criteria->compare('EventoSta',$this->EventoSta,true);
 		$criteria->compare('EventoFecIni',$this->EventoFecIni,true);
@@ -141,10 +141,14 @@ class Evento extends CActiveRecord
 		$criteria->compare('ForoId',$this->ForoId,true);
 		$criteria->compare('PuntosventaId',$this->PuntosventaId,true);
 		$criteria->compare('EventoSta2',$this->EventoSta2,true);
-        $criteria->with =array('evento');
-        $criteria->addSearchCondition('evento.EventoNom', $this->EventoId);
+		$criteria->order="EventoId desc";
+        //$criteria->with =array('evento');
+        //$criteria->addSearchCondition('evento.EventoNom', $this->EventoId);
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
+			'pagination'=>array(
+				'pageSize'=>20
+			)
 		));
 	}
 	
