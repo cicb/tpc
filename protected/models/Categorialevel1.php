@@ -1,23 +1,27 @@
 <?php
 
 /**
- * This is the model class for table "estados".
+ * This is the model class for table "categorialevel1".
  *
- * The followings are the available columns in table 'estados':
- * @property integer $id
- * @property string $nombre
+ * The followings are the available columns in table 'categorialevel1':
+ * @property string $CategoriaId
+ * @property string $CategoriaSubId
+ * @property string $CategoriaSubNom
+ * @property string $CategoriaSubSta
  *
  * The followings are the available model relations:
- * @property CrugeUser[] $crugeUsers
+ * @property Categoria $categoria
+ * @property Evento[] $eventos
+ * @property Evento[] $eventos1
  */
-class Estados extends CActiveRecord
+class Categorialevel1 extends CActiveRecord
 {
 	/**
 	 * @return string the associated database table name
 	 */
 	public function tableName()
 	{
-		return 'estados';
+		return 'categorialevel1';
 	}
 
 	/**
@@ -28,10 +32,13 @@ class Estados extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('nombre', 'length', 'max'=>45),
+			array('CategoriaId, CategoriaSubId, CategoriaSubNom, CategoriaSubSta', 'required'),
+			array('CategoriaId, CategoriaSubId', 'length', 'max'=>20),
+			array('CategoriaSubNom', 'length', 'max'=>50),
+			array('CategoriaSubSta', 'length', 'max'=>10),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, nombre', 'safe', 'on'=>'search'),
+			array('CategoriaId, CategoriaSubId, CategoriaSubNom, CategoriaSubSta', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -43,7 +50,9 @@ class Estados extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'crugeUsers' => array(self::HAS_MANY, 'CrugeUser', 'estado_id'),
+			'categoria' => array(self::BELONGS_TO, 'Categoria', 'CategoriaId'),
+			'eventos' => array(self::HAS_MANY, 'Evento', 'CategoriaId'),
+			'eventos1' => array(self::HAS_MANY, 'Evento', 'CategoriaSubId'),
 		);
 	}
 
@@ -53,8 +62,10 @@ class Estados extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'id' => 'ID',
-			'nombre' => 'Nombre',
+			'CategoriaId' => 'Categoria',
+			'CategoriaSubId' => 'Categoria Sub',
+			'CategoriaSubNom' => 'Categoria Sub Nom',
+			'CategoriaSubSta' => 'Categoria Sub Sta',
 		);
 	}
 
@@ -76,8 +87,10 @@ class Estados extends CActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('id',$this->id);
-		$criteria->compare('nombre',$this->nombre,true);
+		$criteria->compare('CategoriaId',$this->CategoriaId,true);
+		$criteria->compare('CategoriaSubId',$this->CategoriaSubId,true);
+		$criteria->compare('CategoriaSubNom',$this->CategoriaSubNom,true);
+		$criteria->compare('CategoriaSubSta',$this->CategoriaSubSta,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
@@ -88,7 +101,7 @@ class Estados extends CActiveRecord
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!
 	 * @param string $className active record class name.
-	 * @return Estados the static model class
+	 * @return Categorialevel1 the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{

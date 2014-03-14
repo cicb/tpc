@@ -9,6 +9,7 @@
 						'append' => TbHtml::submitButton('Buscar',array('class'=>'btn')), 
 						'span' => 3,
 						'placeholder'=>'Nombre del usuario o Nick',
+						'label'=>'',
 						'id'=>'filtro-usuario'
 				)); ?>		
 <?php $this->endWidget(); ?>
