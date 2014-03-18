@@ -160,8 +160,14 @@
         </td>
     </tr>
     <tr>
+        <td>Punto de Venta:</td>
+        <td>
+            
+        </td>
+    </tr>
+    <tr>
 		<td colspan="2" style="text-align: right;">
-<br/></br>
+<br/><br/>
         &nbsp;&nbsp;
         <a data-toggle="modal" data-target="#myModal_resultado" id="previsualizar" class="btn btn-default"><i class="icon-th-list icon-black"></i>&nbsp;Ver lista de eventos</a>
         <a data-toggle="modal" data-target="#myModal_continuar" id="continuar" class="btn btn-primary">Continuar&nbsp;<i class="icon-play icon-white"></i></a>

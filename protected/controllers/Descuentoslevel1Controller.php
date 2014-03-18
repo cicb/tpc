@@ -106,20 +106,26 @@ class Descuentoslevel1Controller extends Controller
                 foreach($descuentos as $key => $descuento):
                     $eventoNom = $evento->findAllByPk($descuento->EventoId);
                     echo "<li class='alert-success'>".($descuento->descuentos->CuponesCod==""?"<strong class='span-5'>Descuento </strong><br/>":"<strong class='span-5'>Cup&oacute;n: </strong>".$descuento->descuentos->CuponesCod)."</li>";
-                    echo "<li><strong class='span-5'>Descuentos Id: </strong>".$descuento->DescuentosId."</li>";
-                    echo "<li><strong class='span-5'>Evento: </strong>".$eventoNom[0]->EventoNom."</li>";
-                    echo "<li><strong class='span-5'>Descripci&oacute;n: </strong>".$descuento->descuentos->DescuentosDes."</li>";
-                    echo "<li><strong class='span-5'>Forma de Descuento: </strong>".$descuento->descuentos->DescuentosPat."</li>";
-                    echo "<li><strong class='span-5'>Monto a Descontar: </strong>".($descuento->descuentos->DescuentosPat=="EFECTIVO"?"$ ":"").$descuento->descuentos->DescuentosCan.($descuento->descuentos->DescuentosPat=="PORCENTAJE"?" %":"")."</li>";
-                    echo "<li><strong class='span-5'>Aplica a los primeros: </strong>".$descuento->descuentos->DescuentosExis."</li>";
-                    echo "<li><strong class='span-5'>Descuentos Usados: </strong>".$descuento->descuentos->DescuentosUso."</li>";
-                    echo "<li><strong class='span-5'>Fecha de Inicio: </strong>".$descuento->descuentos->DescuentosFecIni."</li>";
-                    echo "<li><strong class='span-5'>Fecha Final: </strong>".$descuento->descuentos->DescuentosFecFin."</li>";
-                    echo "<li><strong class='span-5'>Funci&oacute;n: </strong>".($descuento->FuncionesId!=0?$descuento->funciones->funcionesTexto:"Todas")."</li>";
-                    echo "<li><strong class='span-5'>Zona: </strong>".($descuento->ZonasId!=0?$descuento->zonas->ZonasAli:"Todas")."</li>";
-                    echo "<li><strong class='span-5'>Subzona: </strong>".($descuento->SubzonaId!=0?$descuento->SubzonaId:"Todas")."</li>";
-                    echo "<li><strong class='span-5'>Fila: </strong>".($descuento->FilasId!=0?$descuento->filas->FilasAli:"Todas")."</li>";
-                    echo "<li><strong class='span-5'>Lugar: </strong>".($descuento->LugaresId!=0?$descuento->LugaresId:"Todas")."</li>";
+                    echo "<li><strong class='span-5'>Descuentos Id: </strong>&nbsp;".$descuento->DescuentosId."</li>";
+                    if($descuento->descuentos->DescuentosValRef=='todos'){
+                        echo "<li><strong class='span-5'>Aplica a todos los puntos de venta</strong>&nbsp;</li>";
+                    }else{
+                        $punto_venta = Puntosventa::model()->find("PuntosventaId=".$descuento->descuentos->DescuentosValRef);
+                        echo "<li><strong class='span-5'>Aplica al Punto de Venta:</strong> (".$descuento->descuentos->DescuentosValRef.")$punto_venta->PuntosventaNom</li>";
+                    }
+                    echo "<li><strong class='span-5'>Evento: </strong>&nbsp;".$eventoNom[0]->EventoNom."</li>";
+                    echo "<li><strong class='span-5'>Descripci&oacute;n: </strong>&nbsp;".$descuento->descuentos->DescuentosDes."</li>";
+                    echo "<li><strong class='span-5'>Forma de Descuento: </strong>&nbsp;".$descuento->descuentos->DescuentosPat."</li>";
+                    echo "<li><strong class='span-5'>Monto a Descontar: </strong>&nbsp;".($descuento->descuentos->DescuentosPat=="EFECTIVO"?"$ ":"").$descuento->descuentos->DescuentosCan.($descuento->descuentos->DescuentosPat=="PORCENTAJE"?" %":"")."</li>";
+                    echo "<li><strong class='span-5'>Aplica a los primeros: </strong>&nbsp;".$descuento->descuentos->DescuentosExis."</li>";
+                    echo "<li><strong class='span-5'>Descuentos Usados: </strong>&nbsp;".$descuento->descuentos->DescuentosUso."</li>";
+                    echo "<li><strong class='span-5'>Fecha de Inicio: </strong>&nbsp;".$descuento->descuentos->DescuentosFecIni."</li>";
+                    echo "<li><strong class='span-5'>Fecha Final: </strong>&nbsp;".$descuento->descuentos->DescuentosFecFin."</li>";
+                    echo "<li><strong class='span-5'>Funci&oacute;n: </strong>&nbsp;".($descuento->FuncionesId!=0?$descuento->funciones->funcionesTexto:"Todas")."</li>";
+                    echo "<li><strong class='span-5'>Zona: </strong>&nbsp;".($descuento->ZonasId!=0?$descuento->zonas->ZonasAli:"Todas")."</li>";
+                    echo "<li><strong class='span-5'>Subzona: </strong>&nbsp;".($descuento->SubzonaId!=0?$descuento->SubzonaId:"Todas")."</li>";
+                    echo "<li><strong class='span-5'>Fila: </strong>&nbsp;".($descuento->FilasId!=0?$descuento->filas->FilasAli:"Todas")."</li>";
+                    echo "<li><strong class='span-5'>Lugar: </strong>&nbsp;".($descuento->LugaresId!=0?$descuento->LugaresId:"Todas")."</li>";
                 endforeach;
                 echo "</ul>";
                 if(!empty($_GET['cupon'])){
