@@ -161,7 +161,7 @@
         <td>
         <br />
         <?php
-        $puntos_venta = Puntosventa::model()->findAll("PuntosventaNom!='' AND PuntosventaSta='ALTA'");
+        $puntos_venta = Puntosventa::model()->findAll(array('condition'=>"PuntosventaNom!='' AND PuntosventaSta='ALTA'",'order'=>'PuntosventaNom ASC'));
         echo CHtml::dropDownList('DescuentosValRef',$pv,CHtml::listData($puntos_venta,'PuntosventaId','PuntosventaNom'),array('empty'=>array('todos'=>'Todos'),'style'=>'width:220px','class'=>'data-id save_temp','data-id'=>"$EventoId",'data-log'=>"1"));
         ?>
         </td>
