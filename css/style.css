@@ -265,6 +265,9 @@ th {
   padding: 5px;
   margin: 5px;
 }
+.box {
+  box-shadow: 1px 5px 5px #ccc;
+}
 .box1 {
   float: none;
   margin: auto;

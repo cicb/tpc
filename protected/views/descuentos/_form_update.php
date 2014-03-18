@@ -21,12 +21,8 @@
 					'data-id'=>-1,		
 					'data-tipo'=>'cupon',		
 					'id'=>'codigo',
-					'append' => TbHtml::button('Generar cupón',array(
-							'id'=>'generar_cupon',
-							'class'=>empty($_GET['cupon'])?'hidden':'',
-					)),
 					'span' => 2,
-					'class'=>empty($_GET['cupon'])?'hidden':'',
+					'disabled'=>'disabled',
 					'placeholder'=>'Código del cupón')
 			); ?>
 
