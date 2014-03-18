@@ -107,11 +107,11 @@ class Descuentoslevel1Controller extends Controller
                     $eventoNom = $evento->findAllByPk($descuento->EventoId);
                     echo "<li class='alert-success'>".($descuento->descuentos->CuponesCod==""?"<strong class='span-5'>Descuento </strong><br/>":"<strong class='span-5'>Cup&oacute;n: </strong>".$descuento->descuentos->CuponesCod)."</li>";
                     echo "<li><strong class='span-5'>Descuentos Id: </strong>&nbsp;".$descuento->DescuentosId."</li>";
-                    if($descuento->descuentos->DescuentosValRef=='todos'){
-                        echo "<li><strong class='span-5'>Aplica a todos los puntos de venta</strong>&nbsp;</li>";
-                    }else{
+                    if(is_numeric($descuento->descuentos->DescuentosValRef)){
                         $punto_venta = Puntosventa::model()->find("PuntosventaId=".$descuento->descuentos->DescuentosValRef);
                         echo "<li><strong class='span-5'>Aplica al Punto de Venta:</strong> (".$descuento->descuentos->DescuentosValRef.")$punto_venta->PuntosventaNom</li>";
+                    }else{
+                        echo "<li><strong class='span-5'>Aplica a todos los puntos de venta</strong>&nbsp;</li>";
                     }
                     echo "<li><strong class='span-5'>Evento: </strong>&nbsp;".$eventoNom[0]->EventoNom."</li>";
                     echo "<li><strong class='span-5'>Descripci&oacute;n: </strong>&nbsp;".$descuento->descuentos->DescuentosDes."</li>";
