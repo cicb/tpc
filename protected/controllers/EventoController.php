@@ -138,8 +138,6 @@ class EventoController extends Controller
     {
         $data = Evento::model()->findAll('EventoId=:parent_id',
                         array(':parent_id'=>(int) $_POST['evento_Id']));
-
-
         $data = CHtml::listData($data,'EventoId','EventoNom');
 		echo CHtml::tag('option',array('value' => ''),'Seleccione un evento...',true);
             foreach($data as $id => $value)
@@ -161,5 +159,6 @@ class EventoController extends Controller
 			else
 					throw new CHttpException ( 404, 'Petición incorrecta.' );
 	}
+
 
 }

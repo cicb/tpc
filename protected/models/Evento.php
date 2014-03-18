@@ -26,6 +26,7 @@
  */
 class Evento extends CActiveRecord
 {
+		public $imaBol, $imaMin;
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return Evento the static model class
@@ -72,7 +73,9 @@ class Evento extends CActiveRecord
 		return array(
 			'categoria' => array(self::BELONGS_TO, 'Categorialevel1', 'CategoriaId'),
 			'categoriaSub' => array(self::BELONGS_TO, 'Categorialevel1', 'CategoriaSubId'),
-            //'funciones' => array(self::BELONGS_TO, 'Funciones', array('EventoId','FuncionesId')),
+			'puntoventa' => array(self::HAS_ONE, 'Puntosventa', 'PuntosventaId'),
+			'foro' => array(self::HAS_ONE, 'Foro', 'ForoId'),
+			//'distribucion' => array(self::HAS_ONE, 'Distribucionpuerta', 'IdDistribucionPuerta'),
             
             'distribucionpuertalevel1' =>array(self::BELONGS_TO,'Distribucionpuertalevel1','EventoId'),
              'funciones' => array(self::HAS_MANY, 'Funciones', array( 'EventoId')),
@@ -89,7 +92,7 @@ class Evento extends CActiveRecord
 	{
 		return array(
 			'EventoId' => 'Evento',
-			'EventoNom' => 'Nombre del Evento: ',
+			'EventoNom' => 'Nombre: ',
 			'EventoSta' => 'Estatus',
 			'EventoFecIni' => 'Fecha Inicio',
 			'EventoFecFin' => 'Fecha Fin',
@@ -97,14 +100,15 @@ class Evento extends CActiveRecord
 			'CategoriaSubId' => 'Sub Categoria ',
 			'EventoTemFecFin' => 'Evento Tem Fec Fin',
 			'EventoDesBol' => 'Descripción de Boleto',
-			'EventoImaBol' => 'Evento Ima Bol',
-			'EventoImaMin' => 'Evento Ima Min',
-			'EventoDesWeb' => 'Evento Des Web',
+			'EventoImaBol' => 'Imagen del boleto',
+			'EventoImaMin' => 'Imagen miniatura',
+			'EventoDesWeb' => 'Descripcion en Web',
 			'ForoId' => 'Foro',
 			'PuntosventaId' => 'Puntosventa',
-			'EventoSta2' => 'Evento Sta2',
+			'EventoSta2' => 'Estatus 2',
 			'FuncionesId' => 'Funciones',
-			'IdDistribucionPuerta' => 'Distribucion Puerta'
+			'imaBol' => 'Imagen:',
+			'imaMin' => 'Imagen:',
 		);
 	}
 	
