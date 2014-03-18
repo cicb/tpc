@@ -22,4 +22,5 @@ $this->menu=array(
                                                       'CuponActual'         => $CuponActual,
                                                       'EventoId'            => $EventoId,
                                                       'DescuentosId'        => $DescuentosId,
+                                                      'pv'                  => $pv,
                                                       )); ?>

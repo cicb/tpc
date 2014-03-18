@@ -24,7 +24,7 @@
 					'span' => 2,
 					'class'=>empty($_GET['cupon'])?'hidden':'',
 					'placeholder'=>'Código del cupón',
-                    'readonly'=>'readonly')
+                    'readonly'=>'readonly',)
 			); ?>
 
     <label><strong>Eventos</strong></label>
@@ -159,9 +159,13 @@
     <tr>
         <td>Punto de Venta:</td>
         <td>
-            
+        <br />
+        <?php
+        $puntos_venta = Puntosventa::model()->findAll("PuntosventaNom!='' AND PuntosventaSta='ALTA'");
+        echo CHtml::dropDownList('DescuentosValRef',$pv,CHtml::listData($puntos_venta,'PuntosventaId','PuntosventaNom'),array('empty'=>array('todos'=>'Todos'),'style'=>'width:220px','class'=>'data-id save_temp','data-id'=>"$EventoId",'data-log'=>"1"));
+        ?>
         </td>
-    </tr>
+        </tr>
     <tr>
 		<td colspan="2" style="text-align: right;">
 <br/><br/>

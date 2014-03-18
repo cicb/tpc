@@ -54,16 +54,38 @@ class EventoController extends Controller
 			}
 			$this->render('index',compact('model'));
 	}
+
+	public function actionRegistro()
+	{
+			$model=new Evento('insert');	
+			$this->saveModel($model);
+			$this->render('form',compact('model'));
+	}
+
 	public function actionActualizar($id)
 	{
 
 			$model=$this->loadModel($id);
+			$model->scenario='update';
+			$this->saveModel($model);
 			$this->render('form',compact('model'));
 	}
 	/**
 	 * Displays a particular model.
 	 * @param integer $id the ID of the model to be displayed
 	 */
+	public function saveModel(Evento $evento)
+	{
+			$this->perfil();
+			if(isset($_POST['Evento']))
+			{
+					$this->performAjaxValidation($evento);
+					$msg = $evento->saveModel($_POST['Evento']);
+					if ($msg==1) {
+							Yii::app()->user->setFlash('success', "Se ha guardado el evento \"".$evento->EventoNom.'"');
+					}	
+			}
+	}
 	public function actionView($id){
 		$this->render('view',array(
 			'model'=>$this->loadModel($id),
@@ -134,6 +156,17 @@ class EventoController extends Controller
 					echo CHtml::tag('option',array('value' => $id),CHtml::encode($value),true);
 			}
 	}
+	public function actionCargarSubcategorias()
+	{
+			
+			$data = Categorialevel1::model()->findAll('CategoriaId=:id',
+					array(':id'=>(int) $_POST['Evento']['CategoriaId']));
+			echo CHtml::tag('option',array('value' => '0'),'Sin Subcategoria',true);
+			foreach($data as $id => $value)
+			{
+					echo CHtml::tag('option',array('value' => $value->CategoriaSubId),CHtml::encode($value->CategoriaSubNom),true);
+			}
+	}
 	public function actionEvento()
     {
         $data = Evento::model()->findAll('EventoId=:parent_id',
@@ -158,6 +191,33 @@ class EventoController extends Controller
 			}	
 			else
 					throw new CHttpException ( 404, 'Petición incorrecta.' );
+	}
+
+
+	public function actionSubirImagen()
+	{
+			$this->perfil();
+			if (Yii::app()->request->isAjaxRequest ) {
+					$imagen=CUploadedFile::getInstanceByName('imagen');
+					if (!is_null($imagen)) {
+							$filename=sprintf("%s.%s",
+									hash('md5',$imagen->name),
+									$imagen->extensionName);
+							if ($imagen->saveAs(
+									sprintf(
+											"../images/%s",
+											$filename)
+									))
+									echo $filename;
+					}	
+					else{
+							echo 0;
+					}
+			}
+			else
+					throw new CHttpException ( 404, 'Petición incorrecta.' );
+
+		
 	}
 
 

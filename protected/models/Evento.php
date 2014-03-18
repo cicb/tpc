@@ -27,6 +27,7 @@
 class Evento extends CActiveRecord
 {
 		public $imaBol, $imaMin;
+		public $maxId;
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return Evento the static model class
@@ -52,7 +53,7 @@ class Evento extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('EventoId, EventoNom, EventoSta, EventoFecIni, EventoFecFin, CategoriaId, CategoriaSubId, EventoTemFecFin, EventoDesBol, EventoImaBol, EventoImaMin, EventoDesWeb, ForoId, PuntosventaId, EventoSta2', 'required'),
+				array(' EventoNom, EventoSta, EventoFecIni, EventoFecFin, CategoriaId, EventoDesBol, ForoId', 'required'),
 			array('EventoId, EventoSta, CategoriaId, CategoriaSubId, ForoId, PuntosventaId, EventoSta2', 'length', 'max'=>20),
 			array('EventoNom', 'length', 'max'=>150),
 			array('EventoDesBol', 'length', 'max'=>75),
@@ -71,7 +72,7 @@ class Evento extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'categoria' => array(self::BELONGS_TO, 'Categorialevel1', 'CategoriaId'),
+			'categoria' => array(self::HAS_ONE, 'Categorialevel1', 'CategoriaId'),
 			'categoriaSub' => array(self::BELONGS_TO, 'Categorialevel1', 'CategoriaSubId'),
 			'puntoventa' => array(self::HAS_ONE, 'Puntosventa', 'PuntosventaId'),
 			'foro' => array(self::HAS_ONE, 'Foro', 'ForoId'),
@@ -104,7 +105,7 @@ class Evento extends CActiveRecord
 			'EventoImaMin' => 'Imagen miniatura',
 			'EventoDesWeb' => 'Descripcion en Web',
 			'ForoId' => 'Foro',
-			'PuntosventaId' => 'Puntosventa',
+			'PuntosventaId' => 'Punto de venta',
 			'EventoSta2' => 'Estatus 2',
 			'FuncionesId' => 'Funciones',
 			'imaBol' => 'Imagen:',
@@ -281,4 +282,27 @@ class Evento extends CActiveRecord
 			}
 			return $this->update('EventoSta');
 	}
+
+	 public function saveModel($data=array())
+	 {
+	 	$this->attributes=$data;
+		if(!$this->save())
+				return CHtml::errorSummary($this);
+		else
+				return 1;
+	 }
+
+	 public static function getMaxId()
+	 {
+			 $row = Evento::model()->find(array('select'=>'MAX(EventoId) as maxId'));
+			 return $row['maxId'];
+	 }
+
+	 public function beforeSave()
+	 {
+				if ($this->scenario=='insert') {
+						$this->EventoId=Evento::getMaxId()+1;
+				}	
+			 return parent::beforeSave();
+	 }
 }

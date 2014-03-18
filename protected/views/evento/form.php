@@ -22,14 +22,23 @@
 	<p class="help-block">Los campos con <span class="required">*</span> con requeridos.</p>
 	<?php echo $form->errorSummary($model); ?>
 <br />
-		<div class='box4 white-box'>
+<?php if(Yii::app()->user->hasFlash('success')):?>
+    <div class="alert alert-success">
+        <?php echo TbHtml::b(Yii::app()->user->getFlash('success'),array('style'=>'font-size:150%')); ?>
+    </div>
+<?php endif; ?>
+
+		<div class='col-2 white-box box'>
 		<h3>Información básica</h3>
 
-			<?php echo $form->textFieldControlGroup($model,'EventoNom',array('span'=>3,'maxlength'=>150)); ?>
+			<?php echo $form->textFieldControlGroup($model,'EventoNom',array('span'=>4,'maxlength'=>150)); ?>
+            <?php echo $form->textFieldControlGroup($model,'EventoDesBol',array( 'span'=>4,'maxlength'=>75)); ?>
+            <?php echo $form->textFieldControlGroup($model,'EventoDesWeb',array('span'=>4,'maxlength'=>200)); ?>
 		<div class='alert'>
 			<?php echo $form->dropDownListControlGroup($model, 'EventoSta',
-					array('ALTA', 'BAJA'), array('class' => 'chosen span2')); ?>
+					array('BAJA'=>'BAJA', 'ALTA'=>'ALTA'), array('class' => 'chosen span2')); ?>
 		</div>
+			<?php echo $form->textFieldControlGroup($model,'EventoSta2',array('span'=>2,'maxlength'=>20)); ?>
 
 		<?php echo $form->labelEx($model,'EventoFecIni',array('class'=>'control-label')); ?>
 		<div class="input-append">
@@ -48,7 +57,7 @@
 <div class='control-group'>
 
 		<?php echo $form->labelEx($model,'EventoFecFin',array('class'=>'control-label')); ?>
-		<div class="input-append">
+		<div class="input-append " >
 				<?php $this->widget('yiiwheels.widgets.datetimepicker.WhDateTimePicker', array(
 						'name' => 'Evento[EventoFecFin]',
 						'value'=>$model->EventoFecFin,
@@ -82,7 +91,14 @@
 			 CHtml::listData(
 					Categorialevel1::model()->findAll(),
 					'CategoriaId','CategoriaSubNom'),
-			array('empty'=>'Sin categoria','class'=>'span3')
+			 array(
+					 'empty'=>'Sin categoria','class'=>'span3',
+					 'ajax' => array(
+							 'type' => 'POST',
+							 'url' => CController::createUrl('evento/cargarSubcategorias'),
+							 'update' => '#Evento_CategoriaSubId',
+					 )
+	 )
 	) ; ?>
 	<?php echo $form->error($model,'CategoriaId'); ?>
 </div>
@@ -93,7 +109,9 @@
 			 CHtml::listData(
 					Categorialevel1::model()->findAllByAttributes(array('CategoriaId'=>$model->CategoriaId)),
 					'CategoriaSubId','CategoriaSubNom'),
-			array('empty'=>'Sin subcategoria','class'=>'span3')
+			 array('empty'=>'Sin subcategoria','class'=>'span3',
+
+	 )
 	) ; ?>
 	<?php echo $form->error($model,'CategoriaSubId'); ?>
 </div>
@@ -123,40 +141,39 @@
 
 		</div>
 
-		<div class='col-2 white-box'>
 
-		<h3>Información adicional</h3>
-            <?php echo $form->textFieldControlGroup($model,'EventoDesBol',array( 'span'=>4,'maxlength'=>75)); ?>
+		<div class='col-3'>
+				<div class='span4 white-box box'>
+				<h3><?php echo TbHtml::i('',array('class'=>'fa fa-picture-o')); ?> Imagen en boleto</h3>
+					<?php echo TbHtml::imagePolaroid(strlen($model->EventoImaBol)>3?"../images/".$model->EventoImaBol:'holder.js/239x69','',array('id'=>'img-imabol')); ?>
+					<br /><br />
+					<?php  echo TbHtml::fileField('imabol','' , array('span'=>2,'maxlength'=>200, 'class'=>'hidden')); ?>
 
+						<?php echo $form->textField($model,'EventoImaBol',array(
+								'append'=>TbHtml::button('Seleccionar imagen',
+								array('class'=>'btn btn-success','id'=>'btn-subir-imabol')),
+								'placeholder'=>'Nombre de la imagen en Boleto')); ?>
 
-			<?php echo $form->fileFieldControlGroup($model,'EventoImaMin',array('append'=>TbHtml::imagePolaroid($model->EventoImaBol),
- 'span'=>4,'maxlength'=>200)); ?>
-			<?php echo TbHtml::imagePolaroid($model->EventoImaBol); ?>
-
-            <?php echo $form->textFieldControlGroup($model,'EventoDesWeb',array('span'=>4,'maxlength'=>200)); ?>
-
-            <?php echo $form->textFieldControlGroup($model,'EventoSta2',array('span'=>4,'maxlength'=>20)); ?>
-
+				</div>
+				<div class='span4 white-box box'>
+				<h3><?php echo TbHtml::i('',array('class'=>'fa fa-picture-o')); ?> Imagen en miniatura</h3>
+					<?php echo TbHtml::imagePolaroid(strlen($model->EventoImaMin)>3?"../images/".$model->EventoImaMin:'holder.js/130x130','',
+array('id'=>'img-imamin')); ?>
+					<br /><br />
+					<?php  echo TbHtml::fileField('imamin','' , array('span'=>2,'maxlength'=>200, 'class'=>'hidden')); ?>
+					<?php echo $form->textField($model,'EventoImaMin',array(
+								'append'=>TbHtml::button('Seleccionar imagen',
+								array('class'=>'btn btn-success','id'=>'btn-subir-imamin')),
+								'placeholder'=>'Nombre de la imagen miniatura')); ?>
+		
+				</div>
 		</div>
-		<div class='col-3 white-box '>
-		<h3>Imagen en boleto</h3>
-			<?php echo TbHtml::imagePolaroid(strlen($model->EventoImaBol)>3?$model->EventoImaBol:'holder.js/239x69'); ?>
-			<br /><br />
-			<?php echo $form->fileField($model,'imaBol',array('span'=>2,'maxlength'=>200)); ?>
-
-		</div>
-		<div class='col-3 white-box '>
-		<h3>Imagen en miniatura</h3>
-			<?php echo TbHtml::imagePolaroid(strlen($model->EventoImaMin)>3?$model->EventoImaMin:'holder.js/239x69'); ?>
-			<br /><br />
-			<?php echo $form->fileField($model,'imaMin',array('span'=>2,'maxlength'=>200)); ?>
-
-		</div>
-
         <div class="form-actions">
-        <?php echo TbHtml::submitButton($model->isNewRecord ? 'Create' : 'Save',array(
+<?php echo TbHtml::link(' Regresar',array('index'),array('class'=>'fa fa-chevron-circle-left btn ')); ?>
+        <?php echo TbHtml::submitButton($model->isNewRecord ? ' Registrar' : ' Guardar',array(
             'color'=>TbHtml::BUTTON_COLOR_PRIMARY,
-            'size'=>TbHtml::BUTTON_SIZE_LARGE,
+			'size'=>TbHtml::BUTTON_SIZE_LARGE,
+			'class'=>'fa fa-check'
         )); ?>
     </div>
 
@@ -171,28 +188,57 @@
 				Yii::app()->clientScript->registerScriptFile("js/holder.js");
 				Yii::app()->clientScript->registerScript("subir-boleto","
 						var ext= ['jpg','png','bmp','jpeg'];
-			 $('#Evento_imaBol').on('change',function(){
+				$('#btn-subir-imabol').on('click',function(){ $('#imabol').trigger('click'); });
+			 $('#imabol').on('change',function(){
 					 if ($(this).val()!='' && $(this).val()!=null) {
 							 if ($.inArray($(this).val().split('.').pop(),ext)==-1) {
 									 alert('El archivo no tiene extension xls, por favor seleccione otro.');
+									$(this).val('');	
 						}else{	 
-								var fd = new FormData(document.getElementById('form-importacion'));
-								//fd.append('CustomField', 'This is some extra data');
+								var fd = new FormData();
+								var imagen = document.getElementById('imabol');
+								fd.append('imagen', imagen.files[0]);
 								$.ajax({
-										url: '".Yii::app()->createUrl('/admin/subirListaMaestra')."',
+										url: '".Yii::app()->createUrl('evento/subirImagen')."',
 												type: 'POST',
 												data: fd,
 												processData: false,  // tell jQuery not to process the data
 												contentType: false,   // tell jQuery not to set contentType
-												//dataType:'json',
 												success: function(data){ 
-														$('#page-wrapper').html(data);
-														$('#btn-validar').addClass('btn-primary');
-														$('#btn-subir').removeClass('btn-primary');
-														$('#btn-importar').addClass('btn-primary');
-														$('#btn-importar').attr('disabled',false);
-														 }
-								}).fail(function(){alert('Error!')});			  
+														if (data) {
+																$('#Evento_EventoImaBol').val(data);
+																$('#img-imabol').attr('src','../images/'+data);
+
+														}	
+												 }
+								}).fail(function(){alert('Error!')});		
+						}	
+				 }
+			});
+			$('#btn-subir-imamin').on('click',function(){ $('#imamin').trigger('click'); });
+			 $('#imamin').on('change',function(){
+					 if ($(this).val()!='' && $(this).val()!=null) {
+							 if ($.inArray($(this).val().split('.').pop(),ext)==-1) {
+									 alert('El archivo no tiene extension xls, por favor seleccione otro.');
+									$(this).val('');	
+						}else{	 
+								var fd = new FormData();
+								var imagen = document.getElementById('imamin');
+								fd.append('imagen', imagen.files[0]);
+								$.ajax({
+										url: '".Yii::app()->createUrl('evento/subirImagen')."',
+												type: 'POST',
+												data: fd,
+												processData: false,  // tell jQuery not to process the data
+												contentType: false,   // tell jQuery not to set contentType
+												success: function(data){ 
+														if (data) {
+																$('#Evento_EventoImaMin').val(data);
+																$('#img-imamin').attr('src','../images/'+data);
+
+														}	
+												 }
+								}).fail(function(){alert('Error!')});		
 						}	
 				 }
 			});

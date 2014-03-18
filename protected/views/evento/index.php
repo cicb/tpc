@@ -13,7 +13,7 @@
 						'id'=>'filtro-usuario'
 				)); ?>		
 <?php $this->endWidget(); ?>
-				<?php echo TbHtml::button(' Agregar Evento',array('class'=>'fa fa-plus btn btn-primary')); ?>
+				<?php echo TbHtml::link(' Agregar Evento', array('evento/registro') ,array('class'=>'fa fa-plus btn btn-primary')); ?>
 		</div>
 </div>
 

@@ -109,10 +109,6 @@ class UsuariosController extends Controller {
         {
             $this->performAjaxValidation($usuario);
             $msg = $usuario->saveModel($_POST['Usuarios']);
-            //check $msg here
-			//if ($msg>0) {
-					//echo $msg;
-			//}	
 		}
     }
 	public function actionConmutarEstatus()

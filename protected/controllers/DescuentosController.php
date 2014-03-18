@@ -141,7 +141,16 @@ class DescuentosController extends Controller
 		//$model=$this->loadModel($id);
         Yii::app()->getSession()->remove('descuentos');
         Yii::app()->getSession()->remove('descuentos_relacionados');
-        $cuponActual               = Descuentos::model()->findAll("DescuentosId=$id");
+        Yii::app()->getSession()->remove('pv');
+        $cuponActual = Descuentos::model()->findAll("DescuentosId=$id");
+        
+        $pv = Descuentos::model()->find("DescuentosId=$id");   
+        if(!empty($pv->DescuentosValRef)){
+            $pv = $pv->DescuentosValRef;
+        }else{
+            $pv = 'todos';
+        } 
+        Yii::app()->getSession()->add('pv',$pv);          
         if(empty($cupon))
             $descuentosIds             = Descuentos::model()->findAll("DescuentosId='$id'");
         else      
@@ -227,6 +236,7 @@ class DescuentosController extends Controller
             'EventosRelacionados' => $eventosRelacionados,
             'cupon'               => $cupon,
             'DescuentosId'        => $id,
+            'pv'                  => $pv,
 		));
 	}
 
@@ -490,7 +500,7 @@ class DescuentosController extends Controller
                         } 
                     } 
                 }else{
-                    $result2 = Yii::app()->db->createCommand("UPDATE descuentos SET DescuentosDes='$descripcion',DescuentosPat='$descuentosPat',DescuentosCan='$descuentosCan',DescuentosFecIni='$descuentosFecIni',DescuentosFecFin='$descuentosFecFin',DescuentosExis=$descuentosExis,CuponesCod='$cupon',DescuentoCargo='$descuentoCargo' WHERE DescuentosId=$descuentosId")->execute();
+                    $result2 = Yii::app()->db->createCommand("UPDATE descuentos SET DescuentosDes='$descripcion',DescuentosPat='$descuentosPat',DescuentosCan='$descuentosCan',DescuentosFecIni='$descuentosFecIni',DescuentosFecFin='$descuentosFecFin',DescuentosExis=$descuentosExis,CuponesCod='$cupon',DescuentoCargo='$descuentoCargo',DescuentosValRef='$pv' WHERE DescuentosId=$descuentosId")->execute();
                     //if($result2 > 0){
                         $funcionesId      = $data['FuncionesId'];
                         $zonasId          = $data['ZonasId'];
