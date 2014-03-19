@@ -145,8 +145,8 @@ class DescuentosController extends Controller
         $cuponActual = Descuentos::model()->findAll("DescuentosId=$id");
         
         $pv = Descuentos::model()->find("DescuentosId=$id");   
-        if(!empty($pv->DescuentosValRef)){
-            $pv = $pv->DescuentosValRef;
+        if(!empty($pv->DescuentosValIdRef) AND $pv->DescuentosValIdRef!=0){
+            $pv = $pv->DescuentosValIdRef;
         }else{
             $pv = 'todos';
         } 
@@ -414,8 +414,14 @@ class DescuentosController extends Controller
                 $descuentosFecFin = $data['DescuentosFecFin'];
                 $descuentosExis   = $data['DescuentosExis'];
                 $descuentosId     = $data['DescuentosId'];
-                if($pv=="")
-                   $pv ="todos";
+                
+                if($pv=="todos" OR $pv=="" ){
+                    $pvValIdRef = "0";
+                    $pvValRef   = "todos";
+                }else{
+                    $pvValIdRef = $pv;
+                    $pvValRef   = "puntosventa"; 
+                }   
                    
                 //echo $descuentosId."</br>";
                 $descuentoslevel1 = Descuentoslevel1::model()->findAll("EventoId = $key",array('limit'=>1,'order'=>'DescuentosNum ASC'));
@@ -430,7 +436,7 @@ class DescuentosController extends Controller
                 $fecha_actual = date("Y-m-d H:i:s");
                 $usuario_id   = $data['UsuarioId'];
                 if($descuentosId==="-1"){
-                   $result = Yii::app()->db->createCommand("INSERT INTO descuentos VALUES($id,'$descripcion','$descuentosPat','$descuentosCan','$pv',0,'$descuentosFecIni','$descuentosFecFin',$descuentosExis,0,'$cupon','$descuentoCargo')")->execute();
+                   $result = Yii::app()->db->createCommand("INSERT INTO descuentos VALUES($id,'$descripcion','$descuentosPat','$descuentosCan','$pvValRef',$pvValIdRef,'$descuentosFecIni','$descuentosFecFin',$descuentosExis,0,'$cupon','$descuentoCargo')")->execute();
                     if($result > 0){
                         $descuentosNum     = 1;
                         $funcionesId      = $data['FuncionesId'];
@@ -500,7 +506,7 @@ class DescuentosController extends Controller
                         } 
                     } 
                 }else{
-                    $result2 = Yii::app()->db->createCommand("UPDATE descuentos SET DescuentosDes='$descripcion',DescuentosPat='$descuentosPat',DescuentosCan='$descuentosCan',DescuentosFecIni='$descuentosFecIni',DescuentosFecFin='$descuentosFecFin',DescuentosExis=$descuentosExis,CuponesCod='$cupon',DescuentoCargo='$descuentoCargo',DescuentosValRef='$pv' WHERE DescuentosId=$descuentosId")->execute();
+                    $result2 = Yii::app()->db->createCommand("UPDATE descuentos SET DescuentosDes='$descripcion',DescuentosPat='$descuentosPat',DescuentosCan='$descuentosCan',DescuentosFecIni='$descuentosFecIni',DescuentosFecFin='$descuentosFecFin',DescuentosExis=$descuentosExis,CuponesCod='$cupon',DescuentoCargo='$descuentoCargo',DescuentosValRef='$pvValRef',DescuentosValIdRef=$pvValIdRef WHERE DescuentosId=$descuentosId")->execute();
                     //if($result2 > 0){
                         $funcionesId      = $data['FuncionesId'];
                         $zonasId          = $data['ZonasId'];
