@@ -3,7 +3,11 @@
 /* @var $model Evento */
 /* @var $form TbActiveForm */
 ?>
-
+    <?php 
+        $this->widget( 'ext.EChosen.EChosen', array(
+            'target' => '.chosen',
+      ));
+    ?>
 <div class="form">
 
     <?php $form=$this->beginWidget('bootstrap.widgets.TbActiveForm', array(
@@ -36,7 +40,7 @@
             <?php echo $form->textFieldControlGroup($model,'EventoDesWeb',array('span'=>4,'maxlength'=>200)); ?>
 		<div class='alert'>
 			<?php echo $form->dropDownListControlGroup($model, 'EventoSta',
-					array('BAJA'=>'BAJA', 'ALTA'=>'ALTA'), array('class' => 'chosen span2')); ?>
+					array('BAJA'=>'BAJA', 'ALTA'=>'ALTA'), array('class' => 'span2')); ?>
 		</div>
 			<?php echo $form->textFieldControlGroup($model,'EventoSta2',array('span'=>2,'maxlength'=>20)); ?>
 
@@ -92,7 +96,7 @@
 					Categorialevel1::model()->findAll(),
 					'CategoriaId','CategoriaSubNom'),
 			 array(
-					 'empty'=>'Sin categoria','class'=>'span3',
+					 'empty'=>'Sin categoria','class'=>'span3 chosen',
 					 'ajax' => array(
 							 'type' => 'POST',
 							 'url' => CController::createUrl('evento/cargarSubcategorias'),
@@ -109,7 +113,7 @@
 			 CHtml::listData(
 					Categorialevel1::model()->findAllByAttributes(array('CategoriaId'=>$model->CategoriaId)),
 					'CategoriaSubId','CategoriaSubNom'),
-			 array('empty'=>'Sin subcategoria','class'=>'span3',
+			 array('empty'=>'Sin subcategoria','class'=>'span3 chosen',
 
 	 )
 	) ; ?>
@@ -122,7 +126,7 @@
 			 CHtml::listData(
 					Foro::model()->findAll(),
 					'ForoId','ForoNom'),
-			array('empty'=>'Sin foro','class'=>'span3')
+			array('empty'=>'Sin foro','class'=>'span3 chosen')
 	) ; ?>
 	<?php echo $form->error($model,'ForoId'); ?>
 </div>
@@ -133,7 +137,7 @@
 			 CHtml::listData(
 					Puntosventa::model()->findAll(),
 					'PuntosventaId','PuntosventaNom'),
-			array('empty'=>'Sin Punto de Venta','class'=>'span3')
+			array('empty'=>'Sin Punto de Venta','class'=>'span3 chosen')
 	) ; ?>
 	<?php echo $form->error($model,'PuntosventaId'); ?>
 </div>
@@ -145,7 +149,7 @@
 		<div class='col-3'>
 				<div class='span4 white-box box'>
 				<h3><?php echo TbHtml::i('',array('class'=>'fa fa-picture-o')); ?> Imagen en boleto</h3>
-					<?php echo TbHtml::imagePolaroid(strlen($model->EventoImaBol)>3?"../images/".$model->EventoImaBol:'holder.js/239x69','',array('id'=>'img-imabol')); ?>
+					<?php echo TbHtml::imagePolaroid(strlen($model->EventoImaBol)>3?"../imagesbd/".$model->EventoImaBol:'holder.js/239x69','',array('id'=>'img-imabol')); ?>
 					<br /><br />
 					<?php  echo TbHtml::fileField('imabol','' , array('span'=>2,'maxlength'=>200, 'class'=>'hidden')); ?>
 
@@ -156,8 +160,8 @@
 
 				</div>
 				<div class='span4 white-box box'>
-				<h3><?php echo TbHtml::i('',array('class'=>'fa fa-picture-o')); ?> Imagen en miniatura</h3>
-					<?php echo TbHtml::imagePolaroid(strlen($model->EventoImaMin)>3?"../images/".$model->EventoImaMin:'holder.js/130x130','',
+				<h3><?php echo TbHtml::i('',array('class'=>'fa fa-picture-o')); ?> Imagen para PV</h3>
+					<?php echo TbHtml::imagePolaroid(strlen($model->EventoImaMin)>3?"../imagesbd/".$model->EventoImaMin:'holder.js/130x130','',
 array('id'=>'img-imamin')); ?>
 					<br /><br />
 					<?php  echo TbHtml::fileField('imamin','' , array('span'=>2,'maxlength'=>200, 'class'=>'hidden')); ?>
@@ -198,6 +202,7 @@ array('id'=>'img-imamin')); ?>
 								var fd = new FormData();
 								var imagen = document.getElementById('imabol');
 								fd.append('imagen', imagen.files[0]);
+								fd.append('prefijo', 'boleto_');
 								$.ajax({
 										url: '".Yii::app()->createUrl('evento/subirImagen')."',
 												type: 'POST',
@@ -207,7 +212,7 @@ array('id'=>'img-imamin')); ?>
 												success: function(data){ 
 														if (data) {
 																$('#Evento_EventoImaBol').val(data);
-																$('#img-imabol').attr('src','../images/'+data);
+																$('#img-imabol').attr('src','../imagesbd/'+data);
 
 														}	
 												 }
@@ -225,6 +230,7 @@ array('id'=>'img-imamin')); ?>
 								var fd = new FormData();
 								var imagen = document.getElementById('imamin');
 								fd.append('imagen', imagen.files[0]);
+								fd.append('prefijo', 'pv_');
 								$.ajax({
 										url: '".Yii::app()->createUrl('evento/subirImagen')."',
 												type: 'POST',
@@ -234,7 +240,7 @@ array('id'=>'img-imamin')); ?>
 												success: function(data){ 
 														if (data) {
 																$('#Evento_EventoImaMin').val(data);
-																$('#img-imamin').attr('src','../images/'+data);
+																$('#img-imamin').attr('src','../imagesbd/'+data);
 
 														}	
 												 }

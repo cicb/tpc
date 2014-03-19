@@ -102,7 +102,7 @@ class Evento extends CActiveRecord
 			'EventoTemFecFin' => 'Evento Tem Fec Fin',
 			'EventoDesBol' => 'Descripción de Boleto',
 			'EventoImaBol' => 'Imagen del boleto',
-			'EventoImaMin' => 'Imagen miniatura',
+			'EventoImaMin' => 'Imagen para PV',
 			'EventoDesWeb' => 'Descripcion en Web',
 			'ForoId' => 'Foro',
 			'PuntosventaId' => 'Punto de venta',
