@@ -198,14 +198,16 @@ class EventoController extends Controller
 	{
 			$this->perfil();
 			if (Yii::app()->request->isAjaxRequest ) {
+					$prefijo='';
+					if (isset($_POST['prefijo'])) {
+						$prefijo=$_POST['prefijo'];
+					}	
 					$imagen=CUploadedFile::getInstanceByName('imagen');
 					if (!is_null($imagen)) {
-							$filename=sprintf("%s.%s",
-									hash('md5',$imagen->name),
-									$imagen->extensionName);
+							$filename=$prefijo.$imagen->name;
 							if ($imagen->saveAs(
 									sprintf(
-											"../images/%s",
+											"../imagesbd/%s",
 											$filename)
 									))
 									echo $filename;
