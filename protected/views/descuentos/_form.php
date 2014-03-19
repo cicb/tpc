@@ -203,6 +203,16 @@
 		        <input type="text" id="cantidad_descuentos" class="data-id save_temp" data-id="" style="width: 178px;"  name="DescuentosExis" value="0"/>
 		        </td>
 		    </tr>
+            <tr>
+                <td>Punto de Venta:</td>
+                <td>
+                <br />
+                 <?php
+                  $puntos_venta = Puntosventa::model()->findAll(array('condition'=>"PuntosventaNom!='' AND PuntosventaSta='ALTA'",'order'=>'PuntosventaNom ASC'));
+                  echo CHtml::dropDownList('DescuentosValRef','',CHtml::listData($puntos_venta,'PuntosventaId','PuntosventaNom'),array('empty'=>array('todos'=>'Todos'),'style'=>'width:220px','class'=>'data-id save_temp','data-id'=>''));
+                 ?>
+                </td>
+            </tr>
 		    <tr>
 		    	<td colspan="2" style="text-align: right;">
 				<br />

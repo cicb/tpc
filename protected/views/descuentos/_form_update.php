@@ -22,8 +22,9 @@
 					'data-tipo'=>'cupon',		
 					'id'=>'codigo',
 					'span' => 2,
-					'disabled'=>'disabled',
-					'placeholder'=>'Código del cupón')
+					'class'=>empty($_GET['cupon'])?'hidden':'',
+					'placeholder'=>'Código del cupón',
+                    'readonly'=>'readonly',)
 			); ?>
 
     <label><strong>Eventos</strong></label>
@@ -156,8 +157,18 @@
         </td>
     </tr>
     <tr>
+        <td>Punto de Venta:</td>
+        <td>
+        <br />
+        <?php
+        $puntos_venta = Puntosventa::model()->findAll(array('condition'=>"PuntosventaNom!='' AND PuntosventaSta='ALTA'",'order'=>'PuntosventaNom ASC'));
+        echo CHtml::dropDownList('DescuentosValRef',$pv,CHtml::listData($puntos_venta,'PuntosventaId','PuntosventaNom'),array('empty'=>array('todos'=>'Todos'),'style'=>'width:220px','class'=>'data-id save_temp','data-id'=>"$EventoId",'data-log'=>"1"));
+        ?>
+        </td>
+        </tr>
+    <tr>
 		<td colspan="2" style="text-align: right;">
-<br/></br>
+<br/><br/>
         &nbsp;&nbsp;
         <a data-toggle="modal" data-target="#myModal_resultado" id="previsualizar" class="btn btn-default"><i class="icon-th-list icon-black"></i>&nbsp;Ver lista de eventos</a>
         <a data-toggle="modal" data-target="#myModal_continuar" id="continuar" class="btn btn-primary">Continuar&nbsp;<i class="icon-play icon-white"></i></a>

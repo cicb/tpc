@@ -141,7 +141,16 @@ class DescuentosController extends Controller
 		//$model=$this->loadModel($id);
         Yii::app()->getSession()->remove('descuentos');
         Yii::app()->getSession()->remove('descuentos_relacionados');
-        $cuponActual               = Descuentos::model()->findAll("DescuentosId=$id");
+        Yii::app()->getSession()->remove('pv');
+        $cuponActual = Descuentos::model()->findAll("DescuentosId=$id");
+        
+        $pv = Descuentos::model()->find("DescuentosId=$id");   
+        if(!empty($pv->DescuentosValRef)){
+            $pv = $pv->DescuentosValRef;
+        }else{
+            $pv = 'todos';
+        } 
+        Yii::app()->getSession()->add('pv',$pv);          
         if(empty($cupon))
             $descuentosIds             = Descuentos::model()->findAll("DescuentosId='$id'");
         else      
@@ -227,6 +236,7 @@ class DescuentosController extends Controller
             'EventosRelacionados' => $eventosRelacionados,
             'cupon'               => $cupon,
             'DescuentosId'        => $id,
+            'pv'                  => $pv,
 		));
 	}
 
@@ -386,7 +396,10 @@ class DescuentosController extends Controller
     }
     public function actionGuardarTemp(){
         $model = new Descuentos;
+        //obtiene los datos del descuento que se guardaron de manera temporal
         $datas = Yii::app()->getSession()->get('descuentos');
+        //obtiene los datos del punto de venta que se guardó de manera temporal
+        $pv = Yii::app()->getSession()->get('pv');
         if(!empty($datas)){
             foreach($datas as $key => $data):
                 $id = $model->findAll(array('limit'=>1,'order'=>'DescuentosId DESC'));
@@ -401,6 +414,9 @@ class DescuentosController extends Controller
                 $descuentosFecFin = $data['DescuentosFecFin'];
                 $descuentosExis   = $data['DescuentosExis'];
                 $descuentosId     = $data['DescuentosId'];
+                if($pv=="")
+                   $pv ="todos";
+                   
                 //echo $descuentosId."</br>";
                 $descuentoslevel1 = Descuentoslevel1::model()->findAll("EventoId = $key",array('limit'=>1,'order'=>'DescuentosNum ASC'));
                 //print_r($descuentoslevel1);
@@ -414,7 +430,7 @@ class DescuentosController extends Controller
                 $fecha_actual = date("Y-m-d H:i:s");
                 $usuario_id   = $data['UsuarioId'];
                 if($descuentosId==="-1"){
-                   $result = Yii::app()->db->createCommand("INSERT INTO descuentos VALUES($id,'$descripcion','$descuentosPat','$descuentosCan','todos',0,'$descuentosFecIni','$descuentosFecFin',$descuentosExis,0,'$cupon','$descuentoCargo')")->execute();
+                   $result = Yii::app()->db->createCommand("INSERT INTO descuentos VALUES($id,'$descripcion','$descuentosPat','$descuentosCan','$pv',0,'$descuentosFecIni','$descuentosFecFin',$descuentosExis,0,'$cupon','$descuentoCargo')")->execute();
                     if($result > 0){
                         $descuentosNum     = 1;
                         $funcionesId      = $data['FuncionesId'];
@@ -484,7 +500,7 @@ class DescuentosController extends Controller
                         } 
                     } 
                 }else{
-                    $result2 = Yii::app()->db->createCommand("UPDATE descuentos SET DescuentosDes='$descripcion',DescuentosPat='$descuentosPat',DescuentosCan='$descuentosCan',DescuentosFecIni='$descuentosFecIni',DescuentosFecFin='$descuentosFecFin',DescuentosExis=$descuentosExis,CuponesCod='$cupon',DescuentoCargo='$descuentoCargo' WHERE DescuentosId=$descuentosId")->execute();
+                    $result2 = Yii::app()->db->createCommand("UPDATE descuentos SET DescuentosDes='$descripcion',DescuentosPat='$descuentosPat',DescuentosCan='$descuentosCan',DescuentosFecIni='$descuentosFecIni',DescuentosFecFin='$descuentosFecFin',DescuentosExis=$descuentosExis,CuponesCod='$cupon',DescuentoCargo='$descuentoCargo',DescuentosValRef='$pv' WHERE DescuentosId=$descuentosId")->execute();
                     //if($result2 > 0){
                         $funcionesId      = $data['FuncionesId'];
                         $zonasId          = $data['ZonasId'];
@@ -543,6 +559,12 @@ class DescuentosController extends Controller
                             $zonasId = $data['ZonasId'];
                             $subzonasId = $data['SubzonaId'];
                             $filasId = $data['FilasId'];
+                            if($pv=="todos"){
+                                $body.= "<strong>Aplica a todos los puntos de venta</strong> <br/>";
+                            }else{
+                                $punto_venta = Puntosventa::model()->find("PuntosventaId=$pv"); 
+                               $body.= "<strong>Aplica al punto de venta:</strong> ($pv)$punto_venta->PuntosventaNom<br/>";
+                            }
                             foreach($data as $key => $dat):
                                 switch($key):
                                     case 'CuponesCod'        : $body.= ($dat==""?"<strong>Descuento</strong><br/></strong>":"<strong>Código del Cupón:</strong> ".$dat."<br/>");
@@ -559,6 +581,8 @@ class DescuentosController extends Controller
                                                                break;
                                     case 'DescuentosFecFin' : $body.= "<strong>Fecha Fin:</strong> ".$dat."<br/>";
                                                                break;
+                                    /*case 'DescuentosValRef' : $body.= "<strong>Punto de Venta:</strong> ".$dat."<br/>";
+                                                               break;*/
                                     case 'DescuentosExis'    :$body.= ($dat=="0"?"<strong>Aplica descuentos a todos</strong>":"<strong>Aplica a los primeros:</strong> ".$dat)."<br/>";
                                                                break;
                                     //case 'DescuentosId'      : echo "<strong>Id:</strong> ".($dat=="-1"?"Ninguno":$dat)."<br/>";
@@ -649,9 +673,11 @@ class DescuentosController extends Controller
            } 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+           //limpiamos todas las variables de sesion usadas
            Yii::app()->getSession()->remove('descuentos_relacionados');
            Yii::app()->getSession()->remove('descuentos');
            Yii::app()->getSession()->remove('correo'); 
+           Yii::app()->getSession()->remove('pv');
            $this->redirect(array('descuentoslevel1/admin&query=&tipo=cupon')); 
         }
     }
@@ -726,6 +752,7 @@ class DescuentosController extends Controller
                                                  "DescuentosFecIni"   => date("Y-m-d 01:00:00"),
                                                  "DescuentosFecFin"   => date("Y-m-d 23:59:00"),
                                                  "DescuentosExis"     => "0",
+                                                 "DescuentosValRef"   => "todos",
                                                  "FuncionesId"        => array(),
                                                  //"FuncionesId"        => "0",
                                                  "ZonasId"            => "0",
@@ -745,6 +772,7 @@ class DescuentosController extends Controller
                                                  "DescuentosFecIniLog"  => "0000-00-00 00:00:00",
                                                  "DescuentosFecFinLog"  => "0000-00-00 00:00:00",
                                                  "DescuentosExisLog"    => "-1",
+                                                 "DescuentosValRefLog"   => "todos",
                                                  "FuncionesIdLog"       => array(),
                                                  //"FuncionesIdLog"       => "-1",
                                                  "ZonasIdLog"           => "-1",
@@ -753,7 +781,10 @@ class DescuentosController extends Controller
                                                  "LugaresIdLog"         => "-1",
                                                    
                                                 );
-                Yii::app()->getSession()->add('descuentos',$data);   
+                Yii::app()->getSession()->add('descuentos',$data);
+                //agrega el punto de venta ya se todos o uno en especifico solo se puede un solo punto de venta ya que la base de datos
+                //asi lo permite  
+                Yii::app()->getSession()->add('pv','todos');  
             }else{
                 $data = $session;
                 $data[$_GET['EventoId']] = array(
@@ -766,6 +797,7 @@ class DescuentosController extends Controller
                                                  "DescuentosFecIni" => date("Y-m-d 01:00:00"),
                                                  "DescuentosFecFin" => date("Y-m-d 23:59:00"),
                                                  "DescuentosExis"     => "0",
+                                                 "DescuentosValRef"   => "todos",
                                                  "FuncionesId"        => "0",
                                                  "ZonasId"            => "0",
                                                  "SubzonaId"          => "0",
@@ -784,6 +816,7 @@ class DescuentosController extends Controller
                                                  "DescuentosFecIniLog"  => "0000-00-00 00:00:00",
                                                  "DescuentosFecFinLog"  => "0000-00-00 00:00:00",
                                                  "DescuentosExisLog"    => "-1",
+                                                 "DescuentosValRefLog"  => "todos",
                                                  "FuncionesIdLog"       => array(),
                                                  //"FuncionesIdLog"       => "-1",
                                                  "ZonasIdLog"           => "-1",
@@ -793,6 +826,10 @@ class DescuentosController extends Controller
                                                 );
                  Yii::app()->getSession()->remove('descuentos');
                  Yii::app()->getSession()->add('descuentos',$data);
+                 //agrega el punto de venta ya se todos o uno en especifico solo se puede un solo punto de venta ya que la base de datos
+                //asi lo permite
+                 Yii::app()->getSession()->remove('pv');
+                 Yii::app()->getSession()->add('pv','todos'); 
             }
         }
     } 
@@ -823,6 +860,13 @@ class DescuentosController extends Controller
                 }*/
                 Yii::app()->getSession()->remove('descuentos');
                 Yii::app()->getSession()->add('descuentos',$data);
+                //agrega el punto de venta ya se todos o uno en especifico solo se puede un solo punto de venta ya que la base de datos
+                //asi lo permite
+                if($_GET['name']=="DescuentosValRef"){
+                    Yii::app()->getSession()->remove('pv');
+                    Yii::app()->getSession()->add('pv',$_GET['value']);
+                }
+                 
             }
         }
      }
@@ -1287,6 +1331,7 @@ class DescuentosController extends Controller
                     $datas[$_GET['EventoId']]['DescuentosFecIni'] = $current['DescuentosFecIni'];
                     $datas[$_GET['EventoId']]['DescuentosFecFin'] = $current['DescuentosFecFin'];
                     $datas[$_GET['EventoId']]['DescuentosExis']   = $current['DescuentosExis'];
+                    $datas[$_GET['EventoId']]['DescuentosValRef']   = $current['DescuentosValRef'];
                     $datas[$_GET['EventoId']]['FuncionesId']      = array();
                     //$datas[$_GET['EventoId']]['FuncionesId']      = "0";
                     $datas[$_GET['EventoId']]['ZonasId']          = "0";
@@ -1306,7 +1351,7 @@ class DescuentosController extends Controller
                     $datas[$_GET['EventoId']]['DescuentosFecIniLog']  = "0000-00-00 00:00:00";
                     $datas[$_GET['EventoId']]['DescuentosFecFinLog']  = "0000-00-00 00:00:00";
                     $datas[$_GET['EventoId']]['DescuentosExisLog']    = "-1";
-                    $datas[$_GET['EventoId']]['DescuentosExisLog']    = "-1";
+                    $datas[$_GET['EventoId']]['DescuentosValRefLog']   = $current['DescuentosValRef'];
                     $datas[$_GET['EventoId']]['FuncionesIdLog']       = $current['FuncionesIdLog'];
                     $datas[$_GET['EventoId']]['ZonasIdLog']           = "-1";
                     $datas[$_GET['EventoId']]['SubzonaIdLog']         = "-1";
@@ -1327,6 +1372,7 @@ class DescuentosController extends Controller
      public function actionGetTempDescuentos(){
         if (Yii::app()->request->isAjaxRequest){
             $datas = Yii::app()->getSession()->get('descuentos');
+            $pv = Yii::app()->getSession()->get('pv');
             if(!empty($datas)){
                 echo "<ul class='result'>";
                 foreach($datas as $keyevento => $data):
@@ -1341,6 +1387,12 @@ class DescuentosController extends Controller
                     $zonasId = $data['ZonasId'];
                     $subzonasId = $data['SubzonaId'];
                     $filasId = $data['FilasId'];
+                    //especifica el punto de venta al que se aplicara el descuento $pv
+                    if($pv=="todos"){
+                        echo "<strong>Aplica a todos los puntos de venta</strong> <br/>";
+                    }else{
+                        $punto_venta = Puntosventa::model()->find("PuntosventaId=$pv"); echo "<strong>Aplica al punto de venta:</strong> ($pv)$punto_venta->PuntosventaNom<br/>";
+                    }
                     foreach($data as $key => $dat):
                         switch($key):
                             //case 'CuponesCod'        : echo "<strong>C&oacutedigo del Cup&oacute;n:</strong> ".$dat."<br/>";
@@ -1359,6 +1411,13 @@ class DescuentosController extends Controller
                                                        break;
                             case 'DescuentosExis'    : echo ($dat=="0"?"<strong>Aplica descuentos a todos</strong>":"<strong>Aplica a los primeros:</strong> ".$dat)."<br/>";
                                                        break;
+                            case 'DescuentosValRef' :  /*if($dat=="todos"){
+                                                            echo "<strong>Punto de Venta:</strong> TODOS<br/>";
+                                                       }else{
+                                                            $punto_venta = Puntosventa::model()->find("PuntosventaId=$dat"); echo "<strong>Punto de Venta:</strong> ($dat)$punto_venta->PuntosventaNom<br/>";
+                                                       }*/
+                                                       
+                                                       break;                           
                             case 'DescuentosId'      : echo "<strong>Id:</strong> ".($dat=="-1"?"Ninguno":$dat)."<br/>";
                                                        break;                            
                             case 'FuncionesId'       : 
