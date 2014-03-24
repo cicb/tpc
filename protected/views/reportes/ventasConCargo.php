@@ -17,10 +17,13 @@ else if (isset($_GET['dispositivo']) and $_GET['dispositivo']=='movil')
      'clientOptions' => array('validateOnSubmit' => false)
      ));
      ?>
-
-
-     <div class='row' style="margin-left:30px">
-       <div class='span4'>
+	<?php 
+        $this->widget( 'ext.EChosen.EChosen', array(
+            'target' => '.chosen',
+      ));
+    ?>
+     <div class='col-2' style="margin-left:30px">
+       <div class='box3'>
           <div class="row">
             <?php
             echo CHtml::label('Evento','evento_id', array('style'=>'width:70px; display:inline-table;'));
@@ -28,6 +31,7 @@ else if (isset($_GET['dispositivo']) and $_GET['dispositivo']=='movil')
 			$list = CHtml::listData($eventos,'EventoId','EventoNom');
 			echo CHtml::dropDownList('evento_id',@$_POST['evento_id'],$list,
               array(
+					  'class'=>'chosen',
                 'ajax' => array(
                   'type' => 'POST',
                   'url' => CController::createUrl('funciones/cargarFuncionesFiltradas'),
@@ -50,7 +54,7 @@ else if (isset($_GET['dispositivo']) and $_GET['dispositivo']=='movil')
                 <span id="fspin" class="fa"></span>
             </div>
         </div>
-        <div class='span4'>
+        <div class='box3'>
             <div class="controls"> 
               <?php echo "Desde: " ?>
               <?php
