@@ -43,7 +43,8 @@ class Acceso extends CActiveRecord
 	{
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
-		return array(
+			return array(
+					'boleto'=>array(self::BELONGS_TO,'Ventaslevel1','BoletoNum'),
 		);
 	}
 
