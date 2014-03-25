@@ -199,7 +199,7 @@ $this->widget('application.extensions.EExcelView', array(
     display: none;
 }
 .modal{
-    width:420px ;
+    width:600px ;
 }
 </style>
 <!-- Modal -->
@@ -352,7 +352,18 @@ $("#print_pdf").click(function(){
 $("#formatos input[type=radio]").click(function(){
     $("#formatos img").removeClass("formato_seleccionado");
     $("#formatos img#imagen_formato"+this.value).addClass("formato_seleccionado");
-    $.post( '<?php echo $this->createUrl('reportes/ActualizarRegion') ?>', { region_id: this.value});
+    $.ajax({
+        type:'POST',
+        data:{ region_id: this.value},
+        url:'<?php echo $this->createUrl('reportes/ActualizarRegion') ?>',
+        beforeSend:function(){
+            $("#imprimir_boletos").hide();
+        },
+        success:function(){
+            $("#imprimir_boletos").show();
+        }
+    });
+    
 });        
 $("#imprimir_boletos").click(function(){
     $('#myModal').modal('hide');

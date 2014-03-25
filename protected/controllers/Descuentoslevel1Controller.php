@@ -16,10 +16,10 @@ class Descuentoslevel1Controller extends Controller
         //$model = Descuentoslevel1::model()->with(array('descuentos','evento'))->findAll("CuponesCod != ''",array('limit'=>25,'order'=>'CuponesCod DESC'));  
 		//$model->unsetAttributes();  // clear any default values
         if(!empty($_GET) AND $query == "inactivos" ){
-            $model = Descuentoslevel1::model()->with(array('descuentos','evento'))->findAll(array('condition'=>"$CuponesCod AND (DescuentosFecIni LIKE '%0000-00-00 00:00:00%')",'order'=>'CuponesCod DESC','group'=>'descuentos.DescuentosId'));
+            $model = Descuentoslevel1::model()->with(array('descuentos','evento'))->findAll(array('condition'=>"$CuponesCod AND (DescuentosFecIni LIKE '%0000-00-00 00:00:00%')",'order'=>'t.DescuentosId DESC','group'=>'descuentos.DescuentosId'));
         }else if(!empty($_GET)){
             $cupon = $query;
-            $model = Descuentoslevel1::model()->with(array('descuentos','evento'))->findAll(array('condition'=>"$CuponesCod AND (CuponesCod LIKE '%$cupon%')",'order'=>'CuponesCod DESC','group'=>'descuentos.DescuentosId'));
+            $model = Descuentoslevel1::model()->with(array('descuentos','evento'))->findAll(array('condition'=>"$CuponesCod AND (CuponesCod LIKE '%$cupon%')",'order'=>'t.DescuentosId DESC','group'=>'descuentos.DescuentosId'));
 		}   
         else{   
             //$model = Descuentoslevel1::model()->with(array('descuentos','evento'))->findAll(array('condition'=>"CuponesCod != ''",'group'=>'t.DescuentosId'));
