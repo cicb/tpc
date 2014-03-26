@@ -139,7 +139,18 @@ $this->widget('application.extensions.EExcelView', array(
  'htmlOptions'=>array('class'=>'principal'),
  'type'=>'condensed',
 
- 'columns'=>array(    
+ 'columns'=>array(  
+     array(
+          'class'          => 'CCheckBoxColumn',
+          'header'         => 'Selección',
+          'name'           => 'check_boleto[]',
+          'value'          => '$data["VentasNumRef"]',
+          'selectableRows' => 2,
+          ),
+     array(            
+       'header'=>'Referencia',
+       'value'=>'$data["VentasNumRef"]',
+       ),       
      array(            
          'header'=>'Fecha',
          'value'=>'$data["VentasFecHor"]',
@@ -164,10 +175,7 @@ $this->widget('application.extensions.EExcelView', array(
          'header'=>'Asiento',
          'value'=>'$data["LugaresLug"]',
          ),
-     array(            
-       'header'=>'Referencia',
-       'value'=>'$data["VentasNumRef"]',
-       ),
+     
      array(            
        'header'=>'Impresiones',
        'value'=>'reimpresiones($data["VentasCon"])',
@@ -183,6 +191,11 @@ $this->widget('application.extensions.EExcelView', array(
             <i class="icon-repeat icon-white"></i>&nbsp;Generar Boletos NO Impresos
         </button>
         </td>
+        <td style="text-align: center;">
+        <button class="btn btn-success" id="imprimir-boletos-referencia">
+            <i class="icon-check icon-white"></i>&nbsp;Generar Boletos Seleccionados X Referencia
+        </button>
+        </td>
         <td style="text-align: right;">
         <button class="btn btn-success" id="imprimir-todos-boletos" >
             <i class="icon-repeat icon-white"></i>&nbsp;Generar TODOS los Boletos
@@ -191,6 +204,17 @@ $this->widget('application.extensions.EExcelView', array(
     </tr>
 </table>
 <br />
+<script>
+var ref = "";
+$("table tr td input[type=checkbox]").each(function(index){
+    
+    if(ref == this.value){
+        $(this).remove();
+    }else{
+        ref = this.value;
+    }
+});
+</script>
 <style>
 .formato_seleccionado{
     border: 2px blue solid;
@@ -367,6 +391,7 @@ $("#formatos input[type=radio]").click(function(){
 });        
 $("#imprimir_boletos").click(function(){
     $('#myModal').modal('hide');
+    var refs = "";
     var EventoId  = $("#evento_id option:selected").val();
     var formatoId = $("#formatos input[type=radio]:checked").val();
     var FuncionId  = $("#Ventaslevel1_funcion option:selected").val();
@@ -386,7 +411,51 @@ $("#imprimir_boletos").click(function(){
                     alert("Ha ocurrido un error por favor trate de nuevo: "+objeto+"-"+quepaso);
                 },
                 url:'<?php echo $this->createUrl('reportes/ImpresionBoletosAjax2') ?>',
-                data:"formatoId="+formatoId+"&tipo_impresion=todos"+"&EventoId="+EventoId+"&FuncionId="+FuncionId+"&pv="+pvs,
+                data:{'formatoId':formatoId,'tipo_impresion':'todos','EventoId':EventoId,'FuncionId':FuncionId,'pv':pvs},
+                success:function(data){
+                    //$(".area_impresion").html(data);
+                    $("#wrapper").html(data);
+                    $(".loading").remove();
+                    $("#print_pdf").show();
+                    /*try{
+                        boletos.close();
+                    }catch(err){}
+                    if(data.ok=="si"){
+                        window.open('<?php echo "http://".$_SERVER['SERVER_NAME'].":".$_SERVER['SERVER_PORT'].Yii::app ()->baseUrl . '/doctos/boletos.pdf'?>', 'boletos', 'width=960,height=600');
+                        
+                    }else{
+                        alert("No hay boletos para imprimir");
+                     }
+                    //imprSelec('wrapper');*/
+                }
+                
+            });
+        }else if(tipo=="referencia"){
+            
+            $("table tr td input[type=checkbox]:checked").each(function(index){
+                refs = refs + "'" + this.value + "'" + ",";
+                
+            });
+            
+            if(refs == ""){
+                alert("Necesitas seleccionar al menos una Referencia");
+                return false;
+            }
+            
+            refs = refs.slice(0,-1);
+            $.ajax({
+                type: "POST",
+                //dataType:'json',
+                beforeSend:function(){
+                    $("body").append("<div class='loading'>Generando Boletos</div>");
+                    $("#print_pdf").hide();
+                },
+                error: function(objeto, quepaso, otroobj){
+                    $(".loading").remove();
+                    alert("Ha ocurrido un error por favor trate de nuevo: "+objeto+"-"+quepaso);
+                },
+                url:'<?php echo $this->createUrl('reportes/ImpresionBoletosAjax2') ?>',
+                data:{'formatoId':formatoId,'tipo_impresion':'referencia','EventoId':EventoId,'FuncionId':FuncionId,'pv':pvs,'refs':refs},
                 success:function(data){
                     //$(".area_impresion").html(data);
                     $("#wrapper").html(data);
@@ -418,7 +487,7 @@ $("#imprimir_boletos").click(function(){
                     alert("Ha ocurrido un error por favor trate de nuevo: "+objeto+"-"+quepaso);
                 },
                 url:'<?php echo $this->createUrl('reportes/ImpresionBoletosAjax2') ?>',
-                data:"formatoId="+formatoId+"&tipo_impresion=no_impresos"+"&EventoId="+EventoId+"&FuncionId="+FuncionId+"&pv="+pvs,
+                data:{'formatoId':formatoId,'tipo_impresion':'no_impresos','EventoId':EventoId,'FuncionId':FuncionId,'pv':pvs},
                 success:function(data){
                     //$(".area_impresion").html(data);
                     if(data==""){
@@ -470,6 +539,18 @@ $("#imprimir-todos-boletos").click(function(){
         alert("Necesitas seleccionar una Funcion");
     }else{
         $("#select_tipo_impresion").val("todos");
+        $('#myModal').modal('show'); 
+    }  
+});
+$("#imprimir-boletos-referencia").click(function(){
+    var EventoId  = $("#evento_id option:selected").val();
+    var FuncionId  = $("#Ventaslevel1_funcion option:selected").val();
+    if(EventoId==""){
+        alert("Necesitas seleccionar un Evento");
+    }else if(FuncionId==""){
+        alert("Necesitas seleccionar una Funcion");
+    }else{
+        $("#select_tipo_impresion").val("referencia");
         $('#myModal').modal('show'); 
     }  
 });
