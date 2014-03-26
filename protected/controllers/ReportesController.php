@@ -1243,11 +1243,11 @@ $objWriter->save('php://output');
 	{
 		$model=new ReportesVentas;	
 		$ref=null;	
-		$tipo="boleto";
-		if(!empty($_POST['buscar'])){
-			$ref = $_POST['buscar'];
-			if($_POST['tipo'] == 'referencia'){
-				$tipo="venta";
+		$tipo="venta";
+		if(!empty($_GET['buscar'])){
+			$ref = $_GET['buscar'];
+			if(isset($_GET['tipo']) ){
+				$tipo=$_GET['tipo'];
 			}
 		}
 

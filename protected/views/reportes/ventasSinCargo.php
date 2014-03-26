@@ -65,6 +65,7 @@ else if (isset($_GET['dispositivo']) and $_GET['dispositivo']=='movil')
                   'name'=>'desde',
                   'attribute'=>'fecha_revision',  
                   'language' => 'es',             
+				  'value'=>$desde>0?$desde:'',
                   'htmlOptions' => array(         
 //                         'readonly'=> $this->usuario->esMesaDeControl,
                     ),
@@ -96,7 +97,8 @@ else if (isset($_GET['dispositivo']) and $_GET['dispositivo']=='movil')
        'name'=>'hasta',
        'attribute'=>'fecha_revision',  
        'language' => 'es',             
-       'htmlOptions' => array(         
+	   'value'=>$hasta>0?$hasta:'',
+	   'htmlOptions' => array(         
 //                         'readonly'=> $this->usuario->esMesaDeControl,
         ),
        'options'=>array(               
