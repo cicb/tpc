@@ -345,7 +345,7 @@ class ReportesVentas extends CFormModel
 				$criteria=new CDbCriteria;
 				$criteria->with=array(
 						'acceso',
-						//'reimpresion',
+						'reimpresion',
 						'venta', 'evento'=>array('joinType'=>'INNER JOIN'),
 						'funcion'=>array('joinType'=>'INNER JOIN'),
 						'zona'=>array('joinType'=>'INNER JOIN'),
@@ -355,12 +355,10 @@ class ReportesVentas extends CFormModel
 				);
 				if(strcasecmp($tipo,'venta')==0)
 						$criteria->addSearchCondition("VentasNumRef ", $ref);
-				else{
+				else if(strcasecmp($tipo,'reimpresion')==0)
+						$criteria->addSearchCondition("reimpresion.LugaresNumBol", $ref,true,'OR');
+				else
 						$criteria->addSearchCondition("t.LugaresNumBol", $ref, true,'OR');
-						//$criteria->addSearchCondition("reimpresion.LugaresNumBol", $ref,true,'OR');
-
-				}
-
 				return new CActiveDataProvider('Ventaslevel1',array(
 						'criteria'=>$criteria,
 						'pagination'=>array('pageSize'=>20),

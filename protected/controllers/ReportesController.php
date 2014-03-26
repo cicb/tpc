@@ -1237,11 +1237,11 @@ $objWriter->save('php://output');
 	{
 		$model=new ReportesVentas;	
 		$ref=null;	
-		$tipo="boleto";
+		$tipo="venta";
 		if(!empty($_GET['buscar'])){
 			$ref = $_GET['buscar'];
-			if($_GET['tipo'] == 'referencia'){
-				$tipo="venta";
+			if(isset($_GET['tipo']) ){
+				$tipo=$_GET['tipo'];
 			}
 		}
 
