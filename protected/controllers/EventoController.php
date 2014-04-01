@@ -83,6 +83,7 @@ class EventoController extends Controller
 					$msg = $evento->saveModel($_POST['Evento']);
 					if ($msg==1) {
 							Yii::app()->user->setFlash('success', "Se ha guardado el evento \"".$evento->EventoNom.'"');
+                            $this->redirect(array('evento/actualizar','id'=>$evento->EventoId));
 					}	
 			}
 	}
