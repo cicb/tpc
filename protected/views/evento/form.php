@@ -165,7 +165,7 @@
 				<div class='span4 white-box box'>
 				<h3><?php echo TbHtml::i('',array('class'=>'fa fa-picture-o')); ?> Imagen para PV</h3>
 					<?php echo TbHtml::imagePolaroid(strlen($model->EventoImaMin)>3?"../imagesbd/".$model->EventoImaMin:'holder.js/130x130','',
-array('id'=>'img-imamin')); ?>
+                     array('id'=>'img-imamin')); ?>
 					<br /><br />
 					<?php  echo TbHtml::fileField('imamin','' , array('span'=>2,'maxlength'=>200, 'class'=>'hidden')); ?>
 					<?php echo $form->textField($model,'EventoImaMin',array(
@@ -174,6 +174,34 @@ array('id'=>'img-imamin')); ?>
 								'placeholder'=>'Nombre de la imagen miniatura')); ?>
 		
 				</div>
+                <?php if($model->scenario=='update' AND !empty($funciones)): ?>
+                <div class='span4 white-box box'>
+				<h3><?php echo TbHtml::i('',array('class'=>'fa fa-picture-o')); ?> Imagen Mapa Chico</h3>
+					<?php echo TbHtml::imagePolaroid(strlen($funciones->getForoPequenio())>3?$funciones->getForoPequenio():'holder.js/300x300','',
+                    array('id'=>'img-imamapchi','style'=>'width:140px;')); ?>
+					<br /><br />
+					<?php  echo TbHtml::fileField('imamapchi','' , array('span'=>2,'maxlength'=>200, 'class'=>'hidden')); ?>
+					<?php echo TbHtml::textField('EventoImaMin','',array(
+								'append'=>TbHtml::button('Seleccionar imagen',
+								array('class'=>'btn btn-success','id'=>'btn-subir-imamapchi')),
+								'placeholder'=>'Nombre de la imagen mapa chico')); ?>
+		
+				</div>
+                <div class='span4 white-box box'>
+				<h3><?php echo TbHtml::i('',array('class'=>'fa fa-picture-o')); ?> Imagen Mapa Grande</h3>
+					<?php echo TbHtml::imagePolaroid(strlen($funciones->getForoPequenio())>3?$funciones->getForoGrande():'holder.js/300x300','',
+                    array('id'=>'img-imamapgra','style'=>'width:340px;')); ?>
+					<br /><br />
+					<?php  echo TbHtml::fileField('imamapgra','' , array('span'=>2,'maxlength'=>200, 'class'=>'hidden')); ?>
+					<?php echo $form->textField($model,'EventoImaMin',array(
+								'append'=>TbHtml::button('Seleccionar imagen',
+								array('class'=>'btn btn-success','id'=>'btn-subir-imamapgra')),
+								'placeholder'=>'Nombre de la imagen mapa Gde.')); ?>
+		
+				</div>
+                <?php else: ?>
+                <?php echo TbHtml::button('Agregar mapas', array('color' => TbHtml::BUTTON_COLOR_PRIMARY)); ?>
+                <?php endif;?>
 		</div>
 	
 
@@ -189,9 +217,6 @@ array('id'=>'img-imamin')); ?>
 
 
     <?php $this->endWidget(); ?>
-
-
-
 
 </div><!-- form -->
 
@@ -262,6 +287,35 @@ array('id'=>'img-imamin')); ?>
 						}	
 				 }
 			});
+            $('#btn-subir-imamapchi').on('click',function(){ $('#imamapchi').trigger('click'); });
+            $('#imamapchi').on('change',function(){
+					 if ($(this).val()!='' && $(this).val()!=null) {
+							 if ($.inArray($(this).val().split('.').pop(),ext)==-1) {
+									 alert('El archivo no tiene extension xls, por favor seleccione otro.');
+									$(this).val('');	
+						}else{	 
+								var fd = new FormData();
+								var imagen = document.getElementById('imamin');
+								fd.append('imagen', imagen.files[0]);
+								fd.append('prefijo', 'pv_');
+								$.ajax({
+										url: '".Yii::app()->createUrl('evento/subirImagen')."',
+												type: 'POST',
+												data: fd,
+												processData: false,  // tell jQuery not to process the data
+												contentType: false,   // tell jQuery not to set contentType
+												success: function(data){ 
+														if (data) {
+																$('#Evento_EventoImaMin').val(data);
+																$('#img-imamin').attr('src','../imagesbd/'+data);
+
+														}	
+												 }
+								}).fail(function(){alert('Error!')});		
+						}	
+				 }
+			});
+            $('#btn-subir-imamapgra').on('click',function(){ $('#imamapgra').trigger('click'); });
 						");
 
 ?>

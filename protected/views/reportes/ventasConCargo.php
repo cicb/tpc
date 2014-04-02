@@ -63,7 +63,9 @@ else if (isset($_GET['dispositivo']) and $_GET['dispositivo']=='movil')
                   'name'=>'desde',
                   'attribute'=>'fecha_revision',  
                   'language' => 'es',             
-                  'htmlOptions' => array(         
+
+				  'value'=>$desde,
+				  'htmlOptions' => array(         
 //                         'readonly'=> $this->usuario->esMesaDeControl,
                     ),
                   'options'=>array(               
@@ -94,6 +96,7 @@ else if (isset($_GET['dispositivo']) and $_GET['dispositivo']=='movil')
        'name'=>'hasta',
        'attribute'=>'fecha_revision',  
        'language' => 'es',             
+	   'value'=>$hasta,
        'htmlOptions' => array(         
 //                         'readonly'=> $this->usuario->esMesaDeControl,
         ),
@@ -240,10 +243,11 @@ if(!$esMovil): ?>
              ?>  
         </td>
         <td>
+<!-- VENTAS DE HOY -->
             <?php 
             //$arreglo=$model->getReporte($eventoId,$funcionesId,'curdate()','curdate()',$cargo=false,'NORMAL','and t3.FuncPuntosventaId<>t.PuntosventaId');
 
-            $arreglo=$model->getReporte($eventoId,$funcionesId,'CURDATE()','CURDATE()');
+            $arreglo=$model->getReporte($eventoId,$funcionesId,date('Y-m-d'),date('Y-m-d'));
             Yii::app()->mustache->render('tablaVentasHoy', $arreglo);
              ?>
         </td>

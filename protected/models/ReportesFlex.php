@@ -27,7 +27,7 @@ class ReportesFlex extends CFormModel
 			$extra = "";
 		
 		if($fecha1 != "" && $fecha2 != "")
-			$rango = " AND ventas.VentasFecHor BETWEEN '$fecha1 00:00:00' AND '$fecha2 23:00:00' ";
+			$rango = " AND DATE(VentasFecHor) BETWEEN '$fecha1' AND '$fecha2' ";
 		else
 			$rango = "";
 		$aforo = Lugares::model()->count("EventoId = '$EventoId' AND FuncionesId = '$FuncionesId' AND ZonasId = '$ZonasId'");
@@ -213,9 +213,9 @@ class ReportesFlex extends CFormModel
 			$rango="";
 			if (strlen($desde.$hasta)>2) {
 					if ($desde==$hasta)
-								$rango=" AND DATE(t.VentasFecHor) = $desde";
+								$rango=" AND DATE(t.VentasFecHor) = '$desde' ";
 					elseif(preg_match("(\d{4}-\d{2}-\d{2})",$desde)==1) {
-							$rango=" AND DATE(t.VentasFecHor) BETWEEN '$desde'  AND '$hasta' ";
+							$rango=" AND DATE(t.VentasFecHor)  BETWEEN '$desde'  AND '$hasta' ";
 					}
 			}
 			$tipoBoleto="('".implode(explode(',',$tipoBoleto),'\',\'')."')";

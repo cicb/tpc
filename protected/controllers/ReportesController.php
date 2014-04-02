@@ -999,8 +999,12 @@ $objWriter->save('php://output');
             $EventoId = $_POST['EventoId'];
             $FuncionId = $_POST['FuncionId'];
             $todos = "";
+            $ref   = "";
             if($_POST['tipo_impresion']=="no_impresos"){
                 $todos = "  ventaslevel1.VentasCon='' AND ";
+            }
+            if($_POST['tipo_impresion']=="referencia"){
+                $ref = "  ventas.VentasNumRef IN(".$_POST['refs'].") AND ";
             }
             $data=array();
             $query ="(SELECT  ventas.VentasId as id, 
@@ -1060,6 +1064,7 @@ $objWriter->save('php://output');
 									AND (zonas.ZonasId=subzona.ZonasId)
 									WHERE
                                     $todos 
+                                    $ref
                                     ventaslevel1.VentasSta not like '%CANCELADO%' AND 
 									(lugares.EventoId = $EventoId ) AND 
 									(lugares.FuncionesId = $FuncionId ) AND
@@ -1127,6 +1132,7 @@ $objWriter->save('php://output');
                         $ultimologreimp = $ultimologreimp[0]->LogReimpId + 1;
                         
                         Yii::app()->db->createCommand("INSERT INTO logreimp VALUES($ultimologreimp,'$hoy','".$boletoreimpresion['VentasBolTip']."',".$boletoreimpresion['cosBol'].",'".$boletoreimpresion['VentasBolTip']."',$user_id,0,".$boletoreimpresion['EventoId'].",".$boletoreimpresion['FuncionesId'].",".$boletoreimpresion['ZonasId'].",".$boletoreimpresion['SubzonaId'].",".$boletoreimpresion['FilasId'].",".$boletoreimpresion['LugaresId'].")")->execute();
+                        
                         $newdata[$key]['LugaresNumBol'] = $codigo;
                         $newdata[$key]['VentasCon'] = $contra;
                         $newdata[$key]['cosBolCargo'] = $boletoreimpresion['cosBolCargo'];
@@ -1237,11 +1243,11 @@ $objWriter->save('php://output');
 	{
 		$model=new ReportesVentas;	
 		$ref=null;	
-		$tipo="boleto";
+		$tipo="venta";
 		if(!empty($_GET['buscar'])){
 			$ref = $_GET['buscar'];
-			if($_GET['tipo'] == 'referencia'){
-				$tipo="venta";
+			if(isset($_GET['tipo']) ){
+				$tipo=$_GET['tipo'];
 			}
 		}
 

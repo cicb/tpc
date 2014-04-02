@@ -6,9 +6,9 @@
 	'enableClientValidation'=>true,
 	'layout' => TbHtml::FORM_LAYOUT_HORIZONTAL,
 	'method' =>'get',
+	'action' =>array('reportes/buscarBoleto'),
 	'clientOptions'=>array(
 		'validateOnSubmit'=>true,
-
 	),
 )); ?>
 <div class='col-2'>
@@ -22,13 +22,19 @@
 						'style'=>'font-weight:800;text-transform:uppercase;letter-spacing:2px',
 						'autofocus'=>"autofocus",
 				)); ?>	
-    <div class="row">
-         Rerefencia: <input type="radio" name="tipo" value="referencia" id="RadioGroup1_0" checked="checked" />
-         No. de boleto <input type="radio" name="tipo" value="boleto" id="RadioGroup1_1" />
+</div>
+    <div class="box1 text-left">
+		<?php 
+echo TbHtml::radioButtonList('tipo',isset($tipo)?$tipo:'venta',array(
+		'venta'=>'Referencia',
+		'boleto'=>'No. Boleto',
+		'reimpresion'=>'Reimpresion',
+));
+		?>
+
     </div>
 
 <?php $this->endWidget(); ?>
-</div>
 
 </div><!-- form -->
 </div><!-- Controles -->
@@ -96,10 +102,11 @@ if (isset($ref) and !is_null($ref)) {
 						'header'=>'Último acceso',
 						'value'=> '@$data->acceso->AccesoFecha'
 				),
-				//array(
-						//'header'=>'Reimpresión',
-						//'value'=> 'var_export($data->reimpresion)'
-				//),
+				array(
+						'header'=>'No. Bol. Reimpreso',
+						'value'=> '@$data->reimpresion->LugaresNumBol'
+				),
+
 				//'FuncionesFecHor',
 				//'ZonasAli',
 				//'FilasAli',

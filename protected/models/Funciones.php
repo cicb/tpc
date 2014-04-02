@@ -82,6 +82,7 @@ class Funciones extends CActiveRecord
 		return array(
 			'configurlFuncionesMapaGrandes' => array(self::HAS_MANY, 'ConfigurlFuncionesMapaGrande', 'EventoId'),
 			'configurlFuncionesMapaGrandes1' => array(self::HAS_MANY, 'ConfigurlFuncionesMapaGrande', 'FuncionId'),
+            'forolevel1' => array(self::HAS_MANY, 'Forolevel1',array('ForoId','ForoMapIntId')),
             'zonas' => array(self::HAS_MANY, 'Zonas', array('EventoId','FuncionesId')),
             'evento' => array(self::BELONGS_TO, 'Evento', array('EventoId')),
 		);
@@ -161,7 +162,20 @@ class Funciones extends CActiveRecord
 
         return ConfigurlMapaGrandeCoordenadas::model()->findAll($criteria);
     }
-    
+    public function getForoPequenio() {
+        $criteria = new CDbCriteria();
+        $criteria->join = ' INNER JOIN foro t2 ON (t2.ForoId = t.ForoId) ';
+        $criteria->addCondition('t.ForoId = :ForoId');
+        $criteria->addCondition('t.ForoMapIntId  = :ForoMapIntId');
+        $criteria->params = array(
+            ':ForoId'=>$this->ForoId,
+            ':ForoMapIntId'=>$this->ForoMapIntId
+        );
+        
+        $reg = Forolevel1::model()->find($criteria);
+        return isset($reg)? $this->pathUrlImagesBD .  $reg->ForoMapPat : '';
+        
+    }
     public function getForoGrande() {
         $criteria = new CDbCriteria();
         $criteria->addCondition('t.EventoId = :EventoId');
