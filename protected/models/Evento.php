@@ -81,6 +81,7 @@ class Evento extends CActiveRecord
             'distribucionpuertalevel1' =>array(self::BELONGS_TO,'Distribucionpuertalevel1','EventoId'),
              'funciones' => array(self::HAS_MANY, 'Funciones', array( 'EventoId')),
              'zonas' => array(self::HAS_MANY, 'Zonas', array('FuncionesId', 'EventoId')),
+             'subzona' => array(self::HAS_MANY, 'Subzona', array('SubzonaId','FuncionesId', 'EventoId')),
 			 'boletosVendidos'=>array(self::STAT, 'Ventaslevel1', 'EventoId','condition'=>"VentasSta NOT LIKE 'CANCELADO'"),
 			 'accesos'=>array(self::STAT, 'Acceso', 'EventoId'),
 		);
@@ -112,7 +113,10 @@ class Evento extends CActiveRecord
 			'imaMin' => 'Imagen:',
 		);
 	}
-	
+	public function getAllFunciones()
+	{
+			return $this->funciones;
+	}
     public function getListaEvento()
     {
         return array(

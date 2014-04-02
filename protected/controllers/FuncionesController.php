@@ -8,6 +8,43 @@ class FuncionesController extends Controller
 	
 	}
 
+  public function actionRegistro()
+  {
+      $model=new Funciones('insert');  |
+      $this->guardar($model);
+      $this->render('form',compact('model'));
+  }
+
+  public function actionActualizar($eid,$id)
+  {
+
+      $model=Funciones::model()->findByPk(array('EventoId'=>$eid,'FuncionesId'=>$id);
+      $model->scenario='update';
+      $this->guardar($model);
+            $funciones = Funciones::model()->find("FuncionesId=$id");
+            //$forolevel1 = Forolevel1::model()->findByAttributes(array('ForoId'=>$funciones->ForoId,'ForoMapIntId'=>$funciones->ForoMapIntId));
+      $this->render('form',compact('model','funciones'));
+  }
+  /**
+   * Displays a particular model.
+   * @param integer $id the ID of the model to be displayed
+   */
+  public function guardar(Funciones $evento)
+  {
+      $this->perfil();
+      if(isset($_POST['Funciones']))
+      {
+          $this->performAjaxValidation($funcion);
+          $msg = $funcion->guardar($_POST['Funcion']);
+          if ($msg==1) {
+              Yii::app()->user->setFlash('success', "Se ha guardado la funcion \"".$funcion->EventoNom.'"');
+                            $this->redirect(array('funcion/actualizar', 'eid'=>$function->EventoId, 'id'=>$funcion->FuncionesId));
+          } 
+      }
+  }
+
+
+
 	public function actionCargarFunciones()
 	{
 			$data = Funciones::model()->findAll('EventoId=:parent_id',

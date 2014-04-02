@@ -38,6 +38,7 @@
 			<?php echo $form->textFieldControlGroup($model,'EventoNom',array('span'=>4,'maxlength'=>150)); ?>
             <?php echo $form->textFieldControlGroup($model,'EventoDesBol',array( 'span'=>4,'maxlength'=>75)); ?>
             <?php echo $form->textFieldControlGroup($model,'EventoDesWeb',array('span'=>4,'maxlength'=>200)); ?>
+
 		<div class='alert'>
 			<?php echo $form->dropDownListControlGroup($model, 'EventoSta',
 					array('BAJA'=>'BAJA', 'ALTA'=>'ALTA'), array('class' => 'span2')); ?>
@@ -142,8 +143,8 @@
 	<?php echo $form->error($model,'PuntosventaId'); ?>
 </div>
 
-
 		</div>
+	
 
 
 		<div class='col-3'>
@@ -159,10 +160,12 @@
 								'placeholder'=>'Nombre de la imagen en Boleto')); ?>
 
 				</div>
+
+
 				<div class='span4 white-box box'>
 				<h3><?php echo TbHtml::i('',array('class'=>'fa fa-picture-o')); ?> Imagen para PV</h3>
 					<?php echo TbHtml::imagePolaroid(strlen($model->EventoImaMin)>3?"../imagesbd/".$model->EventoImaMin:'holder.js/130x130','',
-array('id'=>'img-imamin')); ?>
+                     array('id'=>'img-imamin')); ?>
 					<br /><br />
 					<?php  echo TbHtml::fileField('imamin','' , array('span'=>2,'maxlength'=>200, 'class'=>'hidden')); ?>
 					<?php echo $form->textField($model,'EventoImaMin',array(
@@ -171,7 +174,37 @@ array('id'=>'img-imamin')); ?>
 								'placeholder'=>'Nombre de la imagen miniatura')); ?>
 		
 				</div>
+                <?php if($model->scenario=='update' AND !empty($funciones)): ?>
+                <div class='span4 white-box box'>
+				<h3><?php echo TbHtml::i('',array('class'=>'fa fa-picture-o')); ?> Imagen Mapa Chico</h3>
+					<?php echo TbHtml::imagePolaroid(strlen($funciones->getForoPequenio())>3?$funciones->getForoPequenio():'holder.js/300x300','',
+                    array('id'=>'img-imamapchi','style'=>'width:140px;')); ?>
+					<br /><br />
+					<?php  echo TbHtml::fileField('imamapchi','' , array('span'=>2,'maxlength'=>200, 'class'=>'hidden')); ?>
+					<?php echo TbHtml::textField('EventoImaMin','',array(
+								'append'=>TbHtml::button('Seleccionar imagen',
+								array('class'=>'btn btn-success','id'=>'btn-subir-imamapchi')),
+								'placeholder'=>'Nombre de la imagen mapa chico')); ?>
+		
+				</div>
+                <div class='span4 white-box box'>
+				<h3><?php echo TbHtml::i('',array('class'=>'fa fa-picture-o')); ?> Imagen Mapa Grande</h3>
+					<?php echo TbHtml::imagePolaroid(strlen($funciones->getForoPequenio())>3?$funciones->getForoGrande():'holder.js/300x300','',
+                    array('id'=>'img-imamapgra','style'=>'width:340px;')); ?>
+					<br /><br />
+					<?php  echo TbHtml::fileField('imamapgra','' , array('span'=>2,'maxlength'=>200, 'class'=>'hidden')); ?>
+					<?php echo $form->textField($model,'EventoImaMin',array(
+								'append'=>TbHtml::button('Seleccionar imagen',
+								array('class'=>'btn btn-success','id'=>'btn-subir-imamapgra')),
+								'placeholder'=>'Nombre de la imagen mapa Gde.')); ?>
+		
+				</div>
+                <?php else: ?>
+                <?php echo TbHtml::button('Agregar mapas', array('color' => TbHtml::BUTTON_COLOR_PRIMARY)); ?>
+                <?php endif;?>
 		</div>
+	
+
         <div class="form-actions">
 <?php echo TbHtml::link(' Regresar',array('index'),array('class'=>'fa fa-chevron-circle-left btn ')); ?>
         <?php echo TbHtml::submitButton($model->isNewRecord ? ' Registrar' : ' Guardar',array(
@@ -187,7 +220,13 @@ array('id'=>'img-imamin')); ?>
 
 </div><!-- form -->
 
+
+
+
+
 </div>
+
+
 <?php 
 				Yii::app()->clientScript->registerScriptFile("js/holder.js");
 				Yii::app()->clientScript->registerScript("subir-boleto","
@@ -248,6 +287,134 @@ array('id'=>'img-imamin')); ?>
 						}	
 				 }
 			});
+            $('#btn-subir-imamapchi').on('click',function(){ $('#imamapchi').trigger('click'); });
+            $('#imamapchi').on('change',function(){
+					 if ($(this).val()!='' && $(this).val()!=null) {
+							 if ($.inArray($(this).val().split('.').pop(),ext)==-1) {
+									 alert('El archivo no tiene extension xls, por favor seleccione otro.');
+									$(this).val('');	
+						}else{	 
+								var fd = new FormData();
+								var imagen = document.getElementById('imamin');
+								fd.append('imagen', imagen.files[0]);
+								fd.append('prefijo', 'pv_');
+								$.ajax({
+										url: '".Yii::app()->createUrl('evento/subirImagen')."',
+												type: 'POST',
+												data: fd,
+												processData: false,  // tell jQuery not to process the data
+												contentType: false,   // tell jQuery not to set contentType
+												success: function(data){ 
+														if (data) {
+																$('#Evento_EventoImaMin').val(data);
+																$('#img-imamin').attr('src','../imagesbd/'+data);
+
+														}	
+												 }
+								}).fail(function(){alert('Error!')});		
+						}	
+				 }
+			});
+            $('#btn-subir-imamapgra').on('click',function(){ $('#imamapgra').trigger('click'); });
 						");
 
 ?>
+
+	<?php $funciones=new Funciones; ?>
+
+	<div class='col-2 white-box box'>
+
+		<h3>Agregar Funciones</h3>
+
+			<?php $this->widget('bootstrap.widgets.TbGridView', array(
+			   'dataProvider' => $funciones->search(),
+			   //'filter' => $funciones,
+			   'template' => "{items}",
+			   
+			   'columns' => array( 
+			   	"EventoId","funcionesTexto"
+			   	/*
+			        array(
+			            'name' => 'id',
+			            'header' => '#',
+			            'htmlOptions' => array('color' =>'width: 60px'),
+			        ),
+			        array(
+			            'name' => 'firstName',
+			            'header' => 'First name',
+			        ),
+			        array(
+			            'name' => 'lastName',
+			            'header' => 'Last name',
+			        ),
+			        array(
+			            'name' => 'username',
+			            'header' => 'Username',
+			        ),*/
+			    ),
+			)); ?>
+
+			<div class='span4 white-box box'>
+
+				<!-- Button to trigger modal -->
+				<a href="#myModal" role="button" class="btn" data-toggle="modal">Launch demo modal</a>
+				 
+				<!-- Modal -->
+				<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+				  <div class="modal-header">
+				    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				    <h3 id="myModalLabel">Agregar Función</h3>
+				  </div>
+				  <div class="modal-body">
+
+<?php //echo CHtml::label('XYUZ','') ?>				
+
+				    <?php echo $form->labelEx($model,'EventoFecFin',array('class'=>'control-label')); ?>
+				    <div class="input-append">
+							<?php $this->widget('yiiwheels.widgets.datetimepicker.WhDateTimePicker', array(
+									'name' => 'Evento[EventoFecFin]',
+									'value'=>$model->EventoFecFin,
+									'pluginOptions' => array(
+											'lenguage'=>'es-MX',
+											'format' => 'yyyy-MM-dd hh:mm:ss'
+									),
+							));
+							?>
+					</div>
+
+				  </div>
+				  <div class="modal-footer">
+				    <button class="btn" data-dismiss="modal" aria-hidden="true">Cancelar</button>
+				    <button class="btn btn-primary">Guardar Función</button>
+				  </div>
+				</div>
+
+
+
+				<?php /*$this->widget('bootstrap.widgets.TbModal', array(
+			    'id' => 'myModal',
+			    'header' => 'Modal Heading',
+			    'content' => '<p>One fine body...</p>',
+			    'footer' => array(
+			        TbHtml::button('Save Changes', array('data-dismiss' => 'modal', 'color' => TbHtml::BUTTON_COLOR_PRIMARY)),
+			        TbHtml::button('Close', array('data-dismiss' => 'modal')),
+			     ),
+				)); ?>
+			 
+
+				<?php echo TbHtml::button(' Click me to open modal', array(
+				    'style' => TbHtml::BUTTON_COLOR_PRIMARY,
+				    'size' => TbHtml::BUTTON_SIZE_LARGE,
+				    'data-toggle' => 'modal',
+				    'data-target' => '#myModal',
+				    'class'=>'btn-primary'
+				)); */?>
+			</div>
+</div>
+
+<style type="text/css">
+	
+	.dropdown-menu{
+		z-index: 1053 !important;
+	}
+</style>
