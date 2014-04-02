@@ -1,5 +1,5 @@
 body {
-  font: normal 9pt "Verdana";
+  font: /*normal 9pt "Verdana";*/ normal 14px "Helvetica Neue", Helvetica, Arial, sans-serif !important;
 }
 .white-box {
   background: #ecf0f1;

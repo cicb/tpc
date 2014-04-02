@@ -38,6 +38,7 @@
 			<?php echo $form->textFieldControlGroup($model,'EventoNom',array('span'=>4,'maxlength'=>150)); ?>
             <?php echo $form->textFieldControlGroup($model,'EventoDesBol',array( 'span'=>4,'maxlength'=>75)); ?>
             <?php echo $form->textFieldControlGroup($model,'EventoDesWeb',array('span'=>4,'maxlength'=>200)); ?>
+
 		<div class='alert'>
 			<?php echo $form->dropDownListControlGroup($model, 'EventoSta',
 					array('BAJA'=>'BAJA', 'ALTA'=>'ALTA'), array('class' => 'span2')); ?>
@@ -142,8 +143,8 @@
 	<?php echo $form->error($model,'PuntosventaId'); ?>
 </div>
 
-
 		</div>
+	
 
 
 		<div class='col-3'>
@@ -159,6 +160,8 @@
 								'placeholder'=>'Nombre de la imagen en Boleto')); ?>
 
 				</div>
+
+
 				<div class='span4 white-box box'>
 				<h3><?php echo TbHtml::i('',array('class'=>'fa fa-picture-o')); ?> Imagen para PV</h3>
 					<?php echo TbHtml::imagePolaroid(strlen($model->EventoImaMin)>3?"../imagesbd/".$model->EventoImaMin:'holder.js/130x130','',
@@ -172,6 +175,8 @@ array('id'=>'img-imamin')); ?>
 		
 				</div>
 		</div>
+	
+
         <div class="form-actions">
 <?php echo TbHtml::link(' Regresar',array('index'),array('class'=>'fa fa-chevron-circle-left btn ')); ?>
         <?php echo TbHtml::submitButton($model->isNewRecord ? ' Registrar' : ' Guardar',array(
@@ -185,9 +190,18 @@ array('id'=>'img-imamin')); ?>
 
     <?php $this->endWidget(); ?>
 
+
+
+
 </div><!-- form -->
 
+
+
+
+
 </div>
+
+
 <?php 
 				Yii::app()->clientScript->registerScriptFile("js/holder.js");
 				Yii::app()->clientScript->registerScript("subir-boleto","
@@ -251,3 +265,111 @@ array('id'=>'img-imamin')); ?>
 						");
 
 ?>
+
+	<?php $funciones=new Funciones; ?>
+
+	<div class='col-2 white-box box'>
+
+		<h3>Agregar Funciones</h3>
+
+			<?php $this->widget('bootstrap.widgets.TbGridView', array(
+			   'dataProvider' => $funciones->search(),
+			   //'filter' => $funciones,
+			   'template' => "{items}",
+			   
+			   'columns' => array( 
+			   	"EventoId","funcionesTexto"
+			   	/*
+			        array(
+			            'name' => 'id',
+			            'header' => '#',
+			            'htmlOptions' => array('color' =>'width: 60px'),
+			        ),
+			        array(
+			            'name' => 'firstName',
+			            'header' => 'First name',
+			        ),
+			        array(
+			            'name' => 'lastName',
+			            'header' => 'Last name',
+			        ),
+			        array(
+			            'name' => 'username',
+			            'header' => 'Username',
+			        ),*/
+			    ),
+			)); ?>
+
+			<div class='span4 white-box box'>
+
+				<!-- Button to trigger modal -->
+				<a href="#myModal" role="button" class="btn" data-toggle="modal">Launch demo modal</a>
+				 
+				<!-- Modal -->
+				<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+				  <div class="modal-header">
+				    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				    <h3 id="myModalLabel">Modal header</h3>
+				  </div>
+				  <div class="modal-body">
+				
+
+					  <?php echo "Hasta: " ?>
+					  <?php
+					  $this->widget('zii.widgets.jui.CJuiDatePicker',
+					    array(          
+					       'name'=>'hasta',
+					       'attribute'=>'fecha_revision',  
+					       'language' => 'es',             
+					       'htmlOptions' => array(         
+					//                         'readonly'=> $this->usuario->esMesaDeControl,
+					        ),
+					       'options'=>array(               
+					        'autoSize'=>false,              
+					        'defaultDate'=>'date("Y-m-d")', 
+					        'dateFormat'=>'yy-mm-dd',       
+					        'selectOtherMonths'=>true,      
+					        'showAnim'=>'fade',            
+					        'showButtonPanel'=>false,       
+					        'showOn'=>'focus',             
+					        'showOtherMonths'=>true,        
+					        'changeMonth' => true,          
+					        'changeYear' => true,
+					                        'minDate'=>'2010-01-01', //fec\ha minima
+					                        //'maxDate'=>"+1Y", //fecha maxima
+					                        ),
+					       )
+					    );
+					    ?>
+
+
+
+				  </div>
+				  <div class="modal-footer">
+				    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+				    <button class="btn btn-primary">Save changes</button>
+				  </div>
+				</div>
+
+
+
+				<?php /*$this->widget('bootstrap.widgets.TbModal', array(
+			    'id' => 'myModal',
+			    'header' => 'Modal Heading',
+			    'content' => '<p>One fine body...</p>',
+			    'footer' => array(
+			        TbHtml::button('Save Changes', array('data-dismiss' => 'modal', 'color' => TbHtml::BUTTON_COLOR_PRIMARY)),
+			        TbHtml::button('Close', array('data-dismiss' => 'modal')),
+			     ),
+				)); ?>
+			 
+
+				<?php echo TbHtml::button(' Click me to open modal', array(
+				    'style' => TbHtml::BUTTON_COLOR_PRIMARY,
+				    'size' => TbHtml::BUTTON_SIZE_LARGE,
+				    'data-toggle' => 'modal',
+				    'data-target' => '#myModal',
+				    'class'=>'btn-primary'
+				)); */?>
+			</div>
+</div>

@@ -1,5 +1,5 @@
 body {
-  font: normal 9pt "Verdana";
+  font: /*normal 9pt "Verdana";*/ normal 14px "Helvetica Neue", Helvetica, Arial, sans-serif !important;
 }
 .white-box {
   background: #ecf0f1;
@@ -233,6 +233,7 @@ th {
   float: none;
   margin: auto;
   display: inline-block;
+  vertical-align: top;
   width: 222px;
   padding: 5px;
   margin: 5px;
@@ -241,6 +242,7 @@ th {
   float: none;
   margin: auto;
   display: inline-block;
+  vertical-align: top;
   width: 260px;
   padding: 5px;
   margin: 5px;
@@ -249,6 +251,7 @@ th {
   float: none;
   margin: auto;
   display: inline-block;
+  vertical-align: top;
   width: 48%;
   padding: 5px;
   margin: 5px;
@@ -257,37 +260,46 @@ th {
   float: none;
   margin: auto;
   display: inline-block;
+  vertical-align: top;
   width: 20%;
   padding: 5px;
   margin: 5px;
+}
+.box {
+  box-shadow: 1px 5px 5px #ccc;
 }
 .box1 {
   float: none;
   margin: auto;
   display: inline-block;
+  vertical-align: top;
   width: 125px;
 }
 .box2 {
   float: none;
   margin: auto;
   display: inline-block;
+  vertical-align: top;
   width: 202px;
 }
 .box3 {
   float: none;
   margin: auto;
   display: inline-block;
+  vertical-align: top;
   width: 328px;
 }
 .box4 {
   float: none;
   margin: auto;
   display: inline-block;
+  vertical-align: top;
   width: 530px;
 }
 .box5 {
   float: none;
   margin: auto;
   display: inline-block;
+  vertical-align: top;
   width: 856px;
 }
