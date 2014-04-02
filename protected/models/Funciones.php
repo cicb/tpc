@@ -189,4 +189,13 @@ class Funciones extends CActiveRecord
 
         return isset($reg) ? $this->pathUrlImagesBD .  $reg->nombre_imagen : '';
     }
+
+    	 public function guardar($data=array())
+	 {
+	 	$this->attributes=$data;
+		if(!$this->save())
+				return CHtml::errorSummary($this);
+		else
+				return 1;
+	 }
 }

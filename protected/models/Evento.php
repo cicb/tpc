@@ -113,7 +113,10 @@ class Evento extends CActiveRecord
 			'imaMin' => 'Imagen:',
 		);
 	}
-	
+	public function getAllFunciones()
+	{
+			return $this->funciones;
+	}
     public function getListaEvento()
     {
         return array(

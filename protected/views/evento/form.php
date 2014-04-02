@@ -363,40 +363,24 @@
 				<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 				  <div class="modal-header">
 				    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-				    <h3 id="myModalLabel">Modal header</h3>
+				    <h3 id="myModalLabel">Agregar Función</h3>
 				  </div>
 				  <div class="modal-body">
-				
 
-					  <?php echo "Hasta: " ?>
-					  <?php
-					  $this->widget('zii.widgets.jui.CJuiDatePicker',
-					    array(          
-					       'name'=>'hasta',
-					       'attribute'=>'fecha_revision',  
-					       'language' => 'es',             
-					       'htmlOptions' => array(         
-					//                         'readonly'=> $this->usuario->esMesaDeControl,
-					        ),
-					       'options'=>array(               
-					        'autoSize'=>false,              
-					        'defaultDate'=>'date("Y-m-d")', 
-					        'dateFormat'=>'yy-mm-dd',       
-					        'selectOtherMonths'=>true,      
-					        'showAnim'=>'fade',            
-					        'showButtonPanel'=>false,       
-					        'showOn'=>'focus',             
-					        'showOtherMonths'=>true,        
-					        'changeMonth' => true,          
-					        'changeYear' => true,
-					                        'minDate'=>'2010-01-01', //fec\ha minima
-					                        //'maxDate'=>"+1Y", //fecha maxima
-					                        ),
-					       )
-					    );
-					    ?>
+<?php //echo CHtml::label('XYUZ','') ?>				
 
-
+				    <?php echo $form->labelEx($model,'EventoFecFin',array('class'=>'control-label')); ?>
+				    <div class="input-append">
+							<?php $this->widget('yiiwheels.widgets.datetimepicker.WhDateTimePicker', array(
+									'name' => 'Evento[EventoFecFin]',
+									'value'=>$model->EventoFecFin,
+									'pluginOptions' => array(
+											'lenguage'=>'es-MX',
+											'format' => 'yyyy-MM-dd hh:mm:ss'
+									),
+							));
+							?>
+					</div>
 
 				  </div>
 				  <div class="modal-footer">
@@ -427,3 +411,10 @@
 				)); */?>
 			</div>
 </div>
+
+<style type="text/css">
+	
+	.dropdown-menu{
+		z-index: 1053 !important;
+	}
+</style>
