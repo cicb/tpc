@@ -68,7 +68,10 @@ class EventoController extends Controller
 			$model=$this->loadModel($id);
 			$model->scenario='update';
 			$this->saveModel($model);
-			$this->render('form',compact('model'));
+            
+            $funciones = Funciones::model()->find("EventoId=$id");
+            //$forolevel1 = Forolevel1::model()->findByAttributes(array('ForoId'=>$funciones->ForoId,'ForoMapIntId'=>$funciones->ForoMapIntId));
+			$this->render('form',compact('model','funciones'));
 	}
 	/**
 	 * Displays a particular model.
