@@ -162,7 +162,6 @@ class EventoController extends Controller
 	}
 	public function actionCargarSubcategorias()
 	{
-			
 			$data = Categorialevel1::model()->findAll('CategoriaId=:id',
 					array(':id'=>(int) $_POST['Evento']['CategoriaId']));
 			echo CHtml::tag('option',array('value' => '0'),'Sin Subcategoria',true);

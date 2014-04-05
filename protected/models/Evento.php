@@ -95,7 +95,7 @@ class Evento extends CActiveRecord
 		return array(
 			'EventoId' => 'Evento',
 			'EventoNom' => 'Nombre: ',
-			'EventoSta' => 'Estatus',
+			'EventoSta' => 'Estatus del Evento',
 			'EventoFecIni' => 'Fecha Inicio',
 			'EventoFecFin' => 'Fecha Fin',
 			'CategoriaId' => 'Categoria',
@@ -107,7 +107,7 @@ class Evento extends CActiveRecord
 			'EventoDesWeb' => 'Descripcion en Web',
 			'ForoId' => 'Foro',
 			'PuntosventaId' => 'Punto de venta',
-			'EventoSta2' => 'Estatus 2',
+			'EventoSta2' => 'Tipo',
 			'FuncionesId' => 'Funciones',
 			'imaBol' => 'Imagen:',
 			'imaMin' => 'Imagen:',
@@ -287,10 +287,15 @@ class Evento extends CActiveRecord
 	 public function saveModel($data=array())
 	 {
 	 	$this->attributes=$data;
+        $new  = $this->isNewRecord;
 		if(!$this->save())
-				return CHtml::errorSummary($this);
-		else
-				return 1;
+		    return CHtml::errorSummary($this);
+        else{
+            if($new){
+                    
+            }  
+             return 1;  
+        }
 	 }
 
 	 public static function getMaxId()

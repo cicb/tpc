@@ -176,6 +176,20 @@ class Funciones extends CActiveRecord
         return isset($reg)? $this->pathUrlImagesBD .  $reg->ForoMapPat : '';
         
     }
+    public function getUrlForoPequenio() {
+        $criteria = new CDbCriteria();
+        $criteria->join = ' INNER JOIN foro t2 ON (t2.ForoId = t.ForoId) ';
+        $criteria->addCondition('t.ForoId = :ForoId');
+        $criteria->addCondition('t.ForoMapIntId  = :ForoMapIntId');
+        $criteria->params = array(
+            ':ForoId'=>$this->ForoId,
+            ':ForoMapIntId'=>$this->ForoMapIntId
+        );
+        
+        $reg = Forolevel1::model()->find($criteria);
+        return isset($reg)?$reg->ForoMapPat : '';
+        
+    }
     public function getForoGrande() {
         $criteria = new CDbCriteria();
         $criteria->addCondition('t.EventoId = :EventoId');
@@ -188,5 +202,18 @@ class Funciones extends CActiveRecord
         $reg = MapaGrande::model()->find($criteria);
 
         return isset($reg) ? $this->pathUrlImagesBD .  $reg->nombre_imagen : '';
+    }
+    public function getUrlForoGrande() {
+        $criteria = new CDbCriteria();
+        $criteria->addCondition('t.EventoId = :EventoId');
+        $criteria->addCondition('t.FuncionId = :FuncionId');
+        $criteria->params = array(
+            ':EventoId'=>$this->EventoId,
+            ':FuncionId'=>$this->FuncionesId
+        );
+
+        $reg = MapaGrande::model()->find($criteria);
+
+        return isset($reg) ? $reg->nombre_imagen : '';
     }
 }
