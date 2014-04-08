@@ -1,3 +1,12 @@
+<script type="text/javascript">
+	$("#yw1").blur(function(){
+		console.log($(this).val());
+	});
+	$(".datepicker-days td").on('click',function(){
+		console.log('day');
+		$("#yw1").focus();
+	});
+</script>
 <?php
 /* @var $this EventoController */
 /* @var $model Evento */
@@ -38,6 +47,7 @@
 			<?php echo $form->textFieldControlGroup($model,'EventoNom',array('span'=>4,'maxlength'=>150)); ?>
             <?php echo $form->textFieldControlGroup($model,'EventoDesBol',array( 'span'=>4,'maxlength'=>75)); ?>
             <?php echo $form->textFieldControlGroup($model,'EventoDesWeb',array('span'=>4,'maxlength'=>200)); ?>
+
 		<div class='alert'>
 			<?php echo $form->dropDownListControlGroup($model, 'EventoSta',
 					array('1'=>'BAJA', 'ALTA'=>'ALTA'), array('class' => 'span2')); ?>
@@ -158,8 +168,8 @@ function updateChosen(obj){
 	<?php echo $form->error($model,'PuntosventaId'); ?>
 </div>
 
-
 		</div>
+	
 
 
 		<div class='col-3'>
@@ -175,6 +185,8 @@ function updateChosen(obj){
 								'placeholder'=>'Nombre de la imagen en Boleto')); ?>
 
 				</div>
+
+
 				<div class='span4 white-box box'>
 				<h3><?php echo TbHtml::i('',array('class'=>'fa fa-picture-o')); ?> Imagen para PV</h3>
 					<?php echo TbHtml::imagePolaroid(strlen($model->EventoImaMin)>3?"../imagesbd/".$model->EventoImaMin:'holder.js/130x130','',
@@ -219,6 +231,8 @@ function updateChosen(obj){
                 <?php echo TbHtml::button('Agregar mapas', array('color' => TbHtml::BUTTON_COLOR_PRIMARY)); ?>
                 <?php endif;?>
 		</div>
+	
+
         <div class="form-actions">
 <?php echo TbHtml::link(' Regresar',array('index'),array('class'=>'fa fa-chevron-circle-left btn ')); ?>
         <?php echo TbHtml::submitButton($model->isNewRecord ? ' Registrar' : ' Guardar',array(
@@ -231,9 +245,39 @@ function updateChosen(obj){
 
 
     <?php $this->endWidget(); ?>
+
+<?php echo TbHtml::button('Agregar', array('color' => TbHtml::BUTTON_COLOR_PRIMARY,'id'=>'btn-agregar-funcion')); ?>
+<!--<button class="btn btn-primary">ok</button>-->
 </div><!-- form -->
+<?php if(!$model->isNewRecord):?>
+<?php $lista_funciones = Funciones::model()->findAll("EventoId=".$_GET['id']);?>
+<ul id="lista-funciones">
+	<?php foreach ($lista_funciones as $key => $value):?>
+		<li><?php echo $value->FuncionesId;?></li>
+	<?php endforeach;?>	
+</ul>
+
 
 </div>
+<script type="text/javascript">
+	$("#btn-agregar-funcion").click(function(){
+		
+		$.ajax({
+			  url:'<?php echo Yii::app()->createUrl('funciones/pruebaajax');?>',
+              type:'post',
+              error:function(error){
+              	alert(error);
+              },
+              data:{id:<?php echo $_GET['id']; ?>,funcion:$("ul#lista-funciones li").length},
+              success:function(datos){
+              	console.log(datos);
+              	$("ul#lista-funciones").append("<li>"+datos+"</li>");
+              }
+		});
+	});
+</script>
+<?php endif;?>
+
 <?php 
 				Yii::app()->clientScript->registerScriptFile("js/holder.js");
 				Yii::app()->clientScript->registerScript("subir-boleto","
