@@ -50,9 +50,10 @@
 
 		<div class='alert'>
 			<?php echo $form->dropDownListControlGroup($model, 'EventoSta',
-					array('BAJA'=>'BAJA', 'ALTA'=>'ALTA'), array('class' => 'span2')); ?>
+					array('1'=>'BAJA', 'ALTA'=>'ALTA'), array('class' => 'span2')); ?>
 		</div>
-			<?php echo $form->textFieldControlGroup($model,'EventoSta2',array('span'=>2,'maxlength'=>20)); ?>
+        <?php echo $form->dropDownListControlGroup($model, 'EventoSta2',
+					array('1'=>'A la Venta', '2'=>'Proximamente','3'=>'Sinopsis','4'=>'Cancelado'), array('class' => 'span2')); ?>
 
 		<?php echo $form->labelEx($model,'EventoFecIni',array('class'=>'control-label')); ?>
 		<div class="input-append">
@@ -103,20 +104,35 @@
 	<?php echo $form->labelEx($model,'CategoriaId',array('class'=>'control-label')); ?>
 	<?php echo $form->dropDownList($model,'CategoriaId',
 			 CHtml::listData(
-					Categorialevel1::model()->findAll(),
-					'CategoriaId','CategoriaSubNom'),
+					Categoria::model()->findAll("CategoriaSta='ALTA'"),
+					'CategoriaId','CategoriaNom'),
 			 array(
 					 'empty'=>'Sin categoria','class'=>'span3 chosen',
 					 'ajax' => array(
-							 'type' => 'POST',
+							 'type' => 'POST',  
 							 'url' => CController::createUrl('evento/cargarSubcategorias'),
 							 'update' => '#Evento_CategoriaSubId',
+                             'success' => 'function(data){$("#Evento_CategoriaSubId").html(data);updateChosen(".chosen");}',
 					 )
 	 )
 	) ; ?>
 	<?php echo $form->error($model,'CategoriaId'); ?>
 </div>
+<?php
+Yii::app()->clientScript->registerScript('remove-chosen',"
+$.fn.chosenDestroy = function () {
+$(this).show().removeClass('chzn-done').removeAttr('id');
+$(this).next().remove()
+  return $(this);
+}
+function updateChosen(obj){
+		$(obj).chosenDestroy();
+		$(obj).chosen();
+}
 
+
+",CClientScript::POS_BEGIN);
+?>
 <div class='control-group'>
 	<?php echo $form->labelEx($model,'CategoriaSubId',array('class'=>'control-label')); ?>
 	<?php echo $form->dropDownList($model,'CategoriaSubId',
@@ -190,10 +206,12 @@
                     array('id'=>'img-imamapchi','style'=>'width:140px;')); ?>
 					<br /><br />
 					<?php  echo TbHtml::fileField('imamapchi','' , array('span'=>2,'maxlength'=>200, 'class'=>'hidden')); ?>
-					<?php echo TbHtml::textField('EventoImaMin','',array(
+					<?php echo TbHtml::textField('MapaChico',$funciones->getUrlForoPequenio(),array(
+                                'readonly'=>'readonly',
 								'append'=>TbHtml::button('Seleccionar imagen',
 								array('class'=>'btn btn-success','id'=>'btn-subir-imamapchi')),
-								'placeholder'=>'Nombre de la imagen mapa chico')); ?>
+								'placeholder'=>'Nombre de la imagen mapa chico',
+                                )); ?>
 		
 				</div>
                 <div class='span4 white-box box'>
@@ -202,7 +220,8 @@
                     array('id'=>'img-imamapgra','style'=>'width:340px;')); ?>
 					<br /><br />
 					<?php  echo TbHtml::fileField('imamapgra','' , array('span'=>2,'maxlength'=>200, 'class'=>'hidden')); ?>
-					<?php echo $form->textField($model,'EventoImaMin',array(
+					<?php echo TbHtml::textField('MapaGrande',$funciones->getUrlForoGrande(),array(
+                                'readonly'=>'readonly',
 								'append'=>TbHtml::button('Seleccionar imagen',
 								array('class'=>'btn btn-success','id'=>'btn-subir-imamapgra')),
 								'placeholder'=>'Nombre de la imagen mapa Gde.')); ?>
@@ -230,13 +249,13 @@
 <?php echo TbHtml::button('Agregar', array('color' => TbHtml::BUTTON_COLOR_PRIMARY,'id'=>'btn-agregar-funcion')); ?>
 <!--<button class="btn btn-primary">ok</button>-->
 </div><!-- form -->
+<?php if(!$model->isNewRecord):?>
 <?php $lista_funciones = Funciones::model()->findAll("EventoId=".$_GET['id']);?>
 <ul id="lista-funciones">
 	<?php foreach ($lista_funciones as $key => $value):?>
 		<li><?php echo $value->FuncionesId;?></li>
 	<?php endforeach;?>	
 </ul>
-
 
 
 </div>
@@ -257,6 +276,7 @@
 		});
 	});
 </script>
+<?php endif;?>
 
 <?php 
 				Yii::app()->clientScript->registerScriptFile("js/holder.js");
@@ -322,14 +342,15 @@
             $('#imamapchi').on('change',function(){
 					 if ($(this).val()!='' && $(this).val()!=null) {
 							 if ($.inArray($(this).val().split('.').pop(),ext)==-1) {
-									 alert('El archivo no tiene extension xls, por favor seleccione otro.');
+									 alert('El archivo no tiene extension valida, (jpg,png,bmp,jpeg), por favor seleccione otro.');
 									$(this).val('');	
-						}else{	 
+					         }else{	
 								var fd = new FormData();
-								var imagen = document.getElementById('imamin');
+								var imagen = document.getElementById('imamapchi');
 								fd.append('imagen', imagen.files[0]);
 								fd.append('prefijo', 'pv_');
-								$.ajax({
+                                console.log(fd);
+								/*$.ajax({
 										url: '".Yii::app()->createUrl('evento/subirImagen')."',
 												type: 'POST',
 												data: fd,
@@ -342,8 +363,8 @@
 
 														}	
 												 }
-								}).fail(function(){alert('Error!')});		
-						}	
+								}).fail(function(){alert('Error!')});	*/	
+                            }	
 				 }
 			});
             $('#btn-subir-imamapgra').on('click',function(){ $('#imamapgra').trigger('click'); });
