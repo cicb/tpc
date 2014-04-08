@@ -292,7 +292,29 @@ class Evento extends CActiveRecord
 		    return CHtml::errorSummary($this);
         else{
             if($new){
-                    
+                $semana      = array('Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado');
+                $meses       = array('ENE','FEB','MAR','ABR','MAY','JUN','JUL','AGO','SEP','OCT','NOV','DIC');
+                $dia_semana  = date('w',strtotime('now'));
+                $dia         = date('d',strtotime('now'));
+                $mes         = date('n',strtotime('now'));
+                $anio        = date('Y',strtotime('now'));
+                $hrs         = date('H:i',strtotime('now'));
+                
+                $funcionesTexto    = strtoupper($semana[$dia_semana]).' '.$dia.' - '.$meses[$mes-1].' - '.$anio.' '.$hrs.' HRS'; 
+                $last_configurl = Configurl::model()->find(array('order'=>'ConfigurlId DESC'));
+                $last_configurl = $last_configurl->ConfigurlId + 1;
+                Yii::app()->db->createCommand("INSERT INTO funciones (EventoId,FuncionesId,FuncionesFecIni,FuncionesFecHor,FuncionesNomDia,ForoId,FuncPuntosventaId,FuncionesSta,funcionesTexto) VALUES($this->EventoId,1,'".date("Y-m-d H.i:s")."','".date("Y-m-d H.i:s")."','".$semana[$dia_semana]."',$this->ForoId,$this->PuntosventaId,'ALTA','$funcionesTexto')")->execute();
+                
+                Yii::app()->db->createCommand("INSERT INTO configurl (ConfigurlId,EventoId,ConfigurlURL,ConfigurlPos,ConfigurlTipSel,ConfigurlFecIni,ConfigurlFecFin) VALUES($last_configurl,$this->EventoId,'http://taquillacero.com',1,'Mixta','".date("Y-m-d H.i:s")."','".date("Y-m-d H.i:s",strtotime('now + 2 hour'))."')")->execute();
+                $puntosVentas = Puntosventa::model()->findAll("PuntosventaSta='ALTA'");
+                foreach($puntosVentas as $key => $puntoventa):
+                    $configPVFuncionDes ="N/A";
+                    if($puntoventa->PuntosventaId == 101)
+                        $configPVFuncionDes ="WEB";
+                        
+                    Yii::app()->db->createCommand("INSERT INTO confipvfuncion (EventoId,FuncionesId,PuntosventaId,ConfiPVFuncionDes,ConfiPVFuncionTipSel,ConfiPVFuncionFecIni,ConfiPVFuncionFecFin,ConfiPVFuncionSta) VALUES($this->EventoId,1,$puntoventa->PuntosventaId,'$configPVFuncionDes','MIXTA','".date("Y-m-d H.i:s")."','".date("Y-m-d H.i:s",strtotime('now + 2 hour'))."','ALTA')")->execute();    
+                endforeach;
+            
             }  
              return 1;  
         }
