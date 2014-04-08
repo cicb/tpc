@@ -68,7 +68,10 @@ class EventoController extends Controller
 			$model=$this->loadModel($id);
 			$model->scenario='update';
 			$this->saveModel($model);
-			$this->render('form',compact('model'));
+            
+            $funciones = Funciones::model()->find("EventoId=$id");
+            //$forolevel1 = Forolevel1::model()->findByAttributes(array('ForoId'=>$funciones->ForoId,'ForoMapIntId'=>$funciones->ForoMapIntId));
+			$this->render('form',compact('model','funciones'));
 	}
 	/**
 	 * Displays a particular model.
@@ -83,6 +86,7 @@ class EventoController extends Controller
 					$msg = $evento->saveModel($_POST['Evento']);
 					if ($msg==1) {
 							Yii::app()->user->setFlash('success', "Se ha guardado el evento \"".$evento->EventoNom.'"');
+                            $this->redirect(array('evento/actualizar','id'=>$evento->EventoId));
 					}	
 			}
 	}
@@ -158,7 +162,6 @@ class EventoController extends Controller
 	}
 	public function actionCargarSubcategorias()
 	{
-			
 			$data = Categorialevel1::model()->findAll('CategoriaId=:id',
 					array(':id'=>(int) $_POST['Evento']['CategoriaId']));
 			echo CHtml::tag('option',array('value' => '0'),'Sin Subcategoria',true);

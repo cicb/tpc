@@ -1,3 +1,12 @@
+<script type="text/javascript">
+	$("#yw1").blur(function(){
+		console.log($(this).val());
+	});
+	$(".datepicker-days td").on('click',function(){
+		console.log('day');
+		$("#yw1").focus();
+	});
+</script>
 <?php
 /* @var $this EventoController */
 /* @var $model Evento */
@@ -38,11 +47,13 @@
 			<?php echo $form->textFieldControlGroup($model,'EventoNom',array('span'=>4,'maxlength'=>150)); ?>
             <?php echo $form->textFieldControlGroup($model,'EventoDesBol',array( 'span'=>4,'maxlength'=>75)); ?>
             <?php echo $form->textFieldControlGroup($model,'EventoDesWeb',array('span'=>4,'maxlength'=>200)); ?>
+
 		<div class='alert'>
 			<?php echo $form->dropDownListControlGroup($model, 'EventoSta',
-					array('BAJA'=>'BAJA', 'ALTA'=>'ALTA'), array('class' => 'span2')); ?>
+					array('1'=>'BAJA', 'ALTA'=>'ALTA'), array('class' => 'span2')); ?>
 		</div>
-			<?php echo $form->textFieldControlGroup($model,'EventoSta2',array('span'=>2,'maxlength'=>20)); ?>
+        <?php echo $form->dropDownListControlGroup($model, 'EventoSta2',
+					array('1'=>'A la Venta', '2'=>'Proximamente','3'=>'Sinopsis','4'=>'Cancelado'), array('class' => 'span2')); ?>
 
 		<?php echo $form->labelEx($model,'EventoFecIni',array('class'=>'control-label')); ?>
 		<div class="input-append">
@@ -93,20 +104,35 @@
 	<?php echo $form->labelEx($model,'CategoriaId',array('class'=>'control-label')); ?>
 	<?php echo $form->dropDownList($model,'CategoriaId',
 			 CHtml::listData(
-					Categorialevel1::model()->findAll(),
-					'CategoriaId','CategoriaSubNom'),
+					Categoria::model()->findAll("CategoriaSta='ALTA'"),
+					'CategoriaId','CategoriaNom'),
 			 array(
 					 'empty'=>'Sin categoria','class'=>'span3 chosen',
 					 'ajax' => array(
-							 'type' => 'POST',
+							 'type' => 'POST',  
 							 'url' => CController::createUrl('evento/cargarSubcategorias'),
 							 'update' => '#Evento_CategoriaSubId',
+                             'success' => 'function(data){$("#Evento_CategoriaSubId").html(data);updateChosen(".chosen");}',
 					 )
 	 )
 	) ; ?>
 	<?php echo $form->error($model,'CategoriaId'); ?>
 </div>
+<?php
+Yii::app()->clientScript->registerScript('remove-chosen',"
+$.fn.chosenDestroy = function () {
+$(this).show().removeClass('chzn-done').removeAttr('id');
+$(this).next().remove()
+  return $(this);
+}
+function updateChosen(obj){
+		$(obj).chosenDestroy();
+		$(obj).chosen();
+}
 
+
+",CClientScript::POS_BEGIN);
+?>
 <div class='control-group'>
 	<?php echo $form->labelEx($model,'CategoriaSubId',array('class'=>'control-label')); ?>
 	<?php echo $form->dropDownList($model,'CategoriaSubId',
@@ -142,8 +168,8 @@
 	<?php echo $form->error($model,'PuntosventaId'); ?>
 </div>
 
-
 		</div>
+	
 
 
 		<div class='col-3'>
@@ -159,10 +185,12 @@
 								'placeholder'=>'Nombre de la imagen en Boleto')); ?>
 
 				</div>
+
+
 				<div class='span4 white-box box'>
 				<h3><?php echo TbHtml::i('',array('class'=>'fa fa-picture-o')); ?> Imagen para PV</h3>
 					<?php echo TbHtml::imagePolaroid(strlen($model->EventoImaMin)>3?"../imagesbd/".$model->EventoImaMin:'holder.js/130x130','',
-array('id'=>'img-imamin')); ?>
+                     array('id'=>'img-imamin')); ?>
 					<br /><br />
 					<?php  echo TbHtml::fileField('imamin','' , array('span'=>2,'maxlength'=>200, 'class'=>'hidden')); ?>
 					<?php echo $form->textField($model,'EventoImaMin',array(
@@ -171,7 +199,40 @@ array('id'=>'img-imamin')); ?>
 								'placeholder'=>'Nombre de la imagen miniatura')); ?>
 		
 				</div>
+                <?php if($model->scenario=='update' AND !empty($funciones)): ?>
+                <div class='span4 white-box box'>
+				<h3><?php echo TbHtml::i('',array('class'=>'fa fa-picture-o')); ?> Imagen Mapa Chico</h3>
+					<?php echo TbHtml::imagePolaroid(strlen($funciones->getForoPequenio())>3?$funciones->getForoPequenio():'holder.js/300x300','',
+                    array('id'=>'img-imamapchi','style'=>'width:140px;')); ?>
+					<br /><br />
+					<?php  echo TbHtml::fileField('imamapchi','' , array('span'=>2,'maxlength'=>200, 'class'=>'hidden')); ?>
+					<?php echo TbHtml::textField('MapaChico',$funciones->getUrlForoPequenio(),array(
+                                'readonly'=>'readonly',
+								'append'=>TbHtml::button('Seleccionar imagen',
+								array('class'=>'btn btn-success','id'=>'btn-subir-imamapchi')),
+								'placeholder'=>'Nombre de la imagen mapa chico',
+                                )); ?>
+		
+				</div>
+                <div class='span4 white-box box'>
+				<h3><?php echo TbHtml::i('',array('class'=>'fa fa-picture-o')); ?> Imagen Mapa Grande</h3>
+					<?php echo TbHtml::imagePolaroid(strlen($funciones->getForoPequenio())>3?$funciones->getForoGrande():'holder.js/300x300','',
+                    array('id'=>'img-imamapgra','style'=>'width:340px;')); ?>
+					<br /><br />
+					<?php  echo TbHtml::fileField('imamapgra','' , array('span'=>2,'maxlength'=>200, 'class'=>'hidden')); ?>
+					<?php echo TbHtml::textField('MapaGrande',$funciones->getUrlForoGrande(),array(
+                                'readonly'=>'readonly',
+								'append'=>TbHtml::button('Seleccionar imagen',
+								array('class'=>'btn btn-success','id'=>'btn-subir-imamapgra')),
+								'placeholder'=>'Nombre de la imagen mapa Gde.')); ?>
+		
+				</div>
+                <?php else: ?>
+                <?php echo TbHtml::button('Agregar mapas', array('color' => TbHtml::BUTTON_COLOR_PRIMARY)); ?>
+                <?php endif;?>
 		</div>
+	
+
         <div class="form-actions">
 <?php echo TbHtml::link(' Regresar',array('index'),array('class'=>'fa fa-chevron-circle-left btn ')); ?>
         <?php echo TbHtml::submitButton($model->isNewRecord ? ' Registrar' : ' Guardar',array(
@@ -185,9 +246,38 @@ array('id'=>'img-imamin')); ?>
 
     <?php $this->endWidget(); ?>
 
+<?php echo TbHtml::button('Agregar', array('color' => TbHtml::BUTTON_COLOR_PRIMARY,'id'=>'btn-agregar-funcion')); ?>
+<!--<button class="btn btn-primary">ok</button>-->
 </div><!-- form -->
+<?php if(!$model->isNewRecord):?>
+<?php $lista_funciones = Funciones::model()->findAll("EventoId=".$_GET['id']);?>
+<ul id="lista-funciones">
+	<?php foreach ($lista_funciones as $key => $value):?>
+		<li><?php echo $value->FuncionesId;?></li>
+	<?php endforeach;?>	
+</ul>
+
 
 </div>
+<script type="text/javascript">
+	$("#btn-agregar-funcion").click(function(){
+		
+		$.ajax({
+			  url:'<?php echo Yii::app()->createUrl('funciones/pruebaajax');?>',
+              type:'post',
+              error:function(error){
+              	alert(error);
+              },
+              data:{id:<?php echo $_GET['id']; ?>,funcion:$("ul#lista-funciones li").length},
+              success:function(datos){
+              	console.log(datos);
+              	$("ul#lista-funciones").append("<li>"+datos+"</li>");
+              }
+		});
+	});
+</script>
+<?php endif;?>
+
 <?php 
 				Yii::app()->clientScript->registerScriptFile("js/holder.js");
 				Yii::app()->clientScript->registerScript("subir-boleto","
@@ -248,6 +338,36 @@ array('id'=>'img-imamin')); ?>
 						}	
 				 }
 			});
+            $('#btn-subir-imamapchi').on('click',function(){ $('#imamapchi').trigger('click'); });
+            $('#imamapchi').on('change',function(){
+					 if ($(this).val()!='' && $(this).val()!=null) {
+							 if ($.inArray($(this).val().split('.').pop(),ext)==-1) {
+									 alert('El archivo no tiene extension valida, (jpg,png,bmp,jpeg), por favor seleccione otro.');
+									$(this).val('');	
+					         }else{	
+								var fd = new FormData();
+								var imagen = document.getElementById('imamapchi');
+								fd.append('imagen', imagen.files[0]);
+								fd.append('prefijo', 'pv_');
+                                console.log(fd);
+								/*$.ajax({
+										url: '".Yii::app()->createUrl('evento/subirImagen')."',
+												type: 'POST',
+												data: fd,
+												processData: false,  // tell jQuery not to process the data
+												contentType: false,   // tell jQuery not to set contentType
+												success: function(data){ 
+														if (data) {
+																$('#Evento_EventoImaMin').val(data);
+																$('#img-imamin').attr('src','../imagesbd/'+data);
+
+														}	
+												 }
+								}).fail(function(){alert('Error!')});	*/	
+                            }	
+				 }
+			});
+            $('#btn-subir-imamapgra').on('click',function(){ $('#imamapgra').trigger('click'); });
 						");
 
 ?>
