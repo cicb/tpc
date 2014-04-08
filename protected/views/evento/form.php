@@ -1,3 +1,12 @@
+<script type="text/javascript">
+	$("#yw1").blur(function(){
+		console.log($(this).val());
+	});
+	$(".datepicker-days td").on('click',function(){
+		console.log('day');
+		$("#yw1").focus();
+	});
+</script>
 <?php
 /* @var $this EventoController */
 /* @var $model Evento */
@@ -218,14 +227,36 @@
 
     <?php $this->endWidget(); ?>
 
+<?php echo TbHtml::button('Agregar', array('color' => TbHtml::BUTTON_COLOR_PRIMARY,'id'=>'btn-agregar-funcion')); ?>
+<!--<button class="btn btn-primary">ok</button>-->
 </div><!-- form -->
-
-
+<?php $lista_funciones = Funciones::model()->findAll("EventoId=".$_GET['id']);?>
+<ul id="lista-funciones">
+	<?php foreach ($lista_funciones as $key => $value):?>
+		<li><?php echo $value->FuncionesId;?></li>
+	<?php endforeach;?>	
+</ul>
 
 
 
 </div>
-
+<script type="text/javascript">
+	$("#btn-agregar-funcion").click(function(){
+		
+		$.ajax({
+			  url:'<?php echo Yii::app()->createUrl('funciones/pruebaajax');?>',
+              type:'post',
+              error:function(error){
+              	alert(error);
+              },
+              data:{id:<?php echo $_GET['id']; ?>,funcion:$("ul#lista-funciones li").length},
+              success:function(datos){
+              	console.log(datos);
+              	$("ul#lista-funciones").append("<li>"+datos+"</li>");
+              }
+		});
+	});
+</script>
 
 <?php 
 				Yii::app()->clientScript->registerScriptFile("js/holder.js");
@@ -319,102 +350,3 @@
 						");
 
 ?>
-
-	<?php $funciones=new Funciones; ?>
-
-	<div class='col-2 white-box box'>
-
-		<h3>Agregar Funciones</h3>
-
-			<?php $this->widget('bootstrap.widgets.TbGridView', array(
-			   'dataProvider' => $funciones->search(),
-			   //'filter' => $funciones,
-			   'template' => "{items}",
-			   
-			   'columns' => array( 
-			   	"EventoId","funcionesTexto"
-			   	/*
-			        array(
-			            'name' => 'id',
-			            'header' => '#',
-			            'htmlOptions' => array('color' =>'width: 60px'),
-			        ),
-			        array(
-			            'name' => 'firstName',
-			            'header' => 'First name',
-			        ),
-			        array(
-			            'name' => 'lastName',
-			            'header' => 'Last name',
-			        ),
-			        array(
-			            'name' => 'username',
-			            'header' => 'Username',
-			        ),*/
-			    ),
-			)); ?>
-
-			<div class='span4 white-box box'>
-
-				<!-- Button to trigger modal -->
-				<a href="#myModal" role="button" class="btn" data-toggle="modal">Launch demo modal</a>
-				 
-				<!-- Modal -->
-				<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-				  <div class="modal-header">
-				    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-				    <h3 id="myModalLabel">Agregar Función</h3>
-				  </div>
-				  <div class="modal-body">
-
-<?php //echo CHtml::label('XYUZ','') ?>				
-
-				    <?php echo $form->labelEx($model,'EventoFecFin',array('class'=>'control-label')); ?>
-				    <div class="input-append">
-							<?php $this->widget('yiiwheels.widgets.datetimepicker.WhDateTimePicker', array(
-									'name' => 'Evento[EventoFecFin]',
-									'value'=>$model->EventoFecFin,
-									'pluginOptions' => array(
-											'lenguage'=>'es-MX',
-											'format' => 'yyyy-MM-dd hh:mm:ss'
-									),
-							));
-							?>
-					</div>
-
-				  </div>
-				  <div class="modal-footer">
-				    <button class="btn" data-dismiss="modal" aria-hidden="true">Cancelar</button>
-				    <button class="btn btn-primary">Guardar Función</button>
-				  </div>
-				</div>
-
-
-
-				<?php /*$this->widget('bootstrap.widgets.TbModal', array(
-			    'id' => 'myModal',
-			    'header' => 'Modal Heading',
-			    'content' => '<p>One fine body...</p>',
-			    'footer' => array(
-			        TbHtml::button('Save Changes', array('data-dismiss' => 'modal', 'color' => TbHtml::BUTTON_COLOR_PRIMARY)),
-			        TbHtml::button('Close', array('data-dismiss' => 'modal')),
-			     ),
-				)); ?>
-			 
-
-				<?php echo TbHtml::button(' Click me to open modal', array(
-				    'style' => TbHtml::BUTTON_COLOR_PRIMARY,
-				    'size' => TbHtml::BUTTON_SIZE_LARGE,
-				    'data-toggle' => 'modal',
-				    'data-target' => '#myModal',
-				    'class'=>'btn-primary'
-				)); */?>
-			</div>
-</div>
-
-<style type="text/css">
-	
-	.dropdown-menu{
-		z-index: 1053 !important;
-	}
-</style>

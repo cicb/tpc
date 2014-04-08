@@ -61,7 +61,7 @@ class Funciones extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('EventoId, FuncionesId, FuncionesTip, FuncionesFor, FuncionesFecIni, FuncionesFecHor, FuncionesNomDia, ForoId, ForoMapIntId, FuncionesBanExp, FuncPuntosventaId, FuncionesSta, funcionesTexto, FuncionesBanEsp, funcionesAccExtra', 'required'),
+			array('EventoId, FuncionesId, FuncionesTip, FuncionesFor, FuncionesFecIni, FuncionesFecHor, FuncionesNomDia, ForoId, ForoMapIntId, FuncionesBanExp, FuncPuntosventaId, FuncionesSta, funcionesTexto', 'required','on'=>'delete'),
 			array('FuncionesBanExp', 'numerical', 'integerOnly'=>true),
 			array('EventoId, FuncionesId, FuncionesTip, FuncionesFor, FuncionesNomDia, ForoId, ForoMapIntId, FuncPuntosventaId, FuncionesSta, FuncionesBanEsp', 'length', 'max'=>20),
 			array('funcionesTexto', 'length', 'max'=>200),
@@ -190,9 +190,34 @@ class Funciones extends CActiveRecord
         return isset($reg) ? $this->pathUrlImagesBD .  $reg->nombre_imagen : '';
     }
 
-    	 public function guardar($data=array())
+    public function guardar($data=array())
 	 {
-	 	$this->attributes=$data;
+	 	$this->EventoId = $data['eid'];
+	 	$this->FuncionesFecHor = $data['FuncionesFecHor'];
+	 	$this->FuncionesFecIni = date("Y-m-d H:i:s");
+	 	$this->FuncionesSta = 'ALTA';
+	 	$incremento = 0;
+	 	$foroid_temp = Evento::model()->find(array('condition'=>"EventoId=".$data['eid']));
+	 	$this->ForoId = $foroid_temp->ForoId;
+	 	$this->FuncPuntosventaId = $foroid_temp->PuntosventaId;
+	 	$ultimo = $this->find(array('condition'=>"EventoId=".$data['eid'],'order'=>'FuncionesId DESC'));
+         if(!empty($ultimo))
+         	 $incremento = $ultimo->FuncionesId + 1;
+	 	$this->FuncionesId = $incremento;
+
+	 	$dia = array("Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo");
+        $mes = array("ENE","FEB","MAR","ABR","MAY","JUN","JUL","AGO","SEP","OCT","NOV","DIC");
+
+        $fecha_texto_temp = strtotime( $data['FuncionesFecHor']);
+        $fech = date("w", $fecha_texto_temp);
+        $fechaTextoAntd = date(" d", $fecha_texto_temp);
+        $fechaTextoAnty = date(" Y G:i ", $fecha_texto_temp);
+        $fechaMes = date("n", $fecha_texto_temp);
+
+		$this->funcionesTexto = strtoupper($dia[$fech].$fechaTextoAntd." - ".$mes[$fechaMes-1]." -".$fechaTextoAnty." "."HRS");
+		$this->FuncionesNomDia = $dia[$fech];
+
+
 		if(!$this->save())
 				return CHtml::errorSummary($this);
 		else

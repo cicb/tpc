@@ -4,42 +4,46 @@ class FuncionesController extends Controller
 {
 	public function actionIndex()
 	{
-		$this->render('index');
-	
-	}
+      echo "Hola mundo";
+    $this->render('index');
+  
+  }
 
   public function actionRegistro()
   {
-      $model=new Funciones('insert');  |
-      $this->guardar($model);
+    $model=new Funciones('insert');  
+    $this->guardar($model);
       $this->render('form',compact('model'));
   }
 
   public function actionActualizar($eid,$id)
   {
 
-      $model=Funciones::model()->findByPk(array('EventoId'=>$eid,'FuncionesId'=>$id);
+      $model=Funciones::model()->findByPk(array('EventoId'=>$eid,'FuncionesId'=>$id));
       $model->scenario='update';
       $this->guardar($model);
-            $funciones = Funciones::model()->find("FuncionesId=$id");
+            //$funciones = Funciones::model()->findByPk("FuncionesId=$id");
             //$forolevel1 = Forolevel1::model()->findByAttributes(array('ForoId'=>$funciones->ForoId,'ForoMapIntId'=>$funciones->ForoMapIntId));
-      $this->render('form',compact('model','funciones'));
+      $this->render('form',compact('model'));
   }
   /**
    * Displays a particular model.
    * @param integer $id the ID of the model to be displayed
    */
-  public function guardar(Funciones $evento)
+  public function guardar(Funciones $funcion)
   {
-      $this->perfil();
+      //$this->perfil();
+
       if(isset($_POST['Funciones']))
       {
-          $this->performAjaxValidation($funcion);
-          $msg = $funcion->guardar($_POST['Funcion']);
+          //$this->performAjaxValidation($funcion);
+          $msg = $funcion->guardar($_POST['Funciones']);
+
           if ($msg==1) {
-              Yii::app()->user->setFlash('success', "Se ha guardado la funcion \"".$funcion->EventoNom.'"');
-                            $this->redirect(array('funcion/actualizar', 'eid'=>$function->EventoId, 'id'=>$funcion->FuncionesId));
+              Yii::app()->user->setFlash('success', "Se ha guardado la funcion \"".$funcion->funcionesTexto.'"');
+                            $this->redirect(array('funciones/actualizar', 'eid'=>$funcion->EventoId, 'id'=>$funcion->FuncionesId));
           } 
+          echo $msg;
       }
   }
 
@@ -250,6 +254,16 @@ class FuncionesController extends Controller
             $data =  array('ok'=>0);
         }
         echo json_encode($data);
+    }
+    public function actionPruebaAjax(){
+          print_r($_POST);
+          $eventoId = $_POST['id'];
+          $funcionesId = $_POST['funcion'];
+          $model = new Funciones;
+          $model->EventoId = $eventoId;
+          $model->FuncionesId = $funcionesId+1;
+          echo $model->save();
+
     }
     
     public function actionResumen2(){
