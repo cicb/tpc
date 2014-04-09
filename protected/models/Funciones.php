@@ -150,6 +150,12 @@ class Funciones extends CActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
+
+	public function beforeSave()
+	{
+		// Guarda siempre el configpvfunciones...
+        return parent::beforeSave();
+	}
 	public function getZonasInteractivasMapaGrande() {
         $criteria = new CDbCriteria();
         $criteria->join = 'INNER JOIN configurl_funciones_mapa_grande t1 ON (t1.id = t.configurl_funcion_mapa_grande_id)';
@@ -197,5 +203,14 @@ class Funciones extends CActiveRecord
 				return CHtml::errorSummary($this);
 		else
 				return 1;
+	 }
+	 public static function getMaxId($evento)
+	 {
+			 $row = Funciones::model()->find(array(
+					 'select'=>'MAX(FuncionesId) as maxId',
+					 'condition'=>"EventoId=:evento",
+					 'params'=>array('evento'=>$evento)
+			 ));
+			 return $row['maxId'];
 	 }
 }

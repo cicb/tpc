@@ -350,6 +350,26 @@ class FuncionesController extends Controller
      endforeach;
      echo "</table>";
     }
+
+
+
+	public function actionInsertar($eid)
+	{
+			//Genera un formulario para una funcion
+			$evento=Evento::model()->with('foro')->findByPk($eid);
+			$model=new Funciones('insert');
+			if (is_object($evento)) {
+				// Si el id del evento es valido
+					$model->EventoId=$evento->EventoId;
+					$model->FuncionesId=Funciones::getMaxId($model->EventoId);
+					$model->FuncionesFecIni=date('Y-m-d H:i:s');
+					$model->FuncionesFecHor=date('Y-m-d H:i:s');
+					$model->FuncionesNomDia=date('l');
+					$model->ForoId=$evento->foro->ForoId;
+
+			}	
+
+	}
 	// Uncomment the following methods and override them if needed
 	/*
 	public function filters()
