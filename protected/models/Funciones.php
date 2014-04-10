@@ -283,7 +283,7 @@ class Funciones extends CActiveRecord
 					$model->FuncionesFecHor=date('Y-m-d H:i:s');
 					$model->FuncionesNomDia=date('l');
 					$model->ForoId=$evento->foro->ForoId;
-					$model->funcionesTexto=date('l d - M - Y H:i \H\R\S');
+					$model->funcionesTexto=strtoupper(strftime('%A %d - %b - %Y %H:%M HRS'));
 					$model->FuncionesSta='ALTA';
 					if ($model->save()){
 							return $model;
