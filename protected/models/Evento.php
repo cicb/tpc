@@ -75,7 +75,7 @@ class Evento extends CActiveRecord
 			'categoria' => array(self::HAS_ONE, 'Categorialevel1', 'CategoriaId'),
 			'categoriaSub' => array(self::BELONGS_TO, 'Categorialevel1', 'CategoriaSubId'),
 			'puntoventa' => array(self::HAS_ONE, 'Puntosventa', 'PuntosventaId'),
-			'foro' => array(self::HAS_ONE, 'Foro', 'ForoId'),
+			'foro' => array(self::BELONGS_TO, 'Foro', 'ForoId'),
 			//'distribucion' => array(self::HAS_ONE, 'Distribucionpuerta', 'IdDistribucionPuerta'),
             
             'distribucionpuertalevel1' =>array(self::BELONGS_TO,'Distribucionpuertalevel1','EventoId'),

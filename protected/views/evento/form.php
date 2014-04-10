@@ -246,37 +246,25 @@ function updateChosen(obj){
 
     <?php $this->endWidget(); ?>
 
-<?php echo TbHtml::button('Agregar', array('color' => TbHtml::BUTTON_COLOR_PRIMARY,'id'=>'btn-agregar-funcion')); ?>
 <!--<button class="btn btn-primary">ok</button>-->
 </div><!-- form -->
-<?php if(!$model->isNewRecord):?>
-<?php $lista_funciones = Funciones::model()->findAll("EventoId=".$_GET['id']);?>
-<ul id="lista-funciones">
-	<?php foreach ($lista_funciones as $key => $value):?>
-		<li><?php echo $value->FuncionesId;?></li>
-	<?php endforeach;?>	
-</ul>
+<div class='row-fluid white-box box' id='listado-funciones'>
+<h3>Funciones</h3>
+<div class="col-3" >
+<?php echo TbHtml::button(' Quitar', array(
+		'id'=>'btn-quitar-funcion',
+		'class'=>'btn btn-danger fa fa-minus-circle pull-left'
+)); ?>
+<?php echo TbHtml::button(' Agregar', array(
+		'id'=>'btn-agregar-funcion',
+		'class'=>'btn btn-success fa fa-plus-circle pull-right'
+)); ?>
+		</div>
 
-
+<?php foreach($model->funciones() as $funcion){
+		$this->renderPartial('/funciones/formulario',array('model'=>$funcion));
+}; ?>
 </div>
-<script type="text/javascript">
-	$("#btn-agregar-funcion").click(function(){
-		
-		$.ajax({
-			  url:'<?php echo Yii::app()->createUrl('funciones/pruebaajax');?>',
-              type:'post',
-              error:function(error){
-              	alert(error);
-              },
-              data:{id:<?php echo $_GET['id']; ?>,funcion:$("ul#lista-funciones li").length},
-              success:function(datos){
-              	console.log(datos);
-              	$("ul#lista-funciones").append("<li>"+datos+"</li>");
-              }
-		});
-	});
-</script>
-<?php endif;?>
 
 <?php 
 				Yii::app()->clientScript->registerScriptFile("js/holder.js");
@@ -368,6 +356,28 @@ function updateChosen(obj){
 				 }
 			});
             $('#btn-subir-imamapgra').on('click',function(){ $('#imamapgra').trigger('click'); });
+				
+
+
 						");
 
+?>
+<?php Yii::app()->clientScript->registerScript('agregar-funcion',sprintf("
+			$('#btn-agregar-funcion').on('click',function(){
+					$.ajax({
+							url:'%s',
+									type:'get',
+							success:function(data){
+									$('#listado-funciones').append(data);
+								}
+						});
+});
+
+$('#btn-quitar-funcion').on('click',function(){
+		console.log('click');
+		$.ajax({url:'".$this->createUrl('funciones/quitar',array('eid'=>$model->EventoId))."',
+				'success': function(){ $('#listado-funciones :last').remove();}
+		});
+});
+",$this->createUrl('funciones/insertar',array('eid'=>$model->EventoId))),CClientScript::POS_READY);
 ?>

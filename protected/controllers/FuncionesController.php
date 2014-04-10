@@ -365,24 +365,23 @@ class FuncionesController extends Controller
      echo "</table>";
     }
 
+		public function actionQuitar($eid)
+		{
+				// Quitar funcion elimina la ultima funcion de la cola
+				echo Funciones::quitarUltima($eid);
 
+		}
 
 	public function actionInsertar($eid)
 	{
 			//Genera un formulario para una funcion
-			$evento=Evento::model()->with('foro')->findByPk($eid);
-			$model=new Funciones('insert');
-			if (is_object($evento)) {
-				// Si el id del evento es valido
-					$model->EventoId=$evento->EventoId;
-					$model->FuncionesId=Funciones::getMaxId($model->EventoId);
-					$model->FuncionesFecIni=date('Y-m-d H:i:s');
-					$model->FuncionesFecHor=date('Y-m-d H:i:s');
-					$model->FuncionesNomDia=date('l');
-					$model->ForoId=$evento->foro->ForoId;
-
+			$retorno=Funciones::insertar($eid);
+			if ($retorno ) {
+					// Si regresa un objeto
+					$this->renderPartial('formulario',array('model'=>$retorno));	
 			}	
-
+			else
+					echo CJSON::encode($retorno);
 	}
 	// Uncomment the following methods and override them if needed
 	/*
