@@ -4,7 +4,6 @@ class FuncionesController extends Controller
 {
 	public function actionIndex()
 	{
-      echo "Hola mundo";
     $this->render('index');
   
   }
@@ -409,4 +408,8 @@ class FuncionesController extends Controller
 		);
 	}
 	*/
+  public function actionFormatear($fecha)
+  {
+    echo 123;
+  }
 }

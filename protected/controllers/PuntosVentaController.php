@@ -27,6 +27,18 @@ class PuntosVentaController extends Controller
 					echo CHtml::tag('option',array('value' => $id),CHtml::encode($value),true);
 			}
 	}
+
+	public function generarArbol($eventoId)
+	{
+		# Genera la estructura de árbol
+		$puntos=Puntosventa::model()->findAll();
+		$arbol=array();
+		foreach ($puntos as $puntos) {
+			# va ordenando los nodos en padres
+		}
+
+
+	}
 	// Uncomment the following methods and override them if needed
 	/*
 	public function filters()
