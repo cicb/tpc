@@ -33,6 +33,7 @@ class Funciones extends CActiveRecord
 	 */
 	 
 	public $pathUrlImagesBD;
+	public $maxId;
 
     public function init() {
 
@@ -150,6 +151,12 @@ class Funciones extends CActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
+
+	public function beforeSave()
+	{
+		// Guarda siempre el configpvfunciones...
+        return parent::beforeSave();
+	}
 	public function getZonasInteractivasMapaGrande() {
         $criteria = new CDbCriteria();
         $criteria->join = 'INNER JOIN configurl_funciones_mapa_grande t1 ON (t1.id = t.configurl_funcion_mapa_grande_id)';
@@ -238,6 +245,16 @@ class Funciones extends CActiveRecord
 				return 1;
 	 }
 
+	 public static function maxId($evento)
+	 {
+			 $row = Funciones::model()->find(array(
+					 'select'=>'MAX(FuncionesId) as maxId',
+					 'condition'=>"EventoId=:evento",
+					 'params'=>array('evento'=>$evento)
+			 ));
+			 return $row['maxId'];
+	 }
+
     public function getUrlForoGrande() {
         $criteria = new CDbCriteria();
         $criteria->addCondition('t.EventoId = :EventoId');
@@ -251,4 +268,38 @@ class Funciones extends CActiveRecord
 
         return isset($reg) ? $reg->nombre_imagen : '';
     }
+
+	 public static function insertar($eventoId)
+	 {
+			//Genera una funcion minima
+			$ret=array('estado'=>false,'modelo'=>null);	
+			$evento=Evento::model()->with('foro')->findByPk($eventoId);
+			$model=new Funciones('insert');
+			if (is_object($evento)) {
+				// Si el id del evento es valido
+					$model->EventoId=$evento->EventoId;
+					$model->FuncionesId=Funciones::maxId($eventoId)+1;
+					$model->FuncionesFecIni=date('Y-m-d H:i:s');
+					$model->FuncionesFecHor=date('Y-m-d H:i:s');
+					$model->FuncionesNomDia=date('l');
+					$model->ForoId=$evento->foro->ForoId;
+					$model->funcionesTexto=strtoupper(strftime('%A %d - %b - %Y %H:%M HRS'));
+					$model->FuncionesSta='ALTA';
+					if ($model->save()){
+							return $model;
+					}
+			}	
+
+			return false;
+	 }
+
+	 public static function quitarUltima($eventoId)
+	 {
+			 $lastId=self::maxId($eventoId);
+			 $model=Funciones::model()->findByPk(array('EventoId'=>$eventoId,'FuncionesId'=>$lastId));
+			 if (!is_null($model)) {
+			 	//Si se valida el modelo 
+					 return $model->delete();
+			 }	
+	 }
 }

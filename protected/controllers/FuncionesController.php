@@ -364,6 +364,25 @@ class FuncionesController extends Controller
      endforeach;
      echo "</table>";
     }
+
+		public function actionQuitar($eid)
+		{
+				// Quitar funcion elimina la ultima funcion de la cola
+				echo Funciones::quitarUltima($eid);
+
+		}
+
+	public function actionInsertar($eid)
+	{
+			//Genera un formulario para una funcion
+			$retorno=Funciones::insertar($eid);
+			if ($retorno ) {
+					// Si regresa un objeto
+					$this->renderPartial('formulario',array('model'=>$retorno));	
+			}	
+			else
+					echo CJSON::encode($retorno);
+	}
 	// Uncomment the following methods and override them if needed
 	/*
 	public function filters()

@@ -56,48 +56,22 @@
 					array('1'=>'A la Venta', '2'=>'Proximamente','3'=>'Sinopsis','4'=>'Cancelado'), array('class' => 'span2')); ?>
 
 		<?php echo $form->labelEx($model,'EventoFecIni',array('class'=>'control-label')); ?>
-		<div class="input-append">
-				<?php $this->widget('yiiwheels.widgets.datetimepicker.WhDateTimePicker', array(
-						'name' => 'Evento[EventoFecIni]',
-						'value'=>$model->EventoFecIni,
-						'pluginOptions' => array(
-								'lenguage'=>'es-MX',
-								'format' => 'yyyy-MM-dd hh:mm:ss'
-						)
-				));
-				?>
-		</div>
+		<?php echo $form->textField($model,'EventoFecIni',array('class'=>'picker')) ;?>
 
 
 <div class='control-group'>
 
 		<?php echo $form->labelEx($model,'EventoFecFin',array('class'=>'control-label')); ?>
-		<div class="input-append " >
-				<?php $this->widget('yiiwheels.widgets.datetimepicker.WhDateTimePicker', array(
-						'name' => 'Evento[EventoFecFin]',
-						'value'=>$model->EventoFecFin,
-						'pluginOptions' => array(
-								'lenguage'=>'es-MX',
-								'format' => 'yyyy-MM-dd hh:mm:ss'
-						)
-				));
-				?>
-		</div>
+ <div class="input-append">
+		<?php echo $form->textField($model,'EventoFecFin',array('class'=>'picker')) ;?>
+ </div>
 </div>
 
 <div class='control-group'>
 		<?php echo $form->labelEx($model,'EventoTemFecFin',array('class'=>'control-label')); ?>
-		<div class="input-append">
-				<?php $this->widget('yiiwheels.widgets.datetimepicker.WhDateTimePicker', array(
-						'name' => 'Evento[EventoTemFecFin]',
-						'value'=>$model->EventoTemFecFin,
-						'pluginOptions' => array(
-								'lenguage'=>'es-MX',
-								'format' => 'yyyy-MM-dd hh:mm:ss'
-						)
-				));
-				?>
-		</div>
+ <div class="input-append">
+		<?php echo $form->textField($model,'EventoTemFecFin',array('class'=>'picker')) ;?>
+ </div>
 </div>		
 
 <div class='control-group'>
@@ -234,11 +208,10 @@ function updateChosen(obj){
 	
 
         <div class="form-actions">
-<?php echo TbHtml::link(' Regresar',array('index'),array('class'=>'fa fa-chevron-circle-left btn ')); ?>
+<?php echo TbHtml::link(' Regresar',array('index'),array('class'=>' btn btn-primary fa-arrow-left ')); ?>
         <?php echo TbHtml::submitButton($model->isNewRecord ? ' Registrar' : ' Guardar',array(
-            'color'=>TbHtml::BUTTON_COLOR_PRIMARY,
 			'size'=>TbHtml::BUTTON_SIZE_LARGE,
-			'class'=>'fa fa-check'
+			'class'=>'btn btn-check fa fa-check'
         )); ?>
     </div>
 
@@ -246,37 +219,29 @@ function updateChosen(obj){
 
     <?php $this->endWidget(); ?>
 
-<?php echo TbHtml::button('Agregar', array('color' => TbHtml::BUTTON_COLOR_PRIMARY,'id'=>'btn-agregar-funcion')); ?>
 <!--<button class="btn btn-primary">ok</button>-->
 </div><!-- form -->
-<?php if(!$model->isNewRecord):?>
-<?php $lista_funciones = Funciones::model()->findAll("EventoId=".$_GET['id']);?>
-<ul id="lista-funciones">
-	<?php foreach ($lista_funciones as $key => $value):?>
-		<li><?php echo $value->FuncionesId;?></li>
-	<?php endforeach;?>	
-</ul>
 
 
+<div class=' white-box box' id='listado-funciones'>
+<h3>Funciones</h3>
+<div class="col-5" >
+<?php echo CHtml::button(' Quitar', array(
+		'id'=>'btn-quitar-funcion',
+		'class'=>'btn btn-danger fa fa-minus-circle pull-left'
+)); ?>
+<?php echo CHtml::button(' Agregar', array(
+		'id'=>'btn-agregar-funcion',
+		'class'=>'btn btn-success fa fa-plus-circle pull-right'
+)); ?>
+		</div>
+
+<?php
+foreach($model->funciones() as $funcion){
+		$this->renderPartial('/funciones/formulario',array('model'=>$funcion));
+};
+?>
 </div>
-<script type="text/javascript">
-	$("#btn-agregar-funcion").click(function(){
-		
-		$.ajax({
-			  url:'<?php echo Yii::app()->createUrl('funciones/pruebaajax');?>',
-              type:'post',
-              error:function(error){
-              	alert(error);
-              },
-              data:{id:<?php echo $_GET['id']; ?>,funcion:$("ul#lista-funciones li").length},
-              success:function(datos){
-              	console.log(datos);
-              	$("ul#lista-funciones").append("<li>"+datos+"</li>");
-              }
-		});
-	});
-</script>
-<?php endif;?>
 
 <?php 
 				Yii::app()->clientScript->registerScriptFile("js/holder.js");
@@ -368,6 +333,41 @@ function updateChosen(obj){
 				 }
 			});
             $('#btn-subir-imamapgra').on('click',function(){ $('#imamapgra').trigger('click'); });
+				
+
+
 						");
 
 ?>
+<?php Yii::app()->clientScript->registerScript('agregar-funcion',sprintf("
+			$('#btn-agregar-funcion').on('click',function(){
+					$.ajax({
+							url:'%s',
+									type:'get',
+							success:function(data){
+									$('#listado-funciones').append(data);
+									$('.picker:last').datetimepicker(); 
+								}
+						});
+});
+
+$('#btn-quitar-funcion').on('click',function(){
+		console.log('click');
+		$.ajax({url:'".$this->createUrl('funciones/quitar',array('eid'=>$model->EventoId))."',
+				'success': function(){
+						$('.div-funcion:last').remove();
+				}
+		});
+});
+$('#Funciones_funcionesTexto').focusin(function(){console.log('---111---')})
+
+",$this->createUrl('funciones/insertar',array('eid'=>$model->EventoId))),CClientScript::POS_READY);
+?>
+<?php Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl. '/js/jquery.datetimepicker.js',CClientScript::POS_BEGIN); ?>
+<?php Yii::app()->clientScript->registerCssFile(Yii::app()->request->baseUrl. '/css/jquery.datetimepicker.css'); ?>
+<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl."/css/jquery.datetimepicker.css" ; ?>" />
+ <script type="text/javascript" charset="utf-8">
+$('.picker').datetimepicker({
+		
+		lang:'es'}); 
+ </script>
