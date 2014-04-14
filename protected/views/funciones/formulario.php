@@ -15,13 +15,13 @@
 <div class="input-append ">
 <?php echo $form->label($model,'FuncionesFecHor:'); ?>
 <?php
-echo $form->textField($model,'FuncionesFecHor',array('class'=>'picker'))
+echo $form->textField($model,'FuncionesFecHor',array('class'=>'picker FecHor','data-id'=>"$fid"))
 ?>
 </div>
 
 <div class="input-append ">
 <?php echo $form->label($model,'funcionesTexto:'); ?>
-<?php echo $form->textField($model, 'funcionesTexto' , array('placeholder'=>'funcionesTexto', 'style'=>'width:320px'));?>
+<?php echo $form->textField($model, 'funcionesTexto' , array('class'=>'FuncText', 'placeholder'=>'funcionesTexto', 'style'=>'width:320px','id'=>"FuncText-$fid"));?>
 </div>
 
 <div class="col-2">

@@ -226,15 +226,16 @@ function updateChosen(obj){
 <div class=' white-box box' id='listado-funciones'>
 <h3>Funciones</h3>
 <div class="col-5" >
-<?php echo CHtml::button(' Quitar', array(
-		'id'=>'btn-quitar-funcion',
-		'class'=>'btn btn-danger fa fa-minus-circle pull-left'
-)); ?>
-<?php echo CHtml::button(' Agregar', array(
-		'id'=>'btn-agregar-funcion',
-		'class'=>'btn btn-success fa fa-plus-circle pull-right'
-)); ?>
-		</div>
+	<?php echo CHtml::button(' Quitar', array(
+			'id'=>'btn-quitar-funcion',
+			'class'=>'btn btn-danger fa fa-minus-circle pull-left'
+	)); ?>
+
+	<?php echo CHtml::button(' Agregar', array(
+			'id'=>'btn-agregar-funcion',
+			'class'=>'btn btn-success fa fa-plus-circle pull-right'
+	)); ?>
+</div>
 
 <?php
 foreach($model->funciones() as $funcion){
@@ -371,3 +372,30 @@ $('.picker').datetimepicker({
 		
 		lang:'es'}); 
  </script>
+
+<script type="text/javascript">
+	$('.FecHor').change(
+		function()
+		{
+			var id=$(this).data('id');
+			var meses = new Array ("ENE","FEB","MAR","ABR","MAY","JUN","JUL","AGO","SEP","OCT","NOV","DIC");
+			var diasSemana = new Array("DOMINGO","LUNES","MARTES","MIÉRCOLES","JUEVES","VIERNES","SÁBADO");
+			var fechatemp = new Date($(this).val());
+			$('#FuncText-'+id).val(diasSemana[fechatemp.getDay()] + " " + fechatemp.getDate() + " - " + 
+				meses[fechatemp.getMonth()] + " - " + fechatemp.getFullYear() + " " + fechatemp.getHours() + ":" + 
+				(fechatemp.getMinutes()=="0" ? "0"+fechatemp.getMinutes() : fechatemp.getMinutes()) + " HRS");
+
+		});
+	/*
+	$('.FuncText').on('keypress',
+		function(e)
+		{
+			$(this).attr('id','-1');
+		});*/
+	$('.FuncText').on('keyup',
+		function()
+		{
+			$(this).attr('id','-1');
+		})
+</script>	
+
