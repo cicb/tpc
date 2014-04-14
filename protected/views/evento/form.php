@@ -243,7 +243,7 @@ foreach($model->funciones() as $funcion){
 };
 ?>
 </div>
-
+<div id="dlg"></div>
 <?php 
 				Yii::app()->clientScript->registerScriptFile("js/holder.js");
 				Yii::app()->clientScript->registerScript("subir-boleto","
@@ -383,6 +383,10 @@ $( '.nodo-toggle').live('click',function(){
 	}
 	return false;
 })
+
+$( '.nodo-cal').live('click',function(){
+	$('#dlg').load($(this).attr('href'));
+});
 ",$this->createUrl('funciones/insertar',array('eid'=>$model->EventoId))),CClientScript::POS_READY);
 ?>
 <?php Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl. '/js/jquery.datetimepicker.js',CClientScript::POS_BEGIN); ?>
@@ -420,3 +424,46 @@ $('.picker').datetimepicker({
 		})
 </script>	
 
+<script>
+  	$(function() {
+  	  // Apparently click is better chan change? Cuz IE?
+      $('input[type="checkbox"]').change(function(e) {
+      var checked = $(this).prop("checked"),
+          container = $(this).parent(),
+          siblings = container.siblings();
+  
+      container.find('input[type="checkbox"]').prop({
+          indeterminate: false,
+          checked: checked
+      });
+  
+      function checkSiblings(el) {
+          var parent = el.parent().parent(),
+              all = true;
+  
+          el.siblings().each(function() {
+              return all = ($(this).children('input[type="checkbox"]').prop("checked") === checked);
+          });
+  
+          if (all && checked) {
+              parent.children('input[type="checkbox"]').prop({
+                  indeterminate: false,
+                  checked: checked
+              });
+              checkSiblings(parent);
+          } else if (all && !checked) {
+              parent.children('input[type="checkbox"]').prop("checked", checked);
+              parent.children('input[type="checkbox"]').prop("indeterminate", (parent.find('input[type="checkbox"]:checked').length > 0));
+              checkSiblings(parent);
+          } else {
+              el.parents("li").children('input[type="checkbox"]').prop({
+                  indeterminate: true,
+                  checked: false
+              });
+          }
+        }
+    
+        checkSiblings(container);
+      });
+    });
+    </script>
