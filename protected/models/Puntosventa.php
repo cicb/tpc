@@ -150,7 +150,8 @@ class Puntosventa extends CActiveRecord
 	public function hasChildrens()
 	{
 		# Busca todos los elementos que lo tengan como padre
-
+		return self::model()->count(array(
+				'condition'=>"PuntosventaSta='ALTA' AND  PuntosventaSuperId=".$this->PuntosventaId));
 	}
 
 	public function getChildrens()
@@ -158,11 +159,69 @@ class Puntosventa extends CActiveRecord
 		# Devuelve los puntos de venta que lo ven como un nodo padre
 		if (is_null($this->_childs)) {
 			$this->_childs= self::model()->findAll(array(
-				'condition'=>"PuntosventaSta='ALTA' and  PuntosventaSuperId=".$this->PuntosventaId));
+				'condition'=>"PuntosventaSta='ALTA' AND  PuntosventaSuperId=".$this->PuntosventaId));
 		}
 		return $this->_childs;
 	}
 
+	public function getAsNode($formato='',$prefix='')
+	{
+		# Dependiendo el formato se regresa este objecto como un nodo
+		$id=$this->PuntosventaId;
+		switch ($formato) {
+			case 'li':
+				# Regresa como un elemento de lista
+				$link="";
+				$chk=TbHtml::checkBox("chk-$prefix-$id");
+				if ($this->hasChildrens()) 
+					# Si tiene hijos le pone el link de +
+					$link=TbHtml::link(' ',array('puntosVenta/verRama','id'=>$id,'prefix'=>$prefix),
+						array('class'=>'nodo-toggle fa fa-plus-square','id'=>"link-$prefix-$id", 'data-estado'=>'inicial')
+						);
+
+				echo CHtml::tag('li',array('id'=>"$prefix-$id", 'class'=>'nodo'),
+					$link.' '.$chk.' '.TbHtml::label($this->PuntosventaNom,"chk-$prefix-$id",array('style'=>'display:inline')));
+				break;
+			case 'ul':
+				# Regresa como un elemento de lista
+				return CHtml::openTag('ul',array('data-id'=>$this->PuntosventaId));
+				return CHtml::tag('li',array('data-id'=>$this->PuntosventaId),$this->PuntosventaNom);
+				return CHtml::closeTag('ul');
+				break;
+			case 'node':
+					# Regresa como un arreglo en formato de nodo
+				return array('id'=>$this->PuntosventaId,'nombre'=>$this->PuntosventaNom,'hijos'=>array());
+				break;
+			case 'accordion':
+				# Devuelve el nodo como un elemento de acordion
+				break;
+			default:
+				# Por default imprime un elemento de lista
+				return CHtml::tag('li',array('data-id'=>$this->PuntosventaId),$this->PuntosventaNom);
+				break;
+		}
+	}
+	public static function getHijos($valor=0)
+	{
+		# Devuelve los nodos padres
+		return Puntosventa::model()->findAll(
+			array('condition'=>" PuntosventaSta='ALTA' AND  PuntosventaSuperId=:valor",
+				'params'=>array('valor'=>$valor)));
+	}
+
+	public static function getRaices( $nivel=0,$prefix='')
+	{
+		#Genera el arbol
+		$raices=self::getHijos($nivel);
+		$rama=array();
+		foreach ($raices as $raiz) {
+			$rama[]=$raiz->getAsNode('li',$prefix);
+		}	
+		return $rama;
+	}
+
+
 
 }
+
 

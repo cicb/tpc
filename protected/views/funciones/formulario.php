@@ -25,50 +25,24 @@ echo $form->textField($model,'FuncionesFecHor',array('class'=>'picker'))
 </div>
 
 <div class="col-2">
-	<div class="accordion" id="<?php echo "acc-modulos-".$fid; ?>">
-	  <div class="accordion-group">
-	    <div class="accordion-heading">
-			<table border="0"> <tr><th>
-			<?php echo TbHtml::link(' ',"",array(
-							'class'=>'fa fa-times', 'onclick'=>"desactivar($fid)"));
-			?>
-			</th><th>
-			<?php
-			echo TbHtml::link('Modulos',"#coll1-$fid",array(
-					'class'=>'accordion-toggle', 'data-toggle'=>'collapse', 'data-parent'=>"acc-modulos-$fid")); 
-			?>
-			</th>
-			<th>
-				<?php echo TbHtml::textField('FecHor',$model->FuncionesFecHor,array('class'=>'picker')); ?>
-			</th>
+	<?php 
+		#Impresion de arbol en primer nivel
+		echo CHtml::openTag('ul',array('class'=>"arbol rama-$fid-0"));
+				$link="";
+				$chk=TbHtml::checkBox("chk-$fid-0");
+				$link=TbHtml::link(' ',array('puntosVenta/verRama','id'=>0,'prefix'=>$fid),
+					array('class'=>'nodo-toggle fa fa-plus-square','id'=>"link-$fid-0", 'data-estado'=>'inicial')
+					);
+				echo CHtml::tag('li',array('id'=>"$fid-0", 'class'=>'nodo'),
+					$link.' '.$chk.' '.TbHtml::label(" Modulos","chk-$fid-0",array('style'=>'display:inline')));
+		echo CHtml::closeTag('ul');
 
-		  </tr> </table>
-	    </div>
-	    <div id="<?php echo "coll1-".$fid; ?>" class="accordion-body collapse ">
-	      <div class="accordion-inner">
-			  <div class="accordion-group">
-			    <div class="accordion-heading">
-						<table border="0"> <tr><th>
-						<?php echo TbHtml::link(' ',"",array( 'class'=>'fa fa-times', 'onclick'=>"desactivar($fid)")); ?>
-						</th><th>
-						<?php echo TbHtml::link('Farmatodo',"#coll2-$fid",array(
-								'class'=>'accordion-toggle', 'data-toggle'=>'collapse', 'data-parent'=>"acc-modulos-$fid")); ?>
-						</th> <th>
-								<?php echo TbHtml::textField('FecHor',$model->FuncionesFecHor,array('class'=>'picker')); ?>
-						</th> </tr> </table>
-			    </div>
-			    <div id="<?php echo "coll2-".$fid; ?>" class="accordion-body collapse">
-			      <div class="accordion-inner">
-			        Anim pariatur cliche...
-			      </div>
-			    </div>
-			  </div>
-	      </div>
-	    </div>
-	  </div>
+	 ?>
 
 	</div>
  </div>
 
 </div>
 	<?php $this->endWidget(); ?>
+
+

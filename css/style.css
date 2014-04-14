@@ -305,3 +305,8 @@ th {
 .btn {
   font-family: FontAwesome !important ;
 }
+ul.arbol,
+ul.arbol ul {
+  list-style-type: none;
+}
+/* ul.rama-pvs{max-height:220px;overflow:scroll;}*/

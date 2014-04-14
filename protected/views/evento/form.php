@@ -359,8 +359,29 @@ $('#btn-quitar-funcion').on('click',function(){
 				}
 		});
 });
-$('#Funciones_funcionesTexto').focusin(function(){console.log('---111---')})
 
+$( '.nodo-toggle').live('click',function(){
+	var id= $(this).data('id');
+	var li= $(this).parent().attr('id');
+	var link= $(this);
+	if (link.data('estado')=='inicial') {
+		var href= link.attr('href');
+		$.ajax({
+			url:href,
+			success:function(data){ 
+				$('#'+li).append(data);
+				link.data('estado','toggle')
+				link.toggleClass('fa-minus-square');
+			}
+		});
+	}
+	else if (link.data('estado')=='toggle'){
+		link.toggleClass('fa-minus-square');
+		$('#rama-'+li).toggle();
+		// link.toggleClass('fa-plus-square');
+	}
+	return false;
+})
 ",$this->createUrl('funciones/insertar',array('eid'=>$model->EventoId))),CClientScript::POS_READY);
 ?>
 <?php Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl. '/js/jquery.datetimepicker.js',CClientScript::POS_BEGIN); ?>
