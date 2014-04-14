@@ -28,16 +28,20 @@ class PuntosVentaController extends Controller
 			}
 	}
 
-	public function generarArbol($eventoId)
+	public function actionVerRama($id=0,$prefix='')
 	{
-		# Genera la estructura de árbol
-		$puntos=Puntosventa::model()->findAll();
-		$arbol=array();
-		foreach ($puntos as $puntos) {
-			# va ordenando los nodos en padres
+		#Visualiza el arbol de puntos de venta de acuerdo a su jerarquia
+		$rama=Puntosventa::getHijos($id);
+		if (sizeof($rama)>0) {
+			# Si tiene hijos
+			echo CHtml::openTag('ul',array('class'=>'rama-pvs', 'id'=>"rama-$prefix-$id"));	
+			foreach ($rama as $hoja) {
+				echo $hoja->getAsNode('li',$prefix);
+			}
+			echo CHtml::closeTag('ul');	
 		}
-
-
+		else
+			echo "Sin hijos";
 	}
 	// Uncomment the following methods and override them if needed
 	/*
