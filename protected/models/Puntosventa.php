@@ -171,16 +171,21 @@ class Puntosventa extends CActiveRecord
 		switch ($formato) {
 			case 'li':
 				# Regresa como un elemento de lista
-				$link="";
+				$link=$cal="";
 				$chk=TbHtml::checkBox("chk-$prefix-$id");
 				if ($this->hasChildrens()) 
 					# Si tiene hijos le pone el link de +
+
 					$link=TbHtml::link(' ',array('puntosVenta/verRama','id'=>$id,'prefix'=>$prefix),
 						array('class'=>'nodo-toggle fa fa-plus-square','id'=>"link-$prefix-$id", 'data-estado'=>'inicial')
 						);
-
+					$cal=TbHtml::link(' ',array('funciones/configPuntoventa','pvid'=>$id,'fid'=>$prefix),
+						array('class'=>'nodo-cal fa fa-calendar pull-right','id'=>"cal-$prefix-$id",
+						 'data-toggle' => 'modal',
+						 'data-target' => '#dlg-confiPvFuncion',)
+						);
 				echo CHtml::tag('li',array('id'=>"$prefix-$id", 'class'=>'nodo'),
-					$link.' '.$chk.' '.TbHtml::label($this->PuntosventaNom,"chk-$prefix-$id",array('style'=>'display:inline')));
+					$link.' '.$chk.' '.TbHtml::label($this->PuntosventaNom,"chk-$prefix-$id",array('style'=>'display:inline')).$cal);
 				break;
 			case 'ul':
 				# Regresa como un elemento de lista
@@ -205,7 +210,8 @@ class Puntosventa extends CActiveRecord
 	{
 		# Devuelve los nodos padres
 		return Puntosventa::model()->findAll(
-			array('condition'=>" PuntosventaSta='ALTA' AND  PuntosventaSuperId=:valor",
+			array(
+				'condition'=>" PuntosventaSta='ALTA' AND  PuntosventaSuperId=:valor",
 				'params'=>array('valor'=>$valor)));
 	}
 

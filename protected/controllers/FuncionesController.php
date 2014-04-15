@@ -382,6 +382,12 @@ class FuncionesController extends Controller
 			else
 					echo CJSON::encode($retorno);
 	}
+
+  public function actionConfigPuntoventa($fid,$pvid)
+  {
+    # 
+    $this->renderPartial('_confiPvFuncion');
+  }
 	// Uncomment the following methods and override them if needed
 	/*
 	public function filters()
@@ -408,8 +414,5 @@ class FuncionesController extends Controller
 		);
 	}
 	*/
-  public function actionFormatear($fecha)
-  {
-    echo 123;
-  }
+
 }
