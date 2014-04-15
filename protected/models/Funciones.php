@@ -302,4 +302,13 @@ class Funciones extends CActiveRecord
 					 return $model->delete();
 			 }	
 	 }
+
+	 public static function agregarConfpvfuncion()
+	 {
+	 	$query="INSERT INTO confipvfuncion (SELECT '580', '1', PuntosventaId, 'N/A', 'MIXTA', 'FuncionesFecIni', 
+	 										'FuncionesFecHor', puntosventaSta, '0' FROM puntosventa WHERE PuntosventaSta='ALTA' 
+	 										AND PuntosventaSuperId<>'0000000000' AND PuntosventaId NOT IN 
+	 											(SELECT puntosventaId FROM evento WHERE EventoId=521));; 
+		mysql_query($query);
+	 }
 }
