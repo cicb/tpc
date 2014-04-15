@@ -243,7 +243,19 @@ foreach($model->funciones() as $funcion){
 };
 ?>
 </div>
-<div id="dlg"></div>
+<?php $this->widget('bootstrap.widgets.TbModal', array(
+    'id' => 'dlg-confiPvFuncion',
+    'header' => 'Selecciona el rango de fechas',
+    'content' => "<div is='dlg'></div>",
+    'footer' => implode(' ', array(
+    	TbHtml::button('Guardar cambios', array(
+    		'data-dismiss' => 'modal',
+    		'color' => TbHtml::BUTTON_COLOR_PRIMARY)
+    	),
+    	TbHtml::button('Cerrar', array('data-dismiss' => 'modal')),
+    	)),
+)); ?>
+
 <?php 
 				Yii::app()->clientScript->registerScriptFile("js/holder.js");
 				Yii::app()->clientScript->registerScript("subir-boleto","
@@ -373,6 +385,7 @@ $( '.nodo-toggle').live('click',function(){
 				$('#'+li).append(data);
 				link.data('estado','toggle')
 				link.toggleClass('fa-minus-square');
+				$('.picker').datetimepicker({allowTimes:1});
 			}
 		});
 	}
@@ -422,6 +435,7 @@ $('.picker').datetimepicker({
 		{
 			$(this).attr('id','-1');
 		})
+
 </script>	
 
 <script>
