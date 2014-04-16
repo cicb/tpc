@@ -438,9 +438,7 @@ $('.picker').datetimepicker({
 			var diasSemana = new Array("DOMINGO","LUNES","MARTES","MIÉRCOLES","JUEVES","VIERNES","SÁBADO");
 			var fechatemp = new Date($(this).val());
 			$('#FuncText-'+id).val(diasSemana[fechatemp.getDay()] + " " + fechatemp.getDate() + " - " + 
-				meses[fechatemp.getMonth()] + " - " + fechatemp.getFullYear() + " " + fechatemp.getHours() + ":" + 
-				(fechatemp.getMinutes()=="0" ? "0"+fechatemp.getMinutes() : fechatemp.getMinutes()) + " HRS");
-
+				meses[fechatemp.getMonth()] + " - " + fechatemp.getFullYear() + " " + (fechatemp.getHours()<"10" ? "0"+fechatemp.getHours() : fechatemp.getHours())+ ":"+ (fechatemp.getMinutes()<"10" ? "0"+fechatemp.getMinutes() : fechatemp.getMinutes()) + " HRS");
 		});
 
 	$('.FecHor').on('focusout', 
