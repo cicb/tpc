@@ -52,7 +52,6 @@ echo $form->textField($model,'FuncionesFecHor',array('class'=>'picker FecHor','d
 	</div>
  </div>
 
-</div>
 	<?php $this->endWidget(); ?>
 
 
