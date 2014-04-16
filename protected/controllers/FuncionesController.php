@@ -388,6 +388,31 @@ class FuncionesController extends Controller
     # 
     $this->renderPartial('_confiPvFuncion');
   }
+
+  public function actionUpdate($EventoId, $FuncionesId)
+  {
+      $model=Funciones::model()->findByPk(array('EventoId'=>$EventoId,'FuncionesId'=>$FuncionesId));
+      if (isset($_POST['Funciones']))
+      {
+        if (!is_null($model))
+        {
+          $model->attributes=$_POST['Funciones'];
+/*          foreach($_POST['Funciones'] as $name=>$value)
+          {
+            $model->$name=$value;
+          }*/
+          if ($model->update())
+            $cols=$_POST['Funciones'];
+          if (in_array('FuncionesFecHor', $cols) or in_array('FuncionesFecIni', $cols) ) 
+          {
+            $model->agregarConfpvfuncion();
+            echo CJSON::encode(array('respuesta'=>true));
+          }            
+          else
+            echo CJSON::encode(array('respuesta'=>false));
+        }
+      }
+  }
 	// Uncomment the following methods and override them if needed
 	/*
 	public function filters()
