@@ -402,12 +402,16 @@ class FuncionesController extends Controller
             $model->$name=$value;
           }*/
           if ($model->update())
-            $cols=$_POST['Funciones'];
-          if (in_array('FuncionesFecHor', $cols) or in_array('FuncionesFecIni', $cols) ) 
           {
-            $model->agregarConfpvfuncion();
-            echo CJSON::encode(array('respuesta'=>true));
-          }            
+            $cols=$_POST['Funciones'];
+            if (array_key_exists('FuncionesFecHor', $cols) or array_key_exists('FuncionesFecIni', $cols) ) 
+            {
+              $model->agregarConfpvfuncion();
+              echo CJSON::encode(array('respuesta'=>true));
+            }           
+            else 
+              echo CJSON::encode(array('respuesta'=>var_export($cols)));
+          }
           else
             echo CJSON::encode(array('respuesta'=>false));
         }

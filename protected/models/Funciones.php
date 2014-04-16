@@ -283,9 +283,13 @@ class Funciones extends CActiveRecord
 			if (is_object($evento)) {
 				// Si el id del evento es valido
 					$model->EventoId=$evento->EventoId;
-					$model->FuncionesId=Funciones::maxId($eventoId)+1;
+					$maximo=Funciones::maxId($eventoId);
+					$model->FuncionesId=$maximo+1;
+					$anterior=Funciones::model()->findByPk(array('EventoId'=>$model->EventoId, 'FuncionesId'=>$maximo));
+					$model->ForoMapIntId=$anterior->ForoMapIntId;
 					$model->FuncionesFecIni=date('Y-m-d H:i:s');
 					$model->FuncionesFecHor=date('Y-m-d H:i:s');
+					$model->FuncPuntosventaId=$evento->PuntosventaId;
 					$model->FuncionesNomDia=date('l');
 					$model->ForoId=$evento->foro->ForoId;
 					$model->funcionesTexto=strtoupper(strftime('%A %d - %b - %Y %H:%M HRS'));
