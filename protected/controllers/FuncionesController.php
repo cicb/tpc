@@ -383,9 +383,16 @@ class FuncionesController extends Controller
 					echo CJSON::encode($retorno);
 	}
 
-  public function actionConfigPuntoventa($fid,$pvid)
+  public function actionConfigPuntoventa($eid,$fid,$pvid)
   {
     # 
+    if (isset($_POST['Confipvfuncion'])) {
+        $model=Confipvfuncion::model()->findByPk(array('EventoId'=>$eid,'FuncionesId'=>$fid,'PuntosventaId'=>$pvid));
+
+    }
+    $funcion=Funciones::model()->with('evento')->findByPk(array('EventoId'=>$eid,'FuncionesId'=>$fid));
+    $evento=$function->evento;
+
     $this->renderPartial('_confiPvFuncion');
   }
 	// Uncomment the following methods and override them if needed
