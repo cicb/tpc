@@ -413,7 +413,7 @@ class FuncionesController extends Controller
             $cols=$_POST['Funciones'];
             if (array_key_exists('FuncionesFecHor', $cols) or array_key_exists('FuncionesFecIni', $cols) ) 
             {
-              $model->agregarConfpvfuncion();
+              $model->actualizarConfipvfunciones();
               echo CJSON::encode(array('respuesta'=>true));
             }           
             else 
@@ -423,6 +423,35 @@ class FuncionesController extends Controller
             echo CJSON::encode(array('respuesta'=>false));
         }
       }
+  }
+
+  public function actionActualizarPv($EventoId,$FuncionesId,$PuntosventaId,$atributo,$valor)
+  {
+    $cpf=Confipvfuncion::model()->with('puntoventa')->findByPk(compact('EventoId','FuncionesId','PuntosventaId'));
+    if (!is_null($cpf)) {
+      #"Si existe "
+      $cpf[$atributo]=$valor;
+      $cpf->update($atributo);
+      if ($cpf->puntoventa->tieneHijos) {
+        $criteria=new CDbCriteria;
+        $criteria->addCondition("EventoId=:evento");
+        $criteria->addCondition("FuncionesId=:funcion");
+        $criteria->join=" inner join puntosventa as t2  on confipvfuncion.PuntosventaId=t2.PuntosventaId 
+        and t2.PuntosventaSuperId=:actual";
+        $criteria->params=array('actual'=>$PuntosventaId,'evento'=>$EventoId,'funcion'=>$FuncionesId);
+      // $criteria->addInCondition("PuntosventaId",$padres);
+        $actualizados=Confipvfuncion::model()->updateAll(array($atributo=>$valor), $criteria);
+        $hijosPadres=$cpf->puntoventa->getChildrens(' and tipoid=0');
+        foreach ($hijosPadres as $hijoPadre) {
+          if ($hijoPadre->PuntosventaId==$PuntosventaId) {
+            # Si el id del padre y el propio id son distintos (Para evitar que se cicle)
+            $this->actionActualizarPv($EventoId,$FuncionesId,$hijoPadre->PuntosventaId,$atributo,$valor);
+          }
+        }
+      }
+
+    }
+
   }
 	// Uncomment the following methods and override them if needed
 	/*

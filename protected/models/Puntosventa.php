@@ -153,13 +153,17 @@ class Puntosventa extends CActiveRecord
 		return self::model()->count(array(
 				'condition'=>"PuntosventaSta='ALTA' AND  PuntosventaSuperId=".$this->PuntosventaId));
 	}
+	public function getTieneHijos()
+	{
+		return !$this->tipoid;
+	}
 
-	public function getChildrens()
+	public function getChildrens($condicion)
 	{
 		# Devuelve los puntos de venta que lo ven como un nodo padre
 		if (is_null($this->_childs)) {
 			$this->_childs= self::model()->findAll(array(
-				'condition'=>"PuntosventaSta='ALTA' AND  PuntosventaSuperId=".$this->PuntosventaId));
+				'condition'=>"PuntosventaSuperId=".$this->PuntosventaId.' '.$condicion));
 		}
 		return $this->_childs;
 	}

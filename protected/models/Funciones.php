@@ -319,10 +319,8 @@ class Funciones extends CActiveRecord
 
 	 	foreach ($Pvs as $Pv) 
 	 	{
-	 		$model = Confipvfuncion::model()->findByPk(array('EventoId' =>$this->EventoId,'FuncionesId'=>$this->FuncionesId,
-	 			'PuntosventaId'=>$Pv->PuntosventaId));
-	 		if (is_null($model))
-			 	$model = new Confipvfuncion('insert');
+
+		 	$model = new Confipvfuncion('insert');
 
 		 	$model->EventoId=$this->EventoId;
 		 	$model->FuncionesId=$this->FuncionesId;
@@ -340,6 +338,20 @@ class Funciones extends CActiveRecord
 	 		$model->save();
 	 	}
 
+	 }
+	 public function actualizarConfipvfunciones()
+	 {
+	 	# Actualiza los config Pv funcion en base a la informacion de la funcion 
+	 	$evento=$this->EventoId;
+	 	$funcion=$this->FuncionesId;
+	 	Confipvfuncion::model()->updateAll(
+	 		array(
+	 			'ConfiPVFuncionFecFin'=>$this->FuncionesFecHor,
+	 			'ConfiPVFuncionFecIni'=>$this->FuncionesFecIni,
+	 			),
+	 		"EventoId=:evento and FuncionesId=:funcion ",
+	 		compact('evento','funcion')
+	 		);
 	 }
 
 	 public function deleteConfpvfuncion()

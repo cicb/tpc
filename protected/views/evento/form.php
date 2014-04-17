@@ -359,7 +359,8 @@ foreach($model->funciones() as $funcion){
 									type:'get',
 							success:function(data){
 									$('#listado-funciones').append(data);
-									$('.picker:last').datetimepicker(); 
+									$('.picker').datetimepicker({allowTimes:1});
+
 								}
 						});
 });
@@ -430,7 +431,7 @@ $('.picker').datetimepicker({
 		})
 
 	}
-	$('.FecHor').change(
+	$('.FecHor').live('change',
 		function()
 		{
 			var id=$(this).data('id');
@@ -441,7 +442,14 @@ $('.picker').datetimepicker({
 				meses[fechatemp.getMonth()] + " - " + fechatemp.getFullYear() + " " + (fechatemp.getHours()<"10" ? "0"+fechatemp.getHours() : fechatemp.getHours())+ ":"+ (fechatemp.getMinutes()<"10" ? "0"+fechatemp.getMinutes() : fechatemp.getMinutes()) + " HRS");
 		});
 
-	$('.FecHor').on('focusout', 
+	$('.FecIni').live('focusout', 
+		function()
+		{	
+			var id=$(this).data('id');
+			var datos={Funciones:{FuncionesFecIni:$(this).val()} };
+			actualizarf(datos,$(this).data('id'));
+		});	
+	$('.FecHor').live('focusout', 
 		function()
 		{	
 			var id=$(this).data('id');
@@ -449,7 +457,7 @@ $('.picker').datetimepicker({
 			actualizarf(datos,$(this).data('id'));
 		});
 
-	$('.FuncText').on('focusout', 
+	$('.FuncText').live('focusout', 
 		function()
 		{	
 			var id=$(this).data('id');
@@ -457,7 +465,7 @@ $('.picker').datetimepicker({
 			actualizarf(datos,$(this).data('id'));
 		});
 
-	$('.FuncText').on('keyup',
+	$('.FuncText').live('keyup',
 		function()
 		{
 			$(this).attr('id','-1');
@@ -476,7 +484,7 @@ $('.picker').datetimepicker({
       container.find('input[type="checkbox"]').prop({
           indeterminate: false,
           checked: checked
-      });>
+      });
   
       function checkSiblings(el) {
           var parent = el.parent().parent(),

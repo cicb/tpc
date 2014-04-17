@@ -50,6 +50,8 @@ class Confipvfuncion extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+			'puntoventa' => array(self::BELONGS_TO, 'Puntosventa', 'PuntosventaId'),
+
 		);
 	}
 
@@ -113,5 +115,10 @@ class Confipvfuncion extends CActiveRecord
 	public static function model($className=__CLASS__)
 	{
 		return parent::model($className);
+	}
+
+	public function actualizarAtributo()
+	{
+		# code...
 	}
 }

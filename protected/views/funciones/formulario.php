@@ -17,7 +17,7 @@
 <div class="input-append ">
 <?php echo $form->label($model,'FuncionesFecIni:'); ?>
 <?php
-echo $form->textField($model,'FuncionesFecIni',array('class'=>'picker','data-id'=>"$fid"))
+echo $form->textField($model,'FuncionesFecIni',array('class'=>'picker FecIni', 'data-id'=>"$fid"))
 ?>
 </div>
 
