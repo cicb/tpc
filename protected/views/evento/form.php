@@ -1,11 +1,11 @@
 <script type="text/javascript">
-	$("#yw1").blur(function(){
+/*	$("#yw1").blur(function(){
 		console.log($(this).val());
 	});
 	$(".datepicker-days td").on('click',function(){
 		console.log('day');
 		$("#yw1").focus();
-	});
+	});*/
 </script>
 <?php
 /* @var $this EventoController */
@@ -412,6 +412,24 @@ $('.picker').datetimepicker({
  </script>
 
 <script type="text/javascript">
+
+	function actualizarf(datos, funcionid) 
+	{
+		$.ajax(
+		{url: "<?php echo CController::createUrl('Funciones/update',array('EventoId'=>$model->EventoId)); ?>&FuncionesId="+funcionid,
+			data:datos,
+			type:'POST',
+			dataType:'JSON',
+			success:function(data)
+			{
+				if (data.respuesta)
+				{
+					console.log('La actualización se realizo con exito');
+				}
+			}
+		})
+
+	}
 	$('.FecHor').change(
 		function()
 		{
@@ -420,23 +438,32 @@ $('.picker').datetimepicker({
 			var diasSemana = new Array("DOMINGO","LUNES","MARTES","MIÉRCOLES","JUEVES","VIERNES","SÁBADO");
 			var fechatemp = new Date($(this).val());
 			$('#FuncText-'+id).val(diasSemana[fechatemp.getDay()] + " " + fechatemp.getDate() + " - " + 
-				meses[fechatemp.getMonth()] + " - " + fechatemp.getFullYear() + " " + fechatemp.getHours() + ":" + 
-				(fechatemp.getMinutes()=="0" ? "0"+fechatemp.getMinutes() : fechatemp.getMinutes()) + " HRS");
-
+				meses[fechatemp.getMonth()] + " - " + fechatemp.getFullYear() + " " + (fechatemp.getHours()<"10" ? "0"+fechatemp.getHours() : fechatemp.getHours())+ ":"+ (fechatemp.getMinutes()<"10" ? "0"+fechatemp.getMinutes() : fechatemp.getMinutes()) + " HRS");
 		});
-	/*
-	$('.FuncText').on('keypress',
-		function(e)
-		{
-			$(this).attr('id','-1');
-		});*/
+
+	$('.FecHor').on('focusout', 
+		function()
+		{	
+			var id=$(this).data('id');
+			var datos={Funciones:{FuncionesFecHor:$(this).val(), funcionesTexto:$('#FuncText-'+id).val()} };
+			actualizarf(datos,$(this).data('id'));
+		});
+
+	$('.FuncText').on('focusout', 
+		function()
+		{	
+			var id=$(this).data('id');
+			var datos={Funciones:{funcionesTexto:$(this).val()} };
+			actualizarf(datos,$(this).data('id'));
+		});
+
 	$('.FuncText').on('keyup',
 		function()
 		{
 			$(this).attr('id','-1');
-		})
-
+		});
 </script>	
+
 
 <script>
   	$(function() {
@@ -449,7 +476,7 @@ $('.picker').datetimepicker({
       container.find('input[type="checkbox"]').prop({
           indeterminate: false,
           checked: checked
-      });
+      });>
   
       function checkSiblings(el) {
           var parent = el.parent().parent(),
