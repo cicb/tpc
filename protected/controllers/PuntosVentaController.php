@@ -35,13 +35,15 @@ class PuntosVentaController extends Controller
 		if (sizeof($rama)>0) {
 			# Si tiene hijos
 			echo CHtml::openTag('ul',array('class'=>'rama-pvs', 'id'=>"rama-$prefix-$id"));	
-			foreach ($rama as $hoja) {
-				echo $hoja->getAsNode('li',$prefix);
+			foreach ($rama as $model) {
+				// echo $model->getAsNode('li',$prefix);
+				$id=$model->PuntosventaId;
+				$this->renderPartial('/funciones/_nodoCPVF',compact('prefix','id','model'));
 			}
 			echo CHtml::closeTag('ul');	
 		}
 		else
-			echo "Sin hijos";
+			echo "";
 	}
 	// Uncomment the following methods and override them if needed
 	/*

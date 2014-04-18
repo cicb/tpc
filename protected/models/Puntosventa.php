@@ -179,29 +179,13 @@ class Puntosventa extends CActiveRecord
 				$chk=TbHtml::checkBox("chk-$prefix-$id");
 				if ($this->hasChildrens()) 
 					# Si tiene hijos le pone el link de +
-
-					$link=TbHtml::link(' ',array('puntosVenta/verRama','id'=>$id,'prefix'=>$prefix),
-						array('class'=>'nodo-toggle fa fa-plus-square','id'=>"link-$prefix-$id", 'data-estado'=>'inicial')
-						);
-					$cal=CHtml::openTag('div',array('class'=>'fechas-cpf text-right','style'=>'width:100%;')); 
-					$cal.=TbHtml::textField("CPF_FecIni-$prefix-$id",date('d-m-Y H:i:s'),array('placeholder'=>'Fecha de inicio', 'class'=>'picker hidden ','style'=>'width:5px'));
-					$cal.=TbHtml::link(' ','#',array('class'=>'fa fa-calendar text-info ', 
-						'onclick'=>"$('#CPF_FecIni-$prefix-$id').datetimepicker('show');return false;
-						"));
-					$cal.=TbHtml::textField("CPF_FecFin-$prefix-$id",date('d-m-Y H:i:s'),array('placeholder'=>'Fecha de inicio', 'class'=>'picker hidden ','style'=>'width:5px'))
-					;
-					$cal.=TbHtml::link(' ','#',array('class'=>'fa fa-calendar  text-warning', 
-						'onclick'=>"$('#CPF_FecFin-$prefix-$id').datetimepicker('show');return false;
-						"));
-
-					$cal.=CHtml::closeTag('div');
+					$nombre=$this->PuntosventaNom;
+					CController::renderPartial('_nodoCPVF',compact('prefix','id','nombre'));
 					// TbHtml::link(' ',array('funciones/configPuntoventa','pvid'=>$id,'fid'=>$prefix),
 					// 	array('class'=>'nodo-cal fa fa-calendar pull-right','id'=>"cal-$prefix-$id",
 					// 	 'data-toggle' => 'modal',
 					// 	 'data-target' => '#dlg-confiPvFuncion',)
 					// 	);
-				echo CHtml::tag('li',array('id'=>"$prefix-$id", 'class'=>'nodo'),
-					$link.' '.$chk.' '.TbHtml::label($this->PuntosventaNom,"chk-$prefix-$id",array('style'=>'display:inline;width:120px')).$cal);
 				break;
 			case 'ul':
 				# Regresa como un elemento de lista

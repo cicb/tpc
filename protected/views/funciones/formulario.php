@@ -37,14 +37,15 @@ echo $form->textField($model,'FuncionesFecHor',array('class'=>'picker FecHor','d
 <div class="col-2">
 	<?php 
 		#Impresion de arbol en primer nivel
-		echo CHtml::openTag('ul',array('class'=>"arbol rama-$fid-0"));
+	$root=1000;//Id del nodo raiz
+		echo CHtml::openTag('ul',array('class'=>"arbol rama-$fid-$root"));
 				$link="";
-				$chk=TbHtml::checkBox("chk-$fid-0");
-				$link=TbHtml::link(' ',array('puntosVenta/verRama','id'=>0,'prefix'=>$fid),
-					array('class'=>'nodo-toggle fa fa-plus-square','id'=>"link-$fid-0", 'data-estado'=>'inicial')
+				$chk=TbHtml::checkBox("chk-$fid-$root");
+				$link=TbHtml::link(' ',array('puntosVenta/verRama','id'=>$root,'prefix'=>$fid),
+					array('class'=>'nodo-toggle fa fa-plus-square','id'=>"link-$fid-$root", 'data-estado'=>'inicial')
 					);
-				echo CHtml::tag('li',array('id'=>"$fid-0", 'class'=>'nodo'),
-					$link.' '.$chk.' '.TbHtml::label(" Modulos","chk-$fid-0",array('style'=>'display:inline')));
+				echo CHtml::tag('li',array('id'=>"$fid-$root", 'class'=>'nodo'),
+					$link.' '.$chk.' '.TbHtml::label(" Modulos","chk-$fid-$root",array('style'=>'display:inline')));
 		echo CHtml::closeTag('ul');
 
 	 ?>
