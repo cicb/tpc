@@ -431,7 +431,8 @@ class FuncionesController extends Controller
     if (!is_null($cpf)) {
       #"Si existe "
       $evento=Evento::model()->findByPk($EventoId);
-      $cpf->update($atributo);
+      $cpf[$atributo]=$valor;
+      echo $cpf->update($atributo);
       if ($cpf->puntoventa->tieneHijos) {
         $criteria=new CDbCriteria;
         $criteria->addCondition("EventoId=:evento");
@@ -443,7 +444,8 @@ class FuncionesController extends Controller
         $actualizados=Confipvfuncion::model()->updateAll(array($atributo=>$valor), $criteria);
         $hijosPadres=$cpf->puntoventa->getChildrens(' and tipoid=0');
         foreach ($hijosPadres as $hijoPadre) {
-          if ($hijoPadre->PuntosventaId==$PuntosventaId) {
+          if ($hijoPadre->PuntosventaSuperId==$PuntosventaId) {
+            echo $hijoPadre->PuntosventaNom;
             # Si el id del padre y el propio id son distintos (Para evitar que se cicle)
             $this->actionActualizarPv($EventoId,$FuncionesId,$hijoPadre->PuntosventaId,$atributo,$valor);
           }
@@ -458,8 +460,10 @@ class FuncionesController extends Controller
         }
 
       }
+      else echo "No tiene hijos \n";
 
     }
+    else echo"No existe un Confipvfuncion";
 
   }
 	// Uncomment the following methods and override them if needed

@@ -470,11 +470,11 @@ $('.picker').datetimepicker({
 		{
 			$(this).attr('id','-1');
 		});
-	$('.Chek').live('click', 
+	$('.CPVFSta').live('click', 
 		function()
 		{
-			var pvid=$(this).data('pv');
-			var funcid=$(this).data('func');
+			var pvid=$(this).data('pid');
+			var funcid=$(this).data('fid');
 			$.ajax(
 				{url: "<?php echo CController::createUrl('Funciones/ActualizarPv'); ?>",
 				data:{EventoId:'<?php echo $model->EventoId?>',FuncionesId:funcid,PuntosventaId:pvid,atributo:'ConfiPVFuncionSta',valor:($(this).prop('checked')==true ? 'ALTA' : 'BAJA')},
@@ -486,11 +486,11 @@ $('.picker').datetimepicker({
 			});
 		});
 
-	$('.CPF_FecIni').live('change', 
+	$('.CPVFFecIni').live('change', 
 		function()
 		{
-			var pvid=$(this).data('pv');
-			var funcid=$(this).data('func');
+			var pvid=$(this).data('pid');
+			var funcid=$(this).data('fid');
 			$.ajax(
 				{url: "<?php echo CController::createUrl('Funciones/ActualizarPv'); ?>",
 				data:{EventoId:'<?php echo $model->EventoId?>',FuncionesId:funcid,PuntosventaId:pvid,atributo:'ConfiPVFuncionFecIni',valor:$(this).val()},
@@ -502,11 +502,11 @@ $('.picker').datetimepicker({
 			});
 		});
 
-	$('.CPF_FecFin').live('change', 
+	$('.CPVFFecFin').live('change', 
 		function()
 		{
-			var pvid=$(this).data('pv');
-			var funcid=$(this).data('func');
+			var pvid=$(this).data('pid');
+			var funcid=$(this).data('fid');
 			$.ajax(
 				{url: "<?php echo CController::createUrl('Funciones/ActualizarPv'); ?>",
 				data:{EventoId:'<?php echo $model->EventoId?>',FuncionesId:funcid,PuntosventaId:pvid,atributo:'ConfiPVFuncionFecFin',valor:$(this).val()},

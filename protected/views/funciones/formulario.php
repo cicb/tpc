@@ -40,16 +40,23 @@ echo $form->textField($model,'FuncionesFecHor',array('class'=>'picker FecHor box
 		#Impresion de arbol en primer nivel
 	$root=1000;//Id del nodo raiz
 		echo CHtml::openTag('ul',array('id'=>"rama-$fid-0", 'class'=>"arbol "));
-				/**** ***Caso especial Taquilla propia*** ****/
-				// $this->renderPartial('/funciones/_nodoCPVF',compact('fid','pid','model'));
-
-				$link="";
-				$chk=TbHtml::checkBox("chk-$fid-$root");
-				$link=TbHtml::link(' ',array('puntosVenta/verRama','pid'=>$root,'fid'=>$fid),
-					array('class'=>'nodo-toggle fa fa-plus-square','id'=>"link-$fid-$root", 'data-estado'=>'inicial')
-					);
-				echo CHtml::tag('li',array('id'=>"$fid-$root", 'class'=>'nodo'),
-					$link.' '.$chk.' '.TbHtml::label(" Modulos","chk-$fid-$root",array('style'=>'display:inline')));
+				/****
+				***Caso especial Taquilla propia
+				*/
+				$this->renderPartial('/funciones/_nodoCPVF',array(
+					'fid'=>$model->FuncionesId,
+					'pid'=>$root,
+					'nombre'=>'Módulos',
+					'status'=>true,
+					'padre'=>true,
+					));
+				// $link="";
+				// $chk=TbHtml::checkBox("chk-$fid-$root");
+				// $link=TbHtml::link(' ',array('puntosVenta/verRama','id'=>$root,'fid'=>$fid),
+				// 	array('class'=>'nodo-toggle fa fa-plus-square','id'=>"link-$fid-$root", 'data-estado'=>'inicial')
+				// 	);
+				// echo CHtml::tag('li',array('id'=>"$fid-$root", 'class'=>'nodo'),
+				// 	$link.' '.$chk.' '.TbHtml::label(" Modulos","chk-$fid-$root",array('style'=>'display:inline')));
 		echo CHtml::closeTag('ul');
 
 	 ?>

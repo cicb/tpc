@@ -1,4 +1,5 @@
 <?php 
+$status=isset($status)?$status:false;
 	echo CHtml::openTag('li',array(
 		'id'=>"$fid-$pid", 
 		'class'=>'nodo ', 'style'=>'border-top:1px dashed #888;',
@@ -15,7 +16,7 @@
 				)
 			);
 	}
-		echo TbHtml::checkBox("chk-$fid-$pid",array('data-fid'=>$fid,'data-pid'=>$pid));
+		echo TbHtml::checkBox("chk-$fid-$pid",$status,array('class' =>'CPVFSta', 'data-fid'=>$fid,'data-pid'=>$pid));
 		echo TbHtml::label($nombre,"chk-$fid-$pid",
 			array('style'=>'display:inline;width:100%'));
 
