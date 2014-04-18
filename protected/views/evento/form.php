@@ -382,7 +382,6 @@ $( '.nodo-toggle').live('click',function(){
 		var href= link.attr('href');
 		$.ajax({
 			url:href,
-			bdeforeSend:function(){ $(this).addClass('fa-spin fa-sppiner');},
 			success:function(data){ 
 				$('#'+li).append(data);
 				link.data('estado','toggle')
@@ -409,6 +408,7 @@ $( '.nodo-cal').live('click',function(){
 <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl."/css/jquery.datetimepicker.css" ; ?>" />
  <script type="text/javascript" charset="utf-8">
 $('.picker').datetimepicker({
+		
 		lang:'es'}); 
  </script>
 
@@ -469,6 +469,53 @@ $('.picker').datetimepicker({
 		function()
 		{
 			$(this).attr('id','-1');
+		});
+	$('.Chek').live('click', 
+		function()
+		{
+			var pvid=$(this).data('pv');
+			var funcid=$(this).data('func');
+			$.ajax(
+				{url: "<?php echo CController::createUrl('Funciones/ActualizarPv'); ?>",
+				data:{EventoId:'<?php echo $model->EventoId?>',FuncionesId:funcid,PuntosventaId:pvid,atributo:'ConfiPVFuncionSta',valor:($(this).prop('checked')==true ? 'ALTA' : 'BAJA')},
+				type:'GET',
+				success:function(data)
+				{
+					console.log(data);
+				}
+			});
+		});
+
+	$('.CPF_FecIni').live('change', 
+		function()
+		{
+			var pvid=$(this).data('pv');
+			var funcid=$(this).data('func');
+			$.ajax(
+				{url: "<?php echo CController::createUrl('Funciones/ActualizarPv'); ?>",
+				data:{EventoId:'<?php echo $model->EventoId?>',FuncionesId:funcid,PuntosventaId:pvid,atributo:'ConfiPVFuncionFecIni',valor:$(this).val()},
+				type:'GET',
+				success:function(data)
+				{
+					console.log(data);
+				}
+			});
+		});
+
+	$('.CPF_FecFin').live('change', 
+		function()
+		{
+			var pvid=$(this).data('pv');
+			var funcid=$(this).data('func');
+			$.ajax(
+				{url: "<?php echo CController::createUrl('Funciones/ActualizarPv'); ?>",
+				data:{EventoId:'<?php echo $model->EventoId?>',FuncionesId:funcid,PuntosventaId:pvid,atributo:'ConfiPVFuncionFecFin',valor:$(this).val()},
+				type:'GET',
+				success:function(data)
+				{
+					console.log(data);
+				}
+			});
 		});
 </script>	
 
