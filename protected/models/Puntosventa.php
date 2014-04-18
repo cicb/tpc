@@ -155,7 +155,7 @@ class Puntosventa extends CActiveRecord
 	}
 	public function getTieneHijos()
 	{
-		return !$this->tipoid;
+		return $this->tipoid==0;
 	}
 
 	public function getChildrens($condicion)
@@ -177,15 +177,13 @@ class Puntosventa extends CActiveRecord
 				# Regresa como un elemento de lista
 				$link=$cal="";
 				$chk=TbHtml::checkBox("chk-$prefix-$id");
-				if ($this->hasChildrens()) 
-					# Si tiene hijos le pone el link de +
 					$nombre=$this->PuntosventaNom;
-					CController::renderPartial('_nodoCPVF',compact('prefix','id','nombre'));
-					// TbHtml::link(' ',array('funciones/configPuntoventa','pvid'=>$id,'fid'=>$prefix),
-					// 	array('class'=>'nodo-cal fa fa-calendar pull-right','id'=>"cal-$prefix-$id",
-					// 	 'data-toggle' => 'modal',
-					// 	 'data-target' => '#dlg-confiPvFuncion',)
-					// 	);
+					CController::renderPartial('_nodoCPVF',array(
+						'fid'=>$prefix,
+						'pid'=>$id,
+						'nombre'=>$nombre,
+						'padre'=>$this->getTieneHijos(),
+						));
 				break;
 			case 'ul':
 				# Regresa como un elemento de lista

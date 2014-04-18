@@ -382,6 +382,7 @@ $( '.nodo-toggle').live('click',function(){
 		var href= link.attr('href');
 		$.ajax({
 			url:href,
+			bdeforeSend:function(){ $(this).addClass('fa-spin fa-sppiner');},
 			success:function(data){ 
 				$('#'+li).append(data);
 				link.data('estado','toggle')
@@ -408,7 +409,6 @@ $( '.nodo-cal').live('click',function(){
 <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl."/css/jquery.datetimepicker.css" ; ?>" />
  <script type="text/javascript" charset="utf-8">
 $('.picker').datetimepicker({
-		
 		lang:'es'}); 
  </script>
 

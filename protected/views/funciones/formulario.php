@@ -17,31 +17,35 @@
 <div class="input-append ">
 <?php echo $form->label($model,'FuncionesFecIni:'); ?>
 <?php
-echo $form->textField($model,'FuncionesFecIni',array('class'=>'picker FecIni', 'data-id'=>"$fid"))
+echo $form->textField($model,'FuncionesFecIni',array('class'=>'picker FecIni box2', 'data-id'=>"$fid"))
 ?>
 </div>
 
 <div class="input-append ">
 <?php echo $form->label($model,'FuncionesFecHor:'); ?>
 <?php
-echo $form->textField($model,'FuncionesFecHor',array('class'=>'picker FecHor','data-id'=>"$fid"))
+echo $form->textField($model,'FuncionesFecHor',array('class'=>'picker FecHor box2','data-id'=>"$fid"))
 ?>
 </div>
 
 <div class="input-append ">
 <?php echo $form->label($model,'funcionesTexto:'); ?>
-<?php echo $form->textField($model, 'funcionesTexto' , array('class'=>'FuncText', 'placeholder'=>'funcionesTexto', 'style'=>'width:320px',
+<?php echo $form->textField($model, 'funcionesTexto' , array(
+	'class'=>'FuncText', 'placeholder'=>'funcionesTexto', 'style'=>'width:320px',
 'data-id'=>"$fid",'id'=>"FuncText-$fid"));?>
 </div>
 
-<div class="col-2">
+<div class="box4">
 	<?php 
 		#Impresion de arbol en primer nivel
 	$root=1000;//Id del nodo raiz
-		echo CHtml::openTag('ul',array('class'=>"arbol rama-$fid-$root"));
+		echo CHtml::openTag('ul',array('id'=>"rama-$fid-0", 'class'=>"arbol "));
+				/**** ***Caso especial Taquilla propia*** ****/
+				// $this->renderPartial('/funciones/_nodoCPVF',compact('fid','pid','model'));
+
 				$link="";
 				$chk=TbHtml::checkBox("chk-$fid-$root");
-				$link=TbHtml::link(' ',array('puntosVenta/verRama','id'=>$root,'prefix'=>$fid),
+				$link=TbHtml::link(' ',array('puntosVenta/verRama','pid'=>$root,'fid'=>$fid),
 					array('class'=>'nodo-toggle fa fa-plus-square','id'=>"link-$fid-$root", 'data-estado'=>'inicial')
 					);
 				echo CHtml::tag('li',array('id'=>"$fid-$root", 'class'=>'nodo'),
