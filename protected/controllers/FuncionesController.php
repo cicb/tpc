@@ -482,9 +482,17 @@ class FuncionesController extends Controller
         'puntoventa'=>array('with'=>'hijos')
         ))->findByPk(compact('EventoId','FuncionesId','PuntosventaId'));
     $Pv=$cpvf->puntoventa;
+    echo CHtml::openTag('ul',array('id'=>"rama-".$FuncionesId.'-'.$PuntosventaId, 'class'=>"rama "));
     foreach ($Pv->hijos as $hijo) {
-      $this->renderPartial('_nodoCPVF',array('model'=>$cpvf));
+      $model=Confipvfuncion::model()->with(
+        'puntoventa')->findByPk(
+        array('EventoId'=>$EventoId,'FuncionesId'=>$FuncionesId,
+        'PuntosventaId'=>$hijo->PuntosventaId));
+
+      $this->renderPartial('_nodoCPVF',array('model'=>$model));
     }
+        echo CHtml::closeTag('ul');
+
 
   }
 	// Uncomment the following methods and override them if needed
