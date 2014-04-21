@@ -466,6 +466,27 @@ class FuncionesController extends Controller
     else echo"No existe un Confipvfuncion";
 
   }
+
+  public function actionVerHoja($EventoId,$FuncionesId,$PuntosventaId){
+    #Genera el una rama del arbol apartir de un cofipvfuncion que cumpla 
+    $cpvf=Confipvfuncion::model()->with(array('puntoventa'))->findByPk(
+      compact('EventoId','FuncionesId','PuntosventaId'));
+    $Pv=$cpvf->puntoventa;
+    $this->renderPartial('_nodoCPVF',array('model'=>$cpvf));
+  }
+  
+  public function actionVerRama($EventoId,$FuncionesId,$PuntosventaId){
+    #Genera el una rama del arbol apartir de un cofipvfuncion que cumpla 
+    $cpvf=Confipvfuncion::model()->with(
+      array(
+        'puntoventa'=>array('with'=>'hijos')
+        ))->findByPk(compact('EventoId','FuncionesId','PuntosventaId'));
+    $Pv=$cpvf->puntoventa;
+    foreach ($Pv->hijos as $hijo) {
+      $this->renderPartial('_nodoCPVF',array('model'=>$cpvf));
+    }
+
+  }
 	// Uncomment the following methods and override them if needed
 	/*
 	public function filters()

@@ -312,30 +312,42 @@ class Funciones extends CActiveRecord
 			 }	
 	 }
 
-	 public function agregarConfpvfuncion()
+	 public function agregarConfpvfuncion($puntosventaId=0)
 	 {
-	 	
-	 	$Pvs=Puntosventa::model()->findAll(array('condition'=>"puntosventaSta='ALTA'"));
+	 	if ($puntosventaId>0) {
+	 		$Pvs=array(
+	 			(object)array('PuntosventaId'=>$puntosventaId)
+	 			);
+	 	}
+	 	else{
+
+	 		$Pvs=Puntosventa::model()->findAll(array('condition'=>"PuntosventaSta='ALTA'"));
+	 	}
 
 	 	foreach ($Pvs as $Pv) 
 	 	{
 
-		 	$model = new Confipvfuncion('insert');
+	 		$model = new Confipvfuncion('insert');
 
-		 	$model->EventoId=$this->EventoId;
-		 	$model->FuncionesId=$this->FuncionesId;
-		 	$model->ConfiPVFuncionFecIni=$this->FuncionesFecIni;
-		 	$model->ConfiPVFuncionFecFin=$this->FuncionesFecHor;
-		 	if ($this->evento->PuntosventaId==$Pv->PuntosventaId)
-		 	{
-		 		$model->ConfiPVFuncionFecFin=date("Y-m-d H:i:s", strtotime ('+4 hour' , strtotime ($this->FuncionesFecHor)));
-		 	}
-		 	$model->ConfiPVFuncionDes="N/A";
-		 	$model->ConfiPVFuncionTipSel="MIXTA";
-		 	$model->ConfiPVFuncionSta="ALTA";
-		 	$model->ConfiPVFuncionBan=0;
+	 		$model->EventoId=$this->EventoId;
+	 		$model->FuncionesId=$this->FuncionesId;
+	 		$model->ConfiPVFuncionFecIni=$this->FuncionesFecIni;
+	 		$model->ConfiPVFuncionFecFin=$this->FuncionesFecHor;
+	 		if ($this->evento->PuntosventaId==$Pv->PuntosventaId)
+	 		{
+	 			$model->ConfiPVFuncionFecFin=date("Y-m-d H:i:s", strtotime ('+4 hour' , strtotime ($this->FuncionesFecHor)));
+	 		}
+	 		$model->ConfiPVFuncionDes="N/A";
+	 		$model->ConfiPVFuncionTipSel="MIXTA";
+	 		$model->ConfiPVFuncionSta="ALTA";
+	 		$model->ConfiPVFuncionBan=0;
 	 		$model->PuntosventaId=$Pv->PuntosventaId;
 	 		$model->save();
+	 	}
+	 	if ($puntosventaId>0) {
+	 		# Si se desea insertar solo un configpv especifico para un punto de venta
+	 		#entonces se returna el modelo
+	 		return $model;
 	 	}
 
 	 }
@@ -376,4 +388,21 @@ class Funciones extends CActiveRecord
 	 	$this->deleteConfpvfuncion();
 		 return parent::beforeDelete();	 	
 	 }
+
+	 public function getConfiPvFuncion($puntosventaId)
+	{
+		#Devuelve el confiPvFuncion que este asociado
+		 // con este punto de venta en el evento y 
+		//  la funcion que se envie como parametros
+		$model=Confipvfuncion::model()->findByPk(array(
+			'EventoId'=>$this->evento,
+			'Funtion'=>$this->FuncionesId,
+			'PuntosventaId'=>$puntosventaId
+			));
+		if (is_null($model)) {
+			# sino existe entonces se crea;
+			$model=$this->agregarConfpvfuncion($puntosventaId);
+		}
+		return $model;
+	}
 }

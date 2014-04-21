@@ -16,6 +16,7 @@
  */
 class Confipvfuncion extends CActiveRecord
 {
+	private $padre=0; //Puntos venta Id del padre del punto de venta de este.
 	/**
 	 * @return string the associated database table name
 	 */
@@ -117,8 +118,8 @@ class Confipvfuncion extends CActiveRecord
 		return parent::model($className);
 	}
 
-	public function actualizarAtributo()
+	public function getHijo()
 	{
-		# code...
+		# Devolveria todos los configpvfuncion de acuerdo a la jerarquia de puntos de venta
 	}
 }

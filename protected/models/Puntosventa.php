@@ -72,7 +72,9 @@ class Puntosventa extends CActiveRecord
 			return array(
 					'ventas' => array(self::HAS_MANY, 'Ventas', 'PuntosventaId'),
 					'padre' => array(self::BELONGS_TO, 'Puntosventa', 'PuntosventaSuperId'),
-					//'hijos'	=> array(self::HAS_MANY, 'Puntosventa','Puntosventa')
+					'hijos'	=> array(self::HAS_MANY, 'Puntosventa','',
+						'on'=>"hijos.PuntosventaSuperId=t.PuntosventaId"),
+					// 'nhijos'=>	array(self::STAT,)
 			);
 	}
 
@@ -175,8 +177,6 @@ class Puntosventa extends CActiveRecord
 		switch ($formato) {
 			case 'li':
 				# Regresa como un elemento de lista
-				$link=$cal="";
-				$chk=TbHtml::checkBox("chk-$prefix-$id");
 					$nombre=$this->PuntosventaNom;
 					CController::renderPartial('_nodoCPVF',array(
 						'fid'=>$prefix,
@@ -204,14 +204,14 @@ class Puntosventa extends CActiveRecord
 				break;
 		}
 	}
-	public static function getHijos($valor=0)
-	{
-		# Devuelve los nodos padres
-		return Puntosventa::model()->findAll(
-			array(
-				'condition'=>" PuntosventaSta='ALTA' AND  PuntosventaSuperId=:valor",
-				'params'=>array('valor'=>$valor)));
-	}
+	// public static function getHijos($valor=0)
+	// {
+	// 	# Devuelve los nodos padres
+	// 	return Puntosventa::model()->findAll(
+	// 		array(
+	// 			'condition'=>" PuntosventaSta='ALTA' AND  PuntosventaSuperId=:valor",
+	// 			'params'=>array('valor'=>$valor)));
+	// }
 
 	public static function getRaices( $nivel=0,$prefix='')
 	{
@@ -223,7 +223,6 @@ class Puntosventa extends CActiveRecord
 		}	
 		return $rama;
 	}
-
 
 
 }

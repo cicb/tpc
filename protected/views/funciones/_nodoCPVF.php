@@ -1,5 +1,12 @@
 <?php 
-$status=isset($status)?$status:false;
+
+$status=$model->ConfiPVFuncionSta;
+$fid=$model->FuncionesId;
+$eid=$model->EventoId;
+$pid=$model->PuntosventaId;
+$padre=true;
+$nombre=$model->puntoventa->PuntosventaNom;
+
 	echo CHtml::openTag('li',array(
 		'id'=>"$fid-$pid", 
 		'class'=>'nodo ', 'style'=>'border-top:1px dashed #888;',
@@ -7,7 +14,8 @@ $status=isset($status)?$status:false;
 	//LI NODO
 	if (isset($padre) and $padre) {
 	# Si tiene hijos muestra el boton de +
-		echo TbHtml::link(' ',array('puntosVenta/verRama','pid'=>$pid,'fid'=>$fid),
+		echo TbHtml::link(' ',array('funciones/verRama','EventoId'=>$eid,
+			'FuncionesId'=>$fid,'PuntosventaId'=> $pid),
 			array(
 				'class'=>'nodo-toggle fa fa-plus-square',
 				'id'=>"link-$fid-".$pid, 
@@ -28,22 +36,24 @@ $status=isset($status)?$status:false;
 
 			echo TbHtml::textField("CPF_FecIni-$fid-$pid",date('d-m-Y H:i:s'),
 				array(
-					'placeholder'=>'Fecha de inicio', 
 					'data-fid'=>$fid,'data-pid'=>$pid,
-					'class'=>'picker box1 CPVFFecIni',
-					'style'=>'font-size:10px'));
+					'class'=>'picker box1 hidden CPVFFecIni',
+					'style'=>'font-size:10px;width:5px'));
 
 			echo TbHtml::link(' ','#',array('class'=>'fa fa-calendar text-info ', 
+				'title'=>'Fecha de inicio', 
 				'onclick'=>"$('#CPF_FecIni-$fid-$pid').datetimepicker('show');return false;
 				"));
 			echo " / ";
 			echo TbHtml::textField("CPF_FecFin-$fid-$pid",
 				date('d-m-Y H:i:s'),
-				array('placeholder'=>'Fecha de inicio', 
+				array(
 					'data-fid'=>$fid,'data-pid'=>$pid,
-					'class'=>'picker box1 CPVFFecFin','style'=>'font-size:10px')) ;
+					'class'=>'picker box1 hidden CPVFFecFin',
+					'style'=>'font-size:10px;width:5px')) ;
 
 			echo TbHtml::link(' ','#',array('class'=>'fa fa-calendar  text-warning', 
+				'title'=>'Fecha Fin', 
 				'onclick'=>"$('#CPF_FecFin-$fid-$pid').datetimepicker('show');return false;
 				"));
 
