@@ -480,6 +480,7 @@ class FuncionesController extends Controller
         $criteria=new CDbCriteria;
         $criteria->addCondition("EventoId=:evento");
         $criteria->addCondition("FuncionesId=:funcion");
+        $criteria->addCondition("t.PuntosventaId<>".$evento->PuntosventaId);
         $criteria->join=" inner join puntosventa as t2  on confipvfuncion.PuntosventaId=t2.PuntosventaId 
         and t2.PuntosventaSuperId=:actual";
         $criteria->params=array('actual'=>$PuntosventaId,'evento'=>$EventoId,'funcion'=>$FuncionesId);
@@ -494,13 +495,13 @@ class FuncionesController extends Controller
           }
         }
         #En esta seccion se cambia el PuntosventaId al de la taquilla del evento para a esta asignarle 4 horas mas
-        if (strcasecmp($atributo, "FuncionesFecHor")) {
-          #SI el campo que se esta intentando cambiar es el fechor entonces se debera anadir 4 horas adicionales a la taquilla del evento
-          $PuntosventaId=$evento->PuntosventaId;
-          $taquilla=Confipvfuncion::model()->findByPk(compact('EventoId','FuncionesId','PuntosventaId'));
-          $taquilla->ConfiPVFuncionFecFin=date("Y-m-d H:i:s", strtotime ('+4 hour' , strtotime ($taquilla->ConfiPVFuncionFecFin)));
-          $taquilla->update();
-        }
+        // if (strcasecmp($atributo, "FuncionesFecHor")) {
+        //   #SI el campo que se esta intentando cambiar es el fechor entonces se debera anadir 4 horas adicionales a la taquilla del evento
+        //   $PuntosventaId=$evento->PuntosventaId;
+        //   $taquilla=Confipvfuncion::model()->findByPk(compact('EventoId','FuncionesId','PuntosventaId'));
+        //   $taquilla->ConfiPVFuncionFecFin=date("Y-m-d H:i:s", strtotime ('+4 hour' , strtotime ($taquilla->ConfiPVFuncionFecFin)));
+        //   $taquilla->update();
+        // }
 
       }
       else echo "No tiene hijos \n";
