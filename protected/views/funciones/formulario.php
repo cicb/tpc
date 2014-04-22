@@ -10,7 +10,16 @@
 			'eid'=>$model->EventoId,
 			'fid'=>$model->FuncionesId):'',
 )); ?>
+<div class="col-5" style="display:block; margin-bottom:10px" >
+	<?php echo TbHtml::button(' Quitar', array(
+			'data-id'=>$model->FuncionesId,
+			'class'=>'btn-quitar-funcion btn btn-danger fa fa-minus-circle pull-left'
+	)); ?>
 
+	<?php echo TbHtml::button(' Agregar', array(
+			'class'=>'btn-agregar-funcion btn btn-success fa fa-plus-circle pull-right'
+	)); ?>
+</div>
 
 
 
