@@ -225,17 +225,7 @@ function updateChosen(obj){
 
 <div class=' white-box box' id='listado-funciones'>
 <h3>Funciones</h3>
-<div class="col-5" >
-	<?php echo CHtml::button(' Quitar', array(
-			'id'=>'btn-quitar-funcion',
-			'class'=>'btn btn-danger fa fa-minus-circle pull-left'
-	)); ?>
 
-	<?php echo CHtml::button(' Agregar', array(
-			'id'=>'btn-agregar-funcion',
-			'class'=>'btn btn-success fa fa-plus-circle pull-right'
-	)); ?>
-</div>
 
 <?php
 foreach($model->funciones() as $funcion){
@@ -353,7 +343,7 @@ foreach($model->funciones() as $funcion){
 
 ?>
 <?php Yii::app()->clientScript->registerScript('agregar-funcion',sprintf("
-			$('#btn-agregar-funcion').on('click',function(){
+			$('.btn-agregar-funcion').live('click',function(){
 					$.ajax({
 							url:'%s',
 									type:'get',
@@ -365,13 +355,18 @@ foreach($model->funciones() as $funcion){
 						});
 });
 
-$('#btn-quitar-funcion').on('click',function(){
-		console.log('click');
-		$.ajax({url:'".$this->createUrl('funciones/quitar',array('eid'=>$model->EventoId))."',
-				'success': function(){
-						$('.div-funcion:last').remove();
+$('.btn-quitar-funcion').live('click',function(){
+		if(confirm('¿Esta usted seguro de querer eliminar esta funcion? Esta operacion es irreversible')){			
+			var ff=$(this).data('id');
+			$.ajax({
+				url:'".$this->createUrl('funciones/quitar')."',
+				type:'post',
+				data:{eid:".$model->EventoId.",fid:ff},
+				success: function(){
+					$('#f-".$model->EventoId."-'+ff).remove();
 				}
-		});
+			});
+		}
 });
 
 $( '.nodo-toggle').live('click',function(){

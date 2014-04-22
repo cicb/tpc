@@ -7,7 +7,40 @@ class FuncionesController extends Controller
     $this->render('index');
   
   }
+  // public function filters()
+  // {
+  //   return array(
+  //     'accessControl', // perform access control for CRUD operations
+  //     'postOnly + delete', // we only allow deletion via POST request
+  //   );
+  // }
 
+  /**
+   * Specifies the access control rules.
+   * This method is used by the 'accessControl' filter.
+   * @return array access control rules
+   */
+  /*public function accessRules()
+  {
+    return array(
+      array('allow',  // allow all users to perform 'index' and 'view' actions
+        'actions'=>array('index','view'),
+        'users'=>array('*'),
+      ),
+      array('allow', // allow authenticated user to perform 'create' and 'update' actions
+        'actions'=>array('create','update'),
+        'users'=>array('@'),
+      ),
+      array('allow', // allow admin user to perform 'admin' and 'delete' actions
+        'actions'=>array('admin','delete'),
+        'users'=>array('admin'),
+      ),
+            /*
+      array('deny',  // deny all users
+        'users'=>array('*'),
+      ),                           
+    );
+  }*/
   public function actionRegistro()
   {
     $model=new Funciones('insert');  
@@ -364,10 +397,20 @@ class FuncionesController extends Controller
      echo "</table>";
     }
 
-		public function actionQuitar($eid)
+		public function actionQuitar()
 		{
 				// Quitar funcion elimina la ultima funcion de la cola
-				echo Funciones::quitarUltima($eid);
+				// echo Funciones::quitarUltima($eid);
+        if (isset($_POST['eid'],$_POST['fid'])) {
+          # SI se le envian el id del evento y de la funcion
+          extract($_POST);
+          $funcion=Funciones::model()->findByPk(array('EventoId'=>$eid,'FuncionesId'=>$fid));
+          if (is_object($funcion)) {
+            $funcion->delete();
+          }
+        }
+        else
+          "Parametros invalidos";
 
 		}
 
