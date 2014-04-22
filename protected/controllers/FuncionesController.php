@@ -404,10 +404,6 @@ class FuncionesController extends Controller
         if (!is_null($model))
         {
           $model->attributes=$_POST['Funciones'];
-/*          foreach($_POST['Funciones'] as $name=>$value)
-          {
-            $model->$name=$value;
-          }*/
           if ($model->update())
           {
             $cols=$_POST['Funciones'];
@@ -427,13 +423,13 @@ class FuncionesController extends Controller
 
   public function actionActualizarPv($EventoId,$FuncionesId,$PuntosventaId,$atributo,$valor)
   {
-    $cpf=Confipvfuncion::model()->with('puntoventa')->findByPk(compact('EventoId','FuncionesId','PuntosventaId'));
+    $cpf=Confipvfuncion::model()->with(array('puntoventa'=>array('with'=>'hijos')))->findByPk(compact('EventoId','FuncionesId','PuntosventaId'));
     if (!is_null($cpf)) {
       #"Si existe "
       $evento=Evento::model()->findByPk($EventoId);
       $cpf[$atributo]=$valor;
-      echo $cpf->update($atributo);
-      if ($cpf->puntoventa->tieneHijos) {
+      $cpf->update($atributo);
+      if ($cpf->puntoventa->hijos) {
         $criteria=new CDbCriteria;
         $criteria->addCondition("EventoId=:evento");
         $criteria->addCondition("FuncionesId=:funcion");
@@ -445,25 +441,23 @@ class FuncionesController extends Controller
         $hijosPadres=$cpf->puntoventa->getChildrens(' and tipoid=0');
         foreach ($hijosPadres as $hijoPadre) {
           if ($hijoPadre->PuntosventaSuperId==$PuntosventaId) {
-            echo $hijoPadre->PuntosventaNom;
-            # Si el id del padre y el propio id son distintos (Para evitar que se cicle)
             $this->actionActualizarPv($EventoId,$FuncionesId,$hijoPadre->PuntosventaId,$atributo,$valor);
           }
         }
         #En esta seccion se cambia el PuntosventaId al de la taquilla del evento para a esta asignarle 4 horas mas
-        if (strcasecmp($atributo, "FuncionesFecHor")) {
-          #SI el campo que se esta intentando cambiar es el fechor entonces se debera anadir 4 horas adicionales a la taquilla del evento
-          $PuntosventaId=$evento->PuntosventaId;
-          $taquilla=Confipvfuncion::model()->findByPk(compact('EventoId','FuncionesId','PuntosventaId'));
-          $taquilla->ConfiPVFuncionFecFin=date("Y-m-d H:i:s", strtotime ('+4 hour' , strtotime ($taquilla->ConfiPVFuncionFecFin)));
-          $taquilla->update();
-        }
-
+//ConfiPVFuncionFecIni          #SI el campo que se esta intentando cambiar es el fechor entonces se debera anadir 4 horas adicionales a la taquilla del evento
+        $PuntosventaId=$evento->PuntosventaId;
+        $taquilla=Confipvfuncion::model()->findByPk(compact('EventoId','FuncionesId','PuntosventaId'));
+        $taquilla->ConfiPVFuncionFecFin=date("Y-m-d H:i:s", strtotime ('+4 hour' , strtotime ($cpf->ConfiPVFuncionFecFin)));
+        $taquilla->update();
       }
-      else echo "No tiene hijos \n";
-
+      else 
+        echo "No tiene hijos \n";
+      }
+    else {
+      echo"No existe un Confipvfuncion";
+      return 0;
     }
-    else echo"No existe un Confipvfuncion";
 
   }
 
@@ -472,7 +466,8 @@ class FuncionesController extends Controller
     $cpvf=Confipvfuncion::model()->with(array('puntoventa'))->findByPk(
       compact('EventoId','FuncionesId','PuntosventaId'));
     $Pv=$cpvf->puntoventa;
-    $this->renderPartial('_nodoCPVF',array('model'=>$cpvf));
+    if (is_object($cpvf)) 
+      $this->renderPartial('_nodoCPVF',array('model'=>$cpvf));
   }
   
   public function actionVerRama($EventoId,$FuncionesId,$PuntosventaId){
@@ -488,8 +483,9 @@ class FuncionesController extends Controller
         'puntoventa')->findByPk(
         array('EventoId'=>$EventoId,'FuncionesId'=>$FuncionesId,
         'PuntosventaId'=>$hijo->PuntosventaId));
-
-      $this->renderPartial('_nodoCPVF',array('model'=>$model));
+      if (is_object($model)) 
+        $this->renderPartial('_nodoCPVF',array('model'=>$model));
+      
     }
         echo CHtml::closeTag('ul');
 

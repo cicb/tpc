@@ -1,6 +1,6 @@
 
 <?php $eid=$model->EventoId;$fid=$model->FuncionesId; ?>
-<div class=' div-funcion' id='f-<?php echo $model->EventoId."-".$model->FuncionesId ; ?>'>
+<div class=' div-funcion box' id='f-<?php echo $model->EventoId."-".$model->FuncionesId ; ?>'>
 <?php $form=$this->beginWidget('bootstrap.widgets.TbActiveForm', array(
     'id'=>'evento-form',
     'enableAjaxValidation'=>false,
@@ -32,17 +32,18 @@ echo $form->textField($model,'FuncionesFecHor',array('class'=>'picker FecHor box
 <?php echo $form->label($model,'funcionesTexto:'); ?>
 <?php echo $form->textField($model, 'funcionesTexto' , array(
 	'class'=>'FuncText box3', 'placeholder'=>'funcionesTexto',
+	'style'=>'width:265px',
 'data-id'=>"$fid",'id'=>"FuncText-$fid"));?>
 </div>
 
-<div class="box3">
+<div class="box4">
 	<?php 
 		#Impresion de arbol en primer nivel
 	// $root=1000;//Id del nodo raiz
 	$root=Confipvfuncion::model()->with('puntoventa')->findByPk(array(
 		'EventoId'=>$model->EventoId,
 		'FuncionesId'=>$model->FuncionesId, 
-		'PuntosventaId'=> 1000//Id del punto de venta  raiz
+		'PuntosventaId'=> 00//Id del punto de venta  raiz
 		));
 	$taquilla=Confipvfuncion::model()->with('puntoventa')->findByPk(array(
 		'EventoId'=>$model->EventoId,
@@ -53,7 +54,10 @@ echo $form->textField($model,'FuncionesFecHor',array('class'=>'picker FecHor box
 				/****
 				***Caso especial Taquilla propia
 				*/
-				$this->renderPartial('/funciones/_nodoCPVF',array('model'=>$taquilla));
+				if (is_object($taquilla)) {
+					# Si es valido el id de taquilla del evento
+					$this->renderPartial('/funciones/_nodoCPVF',array('model'=>$taquilla));
+				}
 /*			
 		Caso Modulos
 */
@@ -61,13 +65,6 @@ echo $form->textField($model,'FuncionesFecHor',array('class'=>'picker FecHor box
 				# Si el id de la raiz es correcto
 				$this->renderPartial('/funciones/_nodoCPVF',array('model'=>$root));
 			}
-				// $link="";
-				// $chk=TbHtml::checkBox("chk-$fid-$root");
-				// $link=TbHtml::link(' ',array('puntosVenta/verRama','id'=>$root,'fid'=>$fid),
-				// 	array('class'=>'nodo-toggle fa fa-plus-square','id'=>"link-$fid-$root", 'data-estado'=>'inicial')
-				// 	);
-				// echo CHtml::tag('li',array('id'=>"$fid-$root", 'class'=>'nodo'),
-				// 	$link.' '.$chk.' '.TbHtml::label(" Modulos","chk-$fid-$root",array('style'=>'display:inline')));
 		echo CHtml::closeTag('ul');
 
 	 ?>

@@ -70,6 +70,7 @@
 <div class='control-group'>
 		<?php echo $form->labelEx($model,'EventoTemFecFin',array('class'=>'control-label')); ?>
  <div class="input-append">
+ 
 		<?php echo $form->textField($model,'EventoTemFecFin',array('class'=>'picker')) ;?>
  </div>
 </div>		
@@ -386,7 +387,7 @@ $( '.nodo-toggle').live('click',function(){
 				$('#'+li).append(data);
 				link.data('estado','toggle')
 				link.toggleClass('fa-minus-square');
-				$('.picker').datetimepicker({allowTimes:1});
+				$('.picker').datetimepicker({allowTimes:1,format:'Y-m-d H:i'});
 			}
 		});
 	}
@@ -523,7 +524,7 @@ $('.picker').datetimepicker({
 <script>
   	$(function() {
   	  // Apparently click is better chan change? Cuz IE?
-      $('input[type="checkbox"]').change(function(e) {
+      $('input[type="checkbox"]').live('change',function(e) {
       var checked = $(this).prop("checked"),
           container = $(this).parent(),
           siblings = container.siblings();
