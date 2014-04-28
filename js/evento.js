@@ -121,13 +121,4 @@ $( '.nodo-cal').live('click',function(){
 	$('#dlg').load($(this).attr('href'));
 });
 
-$('.btn-agregar-funcion').live('click',function(){
-	$.ajax({
-		url:'%s',
-		type:'get',
-		success:function(data){
-			$('#listado-funciones').append(data);
-			$('.picker').datetimepicker({allowTimes:1});
 
-		}
-	});

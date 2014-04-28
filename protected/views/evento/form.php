@@ -320,7 +320,9 @@ foreach($model->funciones() as $funcion){
 
 ?>
 
-<?php Yii::app()->clientScript->registerScript('agregar-funcion',sprintf("
+<?php 
+if (isset($model) and is_object($model) and $model->EventoId) {
+Yii::app()->clientScript->registerScript('agregar-funcion',sprintf("
 
 
 $('.btn-quitar-funcion').live('click',function(){
@@ -339,6 +341,7 @@ $('.btn-quitar-funcion').live('click',function(){
 
 
 ",$this->createUrl('funciones/insertar',array('eid'=>$model->EventoId))),CClientScript::POS_READY);
+}
 ?>
 <?php Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl. '/js/jquery.datetimepicker.js',CClientScript::POS_BEGIN); ?>
 <?php Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl. '/js/evento.js'); ?>
@@ -425,5 +428,5 @@ $('.btn-agregar-funcion').live('click',function(){
 	});
 });
 
-	
+
  </script>
