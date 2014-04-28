@@ -476,7 +476,7 @@ class FuncionesController extends Controller
         $criteria=new CDbCriteria;
         $criteria->addCondition("EventoId=:evento");
         $criteria->addCondition("FuncionesId=:funcion");
-        $criteria->addCondition("t.PuntosventaId<>".$evento->PuntosventaId);
+        $criteria->addCondition("confipvfuncion.PuntosventaId<>".$evento->PuntosventaId);
         $criteria->join=" inner join puntosventa as t2  on confipvfuncion.PuntosventaId=t2.PuntosventaId 
         and t2.PuntosventaSuperId=:actual";
         $criteria->params=array('actual'=>$PuntosventaId,'evento'=>$EventoId,'funcion'=>$FuncionesId);
@@ -498,8 +498,7 @@ class FuncionesController extends Controller
         //   $taquilla->update();
         // }
       }
-      else 
-        echo "No tiene hijos \n";
+
       }
     else {
       echo"No existe un Confipvfuncion";
@@ -519,9 +518,14 @@ class FuncionesController extends Controller
   
   public function actionVerRama($EventoId,$FuncionesId,$PuntosventaId){
     #Genera el una rama del arbol apartir de un cofipvfuncion que cumpla 
+    $evento=Evento::model()->findByPk($EventoId);
     $cpvf=Confipvfuncion::model()->with(
       array(
-        'puntoventa'=>array('with'=>'hijos')
+        'puntoventa'=>array(
+          'with'=>array(
+            'hijos'=>array(
+              'condition'=>"hijos.PuntosventaSta='ALTA' and hijos.PuntosventaId<>".$evento->PuntosventaId
+              )))
         ))->findByPk(compact('EventoId','FuncionesId','PuntosventaId'));
     $Pv=$cpvf->puntoventa;
     echo CHtml::openTag('ul',array('id'=>"rama-".$FuncionesId.'-'.$PuntosventaId, 'class'=>"rama "));

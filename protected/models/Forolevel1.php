@@ -52,6 +52,8 @@ class Forolevel1 extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+			'foro'=>array(self::BELONGS_TO,'Foro','ForoId'),
+			// 'funciones'=>array(self::HAS_MANY,'Funciones',array('ForoId','ForoMapIntId')),
 		);
 	}
 

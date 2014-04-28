@@ -225,5 +225,10 @@ class EventoController extends Controller
 		
 	}
 
+	public function actionVerDistribuciones()
+	{
+		#Despliega una lista de distribuciones actuales
+	}
+
 
 }
