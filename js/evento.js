@@ -8,23 +8,7 @@ function updateChosen(obj){
 	$(obj).chosen();
 }
 
-function actualizarf(datos, funcionid) 
-{
-	$.ajax(
-		{url: "<?php echo CController::createUrl('Funciones/update',array('EventoId'=>$model->EventoId)); ?>&FuncionesId="+funcionid,
-		data:datos,
-		type:'POST',
-		dataType:'JSON',
-		success:function(data)
-		{
-			if (data.respuesta)
-			{
-				console.log('La actualización se realizo con exito');
-			}
-		}
-	})
 
-}
 $('.FecHor').live('change',
 	function()
 	{
@@ -64,53 +48,8 @@ $('.FuncText').live('keyup',
 	{
 		$(this).attr('id','-1');
 	});
-$('.CPVFSta').live('click', 
-	function()
-	{
-		var pvid=$(this).data('pid');
-		var funcid=$(this).data('fid');
-		$.ajax(
-			{url: "<?php echo CController::createUrl('Funciones/ActualizarPv'); ?>",
-			data:{EventoId:'<?php echo $model->EventoId?>',FuncionesId:funcid,PuntosventaId:pvid,atributo:'ConfiPVFuncionSta',valor:($(this).prop('checked')==true ? 'ALTA' : 'BAJA')},
-			type:'GET',
-			success:function(data)
-			{
-				console.log(data);
-			}
-		});
-	});
 
-$('.CPVFFecIni').live('change', 
-	function()
-	{
-		var pvid=$(this).data('pid');
-		var funcid=$(this).data('fid');
-		$.ajax(
-			{url: "<?php echo CController::createUrl('Funciones/ActualizarPv'); ?>",
-			data:{EventoId:'<?php echo $model->EventoId?>',FuncionesId:funcid,PuntosventaId:pvid,atributo:'ConfiPVFuncionFecIni',valor:$(this).val()},
-			type:'GET',
-			success:function(data)
-			{
-				console.log(data);
-			}
-		});
-	});
 
-$('.CPVFFecFin').live('change', 
-	function()
-	{
-		var pvid=$(this).data('pid');
-		var funcid=$(this).data('fid');
-		$.ajax(
-			{url: "<?php echo CController::createUrl('Funciones/ActualizarPv'); ?>",
-			data:{EventoId:'<?php echo $model->EventoId?>',FuncionesId:funcid,PuntosventaId:pvid,atributo:'ConfiPVFuncionFecFin',valor:$(this).val()},
-			type:'GET',
-			success:function(data)
-			{
-				console.log(data);
-			}
-		});
-	});
 
 $(function() {
   	  // Apparently click is better chan change? Cuz IE?
@@ -192,4 +131,3 @@ $('.btn-agregar-funcion').live('click',function(){
 
 		}
 	});
-});

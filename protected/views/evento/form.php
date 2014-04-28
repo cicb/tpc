@@ -319,6 +319,7 @@ foreach($model->funciones() as $funcion){
 						");
 
 ?>
+
 <?php Yii::app()->clientScript->registerScript('agregar-funcion',sprintf("
 
 
@@ -347,4 +348,82 @@ $('.btn-quitar-funcion').live('click',function(){
 $('.picker').datetimepicker({
 		
 		lang:'es'}); 
+
+function actualizarf(datos, funcionid) 
+{
+	$.ajax(
+		{url: "<?php echo CController::createUrl('Funciones/update',array('EventoId'=>$model->EventoId)); ?>&FuncionesId="+funcionid,
+		data:datos,
+		type:'POST',
+		dataType:'JSON',
+		success:function(data)
+		{
+			if (data.respuesta)
+			{
+				console.log('La actualización se realizo con exito');
+			}
+		}
+	})
+
+}
+$('.CPVFSta').live('click', 
+	function()
+	{
+		var pvid=$(this).data('pid');
+		var funcid=$(this).data('fid');
+		$.ajax(
+			{url: "<?php echo CController::createUrl('Funciones/ActualizarPv'); ?>",
+			data:{EventoId:'<?php echo $model->EventoId?>',FuncionesId:funcid,PuntosventaId:pvid,atributo:'ConfiPVFuncionSta',valor:($(this).prop('checked')==true ? 'ALTA' : 'BAJA')},
+			type:'GET',
+			success:function(data)
+			{
+				console.log(data);
+			}
+		});
+	});
+
+$('.CPVFFecIni').live('change', 
+	function()
+	{
+		var pvid=$(this).data('pid');
+		var funcid=$(this).data('fid');
+		$.ajax(
+			{url: "<?php echo CController::createUrl('Funciones/ActualizarPv'); ?>",
+			data:{EventoId:'<?php echo $model->EventoId?>',FuncionesId:funcid,PuntosventaId:pvid,atributo:'ConfiPVFuncionFecIni',valor:$(this).val()},
+			type:'GET',
+			success:function(data)
+			{
+				console.log(data);
+			}
+		});
+	});
+$('.CPVFFecFin').live('change', 
+	function()
+	{
+		var pvid=$(this).data('pid');
+		var funcid=$(this).data('fid');
+		$.ajax(
+			{url: "<?php echo CController::createUrl('Funciones/ActualizarPv'); ?>",
+			data:{EventoId:'<?php echo $model->EventoId?>',FuncionesId:funcid,PuntosventaId:pvid,atributo:'ConfiPVFuncionFecFin',valor:$(this).val()},
+			type:'GET',
+			success:function(data)
+			{
+				console.log(data);
+			}
+		});
+	});
+
+$('.btn-agregar-funcion').live('click',function(){
+	$.ajax({
+		url:'<?php echo CController::createUrl("funciones/insertar",array("eid"=>$model->EventoId));?>',
+		type:'get',
+		success:function(data){
+			$('#listado-funciones').append(data);
+			$('.picker').datetimepicker({allowTimes:1});
+
+		}
+	});
+});
+
+	
  </script>
