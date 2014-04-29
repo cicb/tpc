@@ -10,11 +10,16 @@
 			'eid'=>$model->EventoId,
 			'fid'=>$model->FuncionesId):'',
 )); ?>
-<div class="col-5" style="display:block; margin-bottom:10px" >
+<div class="row-fluid" style="display:block; margin-bottom:10px" >
 	<?php echo TbHtml::button(' ', array(
 			'data-id'=>$model->FuncionesId,
 			'class'=>'btn-quitar-funcion btn btn-danger fa fa-2x fa-minus-circle pull-left',
 			'title'=>'Eliminar esta función'
+	)); ?>
+	<?php echo TbHtml::link(' Asignar distribucion',$this->createUrl('distribuciones/index'), array(
+			'data-id'=>$model->FuncionesId,
+			'class'=>'btn-asignar-dist btn btn-primary fa fa-2x fa-trello pull-left',
+			'title'=>'Asignar distribución.'
 	)); ?>
 
 
@@ -23,23 +28,23 @@
 
 
 <div class="input-append ">
-<?php echo $form->label($model,'FuncionesFecIni:'); ?>
+<?php echo CHtml::label('Inicio de venta:' 'FuncionesFecIni'); ?>
 <?php
 echo $form->textField($model,'FuncionesFecIni',array('class'=>'picker FecIni box2', 'data-id'=>"$fid"))
 ?>
 </div>
 
 <div class="input-append ">
-<?php echo $form->label($model,'FuncionesFecHor:'); ?>
+<?php echo $form->label('Función','FuncionesFecHor:'); ?>
 <?php
 echo $form->textField($model,'FuncionesFecHor',array('class'=>'picker FecHor box2','data-id'=>"$fid"))
 ?>
 </div>
 
 <div class="input-append ">
-<?php echo $form->label($model,'funcionesTexto:'); ?>
+<?php echo $form->label('Texto de la función','funcionesTexto:'); ?>
 <?php echo $form->textField($model, 'funcionesTexto' , array(
-	'class'=>'FuncText box3', 'placeholder'=>'funcionesTexto',
+	'class'=>'FuncText box3', 'placeholder'=>'Texto de la función',
 	'style'=>'width:265px',
 'data-id'=>"$fid",'id'=>"FuncText-$fid"));?>
 </div>

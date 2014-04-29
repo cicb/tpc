@@ -508,37 +508,37 @@ class FuncionesController extends Controller
   }
 
   public function actionVerHoja($EventoId,$FuncionesId,$PuntosventaId){
-    #Genera el una rama del arbol apartir de un cofipvfuncion que cumpla 
-    $cpvf=Confipvfuncion::model()->with(array('puntoventa'))->findByPk(
-      compact('EventoId','FuncionesId','PuntosventaId'));
-    $Pv=$cpvf->puntoventa;
-    if (is_object($cpvf)) 
-      $this->renderPartial('_nodoCPVF',array('model'=>$cpvf));
+		  #Genera el una rama del arbol apartir de un cofipvfuncion que cumpla 
+		  $cpvf=Confipvfuncion::model()->with(array('puntoventa'))->findByPk(
+				  compact('EventoId','FuncionesId','PuntosventaId'));
+		  $Pv=$cpvf->puntoventa;
+		  if (is_object($cpvf)) 
+				  $this->renderPartial('_nodoCPVF',array('model'=>$cpvf));
   }
   
   public function actionVerRama($EventoId,$FuncionesId,$PuntosventaId){
-    #Genera el una rama del arbol apartir de un cofipvfuncion que cumpla 
-    $evento=Evento::model()->findByPk($EventoId);
-    $cpvf=Confipvfuncion::model()->with(
-      array(
-        'puntoventa'=>array(
-          'with'=>array(
-            'hijos'=>array(
-              'condition'=>"hijos.PuntosventaSta='ALTA' and hijos.PuntosventaId<>".$evento->PuntosventaId
-              )))
-        ))->findByPk(compact('EventoId','FuncionesId','PuntosventaId'));
-    $Pv=$cpvf->puntoventa;
-    echo CHtml::openTag('ul',array('id'=>"rama-".$FuncionesId.'-'.$PuntosventaId, 'class'=>"rama "));
-    foreach ($Pv->hijos as $hijo) {
-      $model=Confipvfuncion::model()->with(
-        'puntoventa')->findByPk(
-        array('EventoId'=>$EventoId,'FuncionesId'=>$FuncionesId,
-        'PuntosventaId'=>$hijo->PuntosventaId));
-      if (is_object($model)) 
-        $this->renderPartial('_nodoCPVF',array('model'=>$model));
-      
-    }
-        echo CHtml::closeTag('ul');
+		  #Genera el una rama del arbol apartir de un cofipvfuncion que cumpla 
+		  $evento=Evento::model()->findByPk($EventoId);
+		  $cpvf=Confipvfuncion::model()->with(
+				  array(
+						  'puntoventa'=>array(
+								  'with'=>array(
+										  'hijos'=>array(
+												  'condition'=>"hijos.PuntosventaSta='ALTA' and hijos.PuntosventaId<>".$evento->PuntosventaId
+										  )))
+								  ))->findByPk(compact('EventoId','FuncionesId','PuntosventaId'));
+		  $Pv=$cpvf->puntoventa;
+		  echo CHtml::openTag('ul',array('id'=>"rama-".$FuncionesId.'-'.$PuntosventaId, 'class'=>"rama "));
+		  foreach ($Pv->hijos as $hijo) {
+				  $model=Confipvfuncion::model()->with(
+						  'puntoventa')->findByPk(
+								  array('EventoId'=>$EventoId,'FuncionesId'=>$FuncionesId,
+								  'PuntosventaId'=>$hijo->PuntosventaId));
+				  if (is_object($model)) 
+						  $this->renderPartial('_nodoCPVF',array('model'=>$model));
+
+		  }
+		  echo CHtml::closeTag('ul');
 
 
   }

@@ -225,25 +225,4 @@ class EventoController extends Controller
 		
 	}
 
-	public function actionVerDistribuciones()
-	{
-		#Despliega una lista de distribuciones actuales
-		$model=new Forolevel1('search');
-		if (isset($_GET['Forolevel1'])) {
-			# code...
-			$model->attributes=$_GET['Forolevel1'];
-		}
-		$this->render('listaDistribuciones',compact('model'));
-	}
-	public function actionVerDistribucionesPorEvento()
-	{
-		#Despliega una lista de distribuciones actuales
-		$model=new Forolevel1('search');
-		if (isset($_GET['Forolevel1'])) {
-			# code...
-			$model->attributes=$_GET['Forolevel1'];
-		}
-		$this->render('listaDistribucionesEvento',compact('model'));
-	}
-
 }

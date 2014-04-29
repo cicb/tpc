@@ -37,8 +37,6 @@
 
 			<?php echo $form->textFieldControlGroup($model,'EventoNom',array('span'=>4,'maxlength'=>150)); ?>
             <?php echo $form->textFieldControlGroup($model,'EventoDesBol',array( 'span'=>4,'maxlength'=>75)); ?>
-            <?php echo $form->textFieldControlGroup($model,'EventoDesWeb',array('span'=>4,'maxlength'=>200)); ?>
-
 		<div class='alert'>
 			<?php echo $form->dropDownListControlGroup($model, 'EventoSta',
 					array('1'=>'BAJA', 'ALTA'=>'ALTA'), array('class' => 'span2')); ?>
@@ -48,7 +46,6 @@
 
 		<?php echo $form->labelEx($model,'EventoFecIni',array('class'=>'control-label')); ?>
 		<?php echo $form->textField($model,'EventoFecIni',array('class'=>'picker')) ;?>
-
 
 <div class='control-group'>
 
