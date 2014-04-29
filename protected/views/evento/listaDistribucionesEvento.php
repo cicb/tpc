@@ -4,8 +4,14 @@
 )); ?>
 	<div class="controles">
 		<div class="box3">
-			<?php echo $form->textFieldControlGroup($model, 'ForoMapIntNom'); ?>
-		</div>		
+            <?php
+			echo CHtml::label('Evento','evento_id', array('style'=>'width:70px; display:inline-table;'));
+			$eventos = Evento::model()->findAll();
+			$list = CHtml::listData($eventos,'EventoId','EventoNom');
+			echo $form->dropDownListControlGroup($model, 'EventoNom',
+				$list, array('empty' => 'Seleccione un evento', 'class'=>'chosen')); 
+
+                ?>		</div>		
 		<?php echo TbHtml::formActions(array(
 		    TbHtml::resetButton('Cancelar'),
 		    TbHtml::submitButton('Buscar', array('class' => 'btn btn-primary fa fa-search')),

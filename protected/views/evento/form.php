@@ -200,15 +200,18 @@
 </div><!-- form -->
 
 
-<div class=' white-box box' id='listado-funciones'>
-<h3>Funciones</h3>
-
-
-<?php
-foreach($model->funciones() as $funcion){
-		$this->renderPartial('/funciones/formulario',array('model'=>$funcion));
-};
-?>
+<div class=' white-box box' >
+	<h3>Funciones</h3>
+<div id='listado-funciones'>
+	<?php
+	foreach($model->funciones() as $funcion){
+			$this->renderPartial('/funciones/formulario',array('model'=>$funcion));
+	};
+	?>
+</div>
+	<?php echo TbHtml::button(' Agregar una función', array(
+			'class'=>'btn-agregar-funcion btn btn-success fa fa-2x fa-plus-circle center'
+	)); ?>
 </div>
 <?php $this->widget('bootstrap.widgets.TbModal', array(
     'id' => 'dlg-confiPvFuncion',

@@ -34,6 +34,7 @@ class Funciones extends CActiveRecord
 	 
 	public $pathUrlImagesBD;
 	public $maxId;
+	public $EventoNom;
 
 	public $dias = array("domingo","lunes","martes","miércoles","jueves","viernes","sábado");
 
@@ -414,5 +415,11 @@ class Funciones extends CActiveRecord
 			$model=$this->agregarConfpvfuncion($puntosventaId);
 		}
 		return $model;
+	}
+
+	public function verDistribuciones()
+	{
+		$criteria=new CDbCriteria;
+		$criteria->compare('EventoNom', $this->EventoNom, true);
 	}
 }

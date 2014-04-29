@@ -19,6 +19,7 @@ class Forolevel1 extends CActiveRecord
 	/**
 	 * @return string the associated database table name
 	 */
+	public $EventoNom;
 	public function tableName()
 	{
 		return 'forolevel1';
@@ -93,20 +94,33 @@ class Forolevel1 extends CActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('ForoId',$this->ForoId,true);
-		$criteria->compare('ForoMapIntId',$this->ForoMapIntId,true);
-		$criteria->compare('ForoMapIntNom',$this->ForoMapIntNom,true);
-		$criteria->compare('foroMapConfig',$this->foroMapConfig,true);
-		$criteria->compare('ForoMapIntIma',$this->ForoMapIntIma,true);
-		$criteria->compare('ForoMapZonInt',$this->ForoMapZonInt,true);
-		$criteria->compare('ForoMapZonIntWei',$this->ForoMapZonIntWei);
-		$criteria->compare('ForoMapZonIntHei',$this->ForoMapZonIntHei);
-		$criteria->compare('ForoMapPat',$this->ForoMapPat,true);
+		if (strlen($this->EventoNom)>2) {
+			$criteria->join="INNER JOIN funciones as t1 ON t1.ForoId=t.ForoId 
+							and t1.ForoMapIntId=t.ForoId ";
+			$criteria->join.="INNER JOIN evento as t2 ON t2.EventoId=t1.EventoId";
+			$criteria->compare('t2.EventoNom',$this->EventoNom);
+			// $criteria->addCondition("t2.EventoNom like ':EventoNom' ")
+		}
+		else{
+			
+		// $criteria->compare('ForoId',$this->ForoId,true);
+			$criteria->compare('ForoMapIntId',$this->ForoMapIntId,true);
+			$criteria->compare('ForoMapIntNom',$this->ForoMapIntNom,true);
+			$criteria->compare('foroMapConfig',$this->foroMapConfig,true);
+			$criteria->compare('ForoMapIntIma',$this->ForoMapIntIma,true);
+			$criteria->compare('ForoMapZonInt',$this->ForoMapZonInt,true);
+			$criteria->compare('ForoMapZonIntWei',$this->ForoMapZonIntWei);
+			$criteria->compare('ForoMapZonIntHei',$this->ForoMapZonIntHei);
+			$criteria->compare('ForoMapPat',$this->ForoMapPat,true);
+			$criteria->order="ForoId desc, ForoMapIntId desc";
+		}
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
 		));
 	}
+
+
 
 	/**
 	 * Returns the static model of the specified AR class.
