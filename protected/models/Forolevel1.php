@@ -66,7 +66,7 @@ class Forolevel1 extends CActiveRecord
 		return array(
 			'ForoId' => 'Foro',
 			'ForoMapIntId' => 'Foro Map Int',
-			'ForoMapIntNom' => 'Nombre del subforo',
+			'ForoMapIntNom' => 'Nombre de la distribución',
 			'foroMapConfig' => 'Foro Map Config',
 			'ForoMapIntIma' => 'No se usa',
 			'ForoMapZonInt' => 'No se usa',
@@ -104,6 +104,7 @@ class Forolevel1 extends CActiveRecord
 		else{
 			
 		// $criteria->compare('ForoId',$this->ForoId,true);
+			$criteria->addCondition('LENGTH(ForoMapPat)>3');
 			$criteria->compare('ForoMapIntId',$this->ForoMapIntId,true);
 			$criteria->compare('ForoMapIntNom',$this->ForoMapIntNom,true);
 			$criteria->compare('foroMapConfig',$this->foroMapConfig,true);

@@ -28,21 +28,21 @@
 
 
 <div class="input-append ">
-<?php echo CHtml::label('Inicio de venta:' 'FuncionesFecIni'); ?>
 <?php
+echo  CHtml::label('Inicio de ventas','Funciones[FuncionesFecIni]');
 echo $form->textField($model,'FuncionesFecIni',array('class'=>'picker FecIni box2', 'data-id'=>"$fid"))
 ?>
 </div>
 
 <div class="input-append ">
-<?php echo $form->label('Función','FuncionesFecHor:'); ?>
 <?php
+echo  CHtml::label('Función','Funciones[FuncionesFecHor]');
 echo $form->textField($model,'FuncionesFecHor',array('class'=>'picker FecHor box2','data-id'=>"$fid"))
 ?>
 </div>
 
 <div class="input-append ">
-<?php echo $form->label('Texto de la función','funcionesTexto:'); ?>
+<?php echo  CHtml::label('Texto de la función','Funciones[funcionesTexto]'); ?>
 <?php echo $form->textField($model, 'funcionesTexto' , array(
 	'class'=>'FuncText box3', 'placeholder'=>'Texto de la función',
 	'style'=>'width:265px',

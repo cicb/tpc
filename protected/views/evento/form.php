@@ -197,7 +197,7 @@
 </div><!-- form -->
 
 
-<div class=' white-box box' >
+<div class=' white-box box text-center' >
 	<h3>Funciones</h3>
 <div id='listado-funciones'>
 	<?php
@@ -206,6 +206,7 @@
 	};
 	?>
 </div>
+<i id="feedback-funcion" class="fa fa-3x" ></i><br/><br/>
 	<?php echo TbHtml::button(' Agregar una función', array(
 			'class'=>'btn-agregar-funcion btn btn-success fa fa-2x fa-plus-circle center'
 	)); ?>
@@ -417,9 +418,14 @@ $('.CPVFFecFin').live('change',
 	});
 
 $('.btn-agregar-funcion').live('click',function(){
+	var btn=$('#feedback-funcion');
+	btn.toggleClass('fa-spinner fa-spin','hidden');
 	$.ajax({
 		url:'<?php echo CController::createUrl("funciones/insertar",array("eid"=>$model->EventoId));?>',
 		type:'get',
+		complete:function(){
+			btn.toggleClass('fa-spinner fa-spin','hidden');
+		},
 		success:function(data){
 			$('#listado-funciones').append(data);
 			$('.picker').datetimepicker({allowTimes:1});
