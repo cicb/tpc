@@ -714,24 +714,28 @@ class ReportesFlex extends CFormModel
 			));   
 		}
         
-        public function graficaFechas($EventoId, $FuncionesId, $fecha1, $fecha2){		
-		
-		if($fecha1 != "" && $fecha2 != "")
-			$rango = " AND ventas.VentasFecHor BETWEEN '$fecha1 00:00:00' AND '$fecha2 23:59:59' ";
-		else
-			$rango = "";
-			if ($FuncionesId>0) $funcion=" AND ventaslevel1.FuncionesId=$FuncionesId ";
-			else $funcion=''; 
-			$query = "SELECT   COUNT(ventaslevel1.LugaresId) as ventas,   DATE(ventas.VentasFecHor) AS fecha
+		public function graficaFechas($EventoId, $FuncionesId, $desde, $hasta){		
+				$rango="";
+				if (strlen($desde.$hasta)>2) {
+						if ($desde==$hasta)
+								$rango=" AND DATE(ventas.VentasFecHor) = '$desde' ";
+						elseif(preg_match("(\d{4}-\d{2}-\d{2})",$desde)==1) {
+								$rango=" AND DATE(ventas.VentasFecHor)  BETWEEN DATE('$desde')  AND ('$hasta') ";
+						}
+				}
+
+				if ($FuncionesId>0) $funcion=" AND ventaslevel1.FuncionesId=$FuncionesId ";
+				else $funcion=''; 
+				$query = "SELECT   COUNT(ventaslevel1.LugaresId) as ventas,   DATE(ventas.VentasFecHor) AS fecha
 						FROM ventaslevel1 INNER JOIN ventas ON (ventaslevel1.VentasId=ventas.VentasId)
 						WHERE ventaslevel1.EventoId = '$EventoId' $funcion 
 						AND ventaslevel1.VentasSta = 'VENDIDO' AND ventaslevel1.VentasBolTip = 'NORMAL'
 						$rango
 						GROUP BY DATE(ventas.VentasFecHor) ";	
-		      return new CSqlDataProvider($query, array(
-							//'totalItemCount'=>$count,//$count,	
-							'pagination'=>false,
-			));   
+				return new CSqlDataProvider($query, array(
+						//'totalItemCount'=>$count,//$count,	
+						'pagination'=>false,
+				));   
 		}	
 
 	public function getVentasDiarias($desde,$hasta, $por="usuario",$condiciones='')

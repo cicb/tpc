@@ -15,12 +15,13 @@
 class Puntosventa extends CActiveRecord
 {
 	/**
-
 	 * Returns the static model of the specified AR class.
 	 * @param string $className active record class name.
 	 * @return Puntosventa the static model class
 	 */
-	public static function model($className=__CLASS__)
+	private $padre;
+	private $_childs=null;
+ 	public static function model($className=__CLASS__)
 	{
 		return parent::model($className);
 	}
@@ -70,6 +71,10 @@ class Puntosventa extends CActiveRecord
 
 			return array(
 					'ventas' => array(self::HAS_MANY, 'Ventas', 'PuntosventaId'),
+					'padre' => array(self::BELONGS_TO, 'Puntosventa', 'PuntosventaSuperId'),
+					'hijos'	=> array(self::HAS_MANY, 'Puntosventa','',
+						'on'=>"hijos.PuntosventaSuperId=t.PuntosventaId"),
+					// 'nhijos'=>	array(self::STAT,)
 			);
 	}
 
@@ -114,5 +119,112 @@ class Puntosventa extends CActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
+
+
+	public function generarArbol($criterio)
+	{
+		# Genera la estructura de árbol
+		// $criteria=new CDbCriteria;
+		// // $criteria->addCondition('')
+		// if (isset($criterio)) {
+		// 	$criteria->mergeWith($criterio);
+		// }
+		// $puntos=Puntosventa::model()->findAll($criteria);
+		// $lista=array();
+		// $arbol=array();
+		// foreach ($puntos as $punto) {
+		// 	# va ordenando los nodos en padres
+		// 	$lista[$punto->PuntosventaId]=$punto;
+		// }
+		// foreach ($lista as $li) {
+		// 	# Recorre la lista para asignarle el padre
+		// 	if(array_key_exists($li->PuntosventaSuperId, $lista))
+		// 		$li->padre=$lista[$li->PuntosventaSuperId];
+		// }
+		// // foreach ($lista as $i=>$li) {
+		// // 	$arbol[$i]
+		// // }
+
+
+
+	}
+
+	public function hasChildrens()
+	{
+		# Busca todos los elementos que lo tengan como padre
+		return self::model()->count(array(
+				'condition'=>"PuntosventaSta='ALTA' AND  PuntosventaSuperId=".$this->PuntosventaId));
+	}
+	public function getTieneHijos()
+	{
+		return $this->tipoid==0;
+	}
+
+	public function getChildrens($condicion)
+	{
+		# Devuelve los puntos de venta que lo ven como un nodo padre
+		if (is_null($this->_childs)) {
+			$this->_childs= self::model()->findAll(array(
+				'condition'=>"PuntosventaSuperId=".$this->PuntosventaId.' '.$condicion));
+		}
+		return $this->_childs;
+	}
+
+	public function getAsNode($formato='',$prefix='')
+	{
+		# Dependiendo el formato se regresa este objecto como un nodo
+		$id=$this->PuntosventaId;
+		switch ($formato) {
+			case 'li':
+				# Regresa como un elemento de lista
+					$nombre=$this->PuntosventaNom;
+					CController::renderPartial('_nodoCPVF',array(
+						'fid'=>$prefix,
+						'pid'=>$id,
+						'nombre'=>$nombre,
+						'padre'=>$this->getTieneHijos(),
+						));
+				break;
+			case 'ul':
+				# Regresa como un elemento de lista
+				return CHtml::openTag('ul',array('data-id'=>$this->PuntosventaId));
+				return CHtml::tag('li',array('data-id'=>$this->PuntosventaId),$this->PuntosventaNom);
+				return CHtml::closeTag('ul');
+				break;
+			case 'node':
+					# Regresa como un arreglo en formato de nodo
+				return array('id'=>$this->PuntosventaId,'nombre'=>$this->PuntosventaNom,'hijos'=>array());
+				break;
+			case 'accordion':
+				# Devuelve el nodo como un elemento de acordion
+				break;
+			default:
+				# Por default imprime un elemento de lista
+				return CHtml::tag('li',array('data-id'=>$this->PuntosventaId),$this->PuntosventaNom);
+				break;
+		}
+	}
+	// public static function getHijos($valor=0)
+	// {
+	// 	# Devuelve los nodos padres
+	// 	return Puntosventa::model()->findAll(
+	// 		array(
+	// 			'condition'=>" PuntosventaSta='ALTA' AND  PuntosventaSuperId=:valor",
+	// 			'params'=>array('valor'=>$valor)));
+	// }
+
+	public static function getRaices( $nivel=0,$prefix='')
+	{
+		#Genera el arbol
+		$raices=self::getHijos($nivel);
+		$rama=array();
+		foreach ($raices as $raiz) {
+			$rama[]=$raiz->getAsNode('li',$prefix);
+		}	
+		return $rama;
+	}
+
+
 }
+
 

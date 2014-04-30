@@ -85,7 +85,6 @@ body {
 }
 html,
 body {
-  color: #333;
   height: 100%;
   background: #fff;
   /* The html and body elements cannot have any padding or margin. */
@@ -303,3 +302,11 @@ th {
   vertical-align: top;
   width: 856px;
 }
+.btn {
+  font-family: FontAwesome !important ;
+}
+ul.arbol,
+ul.arbol ul {
+  list-style-type: none;
+}
+/* ul.rama-pvs{max-height:220px;overflow:scroll;}*/

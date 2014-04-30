@@ -27,6 +27,26 @@ class PuntosVentaController extends Controller
 					echo CHtml::tag('option',array('value' => $id),CHtml::encode($value),true);
 			}
 	}
+
+	public function actionVerRama($pid=0,$fid='')
+	{
+		#Visualiza el arbol de puntos de venta de acuerdo a su jerarquia
+		$rama=Puntosventa::getHijos($pid);
+		if (sizeof($rama)>0) {
+			# Si tiene hijos
+			echo CHtml::openTag('ul',array('class'=>'rama-pvs', 'id'=>"rama-$fid-$pid"));	
+			foreach ($rama as $model) {
+				// echo $model->getAsNode('li',$fid);
+				$pid=$model->PuntosventaId;
+				$nombre=$model->PuntosventaNom;
+				$padre=$model->tieneHijos;
+				$this->renderPartial('/funciones/_nodoCPVF',compact('fid','pid','nombre','padre'));
+			}
+			echo CHtml::closeTag('ul');	
+		}
+		else
+			echo "";
+	}
 	// Uncomment the following methods and override them if needed
 	/*
 	public function filters()

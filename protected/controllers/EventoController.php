@@ -224,6 +224,106 @@ class EventoController extends Controller
 
 		
 	}
-
-
+/****************************************************************************************
+ *Manipulacion de coordenadas mapa Chico
+ ****************************************************************************************/    
+    public function actionGetCoordenadaMapaChico(){
+        if (Yii::app()->request->isAjaxRequest ) {
+            if(isset($_POST)){
+                $zonaId = $_POST['zona'];
+                $subzonaId = $_POST['subzona'];
+                $eventoId = $_POST['eventoId'];
+                $funcionId = $_POST['funcionId'];
+                $subzona = Subzona::model()->find("eventoId=$eventoId AND FuncionesId=$funcionId AND ZonasId=$zonaId AND SubzonaId=$subzonaId");
+                $data['x1'] = $subzona->SubzonaX1;
+                $data['y1'] = $subzona->SubzonaY1;
+                $data['x2'] = $subzona->SubzonaX2;
+                $data['y2'] = $subzona->SubzonaY2;
+                $data['x3'] = $subzona->SubzonaX3;
+                $data['y3'] = $subzona->SubzonaY3;
+                $data['x4'] = $subzona->SubzonaX4;
+                $data['y4'] = $subzona->SubzonaY4;
+                $data['x5'] = $subzona->SubzonaX5;
+                $data['y5'] = $subzona->SubzonaY5;
+                echo json_encode($data);
+            }
+        }
+    }
+    public function actionGetCoordenadasMapaChico(){
+        if (Yii::app()->request->isAjaxRequest ) {
+            if(isset($_POST)){
+                $eventoId = $_POST['eventoId'];
+                $funcionId = $_POST['funcionId'];
+                $subzonas = Subzona::model()->findAll("eventoId=$eventoId AND FuncionesId=$funcionId");
+                $data = array();
+                foreach($subzonas as $key => $subzona):
+                    $data[$subzona->ZonasId][$subzona->SubzonaId]['x1'] = $subzona->SubzonaX1;
+                    $data[$subzona->ZonasId][$subzona->SubzonaId]['y1'] = $subzona->SubzonaY1;
+                    $data[$subzona->ZonasId][$subzona->SubzonaId]['x2'] = $subzona->SubzonaX2;
+                    $data[$subzona->ZonasId][$subzona->SubzonaId]['y2'] = $subzona->SubzonaY2;
+                    $data[$subzona->ZonasId][$subzona->SubzonaId]['x3'] = $subzona->SubzonaX3;
+                    $data[$subzona->ZonasId][$subzona->SubzonaId]['y3'] = $subzona->SubzonaY3;
+                    $data[$subzona->ZonasId][$subzona->SubzonaId]['x4'] = $subzona->SubzonaX4;
+                    $data[$subzona->ZonasId][$subzona->SubzonaId]['y4'] = $subzona->SubzonaY4;
+                    $data[$subzona->ZonasId][$subzona->SubzonaId]['x5'] = $subzona->SubzonaX5;
+                    $data[$subzona->ZonasId][$subzona->SubzonaId]['y5'] = $subzona->SubzonaY5;
+                endforeach;
+                
+                echo json_encode($data);
+            }
+        }
+    }
+    public function actionDeleteCoordenadaMapaChico(){
+         if (Yii::app()->request->isAjaxRequest ) {
+            if(isset($_POST)){
+                $zonaId = $_POST['zona'];
+                $subzonaId = $_POST['subzona'];
+                $eventoId = $_POST['eventoId'];
+                $funcionId = $_POST['funcionId'];
+                $subzona = Subzona::model()->find("eventoId=$eventoId AND FuncionesId=$funcionId AND ZonasId=$zonaId AND SubzonaId=$subzonaId");
+                $subzona->SubzonaX1 = 0;
+                $subzona->SubzonaY1 = 0;
+                $subzona->SubzonaX2 = 0;
+                $subzona->SubzonaY2 = 0;
+                $subzona->SubzonaX3 = 0;
+                $subzona->SubzonaY3 = 0;
+                $subzona->SubzonaX4 = 0;
+                $subzona->SubzonaY4 = 0;
+                $subzona->SubzonaX5 = 0;
+                $subzona->SubzonaY5 = 0;
+                if($subzona->update())
+                    echo json_encode(array('update'=>true));
+                else    
+                    echo json_encode(array('update'=>false));
+            }
+         }
+    } 
+    public function actionGuardarCoordenadasMapaChico(){
+        if (Yii::app()->request->isAjaxRequest ) {
+            if(isset($_POST)){
+                $zonaId = $_POST['zona'];
+                $subzonaId = $_POST['subzona'];
+                $eventoId = $_POST['eventoId'];
+                $funcionId = $_POST['funcionId'];
+                $subzona = Subzona::model()->find("eventoId=$eventoId AND FuncionesId=$funcionId AND ZonasId=$zonaId AND SubzonaId=$subzonaId");
+                $subzona->SubzonaX1 = $_POST['x1'];
+                $subzona->SubzonaY1 = $_POST['y1'];
+                $subzona->SubzonaX2 = $_POST['x2'];
+                $subzona->SubzonaY2 = $_POST['y2'];
+                $subzona->SubzonaX3 = $_POST['x3'];
+                $subzona->SubzonaY3 = $_POST['y3'];
+                $subzona->SubzonaX4 = $_POST['x4'];
+                $subzona->SubzonaY4 = $_POST['y4'];
+                $subzona->SubzonaX5 = $_POST['x5'];
+                $subzona->SubzonaY5 = $_POST['y5'];
+                if($subzona->update())
+                    echo json_encode(array('update'=>true));
+                else    
+                    echo json_encode(array('update'=>false));
+            }
+        }    
+    }
+/****************************************************************************************
+ *Manipulacion de coordenadas mapa Grande
+ ****************************************************************************************/     
 }

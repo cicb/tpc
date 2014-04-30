@@ -1,12 +1,3 @@
-<script type="text/javascript">
-	$("#yw1").blur(function(){
-		console.log($(this).val());
-	});
-	$(".datepicker-days td").on('click',function(){
-		console.log('day');
-		$("#yw1").focus();
-	});
-</script>
 <?php
 /* @var $this EventoController */
 /* @var $model Evento */
@@ -56,48 +47,22 @@
 					array('1'=>'A la Venta', '2'=>'Proximamente','3'=>'Sinopsis','4'=>'Cancelado'), array('class' => 'span2')); ?>
 
 		<?php echo $form->labelEx($model,'EventoFecIni',array('class'=>'control-label')); ?>
-		<div class="input-append">
-				<?php $this->widget('yiiwheels.widgets.datetimepicker.WhDateTimePicker', array(
-						'name' => 'Evento[EventoFecIni]',
-						'value'=>$model->EventoFecIni,
-						'pluginOptions' => array(
-								'lenguage'=>'es-MX',
-								'format' => 'yyyy-MM-dd hh:mm:ss'
-						)
-				));
-				?>
-		</div>
+		<?php echo $form->textField($model,'EventoFecIni',array('class'=>'picker')) ;?>
 
 
 <div class='control-group'>
 
 		<?php echo $form->labelEx($model,'EventoFecFin',array('class'=>'control-label')); ?>
-		<div class="input-append " >
-				<?php $this->widget('yiiwheels.widgets.datetimepicker.WhDateTimePicker', array(
-						'name' => 'Evento[EventoFecFin]',
-						'value'=>$model->EventoFecFin,
-						'pluginOptions' => array(
-								'lenguage'=>'es-MX',
-								'format' => 'yyyy-MM-dd hh:mm:ss'
-						)
-				));
-				?>
-		</div>
+ <div class="input-append">
+		<?php echo $form->textField($model,'EventoFecFin',array('class'=>'picker')) ;?>
+ </div>
 </div>
 
 <div class='control-group'>
 		<?php echo $form->labelEx($model,'EventoTemFecFin',array('class'=>'control-label')); ?>
-		<div class="input-append">
-				<?php $this->widget('yiiwheels.widgets.datetimepicker.WhDateTimePicker', array(
-						'name' => 'Evento[EventoTemFecFin]',
-						'value'=>$model->EventoTemFecFin,
-						'pluginOptions' => array(
-								'lenguage'=>'es-MX',
-								'format' => 'yyyy-MM-dd hh:mm:ss'
-						)
-				));
-				?>
-		</div>
+ <div class="input-append">
+		<?php echo $form->textField($model,'EventoTemFecFin',array('class'=>'picker')) ;?>
+ </div>
 </div>		
 
 <div class='control-group'>
@@ -202,9 +167,12 @@ function updateChosen(obj){
                 <?php if($model->scenario=='update' AND !empty($funciones)): ?>
                 <div class='span4 white-box box'>
 				<h3><?php echo TbHtml::i('',array('class'=>'fa fa-picture-o')); ?> Imagen Mapa Chico</h3>
-					<?php echo TbHtml::imagePolaroid(strlen($funciones->getForoPequenio())>3?$funciones->getForoPequenio():'holder.js/300x300','',
+					<?php echo TbHtml::imagePolaroid(strlen($funciones->getForoPequenio())>3?$funciones->getForoPequenio():'holder.js/150x150','',
                     array('id'=>'img-imamapchi','style'=>'width:140px;')); ?>
 					<br /><br />
+                    <?php echo TbHtml::button('Agregar Coordenadas',
+								array('class'=>'btn btn-success','id'=>'btn-coordenadas-mapchi','data-toggle'=>'modal','data-target' => '#ModalMapaChico',))?>
+                    <br />
 					<?php  echo TbHtml::fileField('imamapchi','' , array('span'=>2,'maxlength'=>200, 'class'=>'hidden')); ?>
 					<?php echo TbHtml::textField('MapaChico',$funciones->getUrlForoPequenio(),array(
                                 'readonly'=>'readonly',
@@ -216,9 +184,12 @@ function updateChosen(obj){
 				</div>
                 <div class='span4 white-box box'>
 				<h3><?php echo TbHtml::i('',array('class'=>'fa fa-picture-o')); ?> Imagen Mapa Grande</h3>
-					<?php echo TbHtml::imagePolaroid(strlen($funciones->getForoPequenio())>3?$funciones->getForoGrande():'holder.js/300x300','',
+					<?php echo TbHtml::imagePolaroid(strlen($funciones->getForoGrande())>3?$funciones->getForoGrande():'holder.js/300x300','',
                     array('id'=>'img-imamapgra','style'=>'width:340px;')); ?>
 					<br /><br />
+                    <?php echo TbHtml::button('Agregar Coordenadas',
+								array('class'=>'btn btn-success','id'=>'btn-coordenadas-mapgra','data-toggle'=>'modal','data-target' => '#ModalMapaGrande',))?>
+                    <br />
 					<?php  echo TbHtml::fileField('imamapgra','' , array('span'=>2,'maxlength'=>200, 'class'=>'hidden')); ?>
 					<?php echo TbHtml::textField('MapaGrande',$funciones->getUrlForoGrande(),array(
                                 'readonly'=>'readonly',
@@ -227,6 +198,34 @@ function updateChosen(obj){
 								'placeholder'=>'Nombre de la imagen mapa Gde.')); ?>
 		
 				</div>
+                <style>
+	            .modal-body {
+                    max-height: 100%;
+                }
+                .modal-footer{
+                    padding: 2px 15px;
+                }
+               </style>
+                <?php $this->widget('bootstrap.widgets.TbModal', array(
+                    'id' => 'ModalMapaChico',
+                    'header' => 'Coordenadas Mapa Chico',
+                    'content' => $this->renderPartial('_mapaChico',array('funciones'=>$funciones,'eventoId'=>$_GET['id']),true),
+                    'footer' => array(
+                        //TbHtml::button('Save Changes', array('data-dismiss' => 'modal', 'color' => TbHtml::BUTTON_COLOR_PRIMARY)),
+                        TbHtml::button('Cerrar', array('data-dismiss' => 'modal')),
+                     ),
+                     'htmlOptions' => array('style' => 'width: 700px;margin-left: -400px;'), 
+                )); ?>
+                <?php $this->widget('bootstrap.widgets.TbModal', array(
+                    'id' => 'ModalMapaGrande',
+                    'header' => 'Coordenadas Mapa Grande',
+                    'content' => $this->renderPartial('_mapaGrande',array('funciones'=>$funciones),true),
+                    'footer' => array(
+                        //TbHtml::button('Save Changes', array('data-dismiss' => 'modal', 'color' => TbHtml::BUTTON_COLOR_PRIMARY)),
+                        TbHtml::button('Cerrar', array('data-dismiss' => 'modal')),
+                     ),
+                     'htmlOptions' => array('style' => 'width: 950px;margin-left: -500px;top:5px'),
+                )); ?>
                 <?php else: ?>
                 <?php echo TbHtml::button('Agregar mapas', array('color' => TbHtml::BUTTON_COLOR_PRIMARY)); ?>
                 <?php endif;?>
@@ -234,11 +233,10 @@ function updateChosen(obj){
 	
 
         <div class="form-actions">
-<?php echo TbHtml::link(' Regresar',array('index'),array('class'=>'fa fa-chevron-circle-left btn ')); ?>
+<?php echo TbHtml::link(' Regresar',array('index'),array('class'=>' btn btn-primary fa-arrow-left ')); ?>
         <?php echo TbHtml::submitButton($model->isNewRecord ? ' Registrar' : ' Guardar',array(
-            'color'=>TbHtml::BUTTON_COLOR_PRIMARY,
 			'size'=>TbHtml::BUTTON_SIZE_LARGE,
-			'class'=>'fa fa-check'
+			'class'=>'btn btn-check fa fa-check'
         )); ?>
     </div>
 
@@ -246,37 +244,33 @@ function updateChosen(obj){
 
     <?php $this->endWidget(); ?>
 
-<?php echo TbHtml::button('Agregar', array('color' => TbHtml::BUTTON_COLOR_PRIMARY,'id'=>'btn-agregar-funcion')); ?>
 <!--<button class="btn btn-primary">ok</button>-->
 </div><!-- form -->
 <?php if(!$model->isNewRecord):?>
-<?php $lista_funciones = Funciones::model()->findAll("EventoId=".$_GET['id']);?>
-<ul id="lista-funciones">
-	<?php foreach ($lista_funciones as $key => $value):?>
-		<li><?php echo $value->FuncionesId;?></li>
-	<?php endforeach;?>	
-</ul>
+<div class=' white-box box' id='listado-funciones'>
+<h3>Funciones</h3>
 
 
+<?php
+foreach($model->funciones() as $funcion){
+		$this->renderPartial('/funciones/formulario',array('model'=>$funcion));
+};
+?>
 </div>
-<script type="text/javascript">
-	$("#btn-agregar-funcion").click(function(){
-		
-		$.ajax({
-			  url:'<?php echo Yii::app()->createUrl('funciones/pruebaajax');?>',
-              type:'post',
-              error:function(error){
-              	alert(error);
-              },
-              data:{id:<?php echo $_GET['id']; ?>,funcion:$("ul#lista-funciones li").length},
-              success:function(datos){
-              	console.log(datos);
-              	$("ul#lista-funciones").append("<li>"+datos+"</li>");
-              }
-		});
-	});
-</script>
+
 <?php endif;?>
+<?php $this->widget('bootstrap.widgets.TbModal', array(
+    'id' => 'dlg-confiPvFuncion',
+    'header' => 'Selecciona el rango de fechas',
+    'content' => "<div is='dlg'></div>",
+    'footer' => implode(' ', array(
+    	TbHtml::button('Guardar cambios', array(
+    		'data-dismiss' => 'modal',
+    		'color' => TbHtml::BUTTON_COLOR_PRIMARY)
+    	),
+    	TbHtml::button('Cerrar', array('data-dismiss' => 'modal')),
+    	)),
+)); ?>
 
 <?php 
 				Yii::app()->clientScript->registerScriptFile("js/holder.js");
@@ -368,6 +362,225 @@ function updateChosen(obj){
 				 }
 			});
             $('#btn-subir-imamapgra').on('click',function(){ $('#imamapgra').trigger('click'); });
+				
+
+
 						");
 
 ?>
+<?php Yii::app()->clientScript->registerScript('agregar-funcion',sprintf("
+			$('.btn-agregar-funcion').live('click',function(){
+					$.ajax({
+							url:'%s',
+									type:'get',
+							success:function(data){
+									$('#listado-funciones').append(data);
+									$('.picker').datetimepicker({allowTimes:1});
+
+								}
+						});
+});
+
+$('.btn-quitar-funcion').live('click',function(){
+		if(confirm('¿Esta usted seguro de querer eliminar esta funcion? Esta operacion es irreversible')){			
+			var ff=$(this).data('id');
+			$.ajax({
+				url:'".$this->createUrl('funciones/quitar')."',
+				type:'post',
+				data:{eid:".$model->EventoId.",fid:ff},
+				success: function(){
+					$('#f-".$model->EventoId."-'+ff).remove();
+				}
+			});
+		}
+});
+
+$( '.nodo-toggle').live('click',function(){
+	var id= $(this).data('id');
+	var li= $(this).parent().attr('id');
+	var link= $(this);
+	if (link.data('estado')=='inicial') {
+		var href= link.attr('href');
+		$.ajax({
+			url:href,
+			success:function(data){ 
+				$('#'+li).append(data);
+				link.data('estado','toggle')
+				link.toggleClass('fa-minus-square');
+				$('.picker').datetimepicker({allowTimes:1});
+			}
+		});
+	}
+	else if (link.data('estado')=='toggle'){
+		link.toggleClass('fa-minus-square');
+		$('#rama-'+li).toggle();
+		// link.toggleClass('fa-plus-square');
+	}
+	return false;
+})
+
+$( '.nodo-cal').live('click',function(){
+	$('#dlg').load($(this).attr('href'));
+});
+",$this->createUrl('funciones/insertar',array('eid'=>$model->EventoId))),CClientScript::POS_READY);
+?>
+<?php Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl. '/js/jquery.datetimepicker.js',CClientScript::POS_BEGIN); ?>
+<?php Yii::app()->clientScript->registerCssFile(Yii::app()->request->baseUrl. '/css/jquery.datetimepicker.css'); ?>
+<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl."/css/jquery.datetimepicker.css" ; ?>" />
+ <script type="text/javascript" charset="utf-8">
+$('.picker').datetimepicker({
+		
+		lang:'es'}); 
+ </script>
+
+<script type="text/javascript">
+
+	function actualizarf(datos, funcionid) 
+	{
+		$.ajax(
+		{url: "<?php echo CController::createUrl('Funciones/update',array('EventoId'=>$model->EventoId)); ?>&FuncionesId="+funcionid,
+			data:datos,
+			type:'POST',
+			dataType:'JSON',
+			success:function(data)
+			{
+				if (data.respuesta)
+				{
+					console.log('La actualización se realizo con exito');
+				}
+			}
+		})
+
+	}
+	$('.FecHor').live('change',
+		function()
+		{
+			var id=$(this).data('id');
+			var meses = new Array ("ENE","FEB","MAR","ABR","MAY","JUN","JUL","AGO","SEP","OCT","NOV","DIC");
+			var diasSemana = new Array("DOMINGO","LUNES","MARTES","MIÉRCOLES","JUEVES","VIERNES","SÁBADO");
+			var fechatemp = new Date($(this).val());
+			$('#FuncText-'+id).val(diasSemana[fechatemp.getDay()] + " " + fechatemp.getDate() + " - " + 
+				meses[fechatemp.getMonth()] + " - " + fechatemp.getFullYear() + " " + (fechatemp.getHours()<"10" ? "0"+fechatemp.getHours() : fechatemp.getHours())+ ":"+ (fechatemp.getMinutes()<"10" ? "0"+fechatemp.getMinutes() : fechatemp.getMinutes()) + " HRS");
+		});
+
+	$('.FecIni').live('focusout', 
+		function()
+		{	
+			var id=$(this).data('id');
+			var datos={Funciones:{FuncionesFecIni:$(this).val()} };
+			actualizarf(datos,$(this).data('id'));
+		});	
+	$('.FecHor').live('focusout', 
+		function()
+		{	
+			var id=$(this).data('id');
+			var datos={Funciones:{FuncionesFecHor:$(this).val(), funcionesTexto:$('#FuncText-'+id).val()} };
+			actualizarf(datos,$(this).data('id'));
+		});
+
+	$('.FuncText').live('focusout', 
+		function()
+		{	
+			var id=$(this).data('id');
+			var datos={Funciones:{funcionesTexto:$(this).val()} };
+			actualizarf(datos,$(this).data('id'));
+		});
+
+	$('.FuncText').live('keyup',
+		function()
+		{
+			$(this).attr('id','-1');
+		});
+	$('.CPVFSta').live('click', 
+		function()
+		{
+			var pvid=$(this).data('pid');
+			var funcid=$(this).data('fid');
+			$.ajax(
+				{url: "<?php echo CController::createUrl('Funciones/ActualizarPv'); ?>",
+				data:{EventoId:'<?php echo $model->EventoId?>',FuncionesId:funcid,PuntosventaId:pvid,atributo:'ConfiPVFuncionSta',valor:($(this).prop('checked')==true ? 'ALTA' : 'BAJA')},
+				type:'GET',
+				success:function(data)
+				{
+					console.log(data);
+				}
+			});
+		});
+
+	$('.CPVFFecIni').live('change', 
+		function()
+		{
+			var pvid=$(this).data('pid');
+			var funcid=$(this).data('fid');
+			$.ajax(
+				{url: "<?php echo CController::createUrl('Funciones/ActualizarPv'); ?>",
+				data:{EventoId:'<?php echo $model->EventoId?>',FuncionesId:funcid,PuntosventaId:pvid,atributo:'ConfiPVFuncionFecIni',valor:$(this).val()},
+				type:'GET',
+				success:function(data)
+				{
+					console.log(data);
+				}
+			});
+		});
+
+	$('.CPVFFecFin').live('change', 
+		function()
+		{
+			var pvid=$(this).data('pid');
+			var funcid=$(this).data('fid');
+			$.ajax(
+				{url: "<?php echo CController::createUrl('Funciones/ActualizarPv'); ?>",
+				data:{EventoId:'<?php echo $model->EventoId?>',FuncionesId:funcid,PuntosventaId:pvid,atributo:'ConfiPVFuncionFecFin',valor:$(this).val()},
+				type:'GET',
+				success:function(data)
+				{
+					console.log(data);
+				}
+			});
+		});
+</script>	
+
+
+<script>
+  	$(function() {
+  	  // Apparently click is better chan change? Cuz IE?
+      $('input[type="checkbox"]').change(function(e) {
+      var checked = $(this).prop("checked"),
+          container = $(this).parent(),
+          siblings = container.siblings();
+  
+      container.find('input[type="checkbox"]').prop({
+          indeterminate: false,
+          checked: checked
+      });
+  
+      function checkSiblings(el) {
+          var parent = el.parent().parent(),
+              all = true;
+  
+          el.siblings().each(function() {
+              return all = ($(this).children('input[type="checkbox"]').prop("checked") === checked);
+          });
+  
+          if (all && checked) {
+              parent.children('input[type="checkbox"]').prop({
+                  indeterminate: false,
+                  checked: checked
+              });
+              checkSiblings(parent);
+          } else if (all && !checked) {
+              parent.children('input[type="checkbox"]').prop("checked", checked);
+              parent.children('input[type="checkbox"]').prop("indeterminate", (parent.find('input[type="checkbox"]:checked').length > 0));
+              checkSiblings(parent);
+          } else {
+              el.parents("li").children('input[type="checkbox"]').prop({
+                  indeterminate: true,
+                  checked: false
+              });
+          }
+        }
+    
+        checkSiblings(container);
+      });
+    });
+    </script>

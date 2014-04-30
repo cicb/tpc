@@ -13,5 +13,7 @@ protected/runtime/application.log
 *.sh
 *.swo
 *.swn
+*.sw*
+.swm
 *~
 

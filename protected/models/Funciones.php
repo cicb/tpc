@@ -33,6 +33,10 @@ class Funciones extends CActiveRecord
 	 */
 	 
 	public $pathUrlImagesBD;
+	public $maxId;
+
+	public $dias = array("domingo","lunes","martes","miércoles","jueves","viernes","sábado");
+
 
     public function init() {
 
@@ -69,6 +73,7 @@ class Funciones extends CActiveRecord
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('EventoId, FuncionesId, FuncionesTip, FuncionesFor, FuncionesFecIni, FuncionesFecHor, FuncionesNomDia, ForoId, ForoMapIntId, FuncionesBanExp, FuncPuntosventaId, FuncionesSta, funcionesTexto, FuncionesBanEsp, funcionesAccExtra', 'safe', 'on'=>'search'),
+			array('FuncionesFecHor, FuncionesFecIni' , 'length', 'min'=>4, 'on'=>'update'),
 		);
 	}
 
@@ -149,6 +154,13 @@ class Funciones extends CActiveRecord
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
 		));
+	}
+
+	public function beforeSave()
+	{
+		// Guarda siempre el configpvfunciones...
+		$this->FuncionesNomDia=ucwords(strftime($this->dias[date('w',strtotime ($this->FuncionesFecHor))]));
+		return parent::beforeSave();
 	}
 	public function getZonasInteractivasMapaGrande() {
         $criteria = new CDbCriteria();
@@ -238,6 +250,16 @@ class Funciones extends CActiveRecord
 				return 1;
 	 }
 
+	 public static function maxId($evento)
+	 {
+			 $row = Funciones::model()->find(array(
+					 'select'=>'MAX(FuncionesId) as maxId',
+					 'condition'=>"EventoId=:evento",
+					 'params'=>array('evento'=>$evento)
+			 ));
+			 return $row['maxId'];
+	 }
+
     public function getUrlForoGrande() {
         $criteria = new CDbCriteria();
         $criteria->addCondition('t.EventoId = :EventoId');
@@ -251,4 +273,136 @@ class Funciones extends CActiveRecord
 
         return isset($reg) ? $reg->nombre_imagen : '';
     }
+
+	 public static function insertar($eventoId)
+	 {
+			//Genera una funcion minima
+			$ret=array('estado'=>false,'modelo'=>null);	
+			$evento=Evento::model()->with('foro')->findByPk($eventoId);
+			$model=new Funciones('insert');
+			if (is_object($evento)) {
+				// Si el id del evento es valido
+					$model->EventoId=$evento->EventoId;
+					$maximo=Funciones::maxId($eventoId);
+					$model->FuncionesId=$maximo+1;
+					$anterior=Funciones::model()->findByPk(array('EventoId'=>$model->EventoId, 'FuncionesId'=>$maximo));
+					$model->ForoMapIntId=$anterior->ForoMapIntId;
+					$model->FuncionesFecIni=date('Y-m-d H:i:s');
+					$model->FuncionesFecHor=date('Y-m-d H:i:s');
+					$model->FuncPuntosventaId=$evento->PuntosventaId;
+					$model->FuncionesNomDia=date('l');
+					$model->ForoId=$evento->foro->ForoId;
+					$model->funcionesTexto=strtoupper(strftime('%A %d - %b - %Y %H:%M HRS'));
+					$model->FuncionesSta='ALTA';
+					if ($model->save()){
+							return $model;
+					}
+			}	
+
+			return false;
+	 }
+
+	 public static function quitarUltima($eventoId)
+	 {
+			 $lastId=self::maxId($eventoId);
+			 $model=Funciones::model()->findByPk(array('EventoId'=>$eventoId,'FuncionesId'=>$lastId));
+			 if (!is_null($model)) {
+			 	//Si se valida el modelo 
+					 return $model->delete();
+			 }	
+	 }
+
+	 public function agregarConfpvfuncion($puntosventaId=0)
+	 {
+	 	if ($puntosventaId>0) {
+	 		$Pvs=array(
+	 			(object)array('PuntosventaId'=>$puntosventaId)
+	 			);
+	 	}
+	 	else{
+
+	 		$Pvs=Puntosventa::model()->findAll(array('condition'=>"PuntosventaSta='ALTA'"));
+	 	}
+
+	 	foreach ($Pvs as $Pv) 
+	 	{
+
+	 		$model = new Confipvfuncion('insert');
+
+	 		$model->EventoId=$this->EventoId;
+	 		$model->FuncionesId=$this->FuncionesId;
+	 		$model->ConfiPVFuncionFecIni=$this->FuncionesFecIni;
+	 		$model->ConfiPVFuncionFecFin=$this->FuncionesFecHor;
+	 		if ($this->evento->PuntosventaId==$Pv->PuntosventaId)
+	 		{
+	 			$model->ConfiPVFuncionFecFin=date("Y-m-d H:i:s", strtotime ('+4 hour' , strtotime ($this->FuncionesFecHor)));
+	 		}
+	 		$model->ConfiPVFuncionDes="N/A";
+	 		$model->ConfiPVFuncionTipSel="MIXTA";
+	 		$model->ConfiPVFuncionSta="ALTA";
+	 		$model->ConfiPVFuncionBan=0;
+	 		$model->PuntosventaId=$Pv->PuntosventaId;
+	 		$model->save();
+	 	}
+	 	if ($puntosventaId>0) {
+	 		# Si se desea insertar solo un configpv especifico para un punto de venta
+	 		#entonces se returna el modelo
+	 		return $model;
+	 	}
+
+	 }
+	 public function actualizarConfipvfunciones()
+	 {
+	 	# Actualiza los config Pv funcion en base a la informacion de la funcion 
+	 	$evento=$this->EventoId;
+	 	$funcion=$this->FuncionesId;
+	 	Confipvfuncion::model()->updateAll(
+	 		array(
+	 			'ConfiPVFuncionFecFin'=>$this->FuncionesFecHor,
+	 			'ConfiPVFuncionFecIni'=>$this->FuncionesFecIni,
+	 			),
+	 		"EventoId=:evento and FuncionesId=:funcion ",
+	 		compact('evento','funcion')
+	 		);
+	 }
+
+	 public function deleteConfpvfuncion()
+	 {
+	 	return Confipvfuncion::model()->deleteAllByAttributes(array('EventoId' =>$this->EventoId,'FuncionesId'=>$this->FuncionesId));
+	 }
+
+	 public function afterSave()
+	 {
+	 	if ($this->scenario=='insert')
+	 		$this->agregarConfpvfuncion();
+	 	return parent::afterSave();
+	 }
+
+	 public function afterUpdate()
+	 {
+	 	return parent::afterUpdate();
+	 }
+
+	 public function beforeDelete()
+	 {
+	 	$this->deleteConfpvfuncion();
+		 return parent::beforeDelete();	 	
+	 }
+
+	 public function getConfiPvFuncion($puntosventaId)
+	{
+		#Devuelve el confiPvFuncion que este asociado
+		 // con este punto de venta en el evento y 
+		//  la funcion que se envie como parametros
+		$model=Confipvfuncion::model()->findByPk(array(
+			'EventoId'=>$this->evento,
+			'Funtion'=>$this->FuncionesId,
+			'PuntosventaId'=>$puntosventaId
+			));
+		if (is_null($model)) {
+			# sino existe entonces se crea;
+			$model=$this->agregarConfpvfuncion($puntosventaId);
+		}
+		return $model;
+	}
 }
