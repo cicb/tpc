@@ -1,6 +1,6 @@
 <?php $form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
     'layout' => TbHtml::FORM_LAYOUT_HORIZONTAL,
-    'method' => 'GET'
+    // 'method' => 'post'
 )); ?>
 <?php Yii::app()->clientScript->registerScriptFile("js/holder.js"); ?>
 	<div class="controles">
@@ -10,14 +10,15 @@
             array('placeholder'=>'Nombre de la distribución')); ?>            <?php
             $eventos = Evento::model()->findAll();
             $list = CHtml::listData($eventos,'EventoId','EventoNom');
-            echo $form->dropDownListControlGroup($model, 'EventoNom',
+            echo $form->dropDownListControlGroup($model, 'EventoId',
                 $list, array('empty' => 'Seleccione un evento', 'class'=>'chosen')); 
 
                 ?>
 		</div>		
 		<?php echo TbHtml::formActions(array(
 		    TbHtml::resetButton('Cancelar'),
-		    TbHtml::submitButton('Buscar', array('class' => 'btn btn-primary fa fa-search')),
+            TbHtml::submitButton('Buscar', array('class' => 'btn btn-primary fa fa-search')),
+		    TbHtml::submitButton('Nueva distribución', array('class' => 'btn btn-success fa fa-plus-circle pull-right')),
 		)); ?>
 	</div>
 <?php $this->endWidget(); ?>
@@ -35,6 +36,8 @@ $data=$model->search();
 // }
 // $data=new CArrayDataProvider($data,array('keyField'=>False));
 $this->widget('yiiwheels.widgets.grid.WhGridView', array(
+    'ajaxUpdate'=>true,
+    'ajaxType'=>'post',
     'type'=>'striped bordered',
     'dataProvider' => $data,
     'template' => "{pager}{items}{pager}",
@@ -62,6 +65,11 @@ $this->widget('yiiwheels.widgets.grid.WhGridView', array(
                     "data-fmiid"=>$data->ForoMapIntId,
                     "class"=>"img-polaroid", "width"=>"150px"))',
     		),
+        array(
+               'header'=>'Ultimos Eventos',
+               'type'=>'html',
+               'value'=>'CHtml::tag("div",array("style"=>"font-size:9px;width:200px"), $data->listaEventos)'         
+            )
     	),
 ));
  ?>
