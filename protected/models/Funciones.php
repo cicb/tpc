@@ -34,6 +34,7 @@ class Funciones extends CActiveRecord
 	 
 	public $pathUrlImagesBD;
 	public $maxId;
+	public $EventoNom;
 
 	public $dias = array("domingo","lunes","martes","miércoles","jueves","viernes","sábado");
 
@@ -354,16 +355,26 @@ class Funciones extends CActiveRecord
 	 public function actualizarConfipvfunciones()
 	 {
 	 	# Actualiza los config Pv funcion en base a la informacion de la funcion 
-	 	$evento=$this->EventoId;
+	 	$eventoId=$this->EventoId;
 	 	$funcion=$this->FuncionesId;
 	 	Confipvfuncion::model()->updateAll(
 	 		array(
 	 			'ConfiPVFuncionFecFin'=>$this->FuncionesFecHor,
 	 			'ConfiPVFuncionFecIni'=>$this->FuncionesFecIni,
 	 			),
-	 		"EventoId=:evento and FuncionesId=:funcion ",
-	 		compact('evento','funcion')
+	 		"EventoId=:eventoId and FuncionesId=:funcion ",
+	 		compact('eventoId','funcion')
 	 		);
+	 	$Evento=Evento::model()->findByPk($eventoId);
+	 	if (is_object($Evento)) {
+	 		Confipvfuncion::model()->updateByPk(
+	 			array(
+	 				'EventoId'=>$eventoId,
+	 				'FuncionesId'=>$funcion,'PuntosventaId'=>$Evento->PuntosventaId),
+	 			array(
+	 				'ConfiPVFuncionFecFin'=>date("Y-m-d H:i:s", strtotime ('+4 hour' , strtotime ($this->FuncionesFecHor))),
+	 				));
+	 	}
 	 }
 
 	 public function deleteConfpvfuncion()
@@ -404,5 +415,11 @@ class Funciones extends CActiveRecord
 			$model=$this->agregarConfpvfuncion($puntosventaId);
 		}
 		return $model;
+	}
+
+	public function verDistribuciones()
+	{
+		$criteria=new CDbCriteria;
+		$criteria->compare('EventoNom', $this->EventoNom, true);
 	}
 }

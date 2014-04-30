@@ -1,10 +1,10 @@
 <?php 
 
-$status=$model->ConfiPVFuncionSta;
+$status=$model->ConfiPVFuncionSta=='ALTA';
 $fid=$model->FuncionesId;
 $eid=$model->EventoId;
 $pid=$model->PuntosventaId;
-$padre=true;
+$padre=$model->puntoventa->tipoid==0;
 $nombre=$model->puntoventa->PuntosventaNom;
 
 	echo CHtml::openTag('li',array(
@@ -34,11 +34,11 @@ $nombre=$model->puntoventa->PuntosventaNom;
 				'style'=>'width:100%;'
 				)); 
 
-			echo TbHtml::textField("CPF_FecIni-$fid-$pid",date('d-m-Y H:i:s'),
+			echo TbHtml::textField("CPF_FecIni-$fid-$pid",$model->ConfiPVFuncionFecIni,
 				array(
 					'data-fid'=>$fid,'data-pid'=>$pid,
-					'class'=>'picker box1 hidden CPVFFecIni',
-					'style'=>'font-size:10px;width:5px'));
+					'class'=>'picker box1  CPVFFecIni',
+					'style'=>'font-size:10px;width:105px'));
 
 			echo TbHtml::link(' ','#',array('class'=>'fa fa-calendar text-info ', 
 				'title'=>'Fecha de inicio', 
@@ -46,11 +46,11 @@ $nombre=$model->puntoventa->PuntosventaNom;
 				"));
 			echo " / ";
 			echo TbHtml::textField("CPF_FecFin-$fid-$pid",
-				date('d-m-Y H:i:s'),
+				$model->ConfiPVFuncionFecFin,
 				array(
 					'data-fid'=>$fid,'data-pid'=>$pid,
-					'class'=>'picker box1 hidden CPVFFecFin',
-					'style'=>'font-size:10px;width:5px')) ;
+					'class'=>'picker box1  CPVFFecFin',
+					'style'=>'font-size:10px;width:105px')) ;
 
 			echo TbHtml::link(' ','#',array('class'=>'fa fa-calendar  text-warning', 
 				'title'=>'Fecha Fin', 

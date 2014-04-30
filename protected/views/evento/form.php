@@ -37,8 +37,6 @@
 
 			<?php echo $form->textFieldControlGroup($model,'EventoNom',array('span'=>4,'maxlength'=>150)); ?>
             <?php echo $form->textFieldControlGroup($model,'EventoDesBol',array( 'span'=>4,'maxlength'=>75)); ?>
-            <?php echo $form->textFieldControlGroup($model,'EventoDesWeb',array('span'=>4,'maxlength'=>200)); ?>
-
 		<div class='alert'>
 			<?php echo $form->dropDownListControlGroup($model, 'EventoSta',
 					array('1'=>'BAJA', 'ALTA'=>'ALTA'), array('class' => 'span2')); ?>
@@ -48,7 +46,6 @@
 
 		<?php echo $form->labelEx($model,'EventoFecIni',array('class'=>'control-label')); ?>
 		<?php echo $form->textField($model,'EventoFecIni',array('class'=>'picker')) ;?>
-
 
 <div class='control-group'>
 
@@ -61,6 +58,7 @@
 <div class='control-group'>
 		<?php echo $form->labelEx($model,'EventoTemFecFin',array('class'=>'control-label')); ?>
  <div class="input-append">
+ 
 		<?php echo $form->textField($model,'EventoTemFecFin',array('class'=>'picker')) ;?>
  </div>
 </div>		
@@ -83,21 +81,6 @@
 	) ; ?>
 	<?php echo $form->error($model,'CategoriaId'); ?>
 </div>
-<?php
-Yii::app()->clientScript->registerScript('remove-chosen',"
-$.fn.chosenDestroy = function () {
-$(this).show().removeClass('chzn-done').removeAttr('id');
-$(this).next().remove()
-  return $(this);
-}
-function updateChosen(obj){
-		$(obj).chosenDestroy();
-		$(obj).chosen();
-}
-
-
-",CClientScript::POS_BEGIN);
-?>
 <div class='control-group'>
 	<?php echo $form->labelEx($model,'CategoriaSubId',array('class'=>'control-label')); ?>
 	<?php echo $form->dropDownList($model,'CategoriaSubId',
@@ -247,15 +230,22 @@ function updateChosen(obj){
 <!--<button class="btn btn-primary">ok</button>-->
 </div><!-- form -->
 <?php if(!$model->isNewRecord):?>
-<div class=' white-box box' id='listado-funciones'>
-<h3>Funciones</h3>
 
 
-<?php
-foreach($model->funciones() as $funcion){
-		$this->renderPartial('/funciones/formulario',array('model'=>$funcion));
-};
-?>
+
+<div class=' white-box box text-center' >
+	<h3>Funciones</h3>
+<div id='listado-funciones'>
+	<?php
+	foreach($model->funciones() as $funcion){
+			$this->renderPartial('/funciones/formulario',array('model'=>$funcion));
+	};
+	?>
+</div>
+<i id="feedback-funcion" class="fa fa-3x" ></i><br/><br/>
+	<?php echo TbHtml::button(' Agregar una función', array(
+			'class'=>'btn-agregar-funcion btn btn-success fa fa-2x fa-plus-circle center'
+	)); ?>
 </div>
 
 <?php endif;?>
@@ -368,21 +358,14 @@ foreach($model->funciones() as $funcion){
 						");
 
 ?>
-<?php Yii::app()->clientScript->registerScript('agregar-funcion',sprintf("
-			$('.btn-agregar-funcion').live('click',function(){
-					$.ajax({
-							url:'%s',
-									type:'get',
-							success:function(data){
-									$('#listado-funciones').append(data);
-									$('.picker').datetimepicker({allowTimes:1});
 
-								}
-						});
-});
+<?php 
+if (isset($model) and is_object($model) and $model->EventoId) {
+Yii::app()->clientScript->registerScript('agregar-funcion',sprintf("
+
 
 $('.btn-quitar-funcion').live('click',function(){
-		if(confirm('¿Esta usted seguro de querer eliminar esta funcion? Esta operacion es irreversible')){			
+		if(confirm('¿Esta usted seguro de querer eliminar esta función? Esta operación es irreversible')){			
 			var ff=$(this).data('id');
 			$.ajax({
 				url:'".$this->createUrl('funciones/quitar')."',
@@ -395,134 +378,101 @@ $('.btn-quitar-funcion').live('click',function(){
 		}
 });
 
-$( '.nodo-toggle').live('click',function(){
-	var id= $(this).data('id');
-	var li= $(this).parent().attr('id');
-	var link= $(this);
-	if (link.data('estado')=='inicial') {
-		var href= link.attr('href');
-		$.ajax({
-			url:href,
-			success:function(data){ 
-				$('#'+li).append(data);
-				link.data('estado','toggle')
-				link.toggleClass('fa-minus-square');
-				$('.picker').datetimepicker({allowTimes:1});
-			}
-		});
-	}
-	else if (link.data('estado')=='toggle'){
-		link.toggleClass('fa-minus-square');
-		$('#rama-'+li).toggle();
-		// link.toggleClass('fa-plus-square');
-	}
-	return false;
-})
 
-$( '.nodo-cal').live('click',function(){
-	$('#dlg').load($(this).attr('href'));
-});
 ",$this->createUrl('funciones/insertar',array('eid'=>$model->EventoId))),CClientScript::POS_READY);
+}
 ?>
 <?php Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl. '/js/jquery.datetimepicker.js',CClientScript::POS_BEGIN); ?>
+<?php Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl. '/js/evento.js'); ?>
 <?php Yii::app()->clientScript->registerCssFile(Yii::app()->request->baseUrl. '/css/jquery.datetimepicker.css'); ?>
 <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl."/css/jquery.datetimepicker.css" ; ?>" />
  <script type="text/javascript" charset="utf-8">
 $('.picker').datetimepicker({
 		
 		lang:'es'}); 
- </script>
 
-<script type="text/javascript">
-
-	function actualizarf(datos, funcionid) 
-	{
-		$.ajax(
+function actualizarf(datos, funcionid) 
+{
+	$.ajax(
 		{url: "<?php echo CController::createUrl('Funciones/update',array('EventoId'=>$model->EventoId)); ?>&FuncionesId="+funcionid,
-			data:datos,
-			type:'POST',
-			dataType:'JSON',
+		data:datos,
+		type:'POST',
+		dataType:'JSON',
+		success:function(data)
+		{
+			if (data.respuesta)
+			{
+				console.log('La actualización se realizo con exito');
+			}
+		}
+	})
+
+}
+$('.CPVFSta').live('click', 
+	function()
+	{
+		var pvid=$(this).data('pid');
+		var funcid=$(this).data('fid');
+		$.ajax(
+			{url: "<?php echo CController::createUrl('Funciones/ActualizarPv'); ?>",
+			data:{EventoId:'<?php echo $model->EventoId?>',FuncionesId:funcid,PuntosventaId:pvid,atributo:'ConfiPVFuncionSta',valor:($(this).prop('checked')==true ? 'ALTA' : 'BAJA')},
+			type:'GET',
 			success:function(data)
 			{
-				if (data.respuesta)
-				{
-					console.log('La actualización se realizo con exito');
-				}
+				console.log(data);
 			}
-		})
-
-	}
-	$('.FecHor').live('change',
-		function()
-		{
-			var id=$(this).data('id');
-			var meses = new Array ("ENE","FEB","MAR","ABR","MAY","JUN","JUL","AGO","SEP","OCT","NOV","DIC");
-			var diasSemana = new Array("DOMINGO","LUNES","MARTES","MIÉRCOLES","JUEVES","VIERNES","SÁBADO");
-			var fechatemp = new Date($(this).val());
-			$('#FuncText-'+id).val(diasSemana[fechatemp.getDay()] + " " + fechatemp.getDate() + " - " + 
-				meses[fechatemp.getMonth()] + " - " + fechatemp.getFullYear() + " " + (fechatemp.getHours()<"10" ? "0"+fechatemp.getHours() : fechatemp.getHours())+ ":"+ (fechatemp.getMinutes()<"10" ? "0"+fechatemp.getMinutes() : fechatemp.getMinutes()) + " HRS");
 		});
+	});
 
-	$('.FecIni').live('focusout', 
-		function()
-		{	
-			var id=$(this).data('id');
-			var datos={Funciones:{FuncionesFecIni:$(this).val()} };
-			actualizarf(datos,$(this).data('id'));
-		});	
-	$('.FecHor').live('focusout', 
-		function()
-		{	
-			var id=$(this).data('id');
-			var datos={Funciones:{FuncionesFecHor:$(this).val(), funcionesTexto:$('#FuncText-'+id).val()} };
-			actualizarf(datos,$(this).data('id'));
+$('.CPVFFecIni').live('change', 
+	function()
+	{
+		var pvid=$(this).data('pid');
+		var funcid=$(this).data('fid');
+		$.ajax(
+			{url: "<?php echo CController::createUrl('Funciones/ActualizarPv'); ?>",
+			data:{EventoId:'<?php echo $model->EventoId?>',FuncionesId:funcid,PuntosventaId:pvid,atributo:'ConfiPVFuncionFecIni',valor:$(this).val()},
+			type:'GET',
+			success:function(data)
+			{
+				console.log(data);
+			}
 		});
+	});
+$('.CPVFFecFin').live('change', 
+	function()
+	{
+		var pvid=$(this).data('pid');
+		var funcid=$(this).data('fid');
+		$.ajax(
+			{url: "<?php echo CController::createUrl('Funciones/ActualizarPv'); ?>",
+			data:{EventoId:'<?php echo $model->EventoId?>',FuncionesId:funcid,PuntosventaId:pvid,atributo:'ConfiPVFuncionFecFin',valor:$(this).val()},
+			type:'GET',
+			success:function(data)
+			{
+				console.log(data);
+			}
+		});
+	});
 
-	$('.FuncText').live('focusout', 
-		function()
-		{	
-			var id=$(this).data('id');
-			var datos={Funciones:{funcionesTexto:$(this).val()} };
-			actualizarf(datos,$(this).data('id'));
-		});
+$('.btn-agregar-funcion').live('click',function(){
+	var btn=$('#feedback-funcion');
+	btn.toggleClass('fa-spinner fa-spin','hidden');
+	$.ajax({
+		url:'<?php echo CController::createUrl("funciones/insertar",array("eid"=>$model->EventoId));?>',
+		type:'get',
+		complete:function(){
+			btn.toggleClass('fa-spinner fa-spin','hidden');
+		},
+		success:function(data){
+			$('#listado-funciones').append(data);
+			$('.picker').datetimepicker({allowTimes:1});
 
-	$('.FuncText').live('keyup',
-		function()
-		{
-			$(this).attr('id','-1');
-		});
-	$('.CPVFSta').live('click', 
-		function()
-		{
-			var pvid=$(this).data('pid');
-			var funcid=$(this).data('fid');
-			$.ajax(
-				{url: "<?php echo CController::createUrl('Funciones/ActualizarPv'); ?>",
-				data:{EventoId:'<?php echo $model->EventoId?>',FuncionesId:funcid,PuntosventaId:pvid,atributo:'ConfiPVFuncionSta',valor:($(this).prop('checked')==true ? 'ALTA' : 'BAJA')},
-				type:'GET',
-				success:function(data)
-				{
-					console.log(data);
-				}
-			});
-		});
+		}
+	});
+});
 
-	$('.CPVFFecIni').live('change', 
-		function()
-		{
-			var pvid=$(this).data('pid');
-			var funcid=$(this).data('fid');
-			$.ajax(
-				{url: "<?php echo CController::createUrl('Funciones/ActualizarPv'); ?>",
-				data:{EventoId:'<?php echo $model->EventoId?>',FuncionesId:funcid,PuntosventaId:pvid,atributo:'ConfiPVFuncionFecIni',valor:$(this).val()},
-				type:'GET',
-				success:function(data)
-				{
-					console.log(data);
-				}
-			});
-		});
-
+<<<<<<< HEAD
 	$('.CPVFFecFin').live('change', 
 		function()
 		{
@@ -584,3 +534,7 @@ $('.picker').datetimepicker({
       });
     });
     </script>
+=======
+
+ </script>
+>>>>>>> 23909c5d9b81c4e2388903775c5b98128d5237f9

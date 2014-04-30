@@ -94,7 +94,7 @@ class Evento extends CActiveRecord
 	{
 		return array(
 			'EventoId' => 'Evento',
-			'EventoNom' => 'Nombre: ',
+			'EventoNom' => 'Nombre del evento: ',
 			'EventoSta' => 'Estatus del Evento',
 			'EventoFecIni' => 'Fecha Inicio',
 			'EventoFecFin' => 'Fecha Fin',
@@ -333,6 +333,7 @@ class Evento extends CActiveRecord
 	 {
 				if ($this->scenario=='insert') {
 						$this->EventoId=Evento::getMaxId()+1;
+						$this->EventoTemFecFin=$this->EventoFecFin;
 				}	
 			 return parent::beforeSave();
 	 }

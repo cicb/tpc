@@ -1,6 +1,6 @@
 
 <?php $eid=$model->EventoId;$fid=$model->FuncionesId; ?>
-<div class=' div-funcion' id='f-<?php echo $model->EventoId."-".$model->FuncionesId ; ?>'>
+<div class=' div-funcion box' id='f-<?php echo $model->EventoId."-".$model->FuncionesId ; ?>'>
 <?php $form=$this->beginWidget('bootstrap.widgets.TbActiveForm', array(
     'id'=>'evento-form',
     'enableAjaxValidation'=>false,
@@ -10,48 +10,53 @@
 			'eid'=>$model->EventoId,
 			'fid'=>$model->FuncionesId):'',
 )); ?>
-<div class="col-5" style="display:block; margin-bottom:10px" >
-	<?php echo TbHtml::button(' Quitar', array(
+<div class="row-fluid" style="display:block; margin-bottom:10px" >
+	<?php echo TbHtml::button(' ', array(
 			'data-id'=>$model->FuncionesId,
-			'class'=>'btn-quitar-funcion btn btn-danger fa fa-minus-circle pull-left'
+			'class'=>'btn-quitar-funcion btn btn-danger fa fa-2x fa-minus-circle pull-left',
+			'title'=>'Eliminar esta función'
+	)); ?>
+	<?php echo TbHtml::link(' Asignar distribucion',$this->createUrl('distribuciones/index'), array(
+			'data-id'=>$model->FuncionesId,
+			'class'=>'btn-asignar-dist btn btn-primary fa fa-2x fa-trello pull-left',
+			'title'=>'Asignar distribución.'
 	)); ?>
 
-	<?php echo TbHtml::button(' Agregar', array(
-			'class'=>'btn-agregar-funcion btn btn-success fa fa-plus-circle pull-right'
-	)); ?>
+
 </div>
 
 
 
 <div class="input-append ">
-<?php echo $form->label($model,'FuncionesFecIni:'); ?>
 <?php
+echo  CHtml::label('Inicio de ventas','Funciones[FuncionesFecIni]');
 echo $form->textField($model,'FuncionesFecIni',array('class'=>'picker FecIni box2', 'data-id'=>"$fid"))
 ?>
 </div>
 
 <div class="input-append ">
-<?php echo $form->label($model,'FuncionesFecHor:'); ?>
 <?php
+echo  CHtml::label('Función','Funciones[FuncionesFecHor]');
 echo $form->textField($model,'FuncionesFecHor',array('class'=>'picker FecHor box2','data-id'=>"$fid"))
 ?>
 </div>
 
 <div class="input-append ">
-<?php echo $form->label($model,'funcionesTexto:'); ?>
+<?php echo  CHtml::label('Texto de la función','Funciones[funcionesTexto]'); ?>
 <?php echo $form->textField($model, 'funcionesTexto' , array(
-	'class'=>'FuncText box3', 'placeholder'=>'funcionesTexto',
+	'class'=>'FuncText box3', 'placeholder'=>'Texto de la función',
+	'style'=>'width:265px',
 'data-id'=>"$fid",'id'=>"FuncText-$fid"));?>
 </div>
 
-<div class="box3">
+<div class="box4">
 	<?php 
 		#Impresion de arbol en primer nivel
 	// $root=1000;//Id del nodo raiz
 	$root=Confipvfuncion::model()->with('puntoventa')->findByPk(array(
 		'EventoId'=>$model->EventoId,
 		'FuncionesId'=>$model->FuncionesId, 
-		'PuntosventaId'=> 1000//Id del punto de venta  raiz
+		'PuntosventaId'=> 00//Id del punto de venta  raiz
 		));
 	$taquilla=Confipvfuncion::model()->with('puntoventa')->findByPk(array(
 		'EventoId'=>$model->EventoId,
@@ -62,7 +67,10 @@ echo $form->textField($model,'FuncionesFecHor',array('class'=>'picker FecHor box
 				/****
 				***Caso especial Taquilla propia
 				*/
-				$this->renderPartial('/funciones/_nodoCPVF',array('model'=>$taquilla));
+				if (is_object($taquilla)) {
+					# Si es valido el id de taquilla del evento
+					$this->renderPartial('/funciones/_nodoCPVF',array('model'=>$taquilla));
+				}
 /*			
 		Caso Modulos
 */
@@ -70,13 +78,6 @@ echo $form->textField($model,'FuncionesFecHor',array('class'=>'picker FecHor box
 				# Si el id de la raiz es correcto
 				$this->renderPartial('/funciones/_nodoCPVF',array('model'=>$root));
 			}
-				// $link="";
-				// $chk=TbHtml::checkBox("chk-$fid-$root");
-				// $link=TbHtml::link(' ',array('puntosVenta/verRama','id'=>$root,'fid'=>$fid),
-				// 	array('class'=>'nodo-toggle fa fa-plus-square','id'=>"link-$fid-$root", 'data-estado'=>'inicial')
-				// 	);
-				// echo CHtml::tag('li',array('id'=>"$fid-$root", 'class'=>'nodo'),
-				// 	$link.' '.$chk.' '.TbHtml::label(" Modulos","chk-$fid-$root",array('style'=>'display:inline')));
 		echo CHtml::closeTag('ul');
 
 	 ?>
