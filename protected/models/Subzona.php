@@ -75,6 +75,7 @@ class Subzona extends CActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
         'filas' => array(self::HAS_MANY, 'Filas', array('EventoId','FuncionesId','ZonasId','SubzonaId')),
+        'zonas' => array(self::BELONGS_TO, 'Zonas', array('EventoId','FuncionesId','ZonasId')),
 		);
 	}
 

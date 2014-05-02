@@ -150,9 +150,12 @@
                 <?php if($model->scenario=='update' AND !empty($funciones)): ?>
                 <div class='span4 white-box box'>
 				<h3><?php echo TbHtml::i('',array('class'=>'fa fa-picture-o')); ?> Imagen Mapa Chico</h3>
-					<?php echo TbHtml::imagePolaroid(strlen($funciones->getForoPequenio())>3?$funciones->getForoPequenio():'holder.js/300x300','',
+					<?php echo TbHtml::imagePolaroid(strlen($funciones->getForoPequenio())>3?$funciones->getForoPequenio():'holder.js/150x150','',
                     array('id'=>'img-imamapchi','style'=>'width:140px;')); ?>
 					<br /><br />
+                    <?php echo TbHtml::button('Agregar Coordenadas',
+								array('class'=>'btn btn-success','id'=>'btn-coordenadas-mapchi','data-toggle'=>'modal','data-target' => '#ModalMapaChico',))?>
+                    <br />
 					<?php  echo TbHtml::fileField('imamapchi','' , array('span'=>2,'maxlength'=>200, 'class'=>'hidden')); ?>
 					<?php echo TbHtml::textField('MapaChico',$funciones->getUrlForoPequenio(),array(
                                 'readonly'=>'readonly',
@@ -164,9 +167,12 @@
 				</div>
                 <div class='span4 white-box box'>
 				<h3><?php echo TbHtml::i('',array('class'=>'fa fa-picture-o')); ?> Imagen Mapa Grande</h3>
-					<?php echo TbHtml::imagePolaroid(strlen($funciones->getForoPequenio())>3?$funciones->getForoGrande():'holder.js/300x300','',
+					<?php echo TbHtml::imagePolaroid(strlen($funciones->getForoGrande())>3?$funciones->getForoGrande():'holder.js/300x300','',
                     array('id'=>'img-imamapgra','style'=>'width:340px;')); ?>
 					<br /><br />
+                    <?php echo TbHtml::button('Agregar Coordenadas',
+								array('class'=>'btn btn-success','id'=>'btn-coordenadas-mapgra','data-toggle'=>'modal','data-target' => '#ModalMapaGrande',))?>
+                    <br />
 					<?php  echo TbHtml::fileField('imamapgra','' , array('span'=>2,'maxlength'=>200, 'class'=>'hidden')); ?>
 					<?php echo TbHtml::textField('MapaGrande',$funciones->getUrlForoGrande(),array(
                                 'readonly'=>'readonly',
@@ -175,6 +181,34 @@
 								'placeholder'=>'Nombre de la imagen mapa Gde.')); ?>
 		
 				</div>
+                <style>
+	            .modal-body {
+                    max-height: 100%;
+                }
+                .modal-footer{
+                    padding: 2px 15px;
+                }
+               </style>
+                <?php $this->widget('bootstrap.widgets.TbModal', array(
+                    'id' => 'ModalMapaChico',
+                    'header' => 'Coordenadas Mapa Chico',
+                    'content' => $this->renderPartial('_mapaChico',array('funciones'=>$funciones,'eventoId'=>$_GET['id']),true),
+                    'footer' => array(
+                        //TbHtml::button('Save Changes', array('data-dismiss' => 'modal', 'color' => TbHtml::BUTTON_COLOR_PRIMARY)),
+                        TbHtml::button('Cerrar', array('data-dismiss' => 'modal')),
+                     ),
+                     'htmlOptions' => array('style' => 'width: 700px;margin-left: -400px;'), 
+                )); ?>
+                <?php $this->widget('bootstrap.widgets.TbModal', array(
+                    'id' => 'ModalMapaGrande',
+                    'header' => 'Coordenadas Mapa Grande',
+                    'content' => $this->renderPartial('_mapaGrande',array('funciones'=>$funciones),true),
+                    'footer' => array(
+                        //TbHtml::button('Save Changes', array('data-dismiss' => 'modal', 'color' => TbHtml::BUTTON_COLOR_PRIMARY)),
+                        TbHtml::button('Cerrar', array('data-dismiss' => 'modal')),
+                     ),
+                     'htmlOptions' => array('style' => 'width: 950px;margin-left: -500px;top:5px'),
+                )); ?>
                 <?php else: ?>
                 <?php echo TbHtml::button('Agregar mapas', array('color' => TbHtml::BUTTON_COLOR_PRIMARY)); ?>
                 <?php endif;?>
@@ -195,6 +229,8 @@
 
 <!--<button class="btn btn-primary">ok</button>-->
 </div><!-- form -->
+<?php if(!$model->isNewRecord):?>
+
 
 
 <div class=' white-box box text-center' >
@@ -211,6 +247,8 @@
 			'class'=>'btn-agregar-funcion btn btn-success fa fa-2x fa-plus-circle center'
 	)); ?>
 </div>
+
+<?php endif;?>
 <?php $this->widget('bootstrap.widgets.TbModal', array(
     'id' => 'dlg-confiPvFuncion',
     'header' => 'Selecciona el rango de fechas',
@@ -434,5 +472,69 @@ $('.btn-agregar-funcion').live('click',function(){
 	});
 });
 
+<<<<<<< HEAD
+	$('.CPVFFecFin').live('change', 
+		function()
+		{
+			var pvid=$(this).data('pid');
+			var funcid=$(this).data('fid');
+			$.ajax(
+				{url: "<?php echo CController::createUrl('Funciones/ActualizarPv'); ?>",
+				data:{EventoId:'<?php echo $model->EventoId?>',FuncionesId:funcid,PuntosventaId:pvid,atributo:'ConfiPVFuncionFecFin',valor:$(this).val()},
+				type:'GET',
+				success:function(data)
+				{
+					console.log(data);
+				}
+			});
+		});
+</script>	
+
+
+<script>
+  	$(function() {
+  	  // Apparently click is better chan change? Cuz IE?
+      $('input[type="checkbox"]').change(function(e) {
+      var checked = $(this).prop("checked"),
+          container = $(this).parent(),
+          siblings = container.siblings();
+  
+      container.find('input[type="checkbox"]').prop({
+          indeterminate: false,
+          checked: checked
+      });
+  
+      function checkSiblings(el) {
+          var parent = el.parent().parent(),
+              all = true;
+  
+          el.siblings().each(function() {
+              return all = ($(this).children('input[type="checkbox"]').prop("checked") === checked);
+          });
+  
+          if (all && checked) {
+              parent.children('input[type="checkbox"]').prop({
+                  indeterminate: false,
+                  checked: checked
+              });
+              checkSiblings(parent);
+          } else if (all && !checked) {
+              parent.children('input[type="checkbox"]').prop("checked", checked);
+              parent.children('input[type="checkbox"]').prop("indeterminate", (parent.find('input[type="checkbox"]:checked').length > 0));
+              checkSiblings(parent);
+          } else {
+              el.parents("li").children('input[type="checkbox"]').prop({
+                  indeterminate: true,
+                  checked: false
+              });
+          }
+        }
+    
+        checkSiblings(container);
+      });
+    });
+    </script>
+=======
 
  </script>
+>>>>>>> 23909c5d9b81c4e2388903775c5b98128d5237f9
