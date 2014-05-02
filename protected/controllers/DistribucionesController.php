@@ -22,9 +22,9 @@ class DistribucionesController extends Controller
 	{
 		#Despliega una lista de distribuciones actuales
 		$model=new Forolevel1('search');
-		if (isset($_GET['Forolevel1'])) {
+		if (isset($_POST['Forolevel1'])) {
 			# code...
-			$model->attributes=$_GET['Forolevel1'];
+			$model->attributes=$_POST['Forolevel1'];
 		}
 		$this->render('listaDistribuciones',compact('model'));
 	}
