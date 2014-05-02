@@ -7,7 +7,7 @@
     background-color: #EEE;
 }
 .coor-menu label{
-    display: inline-block;
+    /*display: inline-block;*/
 }
 .coor-menu table{
     width: 100%;
@@ -39,24 +39,13 @@
         $funcionesId = Funciones::model()->findAll("EventoId=$eventoId");
         ?>
         <table>
-            <tr>
-                <td colspan="4">
-                    <label>Sub-Zona:</label>
-                    <select id="select-sub-zona">
-                    <option data-zona="" data-subzona="">Selecciona una Sub-Zona</option>
-                    <?php foreach($subzonas as $key => $subzona):?>
-                        <option data-zona="<?php echo $subzona->zonas->ZonasId?>" data-subzona="<?php echo $subzona->SubzonaId?>"><?php echo $subzona->zonas->ZonasAli."-".$subzona->SubzonaId?></option>
-                    <?php endforeach;?>
-                    </select>
-                </td>
-            </tr>
             <tr class="controles-submenu">
                 <td><input type="hidden" id="coor-funcionid" data-funcionId="1" />
                    <?php echo CHtml::link('<i class="fa fa-eye"></i> Ver coordenadas','#',array('id'=>'ver-coordenadas','class'=>'btn btn-success'))?>
                 </td>
                 <td><?php echo CHtml::link('<i class="fa fa-repeat"></i> Descartar','#',array('id'=>'descartar','class'=>'btn btn-info'))?></td>
-                <td><?php echo CHtml::link('<i class="fa fa-trash-o"></i> Eliminar','#',array('id'=>'eliminar-coordenada','class'=>'btn btn-danger'))?></td>
-                <td><?php echo CHtml::link('<i class="fa fa-save"></i> Guardar','#',array('id'=>'guardar-coordenada','class'=>'btn btn-primary'))?></td>
+                <td></td>
+                <td></td>
             </tr>
         </table>
     </div>
@@ -73,6 +62,17 @@
             <table>
                 <caption>Coordenadas</caption>
                 <thead>
+                    <tr>
+                        <td colspan="2">
+                            <label>Sub-Zona:</label>
+                            <select id="select-sub-zona">
+                            <option data-zona="" data-subzona="">Selecciona una Sub-Zona</option>
+                            <?php foreach($subzonas as $key => $subzona):?>
+                                <option data-zona="<?php echo $subzona->zonas->ZonasId?>" data-subzona="<?php echo $subzona->SubzonaId?>"><?php echo $subzona->zonas->ZonasAli."-".$subzona->SubzonaId?></option>
+                            <?php endforeach;?>
+                            </select>
+                        </td>
+                    </tr>
                     <tr>
                         <th>X</th>
                         <th>Y</th>
@@ -98,6 +98,10 @@
                     <tr>
                         <td><input type="text" readonly="readonly" name="x5" id="x5" /></td>
                         <td><input type="text" readonly="readonly" name="y5" id="y5" /></td>
+                    </tr>
+                    <tr>
+                        <td><?php echo CHtml::link('<i class="fa fa-trash-o"></i> Eliminar','#',array('id'=>'eliminar-coordenada','class'=>'btn btn-danger'))?></td>
+                        <td><?php echo CHtml::link('<i class="fa fa-save"></i> Guardar','#',array('id'=>'guardar-coordenada','class'=>'btn btn-primary'))?></td>
                     </tr>
                     <tr>
                         <td colspan="2">
@@ -227,7 +231,7 @@ $("#ver-coordenadas").click(function(){
                         if(data[zona][subzona].x4!=""){
                             createLine(data[zona][subzona].x3,data[zona][subzona].y3,data[zona][subzona].x4,data[zona][subzona].y4,mapa);
                         }
-                        if(data.x5!=""){
+                        if(data[zona][subzona].x5!=""){
                             createLine(data[zona][subzona].x4,data[zona][subzona].y4,data[zona][subzona].x5,data[zona][subzona].y5,mapa);
                         }    
                         //console.log(subzona);
@@ -315,7 +319,7 @@ $("#eliminar-coordenada").click(function(){
     return false;
 });
 function resetLines(){
-     $('.line').fadeOut(300, function(){ $(this).remove(); });
+     $('#area-imagen-chica .line').fadeOut(300, function(){ $(this).remove(); });
      this.x1 = null;
      this.x2 = null;
  }

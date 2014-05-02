@@ -195,19 +195,19 @@
                     'content' => $this->renderPartial('_mapaChico',array('funciones'=>$funciones,'eventoId'=>$_GET['id']),true),
                     'footer' => array(
                         //TbHtml::button('Save Changes', array('data-dismiss' => 'modal', 'color' => TbHtml::BUTTON_COLOR_PRIMARY)),
-                        TbHtml::button('Cerrar', array('data-dismiss' => 'modal')),
+                        //TbHtml::button('Cerrar', array('data-dismiss' => 'modal')),
                      ),
                      'htmlOptions' => array('style' => 'width: 700px;margin-left: -400px;'), 
                 )); ?>
                 <?php $this->widget('bootstrap.widgets.TbModal', array(
                     'id' => 'ModalMapaGrande',
                     'header' => 'Coordenadas Mapa Grande',
-                    'content' => $this->renderPartial('_mapaGrande',array('funciones'=>$funciones),true),
+                    'content' => $this->renderPartial('_mapaGrande',array('funciones'=>$funciones,'eventoId'=>$_GET['id']),true),
                     'footer' => array(
                         //TbHtml::button('Save Changes', array('data-dismiss' => 'modal', 'color' => TbHtml::BUTTON_COLOR_PRIMARY)),
-                        TbHtml::button('Cerrar', array('data-dismiss' => 'modal')),
+                        //TbHtml::button('Cerrar', array('data-dismiss' => 'modal')),
                      ),
-                     'htmlOptions' => array('style' => 'width: 950px;margin-left: -500px;top:5px'),
+                     'htmlOptions' => array('style' => 'width: 1100px;margin-left: -550px;top:5px'),
                 )); ?>
                 <?php else: ?>
                 <?php echo TbHtml::button('Agregar mapas', array('color' => TbHtml::BUTTON_COLOR_PRIMARY)); ?>

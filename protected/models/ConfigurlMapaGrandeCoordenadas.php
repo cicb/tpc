@@ -7,7 +7,11 @@ class ConfigurlMapaGrandeCoordenadas extends BaseConfigurlMapaGrandeCoordenadas
     public static function model($className=__CLASS__) {
             return parent::model($className);
     }
-    
+    public function relations() {
+		return array(
+            'mapagrande'=>  array(self::BELONGS_TO, 'MapaGrande', 'configurl_funcion_mapa_grande_id'),
+		);
+	}
     public function rules() {
         return array(
             array('ZonasId, SubzonaId', 'required'),

@@ -325,6 +325,142 @@ class EventoController extends Controller
     }
 /****************************************************************************************
  *Manipulacion de coordenadas mapa Grande
- ****************************************************************************************/     
-
+ ****************************************************************************************/  
+    public function actionGetCoordenadaMapaGrande(){
+        if (Yii::app()->request->isAjaxRequest ) {
+            if(isset($_POST)){
+                $zonaId = $_POST['zona'];
+                $subzonaId = $_POST['subzona'];
+                $eventoId = $_POST['eventoId'];
+                $funcionId = $_POST['funcionId'];
+                $mapa_grande = MapaGrande::model()->find("eventoId=$eventoId AND FuncionId=$funcionId");
+                $coordenada = Yii::app()->db->createCommand("SELECT * FROM configurl_mapa_grande_coordenadas WHERE configurl_funcion_mapa_grande_id=$mapa_grande->id AND ZonasId=$zonaId AND SubzonaId=$subzonaId")->queryRow();
+                
+                //$subzona = Subzona::model()->find("eventoId=$eventoId AND FuncionesId=$funcionId AND ZonasId=$zonaId AND SubzonaId=$subzonaId");
+                $data['x1'] = $coordenada['x1'];
+                $data['y1'] = $coordenada['y1'];
+                $data['x2'] = $coordenada['x2'];
+                $data['y2'] = $coordenada['y2'];
+                $data['x3'] = $coordenada['x3'];
+                $data['y3'] = $coordenada['y3'];
+                $data['x4'] = $coordenada['x4'];
+                $data['y4'] = $coordenada['y4'];
+                $data['x5'] = $coordenada['x5'];
+                $data['y5'] = $coordenada['y5'];
+                $data['x6'] = $coordenada['x6'];
+                $data['y6'] = $coordenada['y6'];
+                $data['x7'] = $coordenada['x7'];
+                $data['y7'] = $coordenada['y7'];
+                $data['x8'] = $coordenada['x8'];
+                $data['y8'] = $coordenada['y8'];
+                $data['x9'] = $coordenada['x9'];
+                $data['y9'] = $coordenada['y9'];
+                $data['x10'] = $coordenada['x10'];
+                $data['y10'] = $coordenada['y10'];
+                $data['x11'] = $coordenada['x11'];
+                $data['y11'] = $coordenada['y11'];
+                $data['x12'] = $coordenada['x12'];
+                $data['y12'] = $coordenada['y12'];
+                $data['x13'] = $coordenada['x13'];
+                $data['y13'] = $coordenada['y13'];
+                $data['x14'] = $coordenada['x14'];
+                $data['y14'] = $coordenada['y14'];
+                echo json_encode($data);
+            }
+        }
+    } 
+    public function actionDeleteCoordenadaMapaGrande(){
+         if (Yii::app()->request->isAjaxRequest ) {
+            if(isset($_POST)){
+                $zonaId = $_POST['zona'];
+                $subzonaId = $_POST['subzona'];
+                $eventoId = $_POST['eventoId'];
+                $funcionId = $_POST['funcionId'];
+                $mapa_grande = MapaGrande::model()->find("eventoId=$eventoId AND FuncionId=$funcionId");
+                $coordenada = Yii::app()->db->createCommand()->update('configurl_mapa_grande_coordenadas',
+                                                                      array(
+                                                                            'x1'=>null,
+                                                                            'x2'=>null,
+                                                                            'x3'=>null,
+                                                                            'x4'=>null,
+                                                                            'x5'=>null,
+                                                                            'x6'=>null,
+                                                                            'x7'=>null,
+                                                                            'x8'=>null,
+                                                                            'x9'=>null,
+                                                                            'x10'=>null,
+                                                                            'x11'=>null,
+                                                                            'x12'=>null,
+                                                                            'x13'=>null,
+                                                                            'x14'=>null,
+                                                                            'y1'=>null,
+                                                                            'y2'=>null,
+                                                                            'y3'=>null,
+                                                                            'y4'=>null,
+                                                                            'y5'=>null,
+                                                                            'y6'=>null,
+                                                                            'y7'=>null,
+                                                                            'y8'=>null,
+                                                                            'y9'=>null,
+                                                                            'y10'=>null,
+                                                                            'y11'=>null,
+                                                                            'y12'=>null,
+                                                                            'y13'=>null,
+                                                                            'y14'=>null,
+                                                                            ),
+                                                                      'configurl_funcion_mapa_grande_id= :id',
+                                                                      array(':id'=>$mapa_grande->id)
+                                                                      );
+                echo json_encode($coordenada );                                                      
+                /*if($coordenada>0)
+                    echo json_encode(array('update'=>true));
+                else    
+                    echo json_encode(array('update'=>false));*/
+            }
+         }
+    }    
+    public function actionGetCoordenadasMapaGrande(){
+        if (Yii::app()->request->isAjaxRequest ) {
+            if(isset($_POST)){
+                $eventoId = $_POST['eventoId'];
+                $funcionId = $_POST['funcionId'];
+                $mapa_grande = MapaGrande::model()->find("eventoId=$eventoId AND FuncionId=$funcionId");
+                $coordenadas = Yii::app()->db->createCommand("SELECT * FROM configurl_mapa_grande_coordenadas WHERE configurl_funcion_mapa_grande_id=$mapa_grande->id")->queryAll();
+                //$subzonas = Subzona::model()->findAll("eventoId=$eventoId AND FuncionesId=$funcionId");
+                $data = array();
+                foreach($coordenadas as $key => $coordenada):
+                    $data[$coordenada['ZonasId']][$coordenada['SubzonaId']]['x1'] = $coordenada['x1'];
+                    $data[$coordenada['ZonasId']][$coordenada['SubzonaId']]['y1'] = $coordenada['y1'];
+                    $data[$coordenada['ZonasId']][$coordenada['SubzonaId']]['x2'] = $coordenada['x2'];
+                    $data[$coordenada['ZonasId']][$coordenada['SubzonaId']]['y2'] = $coordenada['y2'];
+                    $data[$coordenada['ZonasId']][$coordenada['SubzonaId']]['x3'] = $coordenada['x3'];
+                    $data[$coordenada['ZonasId']][$coordenada['SubzonaId']]['y3'] = $coordenada['y3'];
+                    $data[$coordenada['ZonasId']][$coordenada['SubzonaId']]['x4'] = $coordenada['x4'];
+                    $data[$coordenada['ZonasId']][$coordenada['SubzonaId']]['y4'] = $coordenada['y4'];
+                    $data[$coordenada['ZonasId']][$coordenada['SubzonaId']]['x5'] = $coordenada['x5'];
+                    $data[$coordenada['ZonasId']][$coordenada['SubzonaId']]['y5'] = $coordenada['y5'];
+                    $data[$coordenada['ZonasId']][$coordenada['SubzonaId']]['x6'] = $coordenada['x6'];
+                    $data[$coordenada['ZonasId']][$coordenada['SubzonaId']]['y6'] = $coordenada['y6'];
+                    $data[$coordenada['ZonasId']][$coordenada['SubzonaId']]['x7'] = $coordenada['x7'];
+                    $data[$coordenada['ZonasId']][$coordenada['SubzonaId']]['y7'] = $coordenada['y7'];
+                    $data[$coordenada['ZonasId']][$coordenada['SubzonaId']]['x8'] = $coordenada['x8'];
+                    $data[$coordenada['ZonasId']][$coordenada['SubzonaId']]['y8'] = $coordenada['y8'];
+                    $data[$coordenada['ZonasId']][$coordenada['SubzonaId']]['x9'] = $coordenada['x9'];
+                    $data[$coordenada['ZonasId']][$coordenada['SubzonaId']]['y9'] = $coordenada['y9'];
+                    $data[$coordenada['ZonasId']][$coordenada['SubzonaId']]['x10'] = $coordenada['x10'];
+                    $data[$coordenada['ZonasId']][$coordenada['SubzonaId']]['y10'] = $coordenada['y10'];
+                    $data[$coordenada['ZonasId']][$coordenada['SubzonaId']]['x11'] = $coordenada['x11'];
+                    $data[$coordenada['ZonasId']][$coordenada['SubzonaId']]['y11'] = $coordenada['y11'];
+                    $data[$coordenada['ZonasId']][$coordenada['SubzonaId']]['x12'] = $coordenada['x12'];
+                    $data[$coordenada['ZonasId']][$coordenada['SubzonaId']]['y12'] = $coordenada['y12'];
+                    $data[$coordenada['ZonasId']][$coordenada['SubzonaId']]['x13'] = $coordenada['x13'];
+                    $data[$coordenada['ZonasId']][$coordenada['SubzonaId']]['y13'] = $coordenada['y13'];
+                    $data[$coordenada['ZonasId']][$coordenada['SubzonaId']]['x14'] = $coordenada['x14'];
+                    $data[$coordenada['ZonasId']][$coordenada['SubzonaId']]['y14'] = $coordenada['y14'];
+                endforeach;
+                
+                echo json_encode($data);
+            }
+        }
+    }
 }
