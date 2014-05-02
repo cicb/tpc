@@ -55,9 +55,17 @@ class Forolevel1 extends CActiveRecord
 		return array(
 			'foro'=>array(self::BELONGS_TO,'Foro','ForoId'),
 			'funciones'=> array(self::HAS_MANY,'Funciones', array('ForoId','ForoMapIntId')),
+			'funcion'=> array(self::HAS_ONE,'Funciones', array('ForoId','ForoMapIntId')),
 			'eventos'=>array(
                 self::HAS_MANY,'Evento',array('EventoId'=>'EventoId'),'through'=>'funciones'
             ),
+			'evento'=>array(
+                self::HAS_ONE,'Evento',array('EventoId'=>'EventoId'),'through'=>'funciones',
+            ),
+            'zonas'=>array(self::HAS_MANY,'Zonas',array(
+            		'EventoId'=>'EventoId',
+            		'FuncionesId'=>'FuncionesId',
+            	),'through'=>'funciones' )
 			// 'funciones'=>array(self::HAS_MANY,'Funciones',array('ForoId','ForoMapIntId')),
 		);
 	}
@@ -147,6 +155,47 @@ class Forolevel1 extends CActiveRecord
 		}
 		$eventos=array_slice($eventos, -5,5);
 		return implode(', ', $eventos);
+	}
+
+	public function getArregloZonas()
+	{
+		# Regresa un arreglo de zonas con su numero de asientos
+		$tabla=array();
+		if (isset($this->funcion) and sizeof($this->funcion->zonas)>0) {
+			foreach ($this->funcion->zonas as $zona) {
+				$tabla[$zona->ZonasAli]=$zona->capacidad;
+			}
+		}
+		return $tabla;
+	}
+
+	public function getTablaZonas($htmlOptions=array())
+	{
+		$tabla=$this->getArregloZonas();
+		$filas="";
+		if (sizeof($tabla)>0) {
+			$i=0;
+			$filas.="<TR><TH>Zona</TH> <TH>Asientos</TH></TR>";
+			foreach ($tabla as $key => $value) {
+					$i++;
+					$filas.=sprintf("<TR %s><TD>%s</TD> <TD>%s</TD></TR>",
+						$i%2?'class=\'odd\'':'',
+						$key,$value
+						);
+				}
+			return CHtml::tag('table',$htmlOptions,$filas);	
+		}
+	}
+	public function getAsientos()
+	{
+		#Devuelve el numero total de asiento de cualquier evento con esta distribucion
+		# 0 si no tiene eventos
+		if (isset($this->funcion) and is_object($this->funcion)) {
+			# Si existe al menos una sola funcion
+			return $this->funcion->asientos;
+		}
+		else
+			return 0;
 	}
 
 }

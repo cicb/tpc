@@ -472,7 +472,6 @@ $('.btn-agregar-funcion').live('click',function(){
 	});
 });
 
-<<<<<<< HEAD
 	$('.CPVFFecFin').live('change', 
 		function()
 		{
@@ -534,7 +533,4 @@ $('.btn-agregar-funcion').live('click',function(){
       });
     });
     </script>
-=======
 
- </script>
->>>>>>> 23909c5d9b81c4e2388903775c5b98128d5237f9

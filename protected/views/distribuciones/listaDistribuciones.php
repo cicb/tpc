@@ -63,13 +63,36 @@ $this->widget('yiiwheels.widgets.grid.WhGridView', array(
                 array(
                     "data-foroid"=>$data->ForoId,
                     "data-fmiid"=>$data->ForoMapIntId,
-                    "class"=>"img-polaroid", "width"=>"150px"))',
+                    "class"=>"img", "style"=>"width:150px"))',
     		),
         array(
                'header'=>'Ultimos Eventos',
                'type'=>'html',
                'value'=>'CHtml::tag("div",array("style"=>"font-size:9px;width:200px"), $data->listaEventos)'         
+            ),
+        array(
+            'header'=>'Numero de Asientos',
+            'type'=>'raw',
+            'value' =>'number_format($data->asientos)',
+            'htmlOptions'=>array('style'=>'text-align:center')
+            ),
+        array(
+                'header'=> 'Configuración',
+                'type'=>'html',
+                'value' => '$data->getTablaZonas(array(
+                    "class"=>"table-bordered",
+                    "style"=>"width:100%;font-size:9px!important"
+                    ))',
+
+                
             )
     	),
 ));
  ?>
+<script type="text/javascript">
+    $('.img').live('hover',function(){
+        var path=$(this).attr('src');
+        $(this).popover({content:"<img src='"+path+"'/>",html:true})
+    })
+</script>
+

@@ -76,11 +76,10 @@ class Evento extends CActiveRecord
 			'categoriaSub' => array(self::BELONGS_TO, 'Categorialevel1', 'CategoriaSubId'),
 			'puntoventa' => array(self::HAS_ONE, 'Puntosventa', 'PuntosventaId'),
 			'foro' => array(self::BELONGS_TO, 'Foro', 'ForoId'),
-			//'distribucion' => array(self::HAS_ONE, 'Distribucionpuerta', 'IdDistribucionPuerta'),
-            
+            'asientos'=>array(self::STAT,'Lugares','EventoId','condition'=>"LugaresStatus<>'OFF'"),
             'distribucionpuertalevel1' =>array(self::BELONGS_TO,'Distribucionpuertalevel1','EventoId'),
              'funciones' => array(self::HAS_MANY, 'Funciones', array( 'EventoId')),
-             'zonas' => array(self::HAS_MANY, 'Zonas', array('FuncionesId', 'EventoId')),
+             'zonas' => array(self::HAS_MANY, 'Zonas', array( 'EventoId','FuncionesId')),
              'subzona' => array(self::HAS_MANY, 'Subzona', array('SubzonaId','FuncionesId', 'EventoId')),
 			 'boletosVendidos'=>array(self::STAT, 'Ventaslevel1', 'EventoId','condition'=>"VentasSta NOT LIKE 'CANCELADO'"),
 			 'accesos'=>array(self::STAT, 'Acceso', 'EventoId'),

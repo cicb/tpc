@@ -91,6 +91,8 @@ class Funciones extends CActiveRecord
             'forolevel1' => array(self::HAS_MANY, 'Forolevel1',array('ForoId','ForoMapIntId')),
             'zonas' => array(self::HAS_MANY, 'Zonas', array('EventoId','FuncionesId')),
             'evento' => array(self::BELONGS_TO, 'Evento', array('EventoId')),
+            'asientos'=>array(self::STAT,'Lugares','EventoId, FuncionesId','condition'=>"LugaresStatus<>'OFF'"),
+
 		);
 	}
 
@@ -417,9 +419,10 @@ class Funciones extends CActiveRecord
 		return $model;
 	}
 
-	public function verDistribuciones()
+	public function verDistribucionZonas()
 	{
 		$criteria=new CDbCriteria;
 		$criteria->compare('EventoNom', $this->EventoNom, true);
+		
 	}
 }
