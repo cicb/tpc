@@ -114,6 +114,7 @@
     </div>
 </div>
 <script>
+    window.localStorage.clear()
     localStorage.setItem('coor_mapa_chico',0);
     var x1 = null;
     var x2 = null;

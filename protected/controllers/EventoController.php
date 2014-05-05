@@ -369,6 +369,56 @@ class EventoController extends Controller
             }
         }
     } 
+    public function actionGuardarCoordenadasMapaGrande(){
+         if (Yii::app()->request->isAjaxRequest ) {
+            if(isset($_POST)){
+                $zonaId = $_POST['zona'];
+                $subzonaId = $_POST['subzona'];
+                $eventoId = $_POST['eventoId'];
+                $funcionId = $_POST['funcionId'];
+                $mapa_grande = MapaGrande::model()->find("eventoId=$eventoId AND FuncionId=$funcionId");
+                $coordenada = Yii::app()->db->createCommand()->update('configurl_mapa_grande_coordenadas',
+                                                                      array(
+                                                                            'x1'=>$_POST['x1'],
+                                                                            'x2'=>$_POST['x2'],
+                                                                            'x3'=>$_POST['x3'],
+                                                                            'x4'=>$_POST['x4'],
+                                                                            'x5'=>$_POST['x5'],
+                                                                            'x6'=>$_POST['x6'],
+                                                                            'x7'=>$_POST['x7'],
+                                                                            'x8'=>$_POST['x8'],
+                                                                            'x9'=>$_POST['x9'],
+                                                                            'x10'=>$_POST['x10'],
+                                                                            'x11'=>$_POST['x11'],
+                                                                            'x12'=>$_POST['x12'],
+                                                                            'x13'=>$_POST['x13'],
+                                                                            'x14'=>$_POST['x14'],
+                                                                            'y1'=>$_POST['y1'],
+                                                                            'y2'=>$_POST['y2'],
+                                                                            'y3'=>$_POST['y3'],
+                                                                            'y4'=>$_POST['y4'],
+                                                                            'y5'=>$_POST['y5'],
+                                                                            'y6'=>$_POST['y6'],
+                                                                            'y7'=>$_POST['y7'],
+                                                                            'y8'=>$_POST['y8'],
+                                                                            'y9'=>$_POST['y9'],
+                                                                            'y10'=>$_POST['y10'],
+                                                                            'y11'=>$_POST['y11'],
+                                                                            'y12'=>$_POST['y12'],
+                                                                            'y13'=>$_POST['y13'],
+                                                                            'y14'=>$_POST['y14'],
+                                                                            ),
+                                                                      'configurl_funcion_mapa_grande_id= :id AND ZonasId=:ZonasId AND SubzonaId=:SubzonaId',
+                                                                      array(':id'=>$mapa_grande->id,':ZonasId'=>$zonaId,'SubzonaId'=>$subzonaId)
+                                                                      );
+                echo json_encode(array('update'=>true));                                                      
+                /*if($coordenada>0)
+                    echo json_encode(array('update'=>true));
+                else    
+                    echo json_encode(array('update'=>false));*/
+            }
+         }
+    }
     public function actionDeleteCoordenadaMapaGrande(){
          if (Yii::app()->request->isAjaxRequest ) {
             if(isset($_POST)){
@@ -408,10 +458,10 @@ class EventoController extends Controller
                                                                             'y13'=>null,
                                                                             'y14'=>null,
                                                                             ),
-                                                                      'configurl_funcion_mapa_grande_id= :id',
-                                                                      array(':id'=>$mapa_grande->id)
+                                                                      'configurl_funcion_mapa_grande_id= :id AND ZonasId=:ZonasId AND SubzonaId=:SubzonaId',
+                                                                      array(':id'=>$mapa_grande->id,':ZonasId'=>$zonaId,'SubzonaId'=>$subzonaId)
                                                                       );
-                echo json_encode($coordenada );                                                      
+                echo json_encode(array('update'=>true));                                                     
                 /*if($coordenada>0)
                     echo json_encode(array('update'=>true));
                 else    

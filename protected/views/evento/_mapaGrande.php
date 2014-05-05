@@ -209,46 +209,43 @@ $("#select-sub-zona-mapa-grande").change(function(){
                 $('input[name^="x"]').val('');
                 $('input[name^="y"]').val('');
                 var mapa = $("#area-imagen-grande");
-                if(data.x2!=null){
+                if(data.x2!=null && data.x2!="" && data.x2!=0){
                     createLine(data.x1,data.y1,data.x2,data.y2,mapa);
                 }
-                if(data.x3!=null){
+                if(data.x3!=null && data.x3!="" && data.x3!=0){
                     createLine(data.x2,data.y2,data.x3,data.y3,mapa);
                 }
-                if(data.x4!=null){
+                if(data.x4!=null && data.x4!="" && data.x4!=0){
                     createLine(data.x3,data.y3,data.x4,data.y4,mapa);
                 }
-                if(data.x5!=null){
+                if(data.x5!=null && data.x5!="" && data.x5!=0){
                     createLine(data.x4,data.y4,data.x5,data.y5,mapa);
                 }
-                if(data.x5!=null){
-                    createLine(data.x4,data.y4,data.x5,data.y5,mapa);
-                }
-                if(data.x6!=null){
+                if(data.x6!=null && data.x6!="" && data.x6!=0){
                     createLine(data.x5,data.y5,data.x6,data.y6,mapa);
                 }
-                if(data.x7!=null){
+                if(data.x7!=null && data.x7!="" && data.x7!=0){
                     createLine(data.x6,data.y6,data.x7,data.y7,mapa);
                 }
-                if(data.x8!=null){
+                if(data.x8!=null && data.x8!="" && data.x8!=0){
                     createLine(data.x7,data.y7,data.x8,data.y8,mapa);
                 }
-                if(data.x9!=null){
+                if(data.x9!=null && data.x9!="" && data.x9!=0){
                     createLine(data.x8,data.y8,data.x9,data.y9,mapa);
                 }
-                if(data.x10!=null){
+                if(data.x10!=null && data.x10!="" && data.x10!=0){
                     createLine(data.x9,data.y9,data.x10,data.y10,mapa);
                 }
-                if(data.x11!=null){
+                if(data.x11!=null && data.x11!="" && data.x11!=0){
                     createLine(data.x10,data.y10,data.x11,data.y11,mapa);
                 }
-                if(data.x12!=null){
+                if(data.x12!=null && data.x12!="" && data.x12!=0){
                     createLine(data.x11,data.y11,data.x12,data.y12,mapa);
                 }
-                if(data.x13!=null){
+                if(data.x13!=null && data.x13!="" && data.x13!=0){
                     createLine(data.x12,data.y12,data.x13,data.y13,mapa);
                 }
-                if(data.x14!=null){
+                if(data.x14!=null && data.x14!="" && data.x14!=0){
                     createLine(data.x13,data.y13,data.x14,data.y14,mapa);
                 }
                 
@@ -308,43 +305,43 @@ $("#ver-coordenadas-mapa-grande").click(function(){
                 
                 $.each(data,function(zona){
                     $.each(data[zona],function(subzona){
-                        if(data[zona][subzona].x2!=null){
+                        if(data[zona][subzona].x2!=null && data[zona][subzona].x2!="" && data[zona][subzona].x2!=0){
                             createLine(data[zona][subzona].x1,data[zona][subzona].y1,data[zona][subzona].x2,data[zona][subzona].y2,mapa);
                         }
-                        if(data[zona][subzona].x3!=null){
+                        if(data[zona][subzona].x3!=null && data[zona][subzona].x3!="" && data[zona][subzona].x3!=0){
                             createLine(data[zona][subzona].x2,data[zona][subzona].y2,data[zona][subzona].x3,data[zona][subzona].y3,mapa);
                         }
-                        if(data[zona][subzona].x4!=null){
+                        if(data[zona][subzona].x4!=null && data[zona][subzona].x4!="" && data[zona][subzona].x4!=0){
                             createLine(data[zona][subzona].x3,data[zona][subzona].y3,data[zona][subzona].x4,data[zona][subzona].y4,mapa);
                         }
-                        if(data[zona][subzona].x5!=null){
+                        if(data[zona][subzona].x5!=null && data[zona][subzona].x5!="" && data[zona][subzona].x5!=0){
                             createLine(data[zona][subzona].x4,data[zona][subzona].y4,data[zona][subzona].x5,data[zona][subzona].y5,mapa);
                         }   
-                        if(data[zona][subzona].x6!=null){
+                        if(data[zona][subzona].x6!=null && data[zona][subzona].x6!="" && data[zona][subzona].x6!=0){
                             createLine(data[zona][subzona].x5,data[zona][subzona].y5,data[zona][subzona].x6,data[zona][subzona].y6,mapa);
                         } 
-                        if(data[zona][subzona].x7!=null){
+                        if(data[zona][subzona].x7!=null && data[zona][subzona].x7!="" && data[zona][subzona].x7!=0){
                             createLine(data[zona][subzona].x6,data[zona][subzona].y6,data[zona][subzona].x7,data[zona][subzona].y7,mapa);
                         }
-                        if(data[zona][subzona].x8!=null){
+                        if(data[zona][subzona].x8!=null && data[zona][subzona].x8!="" && data[zona][subzona].x8!=0){
                             createLine(data[zona][subzona].x7,data[zona][subzona].y7,data[zona][subzona].x8,data[zona][subzona].y8,mapa);
                         }
-                        if(data[zona][subzona].x9!=null){
+                        if(data[zona][subzona].x9!=null && data[zona][subzona].x9!="" && data[zona][subzona].x9!=0){
                             createLine(data[zona][subzona].x8,data[zona][subzona].y8,data[zona][subzona].x9,data[zona][subzona].y9,mapa);
                         }
-                        if(data[zona][subzona].x10!=null){
+                        if(data[zona][subzona].x10!=null && data[zona][subzona].x10!="" && data[zona][subzona].x10!=0){
                             createLine(data[zona][subzona].x9,data[zona][subzona].y9,data[zona][subzona].x10,data[zona][subzona].y10,mapa);
                         }
-                        if(data[zona][subzona].x11!=null){
+                        if(data[zona][subzona].x11!=null && data[zona][subzona].x11!="" && data[zona][subzona].x11!=0){
                             createLine(data[zona][subzona].x10,data[zona][subzona].y10,data[zona][subzona].x11,data[zona][subzona].y11,mapa);
                         }
-                        if(data[zona][subzona].x12!=null){
+                        if(data[zona][subzona].x12!=null && data[zona][subzona].x12!="" && data[zona][subzona].x12!=0){
                             createLine(data[zona][subzona].x11,data[zona][subzona].y11,data[zona][subzona].x12,data[zona][subzona].y12,mapa);
                         }
-                        if(data[zona][subzona].x13!=null){
+                        if(data[zona][subzona].x13!=null && data[zona][subzona].x13!="" && data[zona][subzona].x13!=0){
                             createLine(data[zona][subzona].x12,data[zona][subzona].y12,data[zona][subzona].x13,data[zona][subzona].y13,mapa);
                         }
-                        if(data[zona][subzona].x14!=null){
+                        if(data[zona][subzona].x14!=null && data[zona][subzona].x14!="" && data[zona][subzona].x14!=0){
                             createLine(data[zona][subzona].x13,data[zona][subzona].y13,data[zona][subzona].x14,data[zona][subzona].y14,mapa);
                         }
                         //console.log(subzona);
@@ -399,7 +396,7 @@ $("#guardar-coordenada-mapa-grande").click(function(){
                 beforeSend:function(){
                     $("#cargando-grande").html("Guardando Coordenadas");
                 },
-                data:{eventoId:eventoId,funcionId:funcionId,zona:zona,subzona:subzona,x1:x1,y1:y1,x2:x2,y2:y2,x3:x3,y3:y3,x4:x4,y4:y4,x5:x5,y5:y5,x6:x6,y6:y6,x7;x7,y7:y7,x8:x8,y8:y8,x9:x9,y9:y9,x10:x10,y10:y10,x11:x11,y11:y11,x12:x12,y12:y12,x13:x13,y13:y13,x14:x14,y14:y14},
+                data:{eventoId:eventoId,funcionId:funcionId,zona:zona,subzona:subzona,x1:x1,y1:y1,x2:x2,y2:y2,x3:x3,y3:y3,x4:x4,y4:y4,x5:x5,y5:y5,x6:x6,y6:y6,x7:x7,y7:y7,x8:x8,y8:y8,x9:x9,y9:y9,x10:x10,y10:y10,x11:x11,y11:y11,x12:x12,y12:y12,x13:x13,y13:y13,x14:x14,y14:y14},
                 success:function(data){
                     if(data.update==true){
                         localStorage.setItem('coor_mapa_grande',0);
@@ -440,9 +437,10 @@ $("#eliminar-coordenada-mapa-grande").click(function(){
                     }else{ alert('No se pudo eliminar la Sub-Zona seleccionada'); }
                     //console.log(data);
                     $("#cargando-grande").html("");
+                    console.log(data);
                 }
             });
-           console.log(data);
+           
         }
     }else{
         alert('Necesitas seleccionar la Sub-Zona a eliminar');
