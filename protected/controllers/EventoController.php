@@ -513,4 +513,30 @@ class EventoController extends Controller
             }
         }
     }
+/************************************************************************************************************************
+ *Fin coordenadas Mapa Grande y Chico
+ ************************************************************************************************************************/ 
+     public function actionGetUrlImagenMapaChico(){
+        if (Yii::app()->request->isAjaxRequest ) {
+            if(isset($_POST)){
+                $eventoId = $_POST['eventoId'];
+                $funcionId = $_POST['funcionId'];
+                $funcion = Funciones::model()->find("EventoId=$eventoId AND FuncionesId=$funcionId");
+                $foro    =  Forolevel1::model()->find("ForoId=$funcion->ForoId AND ForoMapIntId=$funcion->ForoMapIntId");
+                $data =  array('url'=>"https://www.taquillacero.com/imagesbd/$foro->ForoMapPat");
+                echo json_encode($data);
+            }
+        }
+     }
+     public function actionGetUrlImagenMapaGrande(){
+        if (Yii::app()->request->isAjaxRequest ) {
+            if(isset($_POST)){
+                $eventoId = $_POST['eventoId'];
+                $funcionId = $_POST['funcionId'];
+                $mapaGrande = MapaGrande::model()->find("EventoId=$eventoId AND FuncionId=$funcionId");
+                $data =  array('url'=>"https://www.taquillacero.com/imagesbd/$mapaGrande->nombre_imagen");
+                echo json_encode($data);
+            }
+        }
+     }
 }
