@@ -16,9 +16,9 @@
                 ?>
 		</div>		
 		<?php echo TbHtml::formActions(array(
-		    TbHtml::resetButton('Cancelar'),
-            TbHtml::submitButton('Buscar', array('class' => 'btn btn-primary fa fa-search')),
-		    TbHtml::submitButton('Nueva distribución', array('class' => 'btn btn-success fa fa-plus-circle pull-right')),
+		    TbHtml::resetButton(' Cancelar', array('class'=>'fa fa-arrow-circle-left')),
+            TbHtml::submitButton(' Buscar', array('class' => 'btn btn-primary fa fa-search')),
+		    TbHtml::submitButton(' Nueva distribución', array('class' => 'btn btn-success fa fa-plus-circle pull-right')),
 		)); ?>
 	</div>
 <?php $this->endWidget(); ?>
@@ -57,6 +57,7 @@ $this->widget('yiiwheels.widgets.grid.WhGridView', array(
     	array(
     		'header'=>'Mapa',
     		'type'=>'raw',
+            'htmlOptions'=>array('style'=>'text-align:center;'),
     		'value'=>'CHtml::image(file_exists("'.$url.'".$data["ForoMapPat"])?
                 "'.$url.'".$data["ForoMapPat"]:"holder.js/150x150",
                 $data["ForoMapPat"],
@@ -92,7 +93,7 @@ $this->widget('yiiwheels.widgets.grid.WhGridView', array(
 <script type="text/javascript">
     $('.img').live('hover',function(){
         var path=$(this).attr('src');
-        $(this).popover({content:"<img src='"+path+"'/>",html:true})
+        $(this).popover({content:"<img src='"+path+"'/> <div class='btn-group'> <a href='#' class='btn btn-small btn-inverse fa fa-wrench'> Modificar</a> <a href='#' class='btn btn-small btn-primary fa fa-check'> Asignar distribución</a> </div>",html:true})
     })
 </script>
 

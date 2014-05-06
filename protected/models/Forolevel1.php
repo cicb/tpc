@@ -39,6 +39,7 @@ class Forolevel1 extends CActiveRecord
 			array('ForoMapIntNom', 'length', 'max'=>75),
 			array('foroMapConfig, ForoMapIntIma, ForoMapZonInt', 'length', 'max'=>200),
 			array('ForoMapPat', 'length', 'max'=>128),
+			array('EventoId', 'length', 'max'=>128),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('ForoId, ForoMapIntId, ForoMapIntNom, foroMapConfig, ForoMapIntIma, ForoMapZonInt, ForoMapZonIntWei, ForoMapZonIntHei, ForoMapPat', 'safe', 'on'=>'search'),
@@ -106,12 +107,12 @@ class Forolevel1 extends CActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		error_log("EventoId: ".$this->EventoId,3,'/tmp/log');
+		// error_log("EventoId: ".$this->EventoId,3,'/tmp/log');
 		if ($this->EventoId>0) {
 			$criteria->join="INNER JOIN funciones as t1 ON t1.ForoId=t.ForoId 
-							and t1.ForoMapIntId=t.ForoId ";
-			$criteria->join.="INNER JOIN evento as t2 ON t2.EventoId=t1.EventoId";
-			$criteria->compare('t2.EventoId',$this->EventoId);
+							and t1.ForoMapIntId=t.ForoMapIntId ";
+			// $criteria->join.="INNER JOIN evento as t2 ON t2.EventoId=t1.EventoId";
+			$criteria->compare('t1.EventoId ',$this->EventoId);
 			// $criteria->addCondition("t2.EventoId like ':EventoId' ")
 		}
 		

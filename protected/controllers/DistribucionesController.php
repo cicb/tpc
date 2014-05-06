@@ -25,6 +25,7 @@ class DistribucionesController extends Controller
 		if (isset($_POST['Forolevel1'])) {
 			# code...
 			$model->attributes=$_POST['Forolevel1'];
+			// $model->EventoId=$_POST['Forolevel1'];
 		}
 		$this->render('listaDistribuciones',compact('model'));
 	}
