@@ -40,8 +40,7 @@
         ?>
         <table>
             <tr class="controles-submenu">
-                <td><input type="hidden" id="coor-funcionid" data-funcionId="1" />
-                   <?php echo CHtml::link('<i class="fa fa-eye"></i> Ver coordenadas','#',array('id'=>'ver-coordenadas-mapa-grande','class'=>'btn btn-success'))?>
+                <td><?php echo CHtml::link('<i class="fa fa-eye"></i> Ver coordenadas','#',array('id'=>'ver-coordenadas-mapa-grande','class'=>'btn btn-success'))?>
                 </td>
                 <td><?php echo CHtml::link('<i class="fa fa-repeat"></i> Descartar','#',array('id'=>'descartar-mapa-grande','class'=>'btn btn-info'))?></td>
                 <td></td>
@@ -49,10 +48,10 @@
             </tr>
         </table>
     </div>
-    <br /><br /><br />
+    <br /><br />
     <div class="coor-mapa-grande-img span8" id="coor-mapa-grande-img">
         <div class="area-imagen-grande" id="area-imagen-grande">
-            <img src="<?php echo $funciones->getForoGrande()?>" />
+            <img src="" />
             <?php //echo TbHtml::imagePolaroid(strlen($funciones->getForoPequenio())>3?$funciones->getForoPequenio():'holder.js/150x150','',
                         //array('id'=>'img-imamapchi','style'=>'')); ?>
         </div>                

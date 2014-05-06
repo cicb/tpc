@@ -150,35 +150,35 @@
                 <?php if($model->scenario=='update' AND !empty($funciones)): ?>
                 <div class='span4 white-box box'>
 				<h3><?php echo TbHtml::i('',array('class'=>'fa fa-picture-o')); ?> Imagen Mapa Chico</h3>
-					<?php echo TbHtml::imagePolaroid(strlen($funciones->getForoPequenio())>3?$funciones->getForoPequenio():'holder.js/150x150','',
-                    array('id'=>'img-imamapchi','style'=>'width:140px;')); ?>
+					<?php /*echo TbHtml::imagePolaroid(strlen($funciones->getForoPequenio())>3?$funciones->getForoPequenio():'holder.js/150x150','',
+                    array('id'=>'img-imamapchi','style'=>'width:140px;'));*/ ?>
 					<br /><br />
-                    <?php echo TbHtml::button('Agregar Coordenadas',
-								array('class'=>'btn btn-success','id'=>'btn-coordenadas-mapchi','data-toggle'=>'modal','data-target' => '#ModalMapaChico',))?>
+                    <?php echo TbHtml::button('Agregar Coordenadas Mapa Chico',
+								array('class'=>'btn btn-success','id'=>'btn-coordenadas-mapchi','data-funcionid'=>1,'data-toggle'=>'modal','data-target' => '#ModalMapaChico',))?>
                     <br />
 					<?php  echo TbHtml::fileField('imamapchi','' , array('span'=>2,'maxlength'=>200, 'class'=>'hidden')); ?>
-					<?php echo TbHtml::textField('MapaChico',$funciones->getUrlForoPequenio(),array(
+					<?php echo TbHtml::textField('MapaChico','',array(
                                 'readonly'=>'readonly',
 								'append'=>TbHtml::button('Seleccionar imagen',
 								array('class'=>'btn btn-success','id'=>'btn-subir-imamapchi')),
-								'placeholder'=>'Nombre de la imagen mapa chico',
+								'placeholder'=>'',
                                 )); ?>
 		
 				</div>
                 <div class='span4 white-box box'>
 				<h3><?php echo TbHtml::i('',array('class'=>'fa fa-picture-o')); ?> Imagen Mapa Grande</h3>
-					<?php echo TbHtml::imagePolaroid(strlen($funciones->getForoGrande())>3?$funciones->getForoGrande():'holder.js/300x300','',
-                    array('id'=>'img-imamapgra','style'=>'width:340px;')); ?>
+					<?php /*echo TbHtml::imagePolaroid(strlen($funciones->getForoGrande())>3?$funciones->getForoGrande():'holder.js/300x300','',
+                    array('id'=>'img-imamapgra','style'=>'width:340px;'));*/ ?>
 					<br /><br />
-                    <?php echo TbHtml::button('Agregar Coordenadas',
-								array('class'=>'btn btn-success','id'=>'btn-coordenadas-mapgra','data-toggle'=>'modal','data-target' => '#ModalMapaGrande',))?>
+                    <?php echo TbHtml::button('Agregar Coordenadas Mapa Grande',
+								array('class'=>'btn btn-success','id'=>'btn-coordenadas-mapgra','data-funcionid'=>1,'data-toggle'=>'modal','data-target' => '#ModalMapaGrande',))?>
                     <br />
 					<?php  echo TbHtml::fileField('imamapgra','' , array('span'=>2,'maxlength'=>200, 'class'=>'hidden')); ?>
-					<?php echo TbHtml::textField('MapaGrande',$funciones->getUrlForoGrande(),array(
+					<?php echo TbHtml::textField('MapaGrande','',array(
                                 'readonly'=>'readonly',
 								'append'=>TbHtml::button('Seleccionar imagen',
 								array('class'=>'btn btn-success','id'=>'btn-subir-imamapgra')),
-								'placeholder'=>'Nombre de la imagen mapa Gde.')); ?>
+								'placeholder'=>'')); ?>
 		
 				</div>
                 <style>
@@ -209,8 +209,6 @@
                      ),
                      'htmlOptions' => array('style' => 'width: 1100px;margin-left: -550px;top:5px'),
                 )); ?>
-                <?php else: ?>
-                <?php echo TbHtml::button('Agregar mapas', array('color' => TbHtml::BUTTON_COLOR_PRIMARY)); ?>
                 <?php endif;?>
 		</div>
 	
@@ -230,7 +228,7 @@
 <!--<button class="btn btn-primary">ok</button>-->
 </div><!-- form -->
 <?php if(!$model->isNewRecord):?>
-
+<input type="hidden" id="coor-funcionid" data-funcionId="1" />
 
 
 <div class=' white-box box text-center' >
@@ -387,6 +385,36 @@ $('.btn-quitar-funcion').live('click',function(){
 <?php Yii::app()->clientScript->registerCssFile(Yii::app()->request->baseUrl. '/css/jquery.datetimepicker.css'); ?>
 <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl."/css/jquery.datetimepicker.css" ; ?>" />
  <script type="text/javascript" charset="utf-8">
+ $("#btn-coordenadas-mapchi").live('click',function(){
+     var funcionId = $(this).data('funcionid');
+     var eventoId  = '<?php echo @$_GET['id']?>';
+     $.ajax({
+            url      : '<?php echo $this->createUrl('evento/getUrlImagenMapaChico') ?>',
+            type     : 'post',
+            dataType : 'json',
+            data     : {eventoId:eventoId,funcionId:funcionId},
+            success  : function(data){
+                            $('#area-imagen-chica img').attr('src',data.url);
+                            console.log(data);
+                       }
+     });
+     
+ });
+ $("#btn-coordenadas-mapgra").live('click',function(){
+     var funcionId = $(this).data('funcionid');
+     var eventoId  = '<?php echo @$_GET['id']?>';
+     $.ajax({
+            url      : '<?php echo $this->createUrl('evento/getUrlImagenMapaGrande') ?>',
+            type     : 'post',
+            dataType : 'json',
+            data     : {eventoId:eventoId,funcionId:funcionId},
+            success  : function(data){
+                            $('#area-imagen-grande img').attr('src',data.url);
+                            console.log(data);
+                       }
+     });
+     
+ });
 $('.picker').datetimepicker({
 		
 		lang:'es'}); 

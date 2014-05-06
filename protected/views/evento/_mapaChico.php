@@ -40,8 +40,7 @@
         ?>
         <table>
             <tr class="controles-submenu">
-                <td><input type="hidden" id="coor-funcionid" data-funcionId="1" />
-                   <?php echo CHtml::link('<i class="fa fa-eye"></i> Ver coordenadas','#',array('id'=>'ver-coordenadas','class'=>'btn btn-success'))?>
+                <td><?php echo CHtml::link('<i class="fa fa-eye"></i> Ver coordenadas','#',array('id'=>'ver-coordenadas','class'=>'btn btn-success'))?>
                 </td>
                 <td><?php echo CHtml::link('<i class="fa fa-repeat"></i> Descartar','#',array('id'=>'descartar','class'=>'btn btn-info'))?></td>
                 <td></td>
@@ -52,7 +51,7 @@
     <br /><br /><br />
     <div class="coor-mapa-chico-img span4" id="coor-mapa-chico-img">
         <div class="area-imagen-chica" id="area-imagen-chica">
-            <img src="<?php echo $funciones->getForoPequenio()?>" />
+            <img src="" />
             <?php //echo TbHtml::imagePolaroid(strlen($funciones->getForoPequenio())>3?$funciones->getForoPequenio():'holder.js/150x150','',
                         //array('id'=>'img-imamapchi','style'=>'')); ?>
         </div>                
