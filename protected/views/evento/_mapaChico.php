@@ -52,8 +52,6 @@
     <div class="coor-mapa-chico-img span4" id="coor-mapa-chico-img">
         <div class="area-imagen-chica" id="area-imagen-chica">
             <img src="" />
-            <?php //echo TbHtml::imagePolaroid(strlen($funciones->getForoPequenio())>3?$funciones->getForoPequenio():'holder.js/150x150','',
-                        //array('id'=>'img-imamapchi','style'=>'')); ?>
         </div>                
     </div>
     <div class="coor-mapa-chico offset4" style="">
@@ -65,10 +63,6 @@
                         <td colspan="2">
                             <label>Sub-Zona:</label>
                             <select id="select-sub-zona">
-                            <option data-zona="" data-subzona="">Selecciona una Sub-Zona</option>
-                            <?php foreach($subzonas as $key => $subzona):?>
-                                <option data-zona="<?php echo $subzona->zonas->ZonasId?>" data-subzona="<?php echo $subzona->SubzonaId?>"><?php echo $subzona->zonas->ZonasAli."-".$subzona->SubzonaId?></option>
-                            <?php endforeach;?>
                             </select>
                         </td>
                     </tr>

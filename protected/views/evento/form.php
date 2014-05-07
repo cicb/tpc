@@ -192,7 +192,7 @@
                 <?php $this->widget('bootstrap.widgets.TbModal', array(
                     'id' => 'ModalMapaChico',
                     'header' => 'Coordenadas Mapa Chico',
-                    'content' => $this->renderPartial('_mapaChico',array('funciones'=>$funciones,'eventoId'=>$_GET['id']),true),
+                    'content' => $this->renderPartial('_mapaChico',array('eventoId'=>$_GET['id']),true),
                     'footer' => array(
                         //TbHtml::button('Save Changes', array('data-dismiss' => 'modal', 'color' => TbHtml::BUTTON_COLOR_PRIMARY)),
                         //TbHtml::button('Cerrar', array('data-dismiss' => 'modal')),
@@ -202,7 +202,7 @@
                 <?php $this->widget('bootstrap.widgets.TbModal', array(
                     'id' => 'ModalMapaGrande',
                     'header' => 'Coordenadas Mapa Grande',
-                    'content' => $this->renderPartial('_mapaGrande',array('funciones'=>$funciones,'eventoId'=>$_GET['id']),true),
+                    'content' => $this->renderPartial('_mapaGrande',array('eventoId'=>$_GET['id']),true),
                     'footer' => array(
                         //TbHtml::button('Save Changes', array('data-dismiss' => 'modal', 'color' => TbHtml::BUTTON_COLOR_PRIMARY)),
                         //TbHtml::button('Cerrar', array('data-dismiss' => 'modal')),
@@ -395,10 +395,19 @@ $('.btn-quitar-funcion').live('click',function(){
             data     : {eventoId:eventoId,funcionId:funcionId},
             success  : function(data){
                             $('#area-imagen-chica img').attr('src',data.url);
-                            console.log(data);
                        }
      });
-     
+     $.ajax({
+            url        : '<?php echo $this->createUrl('evento/getSubzonas') ?>',
+            type       : 'post',
+            beforeSend : function(){
+                            $('#select-sub-zona').html("");
+                         },
+            data       : {eventoId:eventoId,funcionId:funcionId},
+            success    : function(data){
+                            $('#select-sub-zona').html(data);
+                         }
+     });
  });
  $("#btn-coordenadas-mapgra").live('click',function(){
      var funcionId = $(this).data('funcionid');
@@ -410,10 +419,19 @@ $('.btn-quitar-funcion').live('click',function(){
             data     : {eventoId:eventoId,funcionId:funcionId},
             success  : function(data){
                             $('#area-imagen-grande img').attr('src',data.url);
-                            console.log(data);
                        }
      });
-     
+     $.ajax({
+            url        : '<?php echo $this->createUrl('evento/getSubzonas') ?>',
+            type       : 'post',
+            beforeSend : function(){
+                            $('#select-sub-zona-mapa-grande').html("");
+                         },
+            data       : {eventoId:eventoId,funcionId:funcionId},
+            success    : function(data){
+                            $('#select-sub-zona-mapa-grande').html(data);
+                         }
+     });
  });
 $('.picker').datetimepicker({
 		

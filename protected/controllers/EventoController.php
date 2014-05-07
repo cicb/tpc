@@ -519,11 +519,11 @@ class EventoController extends Controller
      public function actionGetUrlImagenMapaChico(){
         if (Yii::app()->request->isAjaxRequest ) {
             if(isset($_POST)){
-                $eventoId = $_POST['eventoId'];
+                $eventoId  = $_POST['eventoId'];
                 $funcionId = $_POST['funcionId'];
-                $funcion = Funciones::model()->find("EventoId=$eventoId AND FuncionesId=$funcionId");
-                $foro    =  Forolevel1::model()->find("ForoId=$funcion->ForoId AND ForoMapIntId=$funcion->ForoMapIntId");
-                $data =  array('url'=>"https://www.taquillacero.com/imagesbd/$foro->ForoMapPat");
+                $funcion   = Funciones::model()->find("EventoId=$eventoId AND FuncionesId=$funcionId");
+                $foro      =  Forolevel1::model()->find("ForoId=$funcion->ForoId AND ForoMapIntId=$funcion->ForoMapIntId");
+                $data      =  array('url'=>"https://www.taquillacero.com/imagesbd/$foro->ForoMapPat");
                 echo json_encode($data);
             }
         }
@@ -531,11 +531,25 @@ class EventoController extends Controller
      public function actionGetUrlImagenMapaGrande(){
         if (Yii::app()->request->isAjaxRequest ) {
             if(isset($_POST)){
-                $eventoId = $_POST['eventoId'];
-                $funcionId = $_POST['funcionId'];
+                $eventoId   = $_POST['eventoId'];
+                $funcionId  = $_POST['funcionId'];
                 $mapaGrande = MapaGrande::model()->find("EventoId=$eventoId AND FuncionId=$funcionId");
-                $data =  array('url'=>"https://www.taquillacero.com/imagesbd/$mapaGrande->nombre_imagen");
+                $data       =  array('url'=>"https://www.taquillacero.com/imagesbd/$mapaGrande->nombre_imagen");
                 echo json_encode($data);
+            }
+        }
+     }
+     public function actionGetSubzonas(){
+        if (Yii::app()->request->isAjaxRequest ) {
+            if(isset($_POST)){
+                $data      = "<option data-zona='' data-subzona=''>Selecciona una Sub-Zona</option>";
+                $eventoId  = $_POST['eventoId'];
+                $funcionId = $_POST['funcionId'];
+                $subzonas  =  Subzona::model()->findAll(array('condition'=>"t.EventoId=$eventoId AND t.FuncionesId =$funcionId"));
+                foreach($subzonas as $key => $subzona):
+                     $data .= "<option data-zona='$subzona->ZonasId' data-subzona='$subzona->SubzonaId'>".$subzona->zonas->ZonasAli."-".$subzona->SubzonaId."</option>";
+                endforeach;
+                echo $data;
             }
         }
      }

@@ -52,8 +52,6 @@
     <div class="coor-mapa-grande-img span8" id="coor-mapa-grande-img">
         <div class="area-imagen-grande" id="area-imagen-grande">
             <img src="" />
-            <?php //echo TbHtml::imagePolaroid(strlen($funciones->getForoPequenio())>3?$funciones->getForoPequenio():'holder.js/150x150','',
-                        //array('id'=>'img-imamapchi','style'=>'')); ?>
         </div>                
     </div>
     <div class="coor-mapa-grande offset8" style="">
@@ -65,10 +63,6 @@
                         <td colspan="2">
                             <label>Sub-Zona:</label>
                             <select id="select-sub-zona-mapa-grande">
-                            <option data-zona="" data-subzona="">Selecciona una Sub-Zona</option>
-                            <?php foreach($subzonas as $key => $subzona):?>
-                                <option data-zona="<?php echo $subzona->zonas->ZonasId?>" data-subzona="<?php echo $subzona->SubzonaId?>"><?php echo $subzona->zonas->ZonasAli."-".$subzona->SubzonaId?></option>
-                            <?php endforeach;?>
                             </select>
                         </td>
                     </tr>
