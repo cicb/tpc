@@ -58,7 +58,7 @@ class Forolevel1 extends CActiveRecord
 			'funciones'=> array(self::HAS_MANY,'Funciones', array('ForoId','ForoMapIntId')),
 			'funcion'=> array(self::HAS_ONE,'Funciones', array('ForoId','ForoMapIntId')),
 			'eventos'=>array(
-                self::HAS_MANY,'Evento',array('EventoId'=>'EventoId'),'through'=>'funciones'
+                self::HAS_MANY,'Evento',array('EventoId'=>'EventoId'),'through'=>'funciones','joinType'=>'INNER JOIN'
             ),
 			'evento'=>array(
                 self::HAS_ONE,'Evento',array('EventoId'=>'EventoId'),'through'=>'funciones',
@@ -198,5 +198,99 @@ class Forolevel1 extends CActiveRecord
 		else
 			return 0;
 	}
+
+	static function removerAsignacion($EventoId,$FuncionesId){
+		//Elimina todas las zonas, subzonas, filas, lugares de la funcion que se le indique
+		$identificandor=compact('EventoId','FuncionesId');
+		$transaction = Yii::app()->db->beginTransaction();
+		if(Lugares::model()->deleteAllByAttributes($identificandor))
+			if(Filas::model()->deleteAllByAttributes($identificandor))
+				if(Subzona::model()->deleteAllByAttributes($identificandor))
+					if(Zonas::model()->deleteAllByAttributes($identificandor))
+						if(Zonaslevel1::model()->deleteAllByAttributes($identificandor)){
+							$funcion=Funciones::model()->findByPk($identificandor);
+							$funcion->ForoId=0;
+							$funcion->ForoMapIntId=0;
+							$transaction->commit();
+							return true;
+						}
+						else {$transaction->rollback();return false;}
+					else {$transaction->rollback();return false;}
+				else {$transaction->rollback();return false;}
+			else {$transaction->rollback();return false;}
+		else {$transaction->rollback();return true;} 
+	}
+
+	public function asignar($EventoId,$FuncionesId)
+	{
+		# Asigna la distribucion a una funcion.
+		$identificandor=compact('EventoId','FuncionesId');
+		$origen=Funciones::model()->findByAttributes(array(
+			'ForoId'=>$this->ForoId,'ForoMapIntId'=>$this->ForoMapIntId,
+			));
+		$funcion=Funciones::model()->findByPk($identificandor);
+		if (is_object($funcion) and is_object($origen)) {
+		# Si la función existe se inicia la transacción
+			//Se eliminan toda distribucion anterior-----------------------------------------------------
+			if (self::removerAsignacion($EventoId,$FuncionesId)){
+				$conexion=Yii::app()->db;
+				$transaction = $conexion->beginTransaction();
+				$insertar=array(
+					'zonas'=>sprintf("
+						INSERT INTO zonas (SELECT %d, %d, ZonasId, ZonasAli,
+							ZonasTipoBol, ZonasTipo, ZonasNum, ZonasCantSubZon, ZonasCanLug,
+							ZonasBanExp, ZonasCosBol FROM zonas WHERE EventoId=%d and FuncionesId=%d);
+					",$funcion->EventoId,$funcion->FuncionesId, $origen->EventoId, $origen->FuncionesId),
+					'subzonas'=>sprintf(" 
+						INSERT INTO subzona (SELECT %d, %d, ZonasId, SubzonaId,
+							SubzonaAcc, SubzonaNum, SubzonaCanFil, SubzonaFilCanLug, SubzonaBanExp,
+							SubzonaX1, SubzonaY1, SubzonaX2, SubzonaY2, SubzonaX3, SubzonaY3, SubzonaX4,
+							SubzonaY4, SubzonaX5, SubzonaY5, SubzonaFor, SubzonaColor FROM subzona WHERE
+							EventoId=%d and FuncionesId=%d);
+					",$funcion->EventoId,$funcion->FuncionesId,$origen->EventoId,$origen->FuncionesId),
+					'filas'=>sprintf("   
+						INSERT INTO filas (SELECT %d, %d, ZonasId, SubzonaId,
+							FilasId, FilasAli, FilasNum, FilasCanLug, FilasIniCol, FilasIniFin,
+							FilasBanExp, LugaresIni, LugaresFin, MesasX, MesasY, MesasWidth, MesasHeight
+							FROM filas WHERE EventoId=%d and FuncionesId=%d);
+					",$funcion->EventoId,$funcion->FuncionesId,$origen->EventoId,$origen->FuncionesId),
+					'lugares'=>sprintf("   
+						INSERT INTO lugares (SELECT %d, %d, ZonasId, SubzonaId,
+							FilasId, LugaresId, LugaresLug, LugaresNum, LugaresStatus, LugaresNumBol
+							FROM lugares WHERE EventoId=%d and FuncionesId=%d);
+					",$funcion->EventoId,$funcion->FuncionesId,$origen->EventoId,$origen->FuncionesId),
+					'zonaslevel1'=>sprintf("   
+						INSERT INTO zonaslevel1 (SELECT %d, %d, ZonasId, PuntosventaId,
+							ZonasFacCarSer, ZonasBanVen FROM zonaslevel1 WHERE EventoId=%d and FuncionesId=%d);
+					",$funcion->EventoId,$funcion->FuncionesId,$origen->EventoId,$origen->FuncionesId),
+					);
+					// try{	
+						$conexion->createCommand($insertar['zonas'])->execute();
+						$conexion->createCommand($insertar['subzonas'])->execute();
+						$conexion->createCommand($insertar['filas'])->execute();
+						$conexion->createCommand($insertar['lugares'])->execute();
+						$conexion->createCommand($insertar['zonaslevel1'])->execute();
+						$funcion->ForoId=$this->ForoId;
+						$funcion->ForoMapIntId=$this->ForoMapIntId;
+						$funcion->update();
+						Lugares::model()->updateAll(array('LugaresStatus'=>'TRUE'),
+							sprintf("EventoId= %d AND FuncionesId= %d AND LugaresStatus<>'OFF'",
+								$funcion->EventoId,$funcion->FuncionesId)
+							);
+						$transaction->commit();
+						return true;
+					// }
+					// catch(Exception $e){
+					// 	$transaction->rollback();
+					// 	return false;
+					// }
+
+				}
+				else return false;
+
+			}
+			else return false;
+
+		}
 
 }

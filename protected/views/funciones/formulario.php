@@ -16,7 +16,14 @@
 			'class'=>'btn-quitar-funcion btn btn-danger fa fa-2x fa-minus-circle pull-left',
 			'title'=>'Eliminar esta función'
 	)); ?>
-	<?php echo TbHtml::link(' Asignar distribucion',$this->createUrl('distribuciones/index'), array(
+	<?php if (isset($this->forolevel1)) {
+		echo "$this->forolevel1->ForoMapPat";
+	} ?>
+	<?php echo TbHtml::link(' Asignar distribucion',$this->createUrl('distribuciones/index',array(
+		'eid'=>$model->EventoId,
+		'fid'=>$model->FuncionesId,
+		'foroid'=>$model->evento->ForoId,
+		)), array(
 			'data-id'=>$model->FuncionesId,
 			'class'=>'btn-asignar-dist btn btn-primary fa fa-2x fa-trello pull-left',
 			'title'=>'Asignar distribución.'

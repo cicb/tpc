@@ -232,10 +232,10 @@
 
 
 <div class=' white-box box text-center' >
-	<h3>Funciones</h3>
+	<h3 id="funciones">Funciones</h3>
 <div id='listado-funciones'>
 	<?php
-	foreach($model->funciones() as $funcion){
+	foreach($model->funciones as $funcion){
 			$this->renderPartial('/funciones/formulario',array('model'=>$funcion));
 	};
 	?>
