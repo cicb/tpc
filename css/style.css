@@ -152,9 +152,6 @@ body {
   background: #2c3e50;
   color: #fff;
 }
-.nav {
-  background: #266088 !important;
-}
 .nav-collapse {
   background: #fff;
 }
@@ -304,6 +301,9 @@ th {
 }
 .btn {
   font-family: FontAwesome !important ;
+}
+@font-face {
+  font-family: "FontAwesome";
 }
 ul.arbol,
 ul.arbol ul {

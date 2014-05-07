@@ -65,7 +65,7 @@ class EventoController extends Controller
 	public function actionActualizar($id)
 	{
 
-			$model=$this->loadModel($id);
+			$model=Evento::model()->with(array('funciones'=>array('with'=>'forolevel1')))->findByPk($id);
 			$model->scenario='update';
 			$this->saveModel($model);
             
