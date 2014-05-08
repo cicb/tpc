@@ -148,39 +148,6 @@
 		
 				</div>
                 <?php if($model->scenario=='update' AND !empty($funciones)): ?>
-                <div class='span4 white-box box'>
-				<h3><?php echo TbHtml::i('',array('class'=>'fa fa-picture-o')); ?> Imagen Mapa Chico</h3>
-					<?php /*echo TbHtml::imagePolaroid(strlen($funciones->getForoPequenio())>3?$funciones->getForoPequenio():'holder.js/150x150','',
-                    array('id'=>'img-imamapchi','style'=>'width:140px;'));*/ ?>
-					<br /><br />
-                    <?php echo TbHtml::button('Agregar Coordenadas Mapa Chico',
-								array('class'=>'btn btn-success','id'=>'btn-coordenadas-mapchi','data-funcionid'=>1,'data-toggle'=>'modal','data-target' => '#ModalMapaChico',))?>
-                    <br />
-					<?php  echo TbHtml::fileField('imamapchi','' , array('span'=>2,'maxlength'=>200, 'class'=>'hidden')); ?>
-					<?php echo TbHtml::textField('MapaChico','',array(
-                                'readonly'=>'readonly',
-								'append'=>TbHtml::button('Seleccionar imagen',
-								array('class'=>'btn btn-success','id'=>'btn-subir-imamapchi')),
-								'placeholder'=>'',
-                                )); ?>
-		
-				</div>
-                <div class='span4 white-box box'>
-				<h3><?php echo TbHtml::i('',array('class'=>'fa fa-picture-o')); ?> Imagen Mapa Grande</h3>
-					<?php /*echo TbHtml::imagePolaroid(strlen($funciones->getForoGrande())>3?$funciones->getForoGrande():'holder.js/300x300','',
-                    array('id'=>'img-imamapgra','style'=>'width:340px;'));*/ ?>
-					<br /><br />
-                    <?php echo TbHtml::button('Agregar Coordenadas Mapa Grande',
-								array('class'=>'btn btn-success','id'=>'btn-coordenadas-mapgra','data-funcionid'=>1,'data-toggle'=>'modal','data-target' => '#ModalMapaGrande',))?>
-                    <br />
-					<?php  echo TbHtml::fileField('imamapgra','' , array('span'=>2,'maxlength'=>200, 'class'=>'hidden')); ?>
-					<?php echo TbHtml::textField('MapaGrande','',array(
-                                'readonly'=>'readonly',
-								'append'=>TbHtml::button('Seleccionar imagen',
-								array('class'=>'btn btn-success','id'=>'btn-subir-imamapgra')),
-								'placeholder'=>'')); ?>
-		
-				</div>
                 <style>
 	            .modal-body {
                     max-height: 100%;
@@ -320,40 +287,7 @@
 						}	
 				 }
 			});
-            $('#btn-subir-imamapchi').on('click',function(){ $('#imamapchi').trigger('click'); });
-            $('#imamapchi').on('change',function(){
-					 if ($(this).val()!='' && $(this).val()!=null) {
-							 if ($.inArray($(this).val().split('.').pop(),ext)==-1) {
-									 alert('El archivo no tiene extension valida, (jpg,png,bmp,jpeg), por favor seleccione otro.');
-									$(this).val('');	
-					         }else{	
-								var fd = new FormData();
-								var imagen = document.getElementById('imamapchi');
-								fd.append('imagen', imagen.files[0]);
-								fd.append('prefijo', 'pv_');
-                                console.log(fd);
-								/*$.ajax({
-										url: '".Yii::app()->createUrl('evento/subirImagen')."',
-												type: 'POST',
-												data: fd,
-												processData: false,  // tell jQuery not to process the data
-												contentType: false,   // tell jQuery not to set contentType
-												success: function(data){ 
-														if (data) {
-																$('#Evento_EventoImaMin').val(data);
-																$('#img-imamin').attr('src','../imagesbd/'+data);
-
-														}	
-												 }
-								}).fail(function(){alert('Error!')});	*/	
-                            }	
-				 }
-			});
-            $('#btn-subir-imamapgra').on('click',function(){ $('#imamapgra').trigger('click'); });
-				
-
-
-						");
+   ");
 
 ?>
 
