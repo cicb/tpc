@@ -35,10 +35,7 @@
 <div class="row"> 
     <div class="coor-menu span7">
      
-        <?php
-    	$subzonas = Subzona::model()->findAll(array('condition'=>"t.EventoId=$eventoId AND t.FuncionesId = (SELECT FuncionesId FROM subzona WHERE subzona.EventoId=$eventoId  ORDER BY subzona.FuncionesId ASC LIMIT 1)"));
-        $funcionesId = Funciones::model()->findAll("EventoId=$eventoId");
-        ?>
+        <?php $subzonas = Subzona::model()->findAll(array('condition'=>"t.EventoId=$eventoId AND t.FuncionesId = (SELECT FuncionesId FROM subzona WHERE subzona.EventoId=$eventoId  ORDER BY subzona.FuncionesId ASC LIMIT 1)"));?>
         <table>
             <tr class="controles-submenu">
                 <td><?php echo CHtml::link('<i class="fa fa-eye"></i> Ver coordenadas','#',array('id'=>'ver-coordenadas-mapa-grande','class'=>'btn btn-success'))?>
@@ -52,8 +49,7 @@
     <br /><br /><br />
     <div class="coor-mapa-grande-img span8" id="coor-mapa-grande-img">
         <div class="area-imagen-grande" id="area-imagen-grande">
-            <?php $funcionMapaGrande = Funciones::model()->find("EventoId=$eventoId AND FuncionesId=$funcionId");?>
-            <img src="<?php echo $funcionMapaGrande->getForoGrande() ?>" />
+            <img src="<?php echo $model->getForoGrande() ?>" />
         </div>                
     </div>
     <div class="coor-mapa-grande span3" style="">
@@ -146,6 +142,10 @@
                 </tbody>
             </table>
         </div>
+    </div>
+    <div class="span3">
+        <label style="text-align: center;font-weight: bold;background-color: #EEE;">Aforo por Zona</label>
+        <?php echo $model->forolevel1->getTablaZonas(array('class'=>'table')); ?>
     </div>
 </div>
 <div >
@@ -399,8 +399,9 @@ $("#ver-coordenadas-mapa-grande").click(function(){
 $("#guardar-coordenada-mapa-grande").click(function(){
     var zona      = $('#select-sub-zona-mapa-grande option:selected').data('zona');
     var subzona   = $('#select-sub-zona-mapa-grande option:selected').data('subzona');
-     var eventoId  = '<?php echo $eventoId?>';
+    var eventoId  = '<?php echo $eventoId?>';
     var funcionId = '<?php echo $funcionId?>';
+    var escenario = '<?php echo @$_GET['escenario']?>';
     var x1 = $(".coor-mapa-grande #x1").val();
     var y1 = $(".coor-mapa-grande #y1").val();
     var x2 = $(".coor-mapa-grande #x2").val();
@@ -438,7 +439,7 @@ $("#guardar-coordenada-mapa-grande").click(function(){
                 beforeSend:function(){
                     $("#cargando-grande").html("Guardando Coordenadas");
                 },
-                data:{eventoId:eventoId,funcionId:funcionId,zona:zona,subzona:subzona,x1:x1,y1:y1,x2:x2,y2:y2,x3:x3,y3:y3,x4:x4,y4:y4,x5:x5,y5:y5,x6:x6,y6:y6,x7:x7,y7:y7,x8:x8,y8:y8,x9:x9,y9:y9,x10:x10,y10:y10,x11:x11,y11:y11,x12:x12,y12:y12,x13:x13,y13:y13,x14:x14,y14:y14},
+                data:{eventoId:eventoId,funcionId:funcionId,zona:zona,subzona:subzona,escenario:escenario,x1:x1,y1:y1,x2:x2,y2:y2,x3:x3,y3:y3,x4:x4,y4:y4,x5:x5,y5:y5,x6:x6,y6:y6,x7:x7,y7:y7,x8:x8,y8:y8,x9:x9,y9:y9,x10:x10,y10:y10,x11:x11,y11:y11,x12:x12,y12:y12,x13:x13,y13:y13,x14:x14,y14:y14},
                 success:function(data){
                     if(data.update==true){
                         localStorage.setItem('coor_mapa_grande',0);
@@ -457,10 +458,11 @@ $("#guardar-coordenada-mapa-grande").click(function(){
 $("#eliminar-coordenada-mapa-grande").click(function(){
     var zona      = $('#select-sub-zona-mapa-grande option:selected').data('zona');
     var subzona   = $('#select-sub-zona-mapa-grande option:selected').data('subzona');
-     var eventoId  = '<?php echo $eventoId?>';
+    var eventoId  = '<?php echo $eventoId?>';
     var funcionId = '<?php echo $funcionId?>';
+    var escenario = '<?php echo @$_GET['escenario']?>';
     if(zona!="" && subzona!=""){
-        var del = confirm("Â¿Deseas eliminar las coordenadas de la Sub-Zona Seleccionada?");
+        var del = confirm("¿Deseas eliminar las coordenadas de la Sub-Zona Seleccionada?");
         if (del == true) {
             $.ajax({
                 url:'<?php echo $this->createUrl('distribuciones/deleteCoordenadaMapaGrande') ?>',
@@ -469,7 +471,7 @@ $("#eliminar-coordenada-mapa-grande").click(function(){
                     $("#cargando-grande").html("Eliminando Coordenadas");
                 },
                 dataType:'json',
-                data:{eventoId:eventoId,funcionId:funcionId,zona:zona,subzona:subzona},
+                data:{eventoId:eventoId,funcionId:funcionId,zona:zona,subzona:subzona,escenario:escenario},
                 success:function(data){
                     if(data.update==true){
                         localStorage.setItem('coor_mapa_grande',0);
