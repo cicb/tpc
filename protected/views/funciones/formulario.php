@@ -63,14 +63,14 @@ echo $form->textField($model,'FuncionesFecHor',array('class'=>'picker FecHor box
 	$root=Confipvfuncion::model()->with('puntoventa')->findByPk(array(
 		'EventoId'=>$model->EventoId,
 		'FuncionesId'=>$model->FuncionesId, 
-		'PuntosventaId'=> 00//Id del punto de venta  raiz
+		'PuntosventaId'=> 1000//Id del punto de venta  raiz
 		));
 	$taquilla=Confipvfuncion::model()->with('puntoventa')->findByPk(array(
 		'EventoId'=>$model->EventoId,
 		'FuncionesId'=>$model->FuncionesId, 
 		'PuntosventaId'=> $model->evento->PuntosventaId, //Id de la taquilla del evento
 		));
-		echo CHtml::openTag('ul',array('id'=>"rama-$fid", 'class'=>"arbol "));
+		echo CHtml::openTag('ul',array('id'=>"rama-$fid", 'class'=>"arbol text-left"));
 				/****
 				***Caso especial Taquilla propia
 				*/

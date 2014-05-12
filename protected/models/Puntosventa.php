@@ -121,34 +121,6 @@ class Puntosventa extends CActiveRecord
 	}
 
 
-	public function generarArbol($criterio)
-	{
-		# Genera la estructura de árbol
-		// $criteria=new CDbCriteria;
-		// // $criteria->addCondition('')
-		// if (isset($criterio)) {
-		// 	$criteria->mergeWith($criterio);
-		// }
-		// $puntos=Puntosventa::model()->findAll($criteria);
-		// $lista=array();
-		// $arbol=array();
-		// foreach ($puntos as $punto) {
-		// 	# va ordenando los nodos en padres
-		// 	$lista[$punto->PuntosventaId]=$punto;
-		// }
-		// foreach ($lista as $li) {
-		// 	# Recorre la lista para asignarle el padre
-		// 	if(array_key_exists($li->PuntosventaSuperId, $lista))
-		// 		$li->padre=$lista[$li->PuntosventaSuperId];
-		// }
-		// // foreach ($lista as $i=>$li) {
-		// // 	$arbol[$i]
-		// // }
-
-
-
-	}
-
 	public function hasChildrens()
 	{
 		# Busca todos los elementos que lo tengan como padre

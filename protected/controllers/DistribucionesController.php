@@ -4,8 +4,8 @@ class DistribucionesController extends Controller
 {
 	public function actionAsignar()
 	{
-		$ForoId=$_POST['foroid'];
-		$ForoMapIntId=$_POST['distid'];	
+		$ForoId=$_POST['ForoId'];
+		$ForoMapIntId=$_POST['ForoMapIntId'];	
 		$distribucion=Forolevel1::model()->with('funcion')->findByPk(compact('ForoId','ForoMapIntId'));
 		echo $distribucion->asignar($_POST['EventoId'],$_POST['FuncionesId'])?"true":"false";
 		// $this->render('asignar');
@@ -45,7 +45,7 @@ class DistribucionesController extends Controller
 	{
 		// return the filter configuration for this controller, e.g.:
 		return array(
-			'postOnly + asignar',
+			'postOnly + asignar ',
 			'accessControl'
 			// array(
 			// 	'class'=>'path.to.FilterClass',
@@ -478,4 +478,43 @@ class DistribucionesController extends Controller
 
 		
 	}
+    public function actionEditor($EventoId,$FuncionesId,$scenario='asignacion')
+    {
+
+        // $model=Forolevel1::model()->with('zonas')->findByPk(compact('ForoId','ForoMapIntId'));
+        $model=Funciones::model()->with('zonas')->findByPk(compact('EventoId','FuncionesId'));
+        // if(is_object($model))
+            $this->render('editor',compact('model','scenario'),false,true);
+        // else{
+        //     throw new Exception("Error Processing Request", 1);
+        // }
+
+    }
+    public function actionAgregarZona($EventoId, $FuncionesId)
+    {
+        # Agrega una zona a la distribucion 
+        $funcion=Funciones::model()->findByPk(compact('EventoId','FuncionesId'));
+        if(is_object($funcion)){
+            #Si existe la funcion bajo los parametros que se le envian
+            $zona=$funcion->agregarZona();
+            if ($zona and is_object($zona)) {
+                # Si se agrego correctamente la zona a la funcion renderiza el formulario de zona
+                $this->renderPartial('_zona',array('model'=>$zona));
+                return true;
+            }
+            
+        }
+        echo "false";
+
+    }
+    public function actionAsignarValorZona()
+    {
+        # Cambia el nombre de una zona dada
+        // $model=Zonas::model()->findByPk($_POST['EventoId'],$_POST['FuncionesId'],$_POST['ZonasId']);
+        extract($_POST);
+        $model=Zonas::model()->findByPk(compact('EventoId','FuncionesId','ZonasId'));
+        $model->attributes=$_POST;
+        echo CJSON::encode($model);
+    }
+
 }
