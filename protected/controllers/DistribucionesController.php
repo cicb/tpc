@@ -71,8 +71,11 @@ class DistribucionesController extends Controller
 	// 		),
 	// 	);
 	// }
-	public function actionActualizar($eventoId,$funcionId){
-	     $this->render('actualizar');  
+	public function actionActualizar($escenario=""){
+	     $eventoId = $_GET['eventoId']; 
+         $funcionId = $_GET['funcionId']; 
+	     $model = Funciones::model()->find("EventoId=$eventoId AND FuncionesId=$funcionId");  
+	     $this->render('actualizar',compact('model'));  
 	}
     /****************************************************************************************
  *Manipulacion de coordenadas mapa Chico
@@ -126,47 +129,66 @@ class DistribucionesController extends Controller
     public function actionDeleteCoordenadaMapaChico(){
          if (Yii::app()->request->isAjaxRequest ) {
             if(isset($_POST)){
-                $zonaId = $_POST['zona'];
+                $zonaId    = $_POST['zona'];
                 $subzonaId = $_POST['subzona'];
-                $eventoId = $_POST['eventoId'];
+                $eventoId  = $_POST['eventoId'];
                 $funcionId = $_POST['funcionId'];
-                $subzona = Subzona::model()->find("eventoId=$eventoId AND FuncionesId=$funcionId AND ZonasId=$zonaId AND SubzonaId=$subzonaId");
-                $subzona->SubzonaX1 = 0;
-                $subzona->SubzonaY1 = 0;
-                $subzona->SubzonaX2 = 0;
-                $subzona->SubzonaY2 = 0;
-                $subzona->SubzonaX3 = 0;
-                $subzona->SubzonaY3 = 0;
-                $subzona->SubzonaX4 = 0;
-                $subzona->SubzonaY4 = 0;
-                $subzona->SubzonaX5 = 0;
-                $subzona->SubzonaY5 = 0;
-                if($subzona->update())
+                $escenario = $_POST['escenario'];
+                $query = "eventoId=$eventoId AND FuncionesId=$funcionId AND ZonasId=$zonaId AND SubzonaId=$subzonaId";
+                if($escenario=="todas")
+                    $query = "eventoId=$eventoId AND ZonasId=$zonaId AND SubzonaId=$subzonaId";
+                $updated = Subzona::model()->updateAll(
+                    					array(
+                                                'SubzonaX1'=>0,
+                                                'SubzonaX2'=>0,
+                                                'SubzonaX3'=>0,
+                                                'SubzonaX4'=>0,
+                                                'SubzonaX5'=>0,
+                                                'SubzonaY1'=>0,
+                                                'SubzonaY2'=>0,
+                                                'SubzonaY3'=>0,
+                                                'SubzonaY4'=>0,
+                                                'SubzonaY5'=>0,
+                                              ),
+                                               $query,
+                                               array()
+                                              );
+                if($updated>0)
                     echo json_encode(array('update'=>true));
                 else    
                     echo json_encode(array('update'=>false));
+                
             }
          }
     } 
     public function actionGuardarCoordenadasMapaChico(){
         if (Yii::app()->request->isAjaxRequest ) {
             if(isset($_POST)){
-                $zonaId = $_POST['zona'];
+                $zonaId    = $_POST['zona'];
                 $subzonaId = $_POST['subzona'];
-                $eventoId = $_POST['eventoId'];
+                $eventoId  = $_POST['eventoId'];
                 $funcionId = $_POST['funcionId'];
-                $subzona = Subzona::model()->find("eventoId=$eventoId AND FuncionesId=$funcionId AND ZonasId=$zonaId AND SubzonaId=$subzonaId");
-                $subzona->SubzonaX1 = $_POST['x1'];
-                $subzona->SubzonaY1 = $_POST['y1'];
-                $subzona->SubzonaX2 = $_POST['x2'];
-                $subzona->SubzonaY2 = $_POST['y2'];
-                $subzona->SubzonaX3 = $_POST['x3'];
-                $subzona->SubzonaY3 = $_POST['y3'];
-                $subzona->SubzonaX4 = $_POST['x4'];
-                $subzona->SubzonaY4 = $_POST['y4'];
-                $subzona->SubzonaX5 = $_POST['x5'];
-                $subzona->SubzonaY5 = $_POST['y5'];
-                if($subzona->update())
+                $escenario = $_POST['escenario'];
+                $query = "eventoId=$eventoId AND FuncionesId=$funcionId AND ZonasId=$zonaId AND SubzonaId=$subzonaId";
+                if($escenario=="todas")
+                    $query = "eventoId=$eventoId AND ZonasId=$zonaId AND SubzonaId=$subzonaId";
+                $updated = Subzona::model()->updateAll(
+                    					array(
+                                                'SubzonaX1'=>$_POST['x1'],
+                                                'SubzonaX2'=>$_POST['x2'],
+                                                'SubzonaX3'=>$_POST['x3'],
+                                                'SubzonaX4'=>$_POST['x4'],
+                                                'SubzonaX5'=>$_POST['x5'],
+                                                'SubzonaY1'=>$_POST['y1'],
+                                                'SubzonaY2'=>$_POST['y2'],
+                                                'SubzonaY3'=>$_POST['y3'],
+                                                'SubzonaY4'=>$_POST['y4'],
+                                                'SubzonaY5'=>$_POST['y5'],
+                                              ),
+                                               $query,
+                                               array()
+                                              );
+                if($updated>0)
                     echo json_encode(array('update'=>true));
                 else    
                     echo json_encode(array('update'=>false));
@@ -226,7 +248,49 @@ class DistribucionesController extends Controller
                 $subzonaId = $_POST['subzona'];
                 $eventoId = $_POST['eventoId'];
                 $funcionId = $_POST['funcionId'];
-                $mapa_grande = MapaGrande::model()->find("eventoId=$eventoId AND FuncionId=$funcionId");
+                $escenario = $_POST['escenario'];
+                $query = "eventoId=$eventoId AND FuncionId=$funcionId";
+                if($escenario=="todas")
+                    $query = "eventoId=$eventoId";
+                    
+                $mapa_grande = MapaGrande::model()->findAll($query);
+                foreach($mapa_grande as $key =>$mapa):
+                    $coordenada = Yii::app()->db->createCommand()->update('configurl_mapa_grande_coordenadas',
+                                                                      array(
+                                                                            'x1'=>(empty($_POST['x1'])?null:$_POST['x1']),
+                                                                            'x2'=>(empty($_POST['x2'])?null:$_POST['x2']),
+                                                                            'x3'=>(empty($_POST['x3'])?null:$_POST['x3']),
+                                                                            'x4'=>(empty($_POST['x4'])?null:$_POST['x4']),
+                                                                            'x5'=>(empty($_POST['x5'])?null:$_POST['x5']),
+                                                                            'x6'=>(empty($_POST['x6'])?null:$_POST['x6']),
+                                                                            'x7'=>(empty($_POST['x7'])?null:$_POST['x7']),
+                                                                            'x8'=>(empty($_POST['x8'])?null:$_POST['x8']),
+                                                                            'x9'=>(empty($_POST['x9'])?null:$_POST['x9']),
+                                                                            'x10'=>(empty($_POST['x10'])?null:$_POST['x10']),
+                                                                            'x11'=>(empty($_POST['x11'])?null:$_POST['x11']),
+                                                                            'x12'=>(empty($_POST['x12'])?null:$_POST['x12']),
+                                                                            'x13'=>(empty($_POST['x13'])?null:$_POST['x13']),
+                                                                            'x14'=>(empty($_POST['x14'])?null:$_POST['x14']),
+                                                                            'y1'=>(empty($_POST['y1'])?null:$_POST['y1']),
+                                                                            'y2'=>(empty($_POST['y2'])?null:$_POST['y2']),
+                                                                            'y3'=>(empty($_POST['y3'])?null:$_POST['y3']),
+                                                                            'y4'=>(empty($_POST['y4'])?null:$_POST['y4']),
+                                                                            'y5'=>(empty($_POST['y5'])?null:$_POST['y5']),
+                                                                            'y6'=>(empty($_POST['y6'])?null:$_POST['y6']),
+                                                                            'y7'=>(empty($_POST['y7'])?null:$_POST['y7']),
+                                                                            'y8'=>(empty($_POST['y8'])?null:$_POST['y8']),
+                                                                            'y9'=>(empty($_POST['y9'])?null:$_POST['y9']),
+                                                                            'y10'=>(empty($_POST['y10'])?null:$_POST['y10']),
+                                                                            'y11'=>(empty($_POST['y11'])?null:$_POST['y11']),
+                                                                            'y12'=>(empty($_POST['y12'])?null:$_POST['y12']),
+                                                                            'y13'=>(empty($_POST['y13'])?null:$_POST['y13']),
+                                                                            'y14'=>(empty($_POST['y14'])?null:$_POST['y14']),
+                                                                            ),
+                                                                      'configurl_funcion_mapa_grande_id= :id AND ZonasId=:ZonasId AND SubzonaId=:SubzonaId',
+                                                                      array(':id'=>$mapa->id,':ZonasId'=>$zonaId,'SubzonaId'=>$subzonaId)
+                                                                      );
+                endforeach;
+                /*$mapa_grande = MapaGrande::model()->find("eventoId=$eventoId AND FuncionId=$funcionId");
                 $coordenada = Yii::app()->db->createCommand()->update('configurl_mapa_grande_coordenadas',
                                                                       array(
                                                                             'x1'=>(empty($_POST['x1'])?null:$_POST['x1']),
@@ -260,7 +324,7 @@ class DistribucionesController extends Controller
                                                                             ),
                                                                       'configurl_funcion_mapa_grande_id= :id AND ZonasId=:ZonasId AND SubzonaId=:SubzonaId',
                                                                       array(':id'=>$mapa_grande->id,':ZonasId'=>$zonaId,'SubzonaId'=>$subzonaId)
-                                                                      );
+                                                                      );*/
                 echo json_encode(array('update'=>true));                                                      
                 /*if($coordenada>0)
                     echo json_encode(array('update'=>true));
@@ -276,8 +340,14 @@ class DistribucionesController extends Controller
                 $subzonaId = $_POST['subzona'];
                 $eventoId = $_POST['eventoId'];
                 $funcionId = $_POST['funcionId'];
-                $mapa_grande = MapaGrande::model()->find("eventoId=$eventoId AND FuncionId=$funcionId");
-                $coordenada = Yii::app()->db->createCommand()->update('configurl_mapa_grande_coordenadas',
+                $escenario = $_POST['escenario'];
+                $query = "eventoId=$eventoId AND FuncionId=$funcionId";
+                if($escenario=="todas")
+                    $query = "eventoId=$eventoId";
+                    
+                $mapa_grande = MapaGrande::model()->findAll($query);
+                foreach($mapa_grande as $key =>$mapa):
+                    $coordenada = Yii::app()->db->createCommand()->update('configurl_mapa_grande_coordenadas',
                                                                       array(
                                                                             'x1'=>null,
                                                                             'x2'=>null,
@@ -309,13 +379,10 @@ class DistribucionesController extends Controller
                                                                             'y14'=>null,
                                                                             ),
                                                                       'configurl_funcion_mapa_grande_id= :id AND ZonasId=:ZonasId AND SubzonaId=:SubzonaId',
-                                                                      array(':id'=>$mapa_grande->id,':ZonasId'=>$zonaId,'SubzonaId'=>$subzonaId)
+                                                                      array(':id'=>$mapa->id,':ZonasId'=>$zonaId,'SubzonaId'=>$subzonaId)
                                                                       );
-                echo json_encode(array('update'=>true));                                                     
-                /*if($coordenada>0)
-                    echo json_encode(array('update'=>true));
-                else    
-                    echo json_encode(array('update'=>false));*/
+                endforeach;
+                echo json_encode(array('update'=>true));       
             }
          }
     }    

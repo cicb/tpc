@@ -35,10 +35,7 @@
 <div class="row">
     <div class="coor-menu span7">
      
-        <?php
-    	$subzonas = Subzona::model()->findAll(array('condition'=>"t.EventoId=$eventoId AND t.FuncionesId = $funcionId"));
-        $funcionesId = Funciones::model()->findAll("EventoId=$eventoId");
-        ?>
+        <?php $subzonas = Subzona::model()->findAll(array('condition'=>"t.EventoId=$eventoId AND t.FuncionesId = $funcionId")); ?>
         <table>
             <tr class="controles-submenu">
                 <td><?php echo CHtml::link('<i class="fa fa-eye"></i> Ver coordenadas','#',array('id'=>'ver-coordenadas','class'=>'btn btn-success'))?>
@@ -52,11 +49,10 @@
     <br /><br /><br />
     <div class="coor-mapa-chico-img span4" id="coor-mapa-chico-img">
         <div class="area-imagen-chica" id="area-imagen-chica">
-            <?php $funcionMapaChico = Funciones::model()->find("EventoId=$eventoId AND FuncionesId=$funcionId");?>
-            <img src="<?php echo $funcionMapaChico->getForoPequenio() ?>" />
+            <img src="<?php echo $model->getForoPequenio() ?>" />
         </div>                
     </div>
-    <div class="coor-mapa-chico offset4" style="">
+    <div class="coor-mapa-chico span3" style="">
         <div>
             <table>
                 <caption>Coordenadas</caption>
@@ -111,6 +107,10 @@
             </table>
         </div>
     </div>
+    <div class="span3">
+        <label style="text-align: center;font-weight: bold;background-color: #EEE;">Aforo por Zona</label>
+        <?php echo $model->forolevel1->getTablaZonas(array('class'=>'table')); ?>
+    </div>
 </div>
 <div >
 	<?php  echo TbHtml::fileField('imamapchi','' , array('span'=>2,'maxlength'=>200, 'class'=>'hidden')); ?>
@@ -125,8 +125,8 @@
                 }
             });
             $('#imamapchi').on('change',function(){
-                var foroId = '<?php echo $funcionMapaChico->ForoId; ?>';
-                var foroMapIntId = '<?php echo $funcionMapaChico->ForoMapIntId; ?>';
+                var foroId = '<?php echo $model->ForoId; ?>';
+                var foroMapIntId = '<?php echo $model->ForoMapIntId; ?>';
 					 if ($(this).val()!='' && $(this).val()!=null) {
 							 if ($.inArray($(this).val().split('.').pop(),ext)==-1) {
 									 alert('El archivo no tiene extension valida, (jpg,png,bmp,jpeg), por favor seleccione otro.');
@@ -292,6 +292,7 @@ $("#guardar-coordenada").click(function(){
     var subzona   = $('#select-sub-zona option:selected').data('subzona');
     var eventoId  = '<?php echo $eventoId?>';
     var funcionId = '<?php echo $funcionId?>';
+    var escenario = '<?php echo @$_GET['escenario']?>';
     var x1 = $("#x1").val();
     var y1 = $("#y1").val();
     var x2 = $("#x2").val();
@@ -311,7 +312,7 @@ $("#guardar-coordenada").click(function(){
                 beforeSend:function(){
                     $("#cargando").html("Guardando Coordenadas");
                 },
-                data:{eventoId:eventoId,funcionId:funcionId,zona:zona,subzona:subzona,x1:x1,y1:y1,x2:x2,y2:y2,x3:x3,y3:y3,x4:x4,y4:y4,x5:x5,y5:y5},
+                data:{eventoId:eventoId,funcionId:funcionId,zona:zona,subzona:subzona,escenario:escenario,x1:x1,y1:y1,x2:x2,y2:y2,x3:x3,y3:y3,x4:x4,y4:y4,x5:x5,y5:y5},
                 success:function(data){
                     if(data.update==true){
                         localStorage.setItem('coor_mapa_chico',0);
@@ -332,6 +333,7 @@ $("#eliminar-coordenada").click(function(){
     var subzona   = $('#select-sub-zona option:selected').data('subzona');
     var eventoId  = '<?php echo $eventoId?>';
     var funcionId = '<?php echo $funcionId?>';
+    var escenario = '<?php echo @$_GET['escenario']?>';
     if(zona!="" && subzona!=""){
         var del = confirm("¿Deseas eliminar las coordenadas de la Sub-Zona Seleccionada?");
         if (del == true) {
@@ -342,7 +344,7 @@ $("#eliminar-coordenada").click(function(){
                     $("#cargando").html("Eliminando Coordenadas");
                 },
                 dataType:'json',
-                data:{eventoId:eventoId,funcionId:funcionId,zona:zona,subzona:subzona},
+                data:{eventoId:eventoId,funcionId:funcionId,zona:zona,subzona:subzona,escenario:escenario},
                 success:function(data){
                     if(data.update==true){
                         localStorage.setItem('coor_mapa_chico',0);
