@@ -48,6 +48,7 @@ class EventoController extends Controller
 
 	public function actionIndex()
 	{
+	   $this->perfil();
 			$model=new Evento('search');
 			if (isset($_POST['Evento'])) {
 					$model->attributes=$_POST['Evento'];
@@ -57,6 +58,7 @@ class EventoController extends Controller
 
 	public function actionRegistro()
 	{
+	   $this->perfil();
 			$model=new Evento('insert');
             $puntosventa = new Puntosventa;	
 			$this->saveModel($model);
@@ -65,7 +67,7 @@ class EventoController extends Controller
 
 	public function actionActualizar($id)
 	{
-
+        $this->perfil();
 			$model=Evento::model()->with(array('funciones'=>array('with'=>'forolevel1')))->findByPk($id);
 			$model->scenario='update';
 			$this->saveModel($model);
@@ -75,6 +77,7 @@ class EventoController extends Controller
 			$this->render('form',compact('model','funciones','puntosventa'));
 	}
     public function actionAgregarPuntoVentaAjax(){
+        $this->perfil();
         $model = new Puntosventa;
         if(isset($_POST['Puntosventa'])){
             $model->attributes=$_POST['Puntosventa'];
@@ -133,20 +136,17 @@ class EventoController extends Controller
 			}
 	}
 	public function actionView($id){
+	   $this->perfil();
 		$this->render('view',array(
 			'model'=>$this->loadModel($id),
 		));
-	}
-    public function perfil(){
-		if(Yii::app()->user->isGuest OR !Yii::app()->user->getState("Admin")){
-			$this->redirect(array("site/logout"));
-		}
 	}
 	/**
 	 * Manages all models.
 	 */
 	public function actionAdmin()
 	{
+	   $this->perfil();
 		$model=new Evento('search');
 		$model->unsetAttributes();  // clear any default values
 		if(isset($_GET['Evento']))
@@ -192,6 +192,7 @@ class EventoController extends Controller
 	
  public function actionCargarFunciones()
 	{
+	   $this->perfil();
 			$data = Funciones::model()->findAll('EventoId=:parent_id',
 					array(':parent_id'=>(int) $_POST['evento_Id']));
 
@@ -204,6 +205,7 @@ class EventoController extends Controller
 	}
 	public function actionCargarSubcategorias()
 	{
+	   $this->perfil();
 			$data = Categorialevel1::model()->findAll('CategoriaId=:id',
 					array(':id'=>(int) $_POST['Evento']['CategoriaId']));
 			echo CHtml::tag('option',array('value' => '0'),'Sin Subcategoria',true);
@@ -214,6 +216,7 @@ class EventoController extends Controller
 	}
 	public function actionEvento()
     {
+        $this->perfil();
         $data = Evento::model()->findAll('EventoId=:parent_id',
                         array(':parent_id'=>(int) $_POST['evento_Id']));
         $data = CHtml::listData($data,'EventoId','EventoNom');

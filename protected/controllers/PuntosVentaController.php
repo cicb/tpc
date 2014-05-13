@@ -47,6 +47,7 @@ class PuntosVentaController extends Controller
 	 */
 	public function actionView($id)
 	{
+	   $this->perfil();
 		$this->render('view',array(
 			'model'=>$this->loadModel($id),
 		));
@@ -58,6 +59,7 @@ class PuntosVentaController extends Controller
 	 */
 	public function actionCreate()
 	{
+	   $this->perfil();
 		$model=new Puntosventa;
 
 		// Uncomment the following line if AJAX validation is needed
@@ -113,6 +115,7 @@ class PuntosVentaController extends Controller
 	 */
 	public function actionUpdate($id)
 	{
+	   $this->perfil();
 		$model=$this->loadModel($id);
 
 		// Uncomment the following line if AJAX validation is needed
@@ -139,6 +142,7 @@ class PuntosVentaController extends Controller
 	 */
 	public function actionDelete($id)
 	{
+	   $this->perfil();
 		$this->loadModel($id)->delete();
 
 		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
@@ -151,6 +155,7 @@ class PuntosVentaController extends Controller
 	 */
 	public function actionIndex()
 	{
+	   $this->perfil();
 		$model = new Puntosventa('search');
         if (isset($_POST['Puntosventa'])) {
 					$model->attributes = $_POST['Puntosventa'];
@@ -175,6 +180,7 @@ class PuntosVentaController extends Controller
 	 */
 	public function actionAdmin()
 	{
+	   $this->perfil();
 		$model=new Puntosventa('search');
 		$model->unsetAttributes();  // clear any default values
 		if(isset($_GET['Puntosventa']))
@@ -206,6 +212,7 @@ class PuntosVentaController extends Controller
 	 */
 	protected function performAjaxValidation($model)
 	{
+	   $this->perfil();
 		if(isset($_POST['ajax']) && $_POST['ajax']==='puntosventa-form')
 		{
 			echo CActiveForm::validate($model);
