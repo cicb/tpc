@@ -20,7 +20,6 @@
             $list = CHtml::listData($eventos,'EventoId','EventoNom');
             echo $form->dropDownListControlGroup($model, 'EventoId',
                 $list, array('empty' => 'Seleccione un evento', 'class'=>'chosen')); 
-
                 ?>
 		</div>		
 		<?php echo TbHtml::formActions(array(
@@ -128,21 +127,26 @@ $this->widget('yiiwheels.widgets.grid.WhGridView', array(
 </style>
 <?php Yii::app()->clientScript->registerScript('Asingacion',"
         $('.btn-asignar').on('click',function(){
+            var params={
+                    ForoId:$(this).data('foro'),
+                    ForoMapIntId:$(this).data('dist'),
+                    EventoId:$eid,
+                    FuncionesId:$fid
+                };
             $.ajax({
                 url:'".$this->createUrl('distribuciones/asignar')."',
                 type:'post',
-                data:{
-                    foroid:$(this).data('foro'),
-                    distid:$(this).data('dist'),
-                    EventoId:$eid,
-                    FuncionesId:$fid
-                },
-                 success:function(data){
-                    if (data=='true') {
-                       window.location='".$this->createUrl('evento/actualizar', array('id'=>$eid))."#funciones';
+                data:params,
+                 success:function(resp){
+                    if (resp=='true') {
+                        window.location='".$this->createUrl('distribuciones/editor',array(
+                            'EventoId'=>$eid,
+                            'FuncionesId'=>$fid,
+                            'scenario'=>'asignacion'
+                            ))."';
                     }
                     else{
-                        alert('Error al asignar esta distribución.');
+                       alert('No se puede asignar esta distribución.');
                     }
                    }
             });

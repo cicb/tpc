@@ -425,4 +425,32 @@ class Funciones extends CActiveRecord
 		$criteria->compare('EventoNom', $this->EventoNom, true);
 		
 	}
+
+	public function agregarZona()
+	{
+		/*
+		* Agrega una zona con sus datos por default
+		* normalmente se ocuparía solo cuando se crea o edita una distribución
+		*/
+		$model=new Zonas;
+		// $model->attributes=$this;
+		$model->EventoId=$this->EventoId;
+		$model->FuncionesId=$this->FuncionesId;
+		if ($model->save()) {
+			return $model;
+		}
+		else
+			return $model;
+
+	}
+		private function agregarZonas($numero=1)
+	{
+		/*
+		* Agrega un numero de  zona con sus datos por default
+		* normalmente se ocuparía solo cuando se crea o edita una distribución
+		*/
+
+
+
+	}
 }

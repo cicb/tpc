@@ -21,6 +21,7 @@ class Zonas extends CActiveRecord
 	 * Returns the static model of the specified AR class.
 	 * @return Zonas the static model class
 	 */
+	private $maxId;
 	public static function model($className=__CLASS__)
 	{
 		return parent::model($className);
@@ -66,6 +67,8 @@ class Zonas extends CActiveRecord
         'capacidad'	=> array(self::STAT, 'Lugares', 'EventoId, FuncionesId, ZonasId',
         	'condition'=>"LugaresStatus<>'OFF'"),
         'funcion'	=> array(self::BELONGS_TO, 'Funciones', array('EventoId','FuncionesId')),
+        'zonaslevel1'=>array(self::HAS_MANY,'Zonaslevel1', array('EventoId','FuncionesId','ZonasId')),
+        'nzonas'=>	array(self::STAT,'Zonas','Zonas(EventoId,FuncionesId)'),
 		);
 	}
 
@@ -114,4 +117,33 @@ class Zonas extends CActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
+	protected function beforeSave()
+	{
+		if ($this->scenario=='insert') {
+			$this->ZonasId=self::getMaxId()+1;
+			$this->ZonasNum=$this->nzonas+1;
+
+		}	
+		return parent::beforeSave();
+	 
+	}
+	public static function maxId($evento)
+	 {
+			 $row = Funciones::model()->find(array(
+					 'select'=>'MAX(FuncionesId) as maxId',
+					 'condition'=>"EventoId=:evento",
+					 'params'=>array('evento'=>$evento)
+			 ));
+			 return $row['maxId'];
+	 }
+	 public function init()
+	 {
+	 	# Valor iniciales por default del modelo
+	 	$this->ZonasAli="Nombre de la zona";
+	 	$this->ZonasTipo='1';
+	 	$this->ZonasCosBol=0;
+	 	$this->ZonasCantSubZon=0;
+	 	$this->ZonasCanLug=0;	
+	 }
+
 }
