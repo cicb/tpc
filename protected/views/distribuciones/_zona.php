@@ -82,7 +82,7 @@ if (is_object($raiz)) {
 }	
  ?>
 <?php 		echo TbHtml::ajaxButton(' Reparar árbol de cargo por servicio',
-				array('generarArbol'),
+				array('generarArbolCargos'),
 				array(
 						'type'=>'POST',
 						'data'=>array('Zonas'=>array(

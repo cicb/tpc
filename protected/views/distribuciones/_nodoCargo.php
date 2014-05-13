@@ -9,14 +9,18 @@ $padre=$model->puntoventa->tipoid==0;
 $nombre=$model->puntoventa->PuntosventaNom;
 
 	echo CHtml::openTag('li',array(
-		'id'=>"$fid-$pid", 
+		'id'=>"nodo-$zid-$pid", 
 		'class'=>'nodo ', 'style'=>'border-top:1px dashed #888;',
 		));
 	//LI NODO
+	$mas="";	
 	if (isset($padre) and $padre) {
 	# Si tiene hijos muestra el boton de +
-		echo TbHtml::link(' ',array('distribucion/verRamaCargo','EventoId'=>$eid,
+		$mas= TbHtml::ajaxLink(' ',array('distribuciones/verRamaCargo','EventoId'=>$eid,
 			'FuncionesId'=>$fid,'ZonasId'=>$zid,'PuntosventaId'=> $pid),
+			array(
+				'update'=>"#hijos-$zid-$pid"
+			),	
 			array(
 				'class'=>'nodo-toggle fa fa-plus-square',
 				'id'=>"link-$zid-".$pid, 
@@ -25,20 +29,17 @@ $nombre=$model->puntoventa->PuntosventaNom;
 				)
 			);
 	}
-		//echo TbHtml::checkBox("chk-$fid-$pid",$status,array('class' =>'CPVFSta', 'data-fid'=>$fid,'data-pid'=>$pid));
-		echo TbHtml::label($nombre,"chk-$zid-$pid",
-			array('style'=>'display:inline;width:100%'));
+
 
 		echo CHtml::openTag('div',
 			array('
-				class'=>'fechas-cpf text-right',
+				class'=>'text-left',
 				'style'=>'width:100%;'
 				)); 
-
 		echo TbHtml::numberField('ZonasFacCarSer',$model->ZonasFacCarSer,array(
-				'class'=>'input-small text-center ZonasCosBol','data-zid'=>$zid,'data-pid'=>$pid, 'prepend'=>'$'));
-
+				'class'=>'input-small text-center ZonasCosBol','data-zid'=>$zid,'data-pid'=>$pid, 'prepend'=>$mas.$nombre.' '));
 		echo CHtml::closeTag('div');
+		echo TbHtml::tag('div',array('id'=>"hijos-$zid-$pid",''));	
 	echo CHtml::closeTag('li');
 
  ?>

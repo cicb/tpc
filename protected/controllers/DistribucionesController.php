@@ -613,11 +613,11 @@ class DistribucionesController extends Controller
 			// Genera o repara el arbol de zonaslevel1
 			if (isset($_POST['Zonas'])) {
 					$zona=Zonas::model()->findByPk($_POST['Zonas']);
-					$zonas->generarArbolCargos();
+					$zona->generarArbolCargos();
 					$raiz=Zonaslevel1::model()->with('puntoventa')->findByPk(array(
-							'EventoId'=>$model->EventoId,
-							'FuncionesId'=>$model->FuncionesId,
-							'ZonasId'=>$model->ZonasId,
+							'EventoId'=>$zona->EventoId,
+							'FuncionesId'=>$zona->FuncionesId,
+							'ZonasId'=>$zona->ZonasId,
 							'PuntosventaId'=>Yii::app()->params['pvRaiz']
 					));
 					if (is_object($raiz)) {
@@ -632,5 +632,27 @@ class DistribucionesController extends Controller
 			}
 
 	}
+  public function actionVerRamaCargo($EventoId,$FuncionesId, $ZonasId,$PuntosventaId){
+		  #Genera el una rama del arbol apartir de un cofipvfuncion que cumpla 
+		  $zl1=Zonaslevel1::model()->with(
+				  array(
+						  'puntoventa'=>array(
+								  'with'=>array(
+										  'hijos'=>array(
+												  'condition'=>"hijos.PuntosventaSta='ALTA'"
+										  )))
+								  ))->findByPk(compact('EventoId','FuncionesId','ZonasId','PuntosventaId'));
+		  $Pv=$zl1->puntoventa;
+		  echo CHtml::openTag('ul',array('id'=>"rama-".$FuncionesId.'-'.$PuntosventaId, 'class'=>"rama "));
+		  foreach ($Pv->hijos as $hijo) {
+				  $model=ZonasLevel1::model()->with(
+						  'puntoventa')->findByPk(
+								  array('EventoId'=>$EventoId,'FuncionesId'=>$FuncionesId,'ZonasId'=>$ZonasId,
+								  'PuntosventaId'=>$hijo->PuntosventaId));
+				  if (is_object($model)) 
+						  $this->renderPartial('_nodoCargo',array('model'=>$model));
 
+		  }
+		  echo CHtml::closeTag('ul');
+  }
 }
