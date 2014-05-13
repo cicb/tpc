@@ -101,7 +101,8 @@ $this->widget('bootstrap.widgets.TbNavbar',array(
 								array('label' => 'Eventos', 
 								'items'=>array(
 										array('label'=>'Administración De Eventos', 'url'=>$this->createUrl('evento/index')),
-										array('label'=>'Configurador de accesos', 'url'=>$this->createUrl('accesos/index')),
+                                        array('label'=>'Administración De Puntos De Venta', 'url'=>$this->createUrl('puntosventa/index')),
+										array('label'=>'Configurador De Accesos', 'url'=>$this->createUrl('accesos/index')),
 								),
 								'url' => '#','visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
 								array('label'=>'Usuarios','items'=>array(

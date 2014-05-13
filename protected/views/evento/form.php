@@ -23,7 +23,7 @@
 <div class='controles' style="min-height:100%">
 
 <?php echo sprintf("<h2>%s</h2>",$model->scenario=="insert"?'Nuevo Registro De Evento':'Actualizar Evento'); ?>
-	<p class="help-block">Los campos con <span class="required">*</span> con requeridos.</p>
+	<p class="help-block">Los campos con <span class="required">*</span> son requeridos.</p>
 	<?php echo $form->errorSummary($model); ?>
 <br />
 <?php if(Yii::app()->user->hasFlash('success')):?>
@@ -193,6 +193,7 @@
     <?php $this->endWidget(); ?>
 
 <!--<button class="btn btn-primary">ok</button>-->
+</div>
 </div><!-- form -->
 <?php if(!$model->isNewRecord):?>
 <input type="hidden" id="coor-funcionid" data-funcionId="1" />

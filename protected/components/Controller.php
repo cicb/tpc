@@ -20,4 +20,9 @@ class Controller extends CController
 	 * for more details on how to specify this property.
 	 */
 	public $breadcrumbs=array();
+    public function perfil(){
+		if(Yii::app()->user->isGuest OR !Yii::app()->user->getState("Admin")){
+			$this->redirect(array("site/logout"));
+		}
+	}
 }
