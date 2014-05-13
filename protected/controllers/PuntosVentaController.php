@@ -5,6 +5,7 @@ class PuntosVentaController extends Controller
 
 	public function actionCargarPuntosventa()
 	{
+	   $this->perfil();
 		if (isset($_POST['usuario_id'])) {
 			$usuario=$_POST['usuario_id'];
 			$data = Puntosventa::model()->with(array(
