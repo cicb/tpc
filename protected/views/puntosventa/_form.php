@@ -11,6 +11,11 @@
   .form select{
     margin-bottom: 1px;
   }
+  .form table td:nth-child(odd){
+    width: 50%;
+    text-align: left;
+    padding-left: 125px;
+  }
 </style>
 <div class="form">
     <div class='controles' style="min-height:100%">
@@ -48,7 +53,7 @@
                 </tr>
                 <?php endif;?>
                 <tr>
-                	<td><label>Tipo de Sucursal</label></td>
+                	<td><label>Punto de Venta</label></td>
                 	<td>
                         <?php
 	                           $selected_tipo_sucursal = "0";
@@ -63,16 +68,16 @@
                                         $selected_tipo_sucursal ="MOD";       
                                }
                         ?>
-                        <?php echo CHtml::dropDownList('tipo_sucursal',$selected_tipo_sucursal,array('FF'=>'FARMACIA FARMATODO','T'=>'TAQUILLA','FL'=>'FARMACIA FLEMMING','MOD'=>'MODULO'),array('disabled'=>$model->isNewRecord?false:true)); ?>
+                        <?php echo CHtml::dropDownList('tipo_sucursal',$selected_tipo_sucursal,array('FF'=>'FARMACIA FARMATODO','T'=>'TAQUILLA','FL'=>'FARMACIA FLEMMING'/*,'MOD'=>'MODULO'*/),array('disabled'=>$model->isNewRecord?false:true)); ?>
                     </td>
                 </tr>
-                <tr>
+                <!--<tr>
                 	<td><?php echo $form->labelEx($model,'tipoid'); ?></td>
-                	<td>
-                        <?php echo $form->dropDownList($model,'tipoid',array('1'=>'HIJO','0'=>'PADRE'),array()); ?>
+                	<td>-->
+                        <?php echo $form->dropDownList($model,'tipoid',array('1'=>'HIJO','0'=>'PADRE'),array('style'=>'display:none;')); ?>
             		    <?php echo $form->error($model,'tipoid'); ?>
-                    </td>
-                </tr>
+                    <!--</td>
+                </tr>-->
                 <tr>
                 	<td><?php echo $form->labelEx($model,'PuntosventaNom'); ?></td>
                 	<td>
@@ -80,13 +85,13 @@
             		    <?php echo $form->error($model,'PuntosventaNom'); ?>
                     </td>
                 </tr>
-                <tr>
+                <!--<tr>
                 	<td><?php echo $form->labelEx($model,'puntosventaTipoId'); ?></td>
                 	<td>
                         <?php echo $form->textField($model,'puntosventaTipoId',array()); ?>
             		    <?php echo $form->error($model,'puntosventaTipoId'); ?>
                     </td>
-                </tr>
+                </tr>-->
                 <tr>
                 	<td><?php echo $form->labelEx($model,'PuntosventaInf'); ?></td>
                 	<td>
@@ -101,21 +106,21 @@
             		    <?php echo $form->error($model,'PuntosventaSta'); ?>
                     </td>
                 </tr>
-                <tr>
+                <!--<tr>
                 	<td><?php echo $form->labelEx($model,'PuntosventaSuperId'); ?></td>
                 	<td>
                         <?php $selected_nodo_padre = $model->isNewRecord?"0":"".number_format($model->PuntosventaSuperId,0,"","");?>
-                        <?php echo $form->dropDownList($model,'PuntosventaSuperId',CHtml::listData(Puntosventa::model()->findAll(array('condition'=>"PuntosventaNom!=''",'order'=>'PuntosventaNom ASC')),'PuntosventaId','PuntosventaNom'),array('empty'=>array('0'=>'ROOT'),'options' => array($selected_nodo_padre => array('selected'=>true)))); ?>
+                        <?php echo $form->dropDownList($model,'PuntosventaSuperId',CHtml::listData(Puntosventa::model()->findAll(array('condition'=>"PuntosventaNom!=''",'order'=>'PuntosventaNom ASC')),'PuntosventaId','PuntosventaNom'),array('empty'=>array('0'=>'RAIZ'),'options' => array($selected_nodo_padre => array('selected'=>true)))); ?>
             		    <?php echo $form->error($model,'PuntosventaSuperId'); ?>
                     </td>
-                </tr>
+                </tr>-->
             </table>
         </div> 
             <div class="form-actions">
-            <?php echo TbHtml::link(' Regresar',array('index'),array('class'=>' btn btn-primary fa-arrow-left ')); ?>
+            <?php echo TbHtml::link(' Regresar',array('index'),array('class'=>' btn  fa-arrow-left ')); ?>
                     <?php echo TbHtml::submitButton($model->isNewRecord ? ' Registrar' : ' Guardar',array(
             			'size'=>TbHtml::BUTTON_SIZE_LARGE,
-            			'class'=>'btn btn-check fa fa-check'
+            			'class'=>'btn btn-primary btn-check fa fa-check'
                     )); ?>
             </div>	
     

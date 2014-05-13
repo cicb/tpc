@@ -33,10 +33,10 @@
 			'type'=>'condensed hover striped',
             'htmlOptions'=>array('class'=>'primario'),
             'columns'=>array(
-                'tipoid',
+                //'tipoid',
                 'PuntosventaId',
                 'PuntosventaNom',
-                'PuntosventaSuperId',
+                //'PuntosventaSuperId',
                 'PuntosventaInf',
                 'PuntosventaIdeTra',
                 'PuntosventaSta',

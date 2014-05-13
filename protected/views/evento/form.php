@@ -113,7 +113,15 @@
 					'PuntosventaId','PuntosventaNom'),
 			array('empty'=>'Sin Punto de Venta','class'=>'span3 chosen')
 	) ; ?>
-	<?php echo $form->error($model,'PuntosventaId'); ?>
+	<?php //echo $form->error($model,'PuntosventaId'); ?>
+    <?php echo TbHtml::button('Agregar Punto de Venta', array(
+    'style' => 'margin-top:-18px;',
+    'class' => 'btn btn-primary',
+    'size' => TbHtml::BUTTON_SIZE_SMALL,
+    'data-toggle' => 'modal',
+    'data-target' => '#ModalPuntoVenta',
+)); ?>
+            
 </div>
 
 		</div>
@@ -156,26 +164,7 @@
                     padding: 2px 15px;
                 }
                </style>
-                <?php $this->widget('bootstrap.widgets.TbModal', array(
-                    'id' => 'ModalMapaChico',
-                    'header' => 'Coordenadas Mapa Chico',
-                    'content' => $this->renderPartial('_mapaChico',array('eventoId'=>$_GET['id']),true),
-                    'footer' => array(
-                        //TbHtml::button('Save Changes', array('data-dismiss' => 'modal', 'color' => TbHtml::BUTTON_COLOR_PRIMARY)),
-                        //TbHtml::button('Cerrar', array('data-dismiss' => 'modal')),
-                     ),
-                     'htmlOptions' => array('style' => 'width: 700px;margin-left: -400px;'), 
-                )); ?>
-                <?php $this->widget('bootstrap.widgets.TbModal', array(
-                    'id' => 'ModalMapaGrande',
-                    'header' => 'Coordenadas Mapa Grande',
-                    'content' => $this->renderPartial('_mapaGrande',array('eventoId'=>$_GET['id']),true),
-                    'footer' => array(
-                        //TbHtml::button('Save Changes', array('data-dismiss' => 'modal', 'color' => TbHtml::BUTTON_COLOR_PRIMARY)),
-                        //TbHtml::button('Cerrar', array('data-dismiss' => 'modal')),
-                     ),
-                     'htmlOptions' => array('style' => 'width: 1100px;margin-left: -550px;top:5px'),
-                )); ?>
+                
                 <?php endif;?>
 		</div>
 	
@@ -191,7 +180,16 @@
 
 
     <?php $this->endWidget(); ?>
-
+            <?php $this->widget('bootstrap.widgets.TbModal', array(
+                    'id' => 'ModalPuntoVenta',
+                    'header' => 'Punto de Venta',
+                    'content' => $this->renderPartial('_form_pv',array('model'=>$puntosventa),true),
+                    'footer' => array(
+                        //TbHtml::button('Save Changes', array('data-dismiss' => 'modal', 'color' => TbHtml::BUTTON_COLOR_PRIMARY)),
+                        //TbHtml::button('Cerrar', array('data-dismiss' => 'modal')),
+                     ),
+                     'htmlOptions' => array('style' => 'width: 700px;margin-left: -400px;'), 
+                )); ?>
 <!--<button class="btn btn-primary">ok</button>-->
 </div>
 </div><!-- form -->
@@ -320,54 +318,7 @@ $('.btn-quitar-funcion').live('click',function(){
 <?php Yii::app()->clientScript->registerCssFile(Yii::app()->request->baseUrl. '/css/jquery.datetimepicker.css'); ?>
 <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl."/css/jquery.datetimepicker.css" ; ?>" />
  <script type="text/javascript" charset="utf-8">
- $("#btn-coordenadas-mapchi").live('click',function(){
-     var funcionId = $(this).data('funcionid');
-     var eventoId  = '<?php echo @$_GET['id']?>';
-     $.ajax({
-            url      : '<?php echo $this->createUrl('evento/getUrlImagenMapaChico') ?>',
-            type     : 'post',
-            dataType : 'json',
-            data     : {eventoId:eventoId,funcionId:funcionId},
-            success  : function(data){
-                            $('#area-imagen-chica img').attr('src',data.url);
-                       }
-     });
-     $.ajax({
-            url        : '<?php echo $this->createUrl('evento/getSubzonas') ?>',
-            type       : 'post',
-            beforeSend : function(){
-                            $('#select-sub-zona').html("");
-                         },
-            data       : {eventoId:eventoId,funcionId:funcionId},
-            success    : function(data){
-                            $('#select-sub-zona').html(data);
-                         }
-     });
- });
- $("#btn-coordenadas-mapgra").live('click',function(){
-     var funcionId = $(this).data('funcionid');
-     var eventoId  = '<?php echo @$_GET['id']?>';
-     $.ajax({
-            url      : '<?php echo $this->createUrl('evento/getUrlImagenMapaGrande') ?>',
-            type     : 'post',
-            dataType : 'json',
-            data     : {eventoId:eventoId,funcionId:funcionId},
-            success  : function(data){
-                            $('#area-imagen-grande img').attr('src',data.url);
-                       }
-     });
-     $.ajax({
-            url        : '<?php echo $this->createUrl('evento/getSubzonas') ?>',
-            type       : 'post',
-            beforeSend : function(){
-                            $('#select-sub-zona-mapa-grande').html("");
-                         },
-            data       : {eventoId:eventoId,funcionId:funcionId},
-            success    : function(data){
-                            $('#select-sub-zona-mapa-grande').html(data);
-                         }
-     });
- });
+ 
 $('.picker').datetimepicker({
 		
 		lang:'es'}); 
