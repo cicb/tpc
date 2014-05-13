@@ -21,7 +21,8 @@ class Zonas extends CActiveRecord
 	 * Returns the static model of the specified AR class.
 	 * @return Zonas the static model class
 	 */
-	private $maxId;
+	public $maxId;
+	public $countZonas;
 	public static function model($className=__CLASS__)
 	{
 		return parent::model($className);
@@ -43,7 +44,8 @@ class Zonas extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('EventoId, FuncionesId, ZonasId, ZonasAli, ZonasTipo, ZonasNum, ZonasCantSubZon, ZonasCanLug, ZonasBanExp, ZonasCosBol', 'required'),
+			array('EventoId, FuncionesId', 'required'),
+			//array('EventoId, FuncionesId, ZonasId, ZonasAli, ZonasTipo, ZonasNum, ZonasCantSubZon, ZonasCanLug, ZonasBanExp, ZonasCosBol', 'required'),
 			array('ZonasNum, ZonasCantSubZon, ZonasCanLug, ZonasBanExp', 'numerical', 'integerOnly'=>true),
 			array('EventoId, FuncionesId, ZonasId, ZonasTipo', 'length', 'max'=>20),
 			array('ZonasAli', 'length', 'max'=>75),
@@ -68,7 +70,8 @@ class Zonas extends CActiveRecord
         	'condition'=>"LugaresStatus<>'OFF'"),
         'funcion'	=> array(self::BELONGS_TO, 'Funciones', array('EventoId','FuncionesId')),
         'zonaslevel1'=>array(self::HAS_MANY,'Zonaslevel1', array('EventoId','FuncionesId','ZonasId')),
-        'nzonas'=>	array(self::STAT,'Zonas','Zonas(EventoId,FuncionesId)'),
+        'nzonas'=>	array(self::STAT,'Zonas','zonas(EventoId,FuncionesId)'),
+        'max'=>	array(self::STAT,'Zonas','zonas(EventoId,FuncionesId,ZonasId)','select'=> 'MAX(ZonasId)'),
 		);
 	}
 
@@ -120,22 +123,71 @@ class Zonas extends CActiveRecord
 	protected function beforeSave()
 	{
 		if ($this->scenario=='insert') {
-			$this->ZonasId=self::getMaxId()+1;
-			$this->ZonasNum=$this->nzonas+1;
-
+				$this->ZonasId= self::maxId($this->EventoId,$this->FuncionesId)+1;
+				$this->ZonasNum=self::countZonas($this->EventoId,$this->FuncionesId)+1;
 		}	
 		return parent::beforeSave();
 	 
 	}
-	public static function maxId($evento)
+	public function beforeDelete()
+	{
+			$identificador=array('EventoId'=>$this->EventoId,'FuncionesId'=>$this->FuncionesId,'ZonasId'=>$this->ZonasId);
+			if(Ventaslevel1::countByAttributes(array( 'EventoId'=>$this->EventoId))==0){
+					//Si no hay ventas
+					Subzona::model()->deleteAllByAttributes($identificador);
+					Zonaslevel1::model()->deleteAllByAttributes($identificador);
+					Zonastipo::model()->deleteAllByAttributes($identificador);
+					Zonastipolevel1::model()->deleteAllByAttributes($identificador);
+					return parent::beforeDelete();
+			}
+			else {
+					// Si hay ventas, no elimina
+					return false;
+			}
+
+	}
+
+	protected function afterDelete(){
+									
+			$this->reenumerar($this->EventoId,$this->FuncionesId);
+			return parent::afterDelete();
+	}	
+
+		public static function reenumerar($EventoId, $FuncionesId)
+		{
+				// Vuelve a generar las ZonasNum
+				$zonas=Zonas::model()->findAllByAttributes(compact('EventoId','FuncionesId'));
+				$i=1;
+				foreach ($zonas as $zona) {
+						if (is_object($zona)) {
+								$zona->ZonasNum=$i;
+								$zona->save();
+								$i++;
+						}	
+				}
+
+		}
+
+	public static function maxId($EventoId, $FuncionesId)
 	 {
-			 $row = Funciones::model()->find(array(
-					 'select'=>'MAX(FuncionesId) as maxId',
-					 'condition'=>"EventoId=:evento",
-					 'params'=>array('evento'=>$evento)
+			 $row = self::model()->find(array(
+					 'select'=>'MAX(ZonasId) as maxId',
+					 'condition'=>"EventoId=:evento and FuncionesId=:funcion",
+					 'params'=>array('evento'=>$EventoId,'funcion'=>$FuncionesId)
 			 ));
 			 return $row['maxId'];
 	 }
+
+	public static function countZonas($EventoId, $FuncionesId)
+	 {
+			 $row = self::model()->find(array(
+					 'select'=>'COUNT(ZonasId) as countZonas',
+					 'condition'=>"EventoId=:evento and FuncionesId=:funcion",
+					 'params'=>array('evento'=>$EventoId,'funcion'=>$FuncionesId)
+			 ));
+			 return $row['countZonas'];
+	 }
+
 	 public function init()
 	 {
 	 	# Valor iniciales por default del modelo
@@ -146,4 +198,14 @@ class Zonas extends CActiveRecord
 	 	$this->ZonasCanLug=0;	
 	 }
 
+	 public function generarArbolCargos()
+	 {
+			 // Por cada punto de venta genera su ventaslevel1 ...
+			 //Obtiene todo el catalogo de puntos de venta
+			 $conexion=Yii::app()->db;
+			 $conexion->createCommand(sprintf("INSERT IGNORE INTO zonaslevel1 
+					 (SELECT %s,%s,%s,PuntosventaId,0,PuntosventaSta from puntosventa);" ,
+					 $this->EventoId,$this->FuncionesId,$this->ZonasId
+			 ))->execute();
+	 }
 }

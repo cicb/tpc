@@ -44,11 +44,13 @@
         <?php echo $form->dropDownListControlGroup($model, 'EventoSta2',
 					array('1'=>'A la Venta', '2'=>'Proximamente','3'=>'Sinopsis','4'=>'Cancelado'), array('class' => 'span2')); ?>
 
-		<?php echo $form->labelEx($model,'EventoFecIni',array('class'=>'control-label')); ?>
-		<?php echo $form->textField($model,'EventoFecIni',array('class'=>'picker')) ;?>
-
 <div class='control-group'>
-
+		<?php echo $form->labelEx($model,'EventoFecIni',array('class'=>'control-label')); ?>
+ <div class="input-append">
+		<?php echo $form->textField($model,'EventoFecIni',array('class'=>'picker')) ;?>
+ </div>
+</div>
+<div class='control-group'>
 		<?php echo $form->labelEx($model,'EventoFecFin',array('class'=>'control-label')); ?>
  <div class="input-append">
 		<?php echo $form->textField($model,'EventoFecFin',array('class'=>'picker')) ;?>
@@ -58,7 +60,6 @@
 <div class='control-group'>
 		<?php echo $form->labelEx($model,'EventoTemFecFin',array('class'=>'control-label')); ?>
  <div class="input-append">
- 
 		<?php echo $form->textField($model,'EventoTemFecFin',array('class'=>'picker')) ;?>
  </div>
 </div>		

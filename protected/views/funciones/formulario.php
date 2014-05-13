@@ -19,7 +19,17 @@
 	<?php if (isset($this->forolevel1)) {
 		echo "$this->forolevel1->ForoMapPat";
 	} ?>
-	<?php echo TbHtml::link(' Asignar distribucion',$this->createUrl('distribuciones/index',array(
+<?php
+		if (isset($model->zonas) and sizeof($model->zonas)>0) {
+				echo TbHtml::link(' Modificar distribución',array(
+						'distribuciones/editor',
+						'EventoId'=>$model->EventoId,
+						'FuncionesId'=>$model->FuncionesId,
+						'scenario'=>'asignacion'),
+				array('class'=>'btn btn-warning fa fa-warning pull-left')
+				); 	
+		}	 else  
+			echo TbHtml::link(' Asignar distribucion',$this->createUrl('distribuciones/index',array(
 		'eid'=>$model->EventoId,
 		'fid'=>$model->FuncionesId,
 		'foroid'=>$model->evento->ForoId,
@@ -27,7 +37,8 @@
 			'data-id'=>$model->FuncionesId,
 			'class'=>'btn-asignar-dist btn btn-primary fa fa-2x fa-trello pull-left',
 			'title'=>'Asignar distribución.'
-	)); ?>
+	)); 
+?>
 
 
 </div>
@@ -63,7 +74,7 @@ echo $form->textField($model,'FuncionesFecHor',array('class'=>'picker FecHor box
 	$root=Confipvfuncion::model()->with('puntoventa')->findByPk(array(
 		'EventoId'=>$model->EventoId,
 		'FuncionesId'=>$model->FuncionesId, 
-		'PuntosventaId'=> 1000//Id del punto de venta  raiz
+		'PuntosventaId'=> Yii::app()->params['pvRaiz'],//Id del punto de venta  raiz
 		));
 	$taquilla=Confipvfuncion::model()->with('puntoventa')->findByPk(array(
 		'EventoId'=>$model->EventoId,

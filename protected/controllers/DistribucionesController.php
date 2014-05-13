@@ -4,12 +4,23 @@ class DistribucionesController extends Controller
 {
 	public function actionAsignar()
 	{
-		$ForoId=$_POST['ForoId'];
-		$ForoMapIntId=$_POST['ForoMapIntId'];	
+		extract($_POST);	
 		$distribucion=Forolevel1::model()->with('funcion')->findByPk(compact('ForoId','ForoMapIntId'));
-		echo $distribucion->asignar($_POST['EventoId'],$_POST['FuncionesId'])?"true":"false";
-		// $this->render('asignar');
+		echo $distribucion->asignar($EventoId,$FuncionesId)?"true":"false";
+	}
 
+	public function actionAsignarATodas()
+	{
+		extract($_POST);	
+		$distribucion=Forolevel1::model()->with('funcion')->findByPk(compact('ForoId','ForoMapIntId'));
+		$funciones=Funciones::model()->findAllByAttributes(compact('EventoId'),"FuncionesId<>".$FuncionesId);
+		$retorno=true;
+		foreach ($funciones as $funcion) {
+				if (is_object($funcion)) {
+						$retorno=$retorno and $distribucion->asignar($EventoId,$funcion->FuncionesId);
+				}	
+		}
+		echo $retorno?'true '.$funcion->FuncionesId:'false';
 	}
 
 	public function actionGuardar()
@@ -45,7 +56,7 @@ class DistribucionesController extends Controller
 	{
 		// return the filter configuration for this controller, e.g.:
 		return array(
-			'postOnly + asignar ',
+			'postOnly + asignar asignarATodas ',
 			'accessControl'
 			// array(
 			// 	'class'=>'path.to.FilterClass',
@@ -578,10 +589,48 @@ class DistribucionesController extends Controller
     {
         # Cambia el nombre de una zona dada
         // $model=Zonas::model()->findByPk($_POST['EventoId'],$_POST['FuncionesId'],$_POST['ZonasId']);
-        extract($_POST);
+        extract($_POST['Zonas']);
         $model=Zonas::model()->findByPk(compact('EventoId','FuncionesId','ZonasId'));
-        $model->attributes=$_POST;
+        $model->attributes=$_POST['Zonas'];
+		$model->save();
         echo CJSON::encode($model);
     }
+
+	public function actionEliminarZona()
+	{
+			if (isset($_POST)) {
+					$zona=Zonas::model()->findByPk($_POST['Zonas']);
+					echo $zona->delete()?"true":'false';
+			}	
+			else{
+					throw new Exception("Error al procesar su petición, vefique integridad de parametros ", 1);
+			}
+			
+	}
+
+	public function actionGenerarArbolCargos()
+	{
+			// Genera o repara el arbol de zonaslevel1
+			if (isset($_POST['Zonas'])) {
+					$zona=Zonas::model()->findByPk($_POST['Zonas']);
+					$zonas->generarArbolCargos();
+					$raiz=Zonaslevel1::model()->with('puntoventa')->findByPk(array(
+							'EventoId'=>$model->EventoId,
+							'FuncionesId'=>$model->FuncionesId,
+							'ZonasId'=>$model->ZonasId,
+							'PuntosventaId'=>Yii::app()->params['pvRaiz']
+					));
+					if (is_object($raiz)) {
+							// Si el nodo raiz esta asignado
+							$this->renderPartial('_nodoCargo', array('model'=>$raiz));
+					}	
+					else
+							echo "";
+			}
+			else{
+					throw new Exception("Error al procesar su petición, vefique integridad de parametros ", 1);
+			}
+
+	}
 
 }
