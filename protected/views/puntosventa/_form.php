@@ -11,10 +11,10 @@
   .form select{
     margin-bottom: 1px;
   }
-  .form table td:nth-child(odd){
-    width: 50%;
+  .form  label{
     text-align: left;
-    padding-left: 125px;
+    text-indent: 10%;
+    padding-left: 10%;
   }
 </style>
 <div class="form">
@@ -35,26 +35,26 @@
     	<?php //echo $form->errorSummary($model); ?>
         <div class='col-2 white-box box'>
 		<h3>Información básica</h3>
-            <table  style="width: 100%;">
+            
                 <?php if(!$model->isNewRecord):?>
-                <tr>
-                	<td><?php echo $form->labelEx($model,'PuntosventaId'); ?></td>
-                	<td>
-                        <?php echo $form->textField($model,'PuntosventaId',array('size'=>20,'maxlength'=>20,'readonly'=>'readonly')); ?>
+                
+                	<?php echo $form->labelEx($model,'PuntosventaId',array('class'=>'span3')); ?></td>
+                	
+                        <?php echo $form->textField($model,'PuntosventaId',array('size'=>20,'maxlength'=>20,'readonly'=>'readonly','class'=>'span3')); ?>
             		    <?php echo $form->error($model,'PuntosventaId'); ?>
-                    </td>
-                </tr>
-                <tr>
-                	<td><?php echo $form->labelEx($model,'PuntosventaIdeTra'); ?></td>
-                	<td>
-                        <?php echo $form->textField($model,'PuntosventaIdeTra',array('size'=>20,'maxlength'=>20,'readonly'=>'readonly')); ?>
+                    
+                
+                
+                	<?php echo $form->labelEx($model,'PuntosventaIdeTra',array('class'=>'span3')); ?>
+                	
+                        <?php echo $form->textField($model,'PuntosventaIdeTra',array('size'=>20,'maxlength'=>20,'readonly'=>'readonly','class'=>'span3')); ?>
             		    <?php echo $form->error($model,'PuntosventaIdeTra'); ?>
-                    </td>
-                </tr>
+                    
+                
                 <?php endif;?>
-                <tr>
-                	<td><label>Punto de Venta</label></td>
-                	<td>
+                
+                	<label class="span3">Punto de Venta</label>
+                	
                         <?php
 	                           $selected_tipo_sucursal = "0";
                                if(!$model->isNewRecord){
@@ -68,53 +68,52 @@
                                         $selected_tipo_sucursal ="MOD";       
                                }
                         ?>
-                        <?php echo CHtml::dropDownList('tipo_sucursal',$selected_tipo_sucursal,array('FF'=>'FARMACIA FARMATODO','T'=>'TAQUILLA','FL'=>'FARMACIA FLEMMING'/*,'MOD'=>'MODULO'*/),array('disabled'=>$model->isNewRecord?false:true)); ?>
-                    </td>
-                </tr>
-                <!--<tr>
-                	<td><?php echo $form->labelEx($model,'tipoid'); ?></td>
-                	<td>-->
-                        <?php echo $form->dropDownList($model,'tipoid',array('1'=>'HIJO','0'=>'PADRE'),array('style'=>'display:none;')); ?>
+                        <?php echo CHtml::dropDownList('tipo_sucursal',$selected_tipo_sucursal,array('FF'=>'FARMACIA FARMATODO','T'=>'TAQUILLA','FL'=>'FARMACIA FLEMMING'/*,'MOD'=>'MODULO'*/),array('disabled'=>$model->isNewRecord?false:true,'class'=>'span3')); ?>
+                    
+                
+                <!--
+                	<?php echo $form->labelEx($model,'tipoid',array('class'=>'span3')); ?>
+                	
+                        <?php echo $form->dropDownList($model,'tipoid',array('1'=>'HIJO','0'=>'PADRE'),array('style'=>'display:none;','class'=>'span3')); ?>
             		    <?php echo $form->error($model,'tipoid'); ?>
-                    <!--</td>
-                </tr>-->
-                <tr>
-                	<td><?php echo $form->labelEx($model,'PuntosventaNom'); ?></td>
-                	<td>
-                        <?php echo $form->textField($model,'PuntosventaNom',array('size'=>60,'maxlength'=>75)); ?>
+                    
+                -->
+                
+                	<?php echo $form->labelEx($model,'PuntosventaNom',array('class'=>'span3')); ?>
+                	
+                        <?php echo $form->textField($model,'PuntosventaNom',array('size'=>60,'maxlength'=>75,'class'=>'span3')); ?>
             		    <?php echo $form->error($model,'PuntosventaNom'); ?>
-                    </td>
-                </tr>
-                <!--<tr>
-                	<td><?php echo $form->labelEx($model,'puntosventaTipoId'); ?></td>
-                	<td>
-                        <?php echo $form->textField($model,'puntosventaTipoId',array()); ?>
+                    
+                
+                <!--
+                	<?php echo $form->labelEx($model,'puntosventaTipoId',array('class'=>'span3')); ?>
+                	
+                        <?php echo $form->textField($model,'puntosventaTipoId',array('class'=>'span3')); ?>
             		    <?php echo $form->error($model,'puntosventaTipoId'); ?>
-                    </td>
-                </tr>-->
-                <tr>
-                	<td><?php echo $form->labelEx($model,'PuntosventaInf'); ?></td>
-                	<td>
-                        <?php echo $form->textField($model,'PuntosventaInf',array('rows'=>6, 'cols'=>50)); ?>
+                   
+                -->
+                
+                	<?php echo $form->labelEx($model,'PuntosventaInf',array('class'=>'span3')); ?>
+                	
+                        <?php echo $form->textField($model,'PuntosventaInf',array('rows'=>6, 'cols'=>50,'class'=>'span3')); ?>
             		    <?php echo $form->error($model,'PuntosventaInf'); ?>
-                    </td>
-                </tr>
-                <tr>
-                	<td><?php echo $form->labelEx($model,'PuntosventaSta'); ?></td>
-                	<td>
-                        <?php echo $form->dropDownList($model,'PuntosventaSta',array('ALTA'=>'ALTA','BAJA'=>'BAJA'),array()); ?>
+                    
+                
+                
+                	<?php echo $form->labelEx($model,'PuntosventaSta',array('class'=>'span3')); ?>
+                	
+                        <?php echo $form->dropDownList($model,'PuntosventaSta',array('ALTA'=>'ALTA','BAJA'=>'BAJA'),array('class'=>'span3')); ?>
             		    <?php echo $form->error($model,'PuntosventaSta'); ?>
-                    </td>
-                </tr>
-                <!--<tr>
-                	<td><?php echo $form->labelEx($model,'PuntosventaSuperId'); ?></td>
-                	<td>
+                    
+                
+                <!--
+                	<?php echo $form->labelEx($model,'PuntosventaSuperId',array('class'=>'span3')); ?>
+                	
                         <?php $selected_nodo_padre = $model->isNewRecord?"0":"".number_format($model->PuntosventaSuperId,0,"","");?>
-                        <?php echo $form->dropDownList($model,'PuntosventaSuperId',CHtml::listData(Puntosventa::model()->findAll(array('condition'=>"PuntosventaNom!=''",'order'=>'PuntosventaNom ASC')),'PuntosventaId','PuntosventaNom'),array('empty'=>array('0'=>'RAIZ'),'options' => array($selected_nodo_padre => array('selected'=>true)))); ?>
+                        <?php echo $form->dropDownList($model,'PuntosventaSuperId',CHtml::listData(Puntosventa::model()->findAll(array('condition'=>"PuntosventaNom!=''",'order'=>'PuntosventaNom ASC')),'PuntosventaId','PuntosventaNom'),array('empty'=>array('0'=>'RAIZ'),'options' => array($selected_nodo_padre => array('selected'=>true)),'class'=>'span3')); ?>
             		    <?php echo $form->error($model,'PuntosventaSuperId'); ?>
-                    </td>
-                </tr>-->
-            </table>
+                    
+                -->
         </div> 
             <div class="form-actions">
             <?php echo TbHtml::link(' Regresar',array('index'),array('class'=>' btn  fa-arrow-left ')); ?>

@@ -503,8 +503,8 @@ class ReportesController extends Controller
 
 	public function actionVentasSinCargo()
 	{
-        $this->perfil();
-
+        if(Yii::app()->user->isGuest)
+			$this->redirect(array("site/logout"));
 		$model=new ReportesVentas;
 		$eventoId=isset($_POST['evento_id'])?$_POST['evento_id']:0;
 		$funcionesId=isset($_POST['funcion_id'])?$_POST['funcion_id']:0;

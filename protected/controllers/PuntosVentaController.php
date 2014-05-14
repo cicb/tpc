@@ -86,6 +86,9 @@ class PuntosVentaController extends Controller
             $pv_id = Puntosventa::model()->find(array('condition'=>"PuntosventaId BETWEEN $rango1 AND $rango2",'order'=>'PuntosventaId DESC'));
 			$pv_id = (empty($pv_id->PuntosventaId)?$rango1:$pv_id->PuntosventaId) + 1;
             $model->attributes=$_POST['Puntosventa'];
+            
+            if($_POST['tipo_sucursal']=="T")
+                $model->puntosventaTipoId=2;
             $model->PuntosventaId = $pv_id;
             $model->PuntosventaIdeTra = $_POST['tipo_sucursal'].$pv_id;
 			if($model->save()){

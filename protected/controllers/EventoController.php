@@ -90,6 +90,7 @@ class EventoController extends Controller
                 }elseif($_POST['tipo_sucursal']=="T"){
                     $rango1 = 102;
                     $rango2 = 299;
+                    $model->puntosventaTipoId=2;
                 }elseif($_POST['tipo_sucursal']=="FL"){
                     $rango1 = 300;
                     $rango2 = 999;
@@ -97,7 +98,6 @@ class EventoController extends Controller
                 
                 $pv_id = Puntosventa::model()->find(array('condition'=>"PuntosventaId BETWEEN $rango1 AND $rango2",'order'=>'PuntosventaId DESC'));
     			$pv_id = (empty($pv_id->PuntosventaId)?$rango1:$pv_id->PuntosventaId) + 1;
-       
                 $model->PuntosventaId = $pv_id;
                 $model->PuntosventaIdeTra = $_POST['tipo_sucursal'].$pv_id;
                 if($model->save()){
