@@ -16,14 +16,15 @@ $nombre=$model->puntoventa->PuntosventaNom;
 	$mas="";	
 	if (isset($padre) and $padre) {
 	# Si tiene hijos muestra el boton de +
-		$mas= TbHtml::ajaxLink(' ',array('distribuciones/verRamaCargo','EventoId'=>$eid,
+		$mas= TbHtml::link(' ',array('distribuciones/verRamaCargo','EventoId'=>$eid,
 			'FuncionesId'=>$fid,'ZonasId'=>$zid,'PuntosventaId'=> $pid),
-			array(
-				'update'=>"#hijos-$zid-$pid"
-			),	
+			//array(
+				//'update'=>"#hijos-$zid-$pid"
+			//),	
 			array(
 				'class'=>'nodo-toggle fa fa-plus-square',
 				'id'=>"link-$zid-".$pid, 
+				'data-uid'=>"$zid-$pid",
 				'data-estado'=>'inicial',
 				'style'=>'margin:5px',
 				)
@@ -37,7 +38,7 @@ $nombre=$model->puntoventa->PuntosventaNom;
 				'style'=>'width:100%;'
 				)); 
 		echo TbHtml::numberField('ZonasFacCarSer',$model->ZonasFacCarSer,array(
-				'class'=>'input-small text-center ZonasCosBol','data-zid'=>$zid,'data-pid'=>$pid, 'prepend'=>$mas.$nombre.' '));
+				'class'=>'input-small text-center ZonasCosBol','data-zid'=>$zid,'data-pid'=>$pid, 'prepend'=>$mas,'append'=>$nombre.' '));
 		echo CHtml::closeTag('div');
 		echo TbHtml::tag('div',array('id'=>"hijos-$zid-$pid",''));	
 	echo CHtml::closeTag('li');

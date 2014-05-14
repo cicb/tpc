@@ -28,7 +28,6 @@ class DistribucionesController extends Controller
 		$this->render('guardar');
 	}
 
-
 	public function actionNueva()
 	{
 		$this->render('nueva');
@@ -560,7 +559,7 @@ class DistribucionesController extends Controller
     {
 
         // $model=Forolevel1::model()->with('zonas')->findByPk(compact('ForoId','ForoMapIntId'));
-        $model=Funciones::model()->with('zonas')->findByPk(compact('EventoId','FuncionesId'));
+        $model=Funciones::model()->with(array('zonas'=>array('with'=>'evento')))->findByPk(compact('EventoId','FuncionesId'));
         // if(is_object($model))
             $this->render('editor',compact('model','scenario'),false,true);
         // else{
@@ -634,16 +633,19 @@ class DistribucionesController extends Controller
 	}
   public function actionVerRamaCargo($EventoId,$FuncionesId, $ZonasId,$PuntosventaId){
 		  #Genera el una rama del arbol apartir de un cofipvfuncion que cumpla 
+		  //$funcion=Funciones::model()->findByPk(array(compact('EventoId','FuncionesId')));
+		  $evento=Evento::model()->findByPk($EventoId);
 		  $zl1=Zonaslevel1::model()->with(
 				  array(
 						  'puntoventa'=>array(
 								  'with'=>array(
 										  'hijos'=>array(
-												  'condition'=>"hijos.PuntosventaSta='ALTA'"
+												  'condition'=>"hijos.PuntosventaSta='ALTA' 
+												  and hijos.PuntosventaId<>".$evento->PuntosventaId
 										  )))
 								  ))->findByPk(compact('EventoId','FuncionesId','ZonasId','PuntosventaId'));
 		  $Pv=$zl1->puntoventa;
-		  echo CHtml::openTag('ul',array('id'=>"rama-".$FuncionesId.'-'.$PuntosventaId, 'class'=>"rama "));
+		  echo CHtml::openTag('ul',array('id'=>"rama-".$ZonasId.'-'.$PuntosventaId, 'class'=>"rama "));
 		  foreach ($Pv->hijos as $hijo) {
 				  $model=ZonasLevel1::model()->with(
 						  'puntoventa')->findByPk(

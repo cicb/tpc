@@ -104,4 +104,30 @@ $('.ZonasAli').live('focusout',function(){
 $('.ZonasTipo').live('change',function(){
 		cambiarValores($(this));
 });
+
+$( '.nodo-toggle').live('click',function(){
+	var uid= $(this).data('uid');
+	var link= $(this);
+	if (link.data('estado')=='inicial') {
+		var href= link.attr('href');
+		$.ajax({
+			url:href,
+			success:function(data){ 
+				$('#hijos-'+uid).append(data);
+				link.data('estado','toggle')
+				link.toggleClass('fa-minus-square');
+			}
+		});
+	}
+	else if (link.data('estado')=='toggle'){
+		link.toggleClass('fa-minus-square');
+		$('#rama-'+uid).toggle();
+	}
+	return false;
+})
 "); ?>
+<style type="text/css" media="screen">
+	li.nodo{
+		list-style-type:none;
+}
+</style>

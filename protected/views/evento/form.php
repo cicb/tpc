@@ -184,7 +184,7 @@
             <?php $this->widget('bootstrap.widgets.TbModal', array(
                     'id' => 'ModalPuntoVenta',
                     'header' => 'Punto de Venta',
-                    'content' => $this->renderPartial('_form_pv',array('model'=>$puntosventa),true),
+					'content' => $this->renderPartial('_form_pv',array('model'=>$puntosventa),true),
                     'footer' => array(
                         //TbHtml::button('Save Changes', array('data-dismiss' => 'modal', 'color' => TbHtml::BUTTON_COLOR_PRIMARY)),
                         //TbHtml::button('Cerrar', array('data-dismiss' => 'modal')),

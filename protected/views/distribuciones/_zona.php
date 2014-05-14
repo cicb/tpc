@@ -76,6 +76,16 @@ $raiz=Zonaslevel1::model()->with('puntoventa')->findByPk(array(
 		'ZonasId'=>$model->ZonasId,
 		'PuntosventaId'=>Yii::app()->params['pvRaiz']
 ));
+$pve=Zonaslevel1::model()->with('puntoventa')->findByPk(array(
+		'EventoId'=>$model->EventoId,
+		'FuncionesId'=>$model->FuncionesId,
+		'ZonasId'=>$model->ZonasId,
+		'PuntosventaId'=>$model->evento->PuntosventaId
+));
+if (is_object($pve)) {
+		// Si el nodo raiz esta asignado
+		$this->renderPartial('_nodoCargo', array('model'=>$pve));
+}	
 if (is_object($raiz)) {
 	// Si el nodo raiz esta asignado
 		$this->renderPartial('_nodoCargo', array('model'=>$raiz));
