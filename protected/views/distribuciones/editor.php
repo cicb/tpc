@@ -21,8 +21,8 @@ Yii::app()->clientScript->registerScriptFile("js/holder.js");
 	echo TbHtml::ajaxButton(' Agregar una zona',
 		$this->createUrl('distribuciones/agregarZona',
 			array(
-				'EventoId'=>$zona->EventoId,
-				'FuncionesId'=>$zona->FuncionesId
+				'EventoId'=>$model->EventoId,
+				'FuncionesId'=>$model->FuncionesId
 				)
 			),
 		array(
@@ -39,7 +39,69 @@ Yii::app()->clientScript->registerScriptFile("js/holder.js");
 			)
 		); 
 	?>
+<br />
+<br />
+<div class='row-fluid'>
+	<?php
+		echo TbHtml::link(' Regresar',array('evento/actualizar','id'=>$model->EventoId),
+		array('class'=>'btn fa fa-arrow-left'));
+	 ?>
+	<?php
+echo  TbHtml::ajaxButton( 
+		' Asignar esta distribución a todas las funciones',
+		$this->createUrl('distribuciones/asignarATodas'),
+		array(
+				'beforeSend'=>'function(){return  confirm("¿Confirma asignar esta distribución a todas las demas funciones?\nEsto implica perder cualquier distribución previamente asignada a las demas funciones"); }',
+				'success'=>'function(resp){alert(resp);}',
+				'type'=>'POST',
+				'data'=>array(
+						'ForoId'=>$model->ForoId,
+						'ForoMapIntId'=>$model->ForoMapIntId,
+						'EventoId'=>$model->EventoId,
+						'FuncionesId'=>$model->FuncionesId,
+				),
+		),
+		array(
+				'id'=>'btn-asignar-todas',
+				'class'=>'btn btn-info fa fa-th'
+		)
+		);
+	?>
+</div>
+
+
 	</div>
 </div>
-<script type="text/javascript">
-</script>
+<?php 
+$EventoId=$model->EventoId;
+$FuncionesId=$model->FuncionesId;
+//$ZonasId=$zona->ZonasId;
+
+Yii::app()->clientScript->registerScript('controles',"
+function cambiarValores(control){
+		var key=control.attr('name');
+		var value=control.val();
+		var data={Zonas:{ EventoId:$EventoId, FuncionesId:$FuncionesId, ZonasId:control.data('id') }};
+		data['Zonas'][key]=value;
+		$.ajax({
+				url: '".$this->createUrl('AsignarValorZona')."',
+						type:'POST',
+						data:data,
+		});
+}
+$('.ZonasCantSubZon').live('focusout',function(){
+		cambiarValores($(this));
+});
+$('.ZonasCanLug').live('focusout',function(){
+		cambiarValores($(this));
+});
+$('.ZonasCosBol').live('focusout',function(){
+		cambiarValores($(this));
+});
+$('.ZonasAli').live('focusout',function(){
+		cambiarValores($(this));
+});
+$('.ZonasTipo').live('change',function(){
+		cambiarValores($(this));
+});
+"); ?>

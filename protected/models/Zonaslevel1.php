@@ -29,7 +29,7 @@ class Zonaslevel1 extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('EventoId, FuncionesId, ZonasId, PuntosventaId, ZonasFacCarSer, ZonasBanVen', 'required'),
+			array('EventoId, FuncionesId, PuntosventaId, ZonasFacCarSer, ZonasBanVen', 'required'),
 			array('EventoId, FuncionesId, ZonasId, PuntosventaId, ZonasBanVen', 'length', 'max'=>20),
 			array('ZonasFacCarSer', 'length', 'max'=>13),
 			// The following rule is used by search().

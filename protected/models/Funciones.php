@@ -398,8 +398,17 @@ class Funciones extends CActiveRecord
 
 	 public function beforeDelete()
 	 {
-	 	$this->deleteConfpvfuncion();
-		 return parent::beforeDelete();	 	
+			 $identificador=array('EventoId'=>$this->EventoId) ;
+			 $nfunciones=Funciones::model()->countByAttributes($identificador);	 
+			 if ($nfunciones>1) {
+			 	// Si no se esta tratando de eliminar la unica funcion.
+					 $this->deleteConfpvfuncion();
+					 Zonas::model()->deleteAllByAttributes(array_merge($identificador,array('FuncionesId'=>$this->FuncionesId)));
+					 return parent::beforeDelete();	 	
+			 }	
+			 else {
+			 	return false;
+			 }
 	 }
 
 	 public function getConfiPvFuncion($puntosventaId)

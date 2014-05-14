@@ -126,7 +126,7 @@ $this->widget('yiiwheels.widgets.grid.WhGridView', array(
     .form-horizontal .control-group{margin:5px;}
 </style>
 <?php Yii::app()->clientScript->registerScript('Asingacion',"
-        $('.btn-asignar').on('click',function(){
+        $('.btn-asignar').live('click',function(){
             var params={
                     ForoId:$(this).data('foro'),
                     ForoMapIntId:$(this).data('dist'),
