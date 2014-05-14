@@ -5,13 +5,8 @@ class ReportesController extends Controller
 	//public	$layout="reportes";
 	public function actionCortesDiarios()
 	{
-
+        $this->perfil();
 		$this->render('cortesDiarios');
-	}
-	public function perfil(){
-		if(Yii::app()->user->isGuest OR !Yii::app()->user->getState("Admin")){
-			$this->redirect(array("site/logout"));
-		}
 	}
 	public function actionDesgloseVentas()
 	{
@@ -88,7 +83,7 @@ class ReportesController extends Controller
 
 	public function actionIndex()
 	{
-		//$this->perfil();
+		$this->perfil();
 		if (Yii::app()->user->getState("TipUsrId")=="2") {
 				$this->actionVentasSinCargo();
 		}
@@ -294,8 +289,7 @@ class ReportesController extends Controller
 
 	public function actionVentasDiarias()
 	{
-		if(Yii::app()->user->isGuest)
-			$this->redirect(Yii::app()->request->baseUrl);	
+		$this->perfil();	
 		$model=new ReportesFlex;
 		$desde=isset($_POST['desde'])?$_POST['desde']:0;
 		$hasta=isset($_POST['hasta'])?$_POST['hasta']:0;
@@ -308,6 +302,7 @@ class ReportesController extends Controller
 
 	public function actionVentasFarmatodo()
 	{
+	   $this->perfil();
 			$model=new ReportesVentas;
 			$desde=0;$hasta=0;		
 			if (isset($_POST['desde'],$_POST['hasta'])  
@@ -507,9 +502,7 @@ class ReportesController extends Controller
 	public function actionVentasSinCargo()
 	{
 
-		if(Yii::app()->user->isGuest){
-			$this->redirect(array("site/logout"));
-		}
+		$this->perfil();
 
 		$model=new ReportesVentas;
 		$eventoId=isset($_POST['evento_id'])?$_POST['evento_id']:0;
@@ -523,7 +516,7 @@ class ReportesController extends Controller
 	}
 	public function actionVentasConCargo()
 	{
-
+        $this->perfil();
 		$model=new ReportesVentas;
 		$eventoId=isset($_POST['evento_id'])?$_POST['evento_id']:0;
 		$funcionesId=isset($_POST['funcion_id'])?$_POST['funcion_id']:0;
@@ -796,6 +789,7 @@ $objWriter->save('php://output');
  
     public function actionImpresionBoletosAjax()
     {
+        $this->perfil();
         ini_set('memory_limit', '-1');
         set_time_limit(0);
         if(!empty($_POST['formatoId'])){
@@ -992,6 +986,7 @@ $objWriter->save('php://output');
     }
      public function actionImpresionBoletosAjax2()
     {
+        $this->perfil();
         ini_set('memory_limit', '-1');
         set_time_limit(0);
         if(!empty($_POST['formatoId'])){
@@ -1089,7 +1084,6 @@ $objWriter->save('php://output');
 						$ventaslevel1->LugaresNumBol = $codigo;
 						$ventaslevel1->VentasCon = $contra;
 						$ventaslevel1->update();
-                        
                         $newdata[$key]['LugaresNumBol'] = $codigo;
                         $newdata[$key]['VentasCon'] = $contra;
                         $newdata[$key]['cosBolCargo'] = $boletoreimpresion['cosBolCargo'];
@@ -1118,21 +1112,21 @@ $objWriter->save('php://output');
                         $contra = $boletoreimpresion['EventoId'].".".$boletoreimpresion['FuncionesId'].".".$boletoreimpresion['ZonasId'].".".$boletoreimpresion['SubzonaId'];
                 	    $contra .= ".".$boletoreimpresion['FilasId'].".".$boletoreimpresion['LugaresId']."-".date("m").".".date("d")."-".$boletoreimpresion['UsuariosId'];
                 	    $contra .= "PR$reimpresiones";
-						$ventaslevel1 = Ventaslevel1::model()->findByAttributes(array('VentasId'=>$boletoreimpresion['id'],'EventoId'=>$boletoreimpresion['EventoId'],'FuncionesId'=>$boletoreimpresion['FuncionesId'],'ZonasId'=>$boletoreimpresion['ZonasId'],'SubzonaId'=>$boletoreimpresion['SubzonaId'],'FilasId'=>$boletoreimpresion['FilasId'],'LugaresId'=>$boletoreimpresion['LugaresId']));
-						$ventaslevel1->LugaresNumBol = $codigo;
-						$ventaslevel1->VentasCon = $contra;
-						$ventaslevel1->update();
-						$ultimo = Reimpresiones::model()->findAll(array('limit'=>1,'order'=>'t.ReimpresionesId DESC'));
-						$ultimo = $ultimo[0]->ReimpresionesId + 1;
-						$hoy    = date("Y-m-d G:i:s"); 
-						$user_id = Yii::app()->user->id;
-						Yii::app()->db->createCommand("INSERT INTO reimpresiones VALUES($ultimo,".$boletoreimpresion['EventoId'].",".$boletoreimpresion['FuncionesId'].",".$boletoreimpresion['ZonasId'].",".$boletoreimpresion['SubzonaId'].",".$boletoreimpresion['FilasId'].",".$boletoreimpresion['LugaresId'].",'PANEL ADMINISTRATIVO','',$user_id,'$hoy','".$boletoreimpresion['LugaresNumBol']."')")->execute();
-						
-						$ultimologreimp = Logreimp::model()->findAll(array('limit'=>1,'order'=>'t.LogReimpId DESC'));
-						$ultimologreimp = $ultimologreimp[0]->LogReimpId + 1;
-						
-						Yii::app()->db->createCommand("INSERT INTO logreimp VALUES($ultimologreimp,'$hoy','".$boletoreimpresion['VentasBolTip']."',".$boletoreimpresion['cosBol'].",'".$boletoreimpresion['VentasBolTip']."',$user_id,0,".$boletoreimpresion['EventoId'].",".$boletoreimpresion['FuncionesId'].",".$boletoreimpresion['ZonasId'].",".$boletoreimpresion['SubzonaId'].",".$boletoreimpresion['FilasId'].",".$boletoreimpresion['LugaresId'].")")->execute();
-						
+                        $ventaslevel1 = Ventaslevel1::model()->findByAttributes(array('VentasId'=>$boletoreimpresion['id'],'EventoId'=>$boletoreimpresion['EventoId'],'FuncionesId'=>$boletoreimpresion['FuncionesId'],'ZonasId'=>$boletoreimpresion['ZonasId'],'SubzonaId'=>$boletoreimpresion['SubzonaId'],'FilasId'=>$boletoreimpresion['FilasId'],'LugaresId'=>$boletoreimpresion['LugaresId']));
+                   	    $ventaslevel1->LugaresNumBol = $codigo;
+                        $ventaslevel1->VentasCon = $contra;
+                        $ventaslevel1->update();
+                        $ultimo = Reimpresiones::model()->findAll(array('limit'=>1,'order'=>'t.ReimpresionesId DESC'));
+                        $ultimo = $ultimo[0]->ReimpresionesId + 1;
+                        $hoy    = date("Y-m-d G:i:s"); 
+                        $user_id = Yii::app()->user->id;
+                        Yii::app()->db->createCommand("INSERT INTO reimpresiones VALUES($ultimo,".$boletoreimpresion['EventoId'].",".$boletoreimpresion['FuncionesId'].",".$boletoreimpresion['ZonasId'].",".$boletoreimpresion['SubzonaId'].",".$boletoreimpresion['FilasId'].",".$boletoreimpresion['LugaresId'].",'PANEL ADMINISTRATIVO','',$user_id,'$hoy','".$boletoreimpresion['LugaresNumBol']."')")->execute();
+                        
+                        $ultimologreimp = Logreimp::model()->findAll(array('limit'=>1,'order'=>'t.LogReimpId DESC'));
+                        $ultimologreimp = $ultimologreimp[0]->LogReimpId + 1;
+                        
+                        Yii::app()->db->createCommand("INSERT INTO logreimp VALUES($ultimologreimp,'$hoy','".$boletoreimpresion['VentasBolTip']."',".$boletoreimpresion['cosBol'].",'".$boletoreimpresion['VentasBolTip']."',$user_id,0,".$boletoreimpresion['EventoId'].",".$boletoreimpresion['FuncionesId'].",".$boletoreimpresion['ZonasId'].",".$boletoreimpresion['SubzonaId'].",".$boletoreimpresion['FilasId'].",".$boletoreimpresion['LugaresId'].")")->execute();
+
                         $newdata[$key]['LugaresNumBol'] = $codigo;
                         $newdata[$key]['VentasCon'] = $contra;
                         $newdata[$key]['cosBolCargo'] = $boletoreimpresion['cosBolCargo'];
@@ -1174,6 +1168,7 @@ $objWriter->save('php://output');
         
     }
     public function actionActualizarRegion(){
+        $this->perfil();
         if(!empty($_POST['region_id'])){
             $user = Usuarios::model()->findByAttributes(array('UsuariosId'=>Yii::app()->user->id));
             $user->UsuariosRegion = $_POST['region_id'];
@@ -1241,6 +1236,7 @@ $objWriter->save('php://output');
 
 	public function actionBuscarBoleto()
 	{
+	   $this->perfil();
 		$model=new ReportesVentas;	
 		$ref=null;	
 		$tipo="venta";
@@ -1255,6 +1251,7 @@ $objWriter->save('php://output');
 	}
 	public function actionAccesos()
 	{
+	   $this->perfil();
 		//Este es un reporte de los boletos accesados y por accesar en en evento especifico
 		$model=new ReportesVentas;
 		$eventoId=isset($_POST['evento_id'])?$_POST['evento_id']:0;
@@ -1263,6 +1260,7 @@ $objWriter->save('php://output');
 		
 	}
 	public function actionVentasPorPunto(){
+	   $this->perfil();
 			//if(Yii::app()->request->isAjaxRquest()){
 		$eventoId=isset($_POST['eventoId'])?$_POST['eventoId']:0;
 		$funcionesId=isset($_POST['funcionesId'])?$_POST['funcionesId']:0;
@@ -1287,6 +1285,7 @@ $objWriter->save('php://output');
 
 	public function actionConciliacionFarmatodo()
 	{
+	        $this->perfil();
 			//$model= new ReportesVentas;
 			$fecha=isset($_GET['fecha'])?$_GET['fecha']:0;
 			$this->render('conciliacion',compact('fecha'));
