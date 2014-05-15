@@ -7,13 +7,13 @@ class FuncionesController extends Controller
     $this->render('index');
   
   }
-  // public function filters()
-  // {
-  //   return array(
-  //     'accessControl', // perform access control for CRUD operations
-  //     'postOnly + delete', // we only allow deletion via POST request
-  //   );
-  // }
+   public function filters()
+   {
+	 return array(
+	   'accessControl', // perform access control for CRUD operations
+	   'postOnly + generarArbolCPVF', // we only allow deletion via POST request
+	 );
+   }
 
   /**
    * Specifies the access control rules.
@@ -505,6 +505,12 @@ class FuncionesController extends Controller
       return 0;
     }
 
+  }
+
+  public function actionGenerarArbolCPVF(){
+		  $model=Funciones::model()->with('evento')->findByPk($_POST['Funciones']);
+		  $model->agregarConfpvfuncion();
+		  $this->renderPartial('_arbolCPVF',compact('model'));
   }
 
   public function actionVerHoja($EventoId,$FuncionesId,$PuntosventaId){

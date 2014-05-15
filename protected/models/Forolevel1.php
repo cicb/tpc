@@ -225,7 +225,7 @@ class Forolevel1 extends CActiveRecord
 	{
 		# Asigna la distribucion a una funcion.
 		$identificandor=compact('EventoId','FuncionesId');
-		$origen=Funciones::model()->findByAttributes(array(
+		$origen=Funciones::model()->with('mapagrande')->findByAttributes(array(
 			'ForoId'=>$this->ForoId,'ForoMapIntId'=>$this->ForoMapIntId,
 			));
 		$funcion=Funciones::model()->with('configurl')->findByPk($identificandor);
@@ -273,6 +273,7 @@ class Forolevel1 extends CActiveRecord
 						$conexion->createCommand($insertar['filas'])->execute();
 						$conexion->createCommand($insertar['lugares'])->execute();
 						$conexion->createCommand($insertar['zonaslevel1'])->execute();
+						$this->asignarMapaGrande($EventoId,$FuncionesId);
 						$funcion->ForoId=$this->ForoId;
 						$funcion->ForoMapIntId=$this->ForoMapIntId;
 						$funcion->update();
@@ -295,5 +296,54 @@ class Forolevel1 extends CActiveRecord
 			else return false;
 
 		}
+
+	public function asignarMapaGrande($EventoId,$FuncionesId)
+	{
+			// Copia el configurl_funciones_mapa_grande y sus coordenadas de la
+			// funcion con la distribucion origen para la funcion que se le pasa como parametro
+		$identificandor=compact('EventoId','FuncionesId');
+		$origen=Funciones::model()->with('mapagrande')->findByAttributes(array(
+			'ForoId'=>$this->ForoId,'ForoMapIntId'=>$this->ForoMapIntId,
+			));
+		$funcion=Funciones::model()->with('configurl')->findByPk($identificandor);
+			if(isset($origen) and is_object($origen) and isset($funcion->configurl)){
+					// Si la funcion origen existe y tiene mapa grande
+					// y la funcion a aplicar tiene ya un configurl para su evento
+					#Se eliminan todos los mapas grandes que puedan estar asignados a la funcion
+					#Se eliminan todas sus coordenadas existentes
+					ConfigurlFuncionesMapaGrande::model()->deleteAllByAttributes(array('EventoId'=>$EventoId,'FuncionId'=>$FuncionesId));
+					$mapa=new ConfigurlFuncionesMapaGrande;
+					$mapa->configurl_Id=$funcion->configurl->ConfigurlId;
+					$mapa->EventoId=$funcion->EventoId;
+					$mapa->FuncionId=$funcion->FuncionesId;
+					if($origen->mapagrande)
+							$mapa->nombre_imagen=$origen->mapagrande->nombre_imagen;
+					if ($mapa->save()) {
+						// Si se registro entonces se registran tambien sus coordenadas
+							$conexion=Yii::app()->db;
+							if(isset($origen->mapagrande)){
+									$conexion->createCommand(sprintf("
+											INSERT IGNORE INTO configurl_mapa_grande_coordenadas 
+											( configurl_funcion_mapa_grande_id,ZonasId, SubzonaId, x1,y1, x2,y2, x3,y3,
+											x4,y4, x5,y5, x6,y6, x7,y7, x8,y8, x9,y9, x10,y10,
+											x11,y11, x12,y12, x13,y13, x14,y14 )
+											(SELECT %d, ZonasId, SubzonaId, x1,y1, x2,y2, x3,y3,
+											x4,y4, x5,y5, x6,y6, x7,y7, x8,y8, x9,y9, x10,y10,
+											x11,y11, x12,y12, x13,y13, x14,y14 FROM configurl_mapa_grande_coordenadas
+											WHERE configurl_funcion_mapa_grande_id = %d
+									) ",$mapa->id,$origen->mapagrande->id))->execute();
+							}
+							else{
+									$conexion->createCommand(sprintf("
+											INSERT IGNORE INTO configurl_mapa_grande_coordenadas(
+													configurl_funcion_mapa_grande_id,ZonasId,SubzonaId) 
+											(SELECT %d, ZonasId, SubzonaId FROM subzona
+											WHERE EventoId=%d and FuncionesId=%d
+									) ",$mapa->id,$funcion->EventoId,$funcion->FuncionesId))->execute();	 
+							}
+							//Se copian todas las coordenadas del mapa grande de la funcion origen a la funcion parametro
+					}	
+			}
+	}
 
 }

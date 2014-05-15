@@ -41,6 +41,7 @@
 ?>
 
 
+
 </div>
 
 
@@ -68,38 +69,7 @@ echo $form->textField($model,'FuncionesFecHor',array('class'=>'picker FecHor box
 </div>
 
 <div class="box4">
-	<?php 
-		#Impresion de arbol en primer nivel
-	// $root=1000;//Id del nodo raiz
-	$root=Confipvfuncion::model()->with('puntoventa')->findByPk(array(
-		'EventoId'=>$model->EventoId,
-		'FuncionesId'=>$model->FuncionesId, 
-		'PuntosventaId'=> Yii::app()->params['pvRaiz'],//Id del punto de venta  raiz
-		));
-	$taquilla=Confipvfuncion::model()->with('puntoventa')->findByPk(array(
-		'EventoId'=>$model->EventoId,
-		'FuncionesId'=>$model->FuncionesId, 
-		'PuntosventaId'=> $model->evento->PuntosventaId, //Id de la taquilla del evento
-		));
-		echo CHtml::openTag('ul',array('id'=>"rama-$fid", 'class'=>"arbol text-left"));
-				/****
-				***Caso especial Taquilla propia
-				*/
-				if (is_object($taquilla)) {
-					# Si es valido el id de taquilla del evento
-					$this->renderPartial('/funciones/_nodoCPVF',array('model'=>$taquilla));
-				}
-/*			
-		Caso Modulos
-*/
-			if (is_object($root)) {
-				# Si el id de la raiz es correcto
-				$this->renderPartial('/funciones/_nodoCPVF',array('model'=>$root));
-			}
-		echo CHtml::closeTag('ul');
-
-	 ?>
-
+<?php $this->renderPartial('/funciones/_arbolCPVF',compact('model')); ?>
 	</div>
  </div>
 

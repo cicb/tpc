@@ -310,6 +310,17 @@ $('.btn-quitar-funcion').live('click',function(){
 		}
 });
 
+$('.btn-generar-arbol').live('click',function(){
+		var obj=$(this);
+		var fid=obj.data('fid')
+		$.ajax({
+				url:obj.attr('href'),
+				type:'POST',
+				data:{Funciones:{EventoId:".$model->EventoId.", FuncionesId:fid}},
+				success:function(resp){ $('#arbol-'+fid).html(resp)}
+		});		
+		return false;
+});
 
 ",$this->createUrl('funciones/insertar',array('eid'=>$model->EventoId))),CClientScript::POS_READY);
 }

@@ -93,7 +93,7 @@ class Funciones extends CActiveRecord
             'evento' => array(self::BELONGS_TO, 'Evento', array('EventoId')),
             'asientos'=>array(self::STAT,'Lugares','EventoId, FuncionesId','condition'=>"LugaresStatus<>'OFF'"),
 			'configurl'=>array(self::HAS_ONE, 'Configurl','EventoId'),
-			//'mapagrande' => array(self::HAS_ONE, 'ConfigurlFuncionesMapaGrande', array('EventoId','FuncionesId')),
+			'mapagrande' => array(self::HAS_ONE, 'ConfigurlFuncionesMapaGrande', '','foreignKey'=>array('EventoId'=>'EventoId','FuncionId'=>'FuncionesId')),
 
 		);
 	}
@@ -320,25 +320,13 @@ class Funciones extends CActiveRecord
 	 public function agregarConfpvfuncion($puntosventaId=0)
 	 {
 	 	if ($puntosventaId>0) {
-	 		$Pvs=array(
-	 			(object)array('PuntosventaId'=>$puntosventaId)
-	 			);
-	 	}
-	 	else{
-
-	 		$Pvs=Puntosventa::model()->findAll(array('condition'=>"PuntosventaSta='ALTA'"));
-	 	}
-
-	 	foreach ($Pvs as $Pv) 
-	 	{
-
 	 		$model = new Confipvfuncion('insert');
 
 	 		$model->EventoId=$this->EventoId;
 	 		$model->FuncionesId=$this->FuncionesId;
 	 		$model->ConfiPVFuncionFecIni=$this->FuncionesFecIni;
 	 		$model->ConfiPVFuncionFecFin=$this->FuncionesFecHor;
-	 		if ($this->evento->PuntosventaId==$Pv->PuntosventaId)
+	 		if ($this->evento->PuntosventaId==$puntosventaId)
 	 		{
 	 			$model->ConfiPVFuncionFecFin=date("Y-m-d H:i:s", strtotime ('+4 hour' , strtotime ($this->FuncionesFecHor)));
 	 		}
@@ -346,13 +334,17 @@ class Funciones extends CActiveRecord
 	 		$model->ConfiPVFuncionTipSel="MIXTA";
 	 		$model->ConfiPVFuncionSta="ALTA";
 	 		$model->ConfiPVFuncionBan=0;
-	 		$model->PuntosventaId=$Pv->PuntosventaId;
+	 		$model->PuntosventaId=$puntosventaId;
 	 		$model->save();
 	 	}
-	 	if ($puntosventaId>0) {
-	 		# Si se desea insertar solo un configpv especifico para un punto de venta
-	 		#entonces se returna el modelo
-	 		return $model;
+	 	else{
+				$conexion=Yii::app()->db;
+				$conexion->createCommand(
+						sprintf(" INSERT IGNORE INTO confipvfuncion  ( SELECT %d 
+						, %d , PuntosventaId, 'N/A','MIXTA', '%s' ,'%s', PuntosventaSta,0 
+						FROM puntosventa WHERE PuntosventaSta='ALTA' )",
+						$this->EventoId,$this->FuncionesId, $this->FuncionesFecIni,$this->FuncionesFecHor )
+				)->execute();
 	 	}
 
 	 }
