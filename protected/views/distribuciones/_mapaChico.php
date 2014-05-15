@@ -114,7 +114,7 @@
 </div>
 <div >
 	<?php  echo TbHtml::fileField('imamapchi','' , array('span'=>2,'maxlength'=>200, 'class'=>'hidden')); ?>
-					<?php echo TbHtml::button('<i class="fa fa-picture-o"></i> Cambiar imagen',array('class'=>'btn btn-warning','id'=>'btn-subir-imamapchi')); ?>
+					<?php echo TbHtml::button('<i class="fa fa-picture-o"></i> Cambiar imagen',array('class'=>'btn btn-warning pull-left','id'=>'btn-subir-imamapchi')); ?>
 </div>
 <script>
 	var ext= ['jpg','png','bmp','jpeg'];

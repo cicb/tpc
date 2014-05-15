@@ -228,7 +228,7 @@ class Forolevel1 extends CActiveRecord
 		$origen=Funciones::model()->findByAttributes(array(
 			'ForoId'=>$this->ForoId,'ForoMapIntId'=>$this->ForoMapIntId,
 			));
-		$funcion=Funciones::model()->findByPk($identificandor);
+		$funcion=Funciones::model()->with('configurl')->findByPk($identificandor);
 		if (is_object($funcion) and is_object($origen)) {
 		# Si la función existe se inicia la transacción
 			//Se eliminan toda distribucion anterior-----------------------------------------------------
@@ -263,6 +263,9 @@ class Forolevel1 extends CActiveRecord
 						INSERT INTO zonaslevel1 (SELECT %d, %d, ZonasId, PuntosventaId,
 							ZonasFacCarSer, ZonasBanVen FROM zonaslevel1 WHERE EventoId=%d and FuncionesId=%d);
 					",$funcion->EventoId,$funcion->FuncionesId,$origen->EventoId,$origen->FuncionesId),
+					//'mapagrande'=>sprintf("   
+						//INSERT INTO configurl_funciones_mapa_grande(configurl_id,EventoId,FuncionId,nombre_imagen) (SELECT %d, %d, ZonasId);
+					//",$funcion->EventoId,$funcion->FuncionesId,$origen->EventoId,$origen->FuncionesId),
 					);
 					// try{	
 						$conexion->createCommand($insertar['zonas'])->execute();

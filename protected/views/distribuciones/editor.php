@@ -4,7 +4,7 @@ Yii::app()->clientScript->registerScriptFile("js/holder.js");
 
 <div class="controles">
         <?php echo CHtml::tag('legend',array(), 'Configuración de la Distribución'); ?>
-	<?php echo  CHtml::image('holder.js/500x200') ?>
+	<?php $this->renderPartial('actualizar',compact('model'),false,true); ?>
 	
 	<div class="box white-box">
 		<h3>Zonas</h3>
@@ -129,11 +129,12 @@ $( '.nodo-toggle').live('click',function(){
 				var obj=$(this);
 				var zid=obj.data('zid');
 				var dir=obj.attr('href');
-				$.post({
-						url:obj.attr('href'),
+				$.ajax({
+						url:dir,
 						type:'POST',
 						data:{Zonas:{EventoId:$EventoId,FuncionesId:$FuncionesId,ZonasId:zid}},
-						success:function(resp){ $('#arbol-'+zid).html(resp); }
+						success:function(resp){ $('#arbol-'+zid).html(resp); },
+						beforeSend:function(){ $('#arbol-'+zid).html('<i class=\'fa fa-spinner fa-spin\'></i> '); }
 				});
 				return false;
 		});

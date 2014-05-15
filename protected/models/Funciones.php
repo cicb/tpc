@@ -92,6 +92,8 @@ class Funciones extends CActiveRecord
             'zonas' => array(self::HAS_MANY, 'Zonas', array('EventoId','FuncionesId')),
             'evento' => array(self::BELONGS_TO, 'Evento', array('EventoId')),
             'asientos'=>array(self::STAT,'Lugares','EventoId, FuncionesId','condition'=>"LugaresStatus<>'OFF'"),
+			'configurl'=>array(self::HAS_ONE, 'Configurl','EventoId'),
+			//'mapagrande' => array(self::HAS_ONE, 'ConfigurlFuncionesMapaGrande', array('EventoId','FuncionesId')),
 
 		);
 	}
