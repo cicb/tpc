@@ -68,45 +68,9 @@ echo CHtml::dropDownList('ZonasTipo', $model->ZonasTipo,array(1=>'General',2=>'N
 	    	?>
 	    </td>
 		<td>
-<div class='arbol-cargos' id="arbol-<?php echo $model->ZonasId; ?>"></div>
-	    		<?php 
-$raiz=Zonaslevel1::model()->with('puntoventa')->findByPk(array(
-		'EventoId'=>$model->EventoId,
-		'FuncionesId'=>$model->FuncionesId,
-		'ZonasId'=>$model->ZonasId,
-		'PuntosventaId'=>Yii::app()->params['pvRaiz']
-));
-$pve=Zonaslevel1::model()->with('puntoventa')->findByPk(array(
-		'EventoId'=>$model->EventoId,
-		'FuncionesId'=>$model->FuncionesId,
-		'ZonasId'=>$model->ZonasId,
-		'PuntosventaId'=>$model->evento->PuntosventaId
-));
-if (is_object($pve)) {
-		// Si el nodo raiz esta asignado
-		$this->renderPartial('_nodoCargo', array('model'=>$pve));
-}	
-if (is_object($raiz)) {
-	// Si el nodo raiz esta asignado
-		$this->renderPartial('_nodoCargo', array('model'=>$raiz));
-}	
- ?>
-<?php 		echo TbHtml::ajaxButton(' Reparar árbol de cargo por servicio',
-				array('generarArbolCargos'),
-				array(
-						'type'=>'POST',
-						'data'=>array('Zonas'=>array(
-								'EventoId'=>$model->EventoId,
-								'FuncionesId'=>$model->FuncionesId,
-								'ZonasId'=>$model->ZonasId,
-						),
-						'update'=>'#arbol-'.$model->ZonasId,
-				)
-		),
-		array(
-				'class'=>'btn btn-small  fa fa-sitemap'
-		)
-);  ?>
+				<div class='arbol-cargos' id="arbol-<?php echo $model->ZonasId; ?>">
+				<?php $this->renderPartial('_arbolCargos',compact('model')); ?>
+				</div>
 	    </td>
 	</tr>
 </table>

@@ -1,6 +1,6 @@
 <?php
 
-class PuntosVentaController extends Controller
+class PuntosventaController extends Controller
 {
     //public $layout='//layouts/column2';
 

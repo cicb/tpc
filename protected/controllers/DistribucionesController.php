@@ -611,20 +611,10 @@ class DistribucionesController extends Controller
 	{
 			// Genera o repara el arbol de zonaslevel1
 			if (isset($_POST['Zonas'])) {
-					$zona=Zonas::model()->findByPk($_POST['Zonas']);
-					$zona->generarArbolCargos();
-					$raiz=Zonaslevel1::model()->with('puntoventa')->findByPk(array(
-							'EventoId'=>$zona->EventoId,
-							'FuncionesId'=>$zona->FuncionesId,
-							'ZonasId'=>$zona->ZonasId,
-							'PuntosventaId'=>Yii::app()->params['pvRaiz']
-					));
-					if (is_object($raiz)) {
-							// Si el nodo raiz esta asignado
-							$this->renderPartial('_nodoCargo', array('model'=>$raiz));
-					}	
-					else
-							echo "";
+					$model=Zonas::model()->with('evento')->findByPk($_POST['Zonas']);
+					$model->generarArbolCargos();
+					$this->renderPartial('_arbolCargos', compact('model'));
+
 			}
 			else{
 					throw new Exception("Error al procesar su petición, vefique integridad de parametros ", 1);

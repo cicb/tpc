@@ -125,6 +125,18 @@ $( '.nodo-toggle').live('click',function(){
 	}
 	return false;
 })
+		$('.btn-generar-arbol').live('click',function(){
+				var obj=$(this);
+				var zid=obj.data('zid');
+				var dir=obj.attr('href');
+				$.post({
+						url:obj.attr('href'),
+						type:'POST',
+						data:{Zonas:{EventoId:$EventoId,FuncionesId:$FuncionesId,ZonasId:zid}},
+						success:function(resp){ $('#arbol-'+zid).html(resp); }
+				});
+				return false;
+		});
 "); ?>
 <style type="text/css" media="screen">
 	li.nodo{
