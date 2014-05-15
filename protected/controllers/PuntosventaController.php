@@ -47,6 +47,7 @@ class PuntosventaController extends Controller
 	 */
 	public function actionView($id)
 	{
+	   $this->perfil();
 		$this->render('view',array(
 			'model'=>$this->loadModel($id),
 		));
@@ -58,6 +59,7 @@ class PuntosventaController extends Controller
 	 */
 	public function actionCreate()
 	{
+	   $this->perfil();
 		$model=new Puntosventa;
 
 		// Uncomment the following line if AJAX validation is needed
@@ -84,6 +86,9 @@ class PuntosventaController extends Controller
             $pv_id = Puntosventa::model()->find(array('condition'=>"PuntosventaId BETWEEN $rango1 AND $rango2",'order'=>'PuntosventaId DESC'));
 			$pv_id = (empty($pv_id->PuntosventaId)?$rango1:$pv_id->PuntosventaId) + 1;
             $model->attributes=$_POST['Puntosventa'];
+            
+            if($_POST['tipo_sucursal']=="T")
+                $model->puntosventaTipoId=2;
             $model->PuntosventaId = $pv_id;
             $model->PuntosventaIdeTra = $_POST['tipo_sucursal'].$pv_id;
 			if($model->save()){
@@ -113,6 +118,7 @@ class PuntosventaController extends Controller
 	 */
 	public function actionUpdate($id)
 	{
+	   $this->perfil();
 		$model=$this->loadModel($id);
 
 		// Uncomment the following line if AJAX validation is needed
@@ -139,6 +145,7 @@ class PuntosventaController extends Controller
 	 */
 	public function actionDelete($id)
 	{
+	   $this->perfil();
 		$this->loadModel($id)->delete();
 
 		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
@@ -151,6 +158,7 @@ class PuntosventaController extends Controller
 	 */
 	public function actionIndex()
 	{
+	   $this->perfil();
 		$model = new Puntosventa('search');
         if (isset($_POST['Puntosventa'])) {
 					$model->attributes = $_POST['Puntosventa'];
@@ -175,6 +183,7 @@ class PuntosventaController extends Controller
 	 */
 	public function actionAdmin()
 	{
+	   $this->perfil();
 		$model=new Puntosventa('search');
 		$model->unsetAttributes();  // clear any default values
 		if(isset($_GET['Puntosventa']))
@@ -206,6 +215,7 @@ class PuntosventaController extends Controller
 	 */
 	protected function performAjaxValidation($model)
 	{
+	   $this->perfil();
 		if(isset($_POST['ajax']) && $_POST['ajax']==='puntosventa-form')
 		{
 			echo CActiveForm::validate($model);
