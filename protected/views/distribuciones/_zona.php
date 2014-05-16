@@ -34,37 +34,47 @@
 	    <td>
 	    	<?php
 echo CHtml::dropDownList('ZonasTipo', $model->ZonasTipo,array(1=>'General',2=>'Numerada'),array(
-		'class'=>'ZonasTipo', 'data-id'=>$model->ZonasId));
+		'class'=>'ZonasTipo', 
+		'disabled'=>!$editar,
+		'data-id'=>$model->ZonasId));
 	    	?>
 	    </td>
 		<td>
-			<?php echo TbHtml::textField('ZonasAli',$model->ZonasAli,array('class'=>'input-medium ZonasAli',
-				'data-id'=>$model->ZonasId));
+<?php echo TbHtml::textField('ZonasAli',$model->ZonasAli,array(
+		'class'=>'input-medium ZonasAli',
+		'data-id'=>$model->ZonasId));
 			?>
 		</td>
 	    <td>
 	    	<?php echo CHtml::numberField('ZonasCantSubZon',$model->ZonasCantSubZon,array(
-					'class'=>'input-small text-center ZonasCantSubZon',
+					'class'=>'input-small text-center ZonasCantSubZon',		
+					'disabled'=>!$editar,
 					'data-id'=>$model->ZonasId,
 			)); ?>
     	</td>
 	    <td>
 	    <?php echo TbHtml::numberField('ZonasCanLug',$model->ZonasCanLug,array(
 				'class'=>'input-small text-center ZonasCanLug', 'prepend'=>'#',
+				'disabled'=>!$editar,
 				'data-id'=>$model->ZonasId,
-			   	'append'=>CHtml::link('Generar','',array('class'=>'btn ZonasCanLug','data-id'=>$model->ZonasId)))) ?>	    
+				'append'=>CHtml::link('Generar','',array(
+						'class'=>'btn ZonasCanLug',
+						'disabled'=>!$editar,
+						'data-id'=>$model->ZonasId)))) ?>	    
 	    </td>
 	    <td>
 	    	<?php echo TbHtml::numberField('ZonasCosBol',$model->ZonasCosBol,array(
 	    	'class'=>'input-small text-center ZonasCosBol', 'data-id'=>$model->ZonasId, 'prepend'=>'$')) ?>
 	    </td>
 	    <td>
-	    <?php
-	    echo TbHtml::buttonGroup(array(
-	    	array('label' => ' ','class'=>'fa fa-building-o btn-primary'),
-	    	array('label' => ' ','class'=>'fa fa-bars btn', 		'title'=>'Configurar Filas'),
-	    	array('label' => ' ','class'=>'fa fa-th-large', 	'title'=>'Configurar Asientos'),
-	    	)); 
+<?php
+			if ($editar) {
+					echo TbHtml::buttonGroup(array(
+							//array('label' => ' ','class'=>'fa fa-building-o btn-primary'),
+							array('label' => ' ','class'=>'fa fa-bars btn',	'title'=>'Configurar Filas'),
+							array('label' => ' ','class'=>'fa fa-th-large',	'title'=>'Configurar Asientos'),
+					)); 
+			}	
 	    	?>
 	    </td>
 		<td>

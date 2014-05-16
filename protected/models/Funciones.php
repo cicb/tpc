@@ -296,7 +296,7 @@ class Funciones extends CActiveRecord
 					$model->FuncionesFecHor=date('Y-m-d H:i:s');
 					$model->FuncPuntosventaId=$evento->PuntosventaId;
 					$model->FuncionesNomDia=date('l');
-					$model->ForoId=$evento->foro->ForoId;
+					$model->ForoId=$evento->ForoId;
 					$model->funcionesTexto=strtoupper(strftime('%A %d - %b - %Y %H:%M HRS'));
 					$model->FuncionesSta='ALTA';
 					if ($model->save()){
@@ -396,8 +396,20 @@ class Funciones extends CActiveRecord
 			 $nfunciones=Funciones::model()->countByAttributes($identificador);	 
 			 if ($nfunciones>1) {
 			 	// Si no se esta tratando de eliminar la unica funcion.
+					 $identHijos=array('EventoId'=>$this->EventoId,'FuncionesId'=>$this->FuncionesId);
 					 $this->deleteConfpvfuncion();
-					 Zonas::model()->deleteAllByAttributes(array_merge($identificador,array('FuncionesId'=>$this->FuncionesId)));
+					 Zonas::model()->deleteAllByAttributes($identHijos);
+					 Subzona::model()->deleteAllByAttributes($identHijos);
+					 Filas::model()->deleteAllByAttributes($identHijos);
+					 Lugares::model()->deleteAllByAttributes($identHijos);
+					 $mapagrande=ConfigurlFuncionesMapaGrande::model()->findByAttributes(array(
+							 'EventoId'=>$this->EventoId,'FuncionId'=>$this->FuncionesId));	
+					 if (is_object($mapagrande)) {
+					 	// Si tiene un mapa grande se eliminan primero sus coordenadas para que no de restriccion de llaves foraneas
+							 ConfigurlMapaGrandeCoordenadas::model()->deleteAllByAttributes(array(
+									 'configurl_funcion_mapa_grande_id'=>$mapagrande->id));
+							 $mapagrande->delete();	
+					 }	
 					 return parent::beforeDelete();	 	
 			 }	
 			 else {

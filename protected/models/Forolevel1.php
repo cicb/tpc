@@ -20,6 +20,7 @@ class Forolevel1 extends CActiveRecord
 	 * @return string the associated database table name
 	 */
 	public $EventoId;
+	private $maxId;
 	public function tableName()
 	{
 		return 'forolevel1';
@@ -33,7 +34,7 @@ class Forolevel1 extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('foroMapConfig', 'required'),
+			array('ForoId', 'required'),
 			array('ForoMapZonIntWei, ForoMapZonIntHei', 'numerical', 'integerOnly'=>true),
 			array('ForoId, ForoMapIntId', 'length', 'max'=>20),
 			array('ForoMapIntNom', 'length', 'max'=>75),
@@ -133,6 +134,25 @@ class Forolevel1 extends CActiveRecord
 		));
 	}
 
+	public static function getMaxId($ForoId)
+	{
+			$row = Funciones::model()->find(array(
+					'select'=>'MAX(ForoMapIntId) as maxId',
+					 'condition'=>"ForoId=:foro",
+					 'params'=>array('foro'=>$ForoId)
+			 ));
+			 return $row['maxId'];
+	}		
+
+	public function beforeSave()
+	{
+			// Cuando se trate de dar de alta una distribucion
+			if ($this->scenario=='insert') {
+				$this->ForoMapIntId=self::getMaxId($this->ForoId)+1;
+			}	
+			return parent::beforeSave();
+	}
+
 
 
 	/**
@@ -200,39 +220,49 @@ class Forolevel1 extends CActiveRecord
 	}
 
 	static function removerAsignacion($EventoId,$FuncionesId){
-		//Elimina todas las zonas, subzonas, filas, lugares de la funcion que se le indique
-		$identificandor=compact('EventoId','FuncionesId');
-		$transaction = Yii::app()->db->beginTransaction();
-		if(Lugares::model()->deleteAllByAttributes($identificandor))
-			if(Filas::model()->deleteAllByAttributes($identificandor))
-				if(Subzona::model()->deleteAllByAttributes($identificandor))
-					if(Zonas::model()->deleteAllByAttributes($identificandor))
-						if(Zonaslevel1::model()->deleteAllByAttributes($identificandor)){
-							$funcion=Funciones::model()->findByPk($identificandor);
-							$funcion->ForoId=0;
-							$funcion->ForoMapIntId=0;
-							$transaction->commit();
-							return true;
-						}
-						else {$transaction->rollback();return false;}
-					else {$transaction->rollback();return false;}
-				else {$transaction->rollback();return false;}
-			else {$transaction->rollback();return false;}
-		else {$transaction->rollback();return true;} 
+			//Elimina todas las zonas, subzonas, filas, lugares de la funcion que se le indique
+			$identificador=compact('EventoId','FuncionesId');
+			$transaction = Yii::app()->db->beginTransaction();
+
+			Subzona::model()->deleteAllByAttributes($identificador);
+			Filas::model()->deleteAllByAttributes($identificador);
+			Lugares::model()->deleteAllByAttributes($identificador);
+			Zonaslevel1::model()->deleteAllByAttributes($identificador);
+			Zonastipo::model()->deleteAllByAttributes($identificador);
+			Zonastipolevel1::model()->deleteAllByAttributes($identificador);
+			$mapagrande=ConfigurlFuncionesMapaGrande::model()->findByAttributes(array(
+					'EventoId'=>$EventoId,'FuncionId'=>$FuncionesId));	
+			if (is_object($mapagrande)) {
+					// Si tiene un mapa grande se eliminan primero sus coordenadas para que no de restriccion de llaves foraneas
+					ConfigurlMapaGrandeCoordenadas::model()->deleteAllByAttributes(array(
+							'configurl_funcion_mapa_grande_id'=>$mapagrande->id));
+					$mapagrande->delete();	
+			}	
+
+			if(Zonas::model()->deleteAllByAttributes($identificador)){
+					$funcion=Funciones::model()->findByPk($identificador);
+					$funcion->ForoId=0;
+					$funcion->ForoMapIntId=0;
+					$transaction->commit();
+			}
+			else {$transaction->rollback();}
+			return Zonas::model()->countByAttributes($identificador)==0;
 	}
 
 	public function asignar($EventoId,$FuncionesId)
 	{
 		# Asigna la distribucion a una funcion.
-		$identificandor=compact('EventoId','FuncionesId');
+		$identificador=compact('EventoId','FuncionesId');
 		$origen=Funciones::model()->with('mapagrande')->findByAttributes(array(
 			'ForoId'=>$this->ForoId,'ForoMapIntId'=>$this->ForoMapIntId,
 			));
-		$funcion=Funciones::model()->with('configurl')->findByPk($identificandor);
+		$funcion=Funciones::model()->with('configurl')->findByPk($identificador);
 		if (is_object($funcion) and is_object($origen)) {
 		# Si la función existe se inicia la transacción
 			//Se eliminan toda distribucion anterior-----------------------------------------------------
-			if (self::removerAsignacion($EventoId,$FuncionesId)){
+				$elm=self::removerAsignacion($EventoId,$FuncionesId) ;
+				
+			if ($elm){
 				$conexion=Yii::app()->db;
 				$transaction = $conexion->beginTransaction();
 				$insertar=array(
@@ -259,12 +289,9 @@ class Forolevel1 extends CActiveRecord
 							FilasId, LugaresId, LugaresLug, LugaresNum, LugaresStatus, LugaresNumBol
 							FROM lugares WHERE EventoId=%d and FuncionesId=%d);
 					",$funcion->EventoId,$funcion->FuncionesId,$origen->EventoId,$origen->FuncionesId),
-					'zonaslevel1'=>sprintf("   
-						INSERT INTO zonaslevel1 (SELECT %d, %d, ZonasId, PuntosventaId,
-							ZonasFacCarSer, ZonasBanVen FROM zonaslevel1 WHERE EventoId=%d and FuncionesId=%d);
-					",$funcion->EventoId,$funcion->FuncionesId,$origen->EventoId,$origen->FuncionesId),
-					//'mapagrande'=>sprintf("   
-						//INSERT INTO configurl_funciones_mapa_grande(configurl_id,EventoId,FuncionId,nombre_imagen) (SELECT %d, %d, ZonasId);
+					//'zonaslevel1'=>sprintf("   
+						//INSERT INTO zonaslevel1 (SELECT %d, %d, ZonasId, PuntosventaId,
+							//ZonasFacCarSer, ZonasBanVen FROM zonaslevel1 WHERE EventoId=%d and FuncionesId=%d);
 					//",$funcion->EventoId,$funcion->FuncionesId,$origen->EventoId,$origen->FuncionesId),
 					);
 					// try{	
@@ -272,7 +299,7 @@ class Forolevel1 extends CActiveRecord
 						$conexion->createCommand($insertar['subzonas'])->execute();
 						$conexion->createCommand($insertar['filas'])->execute();
 						$conexion->createCommand($insertar['lugares'])->execute();
-						$conexion->createCommand($insertar['zonaslevel1'])->execute();
+						//$conexion->createCommand($insertar['zonaslevel1'])->execute();
 						$this->asignarMapaGrande($EventoId,$FuncionesId);
 						$funcion->ForoId=$this->ForoId;
 						$funcion->ForoMapIntId=$this->ForoMapIntId;
@@ -301,11 +328,11 @@ class Forolevel1 extends CActiveRecord
 	{
 			// Copia el configurl_funciones_mapa_grande y sus coordenadas de la
 			// funcion con la distribucion origen para la funcion que se le pasa como parametro
-		$identificandor=compact('EventoId','FuncionesId');
+		$identificador=compact('EventoId','FuncionesId');
 		$origen=Funciones::model()->with('mapagrande')->findByAttributes(array(
 			'ForoId'=>$this->ForoId,'ForoMapIntId'=>$this->ForoMapIntId,
 			));
-		$funcion=Funciones::model()->with('configurl')->findByPk($identificandor);
+		$funcion=Funciones::model()->with('configurl')->findByPk($identificador);
 			if(isset($origen) and is_object($origen) and isset($funcion->configurl)){
 					// Si la funcion origen existe y tiene mapa grande
 					// y la funcion a aplicar tiene ya un configurl para su evento

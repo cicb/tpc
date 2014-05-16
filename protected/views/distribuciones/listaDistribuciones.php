@@ -25,7 +25,24 @@
 		<?php echo TbHtml::formActions(array(
 		    TbHtml::resetButton(' Cancelar', array('class'=>'fa fa-arrow-circle-left')),
             TbHtml::submitButton(' Buscar', array('class' => 'btn btn-primary fa fa-search')),
-		    TbHtml::submitButton(' Nueva distribución', array('class' => 'btn btn-success fa fa-plus-circle pull-right')),
+			TbHtml::ajaxLink(' Nueva distribución',array('Distribuciones/nueva'),
+			array(
+					'type'=>'post',
+					'data'=>array('Funciones'=>array('EventoId'=>$eid,'FuncionesId'=>$fid)),
+					'success'=>"function(resp){
+							if(resp=='true'){
+									window.location='".$this->createUrl('editor',array(
+											'EventoId'=>$eid,
+											'FuncionesId'=>$fid,
+											'scenario'=>'nueva'
+									))."';
+									return false;
+								}else{console.log('No se ha creado la nueva distribución.');}
+								}"
+			),		
+			array(
+					'id'=>'btn-nueva',
+					'class' => 'btn btn-success fa fa-plus-circle pull-right')),
 		)); ?>
 	</div>
 <?php $this->endWidget(); ?>
@@ -56,13 +73,33 @@ $this->widget('yiiwheels.widgets.grid.WhGridView', array(
             'type'  =>'raw',
             'value' =>'
             TbHtml::stackedPills(array(
-                array("label" => "&#xf058; Asignar Distribución", "url" => "#", "active" => true,
-                    "class"=>"fa btn-asignar","style"=>"display:block","data-foro"=>$data["ForoId"],"data-dist"=>$data["ForoMapIntId"]),
-        array("label" => "&#xf058; Asignar a todas las funciones", "url" => "#","class"=>"fa","style"=>"display:block"),
-        array("label" => "&#xf055; Crear nueva distribución a partir de esta", "url" => "#","htmlOptions"=>array(
-            "style"=> "font-size:12px;display:block", "class"=>"fa "
-            )),
-        )) ', 
+				array("label" => "&#xf058; Asignar Distribución", 
+						"url" => array("distribuciones/asignar"), "active" => true,
+						"htmlOptions"=>array(
+								"class"=>"fa btn-asignar",
+								"style"=>"display:block",
+								"data-scenario"=>"asignar",
+								"data-foro"=>$data["ForoId"],
+								"data-dist"=>$data["ForoMapIntId"]),
+				),
+				array("label" => "&#xf058; Asignar a todas las funciones",
+						"url" => array("distribuciones/asignar"),
+						"htmlOptions"=>array(
+								"class"=>"fa btn-asignar",
+								"style"=>"display:block",
+								"data-scenario"=>"todas",
+								"data-foro"=>$data["ForoId"],
+								"data-dist"=>$data["ForoMapIntId"])
+				),
+
+				array("label" => "&#xf055; Crear nueva distribución a partir de esta",
+						"url" => "#",
+						"htmlOptions"=>array(
+								"style"=> "font-size:12px;display:block",
+							   	"class"=>"fa "
+				)),
+			));
+         ', 
             ),
         array(
             'header'=>'Distribución',
@@ -108,7 +145,12 @@ $this->widget('yiiwheels.widgets.grid.WhGridView', array(
                 
             ),
         array(
-                'value'=>'CHtml::link(" Modificar", "",array("class"=>"btn btn-warning fa fa-warning"))',
+				'value'=>'CHtml::link(" Modificar", array("modificar"),array(
+						"class"=>"btn btn-warning btn-asignar fa fa-warning",
+						"data-scenario"=>"edicion",
+						"data-foro"=>$data["ForoId"],
+						"data-dist"=>$data["ForoMapIntId"])
+				)',
                 'type'=>'raw',
             ),
     	),
@@ -125,8 +167,10 @@ $this->widget('yiiwheels.widgets.grid.WhGridView', array(
 <style type="text/css">
     .form-horizontal .control-group{margin:5px;}
 </style>
-<?php Yii::app()->clientScript->registerScript('Asingacion',"
+<?php Yii::app()->clientScript->registerScript('Asignacion',"
         $('.btn-asignar').live('click',function(){
+				var obj=$(this);
+				var href=obj.children().attr('href');
             var params={
                     ForoId:$(this).data('foro'),
                     ForoMapIntId:$(this).data('dist'),
@@ -134,7 +178,7 @@ $this->widget('yiiwheels.widgets.grid.WhGridView', array(
                     FuncionesId:$fid
                 };
             $.ajax({
-                url:'".$this->createUrl('distribuciones/asignar')."',
+                url:href,
                 type:'post',
                 data:params,
                  success:function(resp){
@@ -142,8 +186,7 @@ $this->widget('yiiwheels.widgets.grid.WhGridView', array(
                         window.location='".$this->createUrl('distribuciones/editor',array(
                             'EventoId'=>$eid,
                             'FuncionesId'=>$fid,
-                            'scenario'=>'asignacion'
-                            ))."';
+                            ))."&scenario='+obj.data('scenario');
                     }
                     else{
                        alert('No se puede asignar esta distribución.');
@@ -152,4 +195,6 @@ $this->widget('yiiwheels.widgets.grid.WhGridView', array(
             });
             return false;
     });
+
+
     "); ?>

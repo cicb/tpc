@@ -292,7 +292,7 @@ $("#guardar-coordenada").click(function(){
     var subzona   = $('#select-sub-zona option:selected').data('subzona');
     var eventoId  = '<?php echo $eventoId?>';
     var funcionId = '<?php echo $funcionId?>';
-    var escenario = '<?php echo @$_GET['escenario']?>';
+    var escenario = '<?php echo $this->scenario;?>';
     var x1 = $("#x1").val();
     var y1 = $("#y1").val();
     var x2 = $("#x2").val();
@@ -333,7 +333,7 @@ $("#eliminar-coordenada").click(function(){
     var subzona   = $('#select-sub-zona option:selected').data('subzona');
     var eventoId  = '<?php echo $eventoId?>';
     var funcionId = '<?php echo $funcionId?>';
-    var escenario = '<?php echo @$_GET['escenario']?>';
+    var escenario = '<?php echo $this->scenario?>';
     if(zona!="" && subzona!=""){
         var del = confirm("¿Deseas eliminar las coordenadas de la Sub-Zona Seleccionada?");
         if (del == true) {

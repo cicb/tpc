@@ -37,8 +37,10 @@ $nombre=$model->puntoventa->PuntosventaNom;
 				class'=>'text-left',
 				'style'=>'width:100%;'
 				)); 
-		echo TbHtml::numberField('ZonasFacCarSer',$model->ZonasFacCarSer,array(
-				'class'=>'input-small text-center ZonasCosBol','data-zid'=>$zid,'data-pid'=>$pid, 'prepend'=>$mas,'append'=>$nombre.' '));
+		echo TbHtml::numberField("ZonasFacCarSer-$zid-$pid",$model->ZonasFacCarSer,array(
+				'class'=>'input-mini text-center ZonasFacCarSer',
+				'data-zid'=>$zid,'data-pid'=>$pid, 
+				'prepend'=>$mas,'append'=>$nombre.' '));
 		echo CHtml::closeTag('div');
 		echo TbHtml::tag('div',array('id'=>"hijos-$zid-$pid",''));	
 	echo CHtml::closeTag('li');

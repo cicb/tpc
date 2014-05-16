@@ -1,29 +1,25 @@
 <?php
 
 /**
- * This is the model class for table "configurl_funciones_mapa_grande".
+ * This is the model class for table "zonastipolevel1".
  *
- * The followings are the available columns in table 'configurl_funciones_mapa_grande':
- * @property integer $id
- * @property string $configurl_Id
+ * The followings are the available columns in table 'zonastipolevel1':
  * @property string $EventoId
- * @property string $FuncionId
- * @property string $nombre_imagen
- *
- * The followings are the available model relations:
- * @property Configurl $configurl
- * @property Funciones $evento
- * @property Funciones $funcion
- * @property ConfigurlMapaGrandeCoordenadas[] $configurlMapaGrandeCoordenadases
+ * @property string $FuncionesId
+ * @property string $ZonasId
+ * @property string $ZonasTipoId
+ * @property string $PuntosventaId
+ * @property string $ZonasTipoCarSer
+ * @property string $ZonasTipoSta
  */
-class ConfigurlFuncionesMapaGrande extends CActiveRecord
+class Zonastipolevel1 extends CActiveRecord
 {
 	/**
 	 * @return string the associated database table name
 	 */
 	public function tableName()
 	{
-		return 'configurl_funciones_mapa_grande';
+		return 'zonastipolevel1';
 	}
 
 	/**
@@ -34,12 +30,12 @@ class ConfigurlFuncionesMapaGrande extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('configurl_Id, EventoId, FuncionId', 'required'),
-			array('configurl_Id, EventoId, FuncionId', 'length', 'max'=>20),
-			array('nombre_imagen', 'length', 'max'=>45),
+			array('EventoId, FuncionesId, ZonasId, ZonasTipoId, PuntosventaId, ZonasTipoCarSer, ZonasTipoSta', 'required'),
+			array('EventoId, FuncionesId, ZonasId, ZonasTipoId, PuntosventaId, ZonasTipoSta', 'length', 'max'=>20),
+			array('ZonasTipoCarSer', 'length', 'max'=>8),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('configurl_Id, EventoId, FuncionId, nombre_imagen', 'safe', 'on'=>'search'),
+			array('EventoId, FuncionesId, ZonasId, ZonasTipoId, PuntosventaId, ZonasTipoCarSer, ZonasTipoSta', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -51,10 +47,6 @@ class ConfigurlFuncionesMapaGrande extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'configurl' => array(self::BELONGS_TO, 'Configurl', 'configurl_Id'),
-			'evento' => array(self::BELONGS_TO, 'Funciones', 'EventoId'),
-			'funcion' => array(self::BELONGS_TO, 'Funciones', 'FuncionId'),
-			'configurlMapaGrandeCoordenadases' => array(self::HAS_MANY, 'ConfigurlMapaGrandeCoordenadas', 'configurl_funcion_mapa_grande_id'),
 		);
 	}
 
@@ -64,11 +56,13 @@ class ConfigurlFuncionesMapaGrande extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'id' => 'ID',
-			'configurl_Id' => 'Configurl',
 			'EventoId' => 'Evento',
-			'FuncionId' => 'Funcion',
-			'nombre_imagen' => 'Nombre Imagen',
+			'FuncionesId' => 'Funciones',
+			'ZonasId' => 'Zonas',
+			'ZonasTipoId' => 'Zonas Tipo',
+			'PuntosventaId' => 'Puntosventa',
+			'ZonasTipoCarSer' => 'Cargo del tipo de boleto',
+			'ZonasTipoSta' => 'estatus',
 		);
 	}
 
@@ -90,11 +84,13 @@ class ConfigurlFuncionesMapaGrande extends CActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('id',$this->id);
-		$criteria->compare('configurl_Id',$this->configurl_Id,true);
 		$criteria->compare('EventoId',$this->EventoId,true);
-		$criteria->compare('FuncionId',$this->FuncionId,true);
-		$criteria->compare('nombre_imagen',$this->nombre_imagen,true);
+		$criteria->compare('FuncionesId',$this->FuncionesId,true);
+		$criteria->compare('ZonasId',$this->ZonasId,true);
+		$criteria->compare('ZonasTipoId',$this->ZonasTipoId,true);
+		$criteria->compare('PuntosventaId',$this->PuntosventaId,true);
+		$criteria->compare('ZonasTipoCarSer',$this->ZonasTipoCarSer,true);
+		$criteria->compare('ZonasTipoSta',$this->ZonasTipoSta,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
@@ -105,17 +101,10 @@ class ConfigurlFuncionesMapaGrande extends CActiveRecord
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!
 	 * @param string $className active record class name.
-	 * @return ConfigurlFuncionesMapaGrande the static model class
+	 * @return Zonastipolevel1 the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
 		return parent::model($className);
-	}
-
-	public function beforeDelete()
-	{
-			//Antes de eliminar, elimina todas sus coordenadas
-			ConfigurlMapaGrandeCoordenadas::model()->deleteAllByAttributes(array('configurl_funcion_mapa_grande_id'=>$this->id));
-			return parent::beforeDelete();
 	}
 }

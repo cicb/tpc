@@ -126,6 +126,7 @@ class Zonas extends CActiveRecord
 		if ($this->scenario=='insert') {
 				$this->ZonasId= self::maxId($this->EventoId,$this->FuncionesId)+1;
 				$this->ZonasNum=self::countZonas($this->EventoId,$this->FuncionesId)+1;
+				$this->generarArbolCargos();
 		}	
 		return parent::beforeSave();
 	 
@@ -136,9 +137,19 @@ class Zonas extends CActiveRecord
 			if(Ventaslevel1::countByAttributes(array( 'EventoId'=>$this->EventoId))==0){
 					//Si no hay ventas
 					Subzona::model()->deleteAllByAttributes($identificador);
+					Filas::model()->deleteAllByAttributes($identificador);
+					Lugares::model()->deleteAllByAttributes($identificador);
 					Zonaslevel1::model()->deleteAllByAttributes($identificador);
 					Zonastipo::model()->deleteAllByAttributes($identificador);
 					Zonastipolevel1::model()->deleteAllByAttributes($identificador);
+					 $mapagrande=ConfigurlFuncionesMapaGrande::model()->findByAttributes(array(
+							 'EventoId'=>$this->EventoId,'FuncionId'=>$this->FuncionesId));	
+					 if (is_object($mapagrande)) {
+					 	// Si tiene un mapa grande se eliminan primero sus coordenadas para que no de restriccion de llaves foraneas
+							 ConfigurlMapaGrandeCoordenadas::model()->deleteAllByAttributes(array(
+									 'configurl_funcion_mapa_grande_id'=>$mapagrande->id));
+							 $mapagrande->delete();	
+					 }	
 					return parent::beforeDelete();
 			}
 			else {

@@ -12,7 +12,7 @@ Yii::app()->clientScript->registerScriptFile("js/holder.js");
 			<?php 
 				foreach ($model->zonas as $zona) {
 					# Zonas de la distribucion
-					$this->renderPartial('_zona',array('model'=>$zona,'scenario'=>'insert'));
+					$this->renderPartial('_zona',array('model'=>$zona,'editar'=>true));
 				}
 			 ?>
 			<i id="feedback-funcion" class="fa fa-3x hidden" ></i><br/><br/>
@@ -35,7 +35,7 @@ Yii::app()->clientScript->registerScriptFile("js/holder.js");
 		),
 		array(
 			'id'=>'btn-agregar-zona',
-			'class'=>'btn btn-success fa fa-2x fa-plus-circle center'
+			'class'=>'btn btn-success fa fa-2x fa-plus-circle center '
 			)
 		); 
 	?>
@@ -104,41 +104,8 @@ $('.ZonasAli').live('focusout',function(){
 $('.ZonasTipo').live('change',function(){
 		cambiarValores($(this));
 });
-
-$( '.nodo-toggle').live('click',function(){
-	var uid= $(this).data('uid');
-	var link= $(this);
-	if (link.data('estado')=='inicial') {
-		var href= link.attr('href');
-		$.ajax({
-			url:href,
-			success:function(data){ 
-				$('#hijos-'+uid).append(data);
-				link.data('estado','toggle')
-				link.toggleClass('fa-minus-square');
-			}
-		});
-	}
-	else if (link.data('estado')=='toggle'){
-		link.toggleClass('fa-minus-square');
-		$('#rama-'+uid).toggle();
-	}
-	return false;
-})
-		$('.btn-generar-arbol').live('click',function(){
-				var obj=$(this);
-				var zid=obj.data('zid');
-				var dir=obj.attr('href');
-				$.ajax({
-						url:dir,
-						type:'POST',
-						data:{Zonas:{EventoId:$EventoId,FuncionesId:$FuncionesId,ZonasId:zid}},
-						success:function(resp){ $('#arbol-'+zid).html(resp); },
-						beforeSend:function(){ $('#arbol-'+zid).html('<i class=\'fa fa-spinner fa-spin\'></i> '); }
-				});
-				return false;
-		});
 "); ?>
+<?php $this->renderPartial('/Distribuciones/js/arbol',array('EventoId'=>$EventoId,'FuncionesId'=>$FuncionesId),false,true); ?>
 <style type="text/css" media="screen">
 	li.nodo{
 		list-style-type:none;
