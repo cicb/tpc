@@ -38,9 +38,14 @@
         <?php $subzonas = Subzona::model()->findAll(array('condition'=>"t.EventoId=$eventoId AND t.FuncionesId = $funcionId")); ?>
         <table>
             <tr class="controles-submenu">
-                <td><?php echo CHtml::link('<i class="fa fa-eye"></i> Ver coordenadas','#',array('id'=>'ver-coordenadas','class'=>'btn btn-success'))?>
+			<td><?php echo CHtml::link('Descartar','#',array(
+					'id'=>'descartar',
+					'class'=>'btn ',
+			))?></td>
+			<td><?php echo CHtml::link(' Ver coordenadas','#',array(
+					'id'=>'ver-coordenadas',
+					'class'=>'btn btn-info fa fa-eye'))?>
                 </td>
-                <td><?php echo CHtml::link('<i class="fa fa-repeat"></i> Descartar','#',array('id'=>'descartar','class'=>'btn btn-info'))?></td>
                 <td></td>
                 <td></td>
             </tr>
@@ -49,7 +54,7 @@
     <br /><br /><br />
     <div class="coor-mapa-chico-img span4" id="coor-mapa-chico-img">
         <div class="area-imagen-chica" id="area-imagen-chica">
-            <img src="<?php echo $model->getForoPequenio() ?>" />
+	 			<?php  echo CHtml::image($model->forolevel1->mapa); ?>
         </div>                
     </div>
     <div class="coor-mapa-chico span3" style="">
@@ -95,8 +100,8 @@
                         <td><input type="text" readonly="readonly" name="y5" id="y5" /></td>
                     </tr>
                     <tr style="text-align: center;">
-                        <td><?php echo CHtml::link('<i class="fa fa-trash-o"></i> Eliminar','#',array('id'=>'eliminar-coordenada','class'=>'btn btn-danger'))?></td>
-                        <td><?php echo CHtml::link('<i class="fa fa-save"></i> Guardar','#',array('id'=>'guardar-coordenada','class'=>'btn btn-primary'))?></td>
+                        <td><?php echo CHtml::link(' Eliminar','#',array('id'=>'eliminar-coordenada','class'=>'btn btn-danger fa fa-trash-o'))?></td>
+                        <td><?php echo CHtml::link(' Guardar','#',array('id'=>'guardar-coordenada','class'=>'btn btn-primary fa fa-save'))?></td>
                     </tr>
                     <tr>
                         <td colspan="2">
@@ -114,7 +119,7 @@
 </div>
 <div >
 	<?php  echo TbHtml::fileField('imamapchi','' , array('span'=>2,'maxlength'=>200, 'class'=>'hidden')); ?>
-					<?php echo TbHtml::button('<i class="fa fa-picture-o"></i> Cambiar imagen',array('class'=>'btn btn-warning pull-left','id'=>'btn-subir-imamapchi')); ?>
+					<?php echo TbHtml::button(' Cambiar imagen',array('class'=>'btn pull-left fa fa-picture-o','id'=>'btn-subir-imamapchi')); ?>
 </div>
 <script>
 	var ext= ['jpg','png','bmp','jpeg'];

@@ -52,7 +52,7 @@ echo  TbHtml::ajaxButton(
 		$this->createUrl('distribuciones/asignarATodas'),
 		array(
 				'beforeSend'=>'function(){return  confirm("¿Confirma asignar esta distribución a todas las demas funciones?\nEsto implica perder cualquier distribución previamente asignada a las demas funciones"); }',
-				'success'=>'function(resp){alert(resp);}',
+				'success'=>'function(resp){if(resp=="true"){alert("Se ha aplicado esta distribución a todas las demás funciones");window.location="'.$this->createUrl('Evento/actualizar',array('id'=>$model->EventoId,'#'=>'funciones')).'";}else{alert("No se ha completado la asignación a las demás funciones.")}}',
 				'type'=>'POST',
 				'data'=>array(
 						'ForoId'=>$model->ForoId,
@@ -104,8 +104,25 @@ $('.ZonasAli').live('focusout',function(){
 $('.ZonasTipo').live('change',function(){
 		cambiarValores($(this));
 });
+$('.btn-eliminar-zona').live('click',function(){ 
+		var obj=$(this);
+		var zid=obj.data('zid');
+		$.ajax({
+				url:obj.attr('href'),
+						type:'post',
+						data:{Zonas:{EventoId:$EventoId,FuncionesId:$FuncionesId,ZonasId:zid}},
+						success:function(resp){ 
+								if(resp=='true'){ $('#zona-'+zid).remove();}
+								else {
+										alert('No se puede eliminar esta zona.Verifique que el Evento no tenga ventas');}},
+												beforeSend:function(){
+													   	return confirm('¿Esta seguro de que desea eliminar esta zona?\\nEsta operación es irreversible.');						}						
+
+		});
+return false;
+})
 "); ?>
-<?php $this->renderPartial('/Distribuciones/js/arbol',array('EventoId'=>$EventoId,'FuncionesId'=>$FuncionesId),false,true); ?>
+<?php $this->renderPartial('/distribuciones/js/arbol',array('EventoId'=>$EventoId,'FuncionesId'=>$FuncionesId),false,true); ?>
 <style type="text/css" media="screen">
 	li.nodo{
 		list-style-type:none;

@@ -25,7 +25,7 @@
 						'distribuciones/editor',
 						'EventoId'=>$model->EventoId,
 						'FuncionesId'=>$model->FuncionesId,
-						'scenario'=>'asignacion'),
+						'scenario'=>'editar'),
 				array('class'=>'btn btn-warning fa fa-warning pull-left')
 				); 	
 		}	 else  

@@ -56,18 +56,43 @@ class DistribucionesController extends Controller
 		echo $distribucion->asignar($EventoId,$FuncionesId)?"true":"false";
 	}
 
+		public function actionAsignarComo()
+	{
+		extract($_POST);	
+		$distribucion=Forolevel1::model()->with('funcion')->findByPk(compact('ForoId','ForoMapIntId'));
+		$funcion=Funciones::model()->findByPk(compact('EventoId','FuncionesId'));
+		if ($distribucion->asignar($EventoId,$FuncionesId)) {
+				// Se asigna a la distribucion origen y si todo es correcto se inserta como nueva
+				$distribucion->scenario='insert';
+				$distribucion->ForoMapIntNom=$ForoMapIntNom;
+				if($distribucion->save()){
+						//Si se logra insertar como nueva se le asigna a la funcion los ids
+						$funcion->ForoId=$distribucion->ForoId;
+						$funcion->ForoMapIntId=$distribucion->ForoMapIntId;
+						echo $funcion->save()?'true':'false';
+				}
+				else
+						echo 'false';
+									
+
+		}
+		else 
+				echo 'false';
+	}
 	public function actionAsignarATodas()
 	{
 		extract($_POST);	
 		$distribucion=Forolevel1::model()->with('funcion')->findByPk(compact('ForoId','ForoMapIntId'));
-		$funciones=Funciones::model()->findAllByAttributes(compact('EventoId'),"FuncionesId<>".$FuncionesId);
-		$retorno=true;
+		$funciones=Funciones::model()->findAllByAttributes(compact('EventoId')
+				,"FuncionesId<>".$distribucion->funcion->FuncionesId
+		);
+		$retorno=sizeof($funciones)>0;
 		foreach ($funciones as $funcion) {
 				if (is_object($funcion)) {
 						$retorno=$retorno and $distribucion->asignar($EventoId,$funcion->FuncionesId);
 				}	
 		}
-		echo $retorno?'true '.$funcion->FuncionesId:'false';
+		echo $retorno?'true':'false';
 	}
 
 
@@ -77,13 +102,13 @@ class DistribucionesController extends Controller
 					$funcion=Funciones::model()->findByAttributes($_POST['Funciones']);
 					if (is_object($funcion)) {
 							// Si la funcion a aplicar existe
-							$distribucion=new Forolevel1('insert');
+							$distribucion=new Forolevel1;
 							$distribucion->ForoId=$funcion->ForoId;		
 							if($distribucion->save()){
 									//Si se guarda correctamente la distribucion, se crea la primera zona
-									$zona=new Zonas;
-									$zona->attributes=$_POST['Funciones'];
-									echo $zona->save()?'true':'false';
+									$funcion->ForoMapIntId=$distribucion->ForoMapIntId;
+									echo $funcion->agregarZona()?'true':'false';
+
 							}
 							else{
 									throw new CHttpException ( 404, 'Error al registrar la distribución.' );
@@ -453,13 +478,20 @@ endforeach;
 
         // $model=Forolevel1::model()->with('zonas')->findByPk(compact('ForoId','ForoMapIntId'));
 		$this->scenario=$scenario;
-        $model=Funciones::model()->with(array('zonas'=>array('with'=>'evento')))->findByPk(compact('EventoId','FuncionesId'));
+        $model=Funciones::model()->with(array('zonas'=>array('with'=>'evento'),'forolevel1'))->findByPk(compact('EventoId','FuncionesId'));
         // if(is_object($model))
 		switch ($scenario) {
-					case 'edicion':
+					case 'nueva':
+					case 'editar':
 						// En caso de la asignacion se cargan los formulario con campos deshabilitados
-							$this->render('editor',compact('model'),false,true);
-							break;
+							if (isset($model->forolevel1) and $model->forolevel1->esEditable($EventoId)) {
+									// Si la funcion tiene efectivamente una distribucion y esta puede editarse por completo
+									$this->render('editor',compact('model'),false,true);
+									break;
+							}	
+							//else
+									//echo CHtml::tag('h1',array(),$model->forolevel1->ForoMapIntId);
+							//break;
 					case 'asignacion':
 						// En caso de la asignacion se cargan los formulario con campos deshabilitados
 					default:
@@ -481,12 +513,13 @@ endforeach;
             $zona=$funcion->agregarZona();
             if ($zona and is_object($zona)) {
                 # Si se agrego correctamente la zona a la funcion renderiza el formulario de zona
-                $this->renderPartial('_zona',array('model'=>$zona));
+                $this->renderPartial('_zona',array('model'=>$zona,'editar'=>true));
                 return true;
             }
             
-        }
-        echo "false";
+		}
+		else
+				echo "false";
 
     }
     public function actionAsignarValorZona()

@@ -20,10 +20,16 @@ class Forolevel1 extends CActiveRecord
 	 * @return string the associated database table name
 	 */
 	public $EventoId;
-	private $maxId;
+	public $maxId;
 	public function tableName()
 	{
 		return 'forolevel1';
+	}
+
+	public function init()
+	{
+		$this->ForoMapPat="no_image.jpg";
+		return parent::init();
 	}
 
 	/**
@@ -67,7 +73,7 @@ class Forolevel1 extends CActiveRecord
             'zonas'=>array(self::HAS_MANY,'Zonas',array(
             		'EventoId'=>'EventoId',
             		'FuncionesId'=>'FuncionesId',
-            	),'through'=>'funciones' )
+			),'through'=>'funciones' ),
 			// 'funciones'=>array(self::HAS_MANY,'Funciones',array('ForoId','ForoMapIntId')),
 		);
 	}
@@ -134,10 +140,10 @@ class Forolevel1 extends CActiveRecord
 		));
 	}
 
-	public static function getMaxId($ForoId)
+	public static function MaxId($ForoId)
 	{
-			$row = Funciones::model()->find(array(
-					'select'=>'MAX(ForoMapIntId) as maxId',
+			$row = Forolevel1::model()->find(array(
+					'select'=>'MAX(ForoMapIntId) as  maxId',
 					 'condition'=>"ForoId=:foro",
 					 'params'=>array('foro'=>$ForoId)
 			 ));
@@ -148,7 +154,7 @@ class Forolevel1 extends CActiveRecord
 	{
 			// Cuando se trate de dar de alta una distribucion
 			if ($this->scenario=='insert') {
-				$this->ForoMapIntId=self::getMaxId($this->ForoId)+1;
+				$this->ForoMapIntId=self::MaxId($this->ForoId)+1;
 			}	
 			return parent::beforeSave();
 	}
@@ -373,4 +379,27 @@ class Forolevel1 extends CActiveRecord
 			}
 	}
 
+	public function getMapa()
+	{
+		// Regresa la ruta completa de la imagen
+			// RELATIVA
+			//$path= 'https://taquillacero.com/imagesbd/'.$this->ForoMapPat;
+			$path= '../imagesbd/'.$this->ForoMapPat;
+			if (strlen($this->ForoMapPat)>1 and file_exists($path)) {
+				 return $path;
+			}	
+			else 
+			return	'holder.js/369x272';	
+	}
+
+	public function esEditable($EventoId)
+	{
+			// Verifica que la distribucion solo este asignada a un evento que es el mismoq que el evento del que se quiere editar
+
+			if (sizeof($this->eventos)==1){
+					return  ($this->evento->EventoId==$EventoId) ;
+			}else
+					return false;
+
+	}
 }

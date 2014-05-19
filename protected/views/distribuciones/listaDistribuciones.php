@@ -23,7 +23,7 @@
                 ?>
 		</div>		
 		<?php echo TbHtml::formActions(array(
-		    TbHtml::resetButton(' Cancelar', array('class'=>'fa fa-arrow-circle-left')),
+		    TbHtml::link(' Cancelar',$this->createUrl('Evento/actualizar',array('id'=>$eid,'#'=>'funciones')), array('class'=>'btn fa fa-arrow-circle-left')),
             TbHtml::submitButton(' Buscar', array('class' => 'btn btn-primary fa fa-search')),
 			TbHtml::ajaxLink(' Nueva distribución',array('Distribuciones/nueva'),
 			array(
@@ -83,7 +83,7 @@ $this->widget('yiiwheels.widgets.grid.WhGridView', array(
 								"data-dist"=>$data["ForoMapIntId"]),
 				),
 				array("label" => "&#xf058; Asignar a todas las funciones",
-						"url" => array("distribuciones/asignar"),
+						"url" => array("distribuciones/asignarATodas"),
 						"htmlOptions"=>array(
 								"class"=>"fa btn-asignar",
 								"style"=>"display:block",
@@ -92,12 +92,15 @@ $this->widget('yiiwheels.widgets.grid.WhGridView', array(
 								"data-dist"=>$data["ForoMapIntId"])
 				),
 
-				array("label" => "&#xf055; Crear nueva distribución a partir de esta",
-						"url" => "#",
+				array("label" => "&#xf058; Asignar como nueva distribución",
+						"url" => array("distribuciones/asignarComo"),
 						"htmlOptions"=>array(
-								"style"=> "font-size:12px;display:block",
-							   	"class"=>"fa "
-				)),
+								"class"=>"fa btn-asignar-como",
+								"style"=>"display:block",
+								"data-scenario"=>"editar",
+								"data-foro"=>$data["ForoId"],
+								"data-dist"=>$data["ForoMapIntId"])
+				),
 			));
          ', 
             ),
@@ -168,16 +171,14 @@ $this->widget('yiiwheels.widgets.grid.WhGridView', array(
     .form-horizontal .control-group{margin:5px;}
 </style>
 <?php Yii::app()->clientScript->registerScript('Asignacion',"
-        $('.btn-asignar').live('click',function(){
-				var obj=$(this);
+function asignar(obj,nombre){
 				var href=obj.children().attr('href');
-            var params={
-                    ForoId:$(this).data('foro'),
-                    ForoMapIntId:$(this).data('dist'),
-                    EventoId:$eid,
-                    FuncionesId:$fid
-                };
-            $.ajax({
+				var params={
+								ForoId:obj.data('foro'), ForoMapIntId:obj.data('dist'),
+								EventoId:$eid, FuncionesId:$fid
+				};
+				if( nombre!= null ){ params[\"ForoMapIntNom\"]=nombre; }
+			$.ajax({
                 url:href,
                 type:'post',
                 data:params,
@@ -193,8 +194,18 @@ $this->widget('yiiwheels.widgets.grid.WhGridView', array(
                     }
                    }
             });
-            return false;
-    });
+}
 
+        $('.btn-asignar').live('click',function(){
+				asignar($(this),null);
+				return false;
+    });
+        $('.btn-asignar-como').live('click',function(){
+				var nombre = prompt('Ingrese el nombre para la nueva distribución','Distribución ...');
+				if(nombre != null){
+						asignar($(this),nombre);
+				}
+		return false;
+	});
 
     "); ?>

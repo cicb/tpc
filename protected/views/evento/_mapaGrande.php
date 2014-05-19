@@ -40,9 +40,11 @@
         ?>
         <table>
             <tr class="controles-submenu">
-                <td><?php echo CHtml::link('<i class="fa fa-eye"></i> Ver coordenadas','#',array('id'=>'ver-coordenadas-mapa-grande','class'=>'btn btn-success'))?>
+				<td><?php echo CHtml::link(' Descartar','#',array('id'=>'descartar-mapa-grande','class'=>'btn fa fa-repeat'))?></td>
+				<td><?php echo CHtml::link(' Ver coordenadas','#',array(
+						'id'=>'ver-coordenadas-mapa-grande',
+						'class'=>'btn btn-info fa fa-eye'))?>
                 </td>
-                <td><?php echo CHtml::link('<i class="fa fa-repeat"></i> Descartar','#',array('id'=>'descartar-mapa-grande','class'=>'btn btn-info'))?></td>
                 <td></td>
                 <td></td>
             </tr>
@@ -129,8 +131,10 @@
                         <td><input type="text" readonly="readonly" name="y14" id="y14" /></td>
                     </tr>
                     <tr>
-                        <td><?php echo CHtml::link('<i class="fa fa-trash-o"></i> Eliminar','#',array('id'=>'eliminar-coordenada-mapa-grande','class'=>'btn btn-danger'))?></td>
-                        <td><?php echo CHtml::link('<i class="fa fa-save"></i> Guardar','#',array('id'=>'guardar-coordenada-mapa-grande','class'=>'btn btn-primary'))?></td>
+						<td><?php echo CHtml::link(' Eliminar','#',array('id'=>'eliminar-coordenada-mapa-grande',
+								'class'=>'btn btn-danger fa fa-trash-o'))?></td>
+						<td><?php echo CHtml::link(' Guardar','#',array('id'=>'guardar-coordenada-mapa-grande',
+								'class'=>'btn btn-primary fa fa-save'))?></td>
                     </tr>
                     <tr>
                         <td colspan="2">

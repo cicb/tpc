@@ -1,23 +1,12 @@
 <?php echo CHtml::openTag('div',array('id'=>'zona-'.$model->ZonasId)); ?>
 	<div class="row-fluid" style="display:block; margin-bottom:10px" >
 
-<?php echo TbHtml::ajaxButton(' ', $this->createUrl('eliminarZona'),array(
-		'type'=>'POST',
-		'data'=>array('Zonas'=>array(
-				'EventoId'=>$model->EventoId,
-				'FuncionesId'=>$model->FuncionesId,
-				'ZonasId'=>$model->ZonasId,
-				),
-		),
-		'success'=>'function(resp){ if(resp=="true"){ $("#zona-'.$model->ZonasId.'").remove();}
-										else {alert(resp+" \nNo se puede eliminar esta zona.\nVerifique que el Evento no tenga ventas");}}',
-		'beforeSend'=>'function(){ return confirm("¿Esta seguro de eliminar esta zona?"); }'
-),
+<?php echo $editar?TbHtml::link(' ', $this->createUrl('eliminarZona'),
 	   	array(
-			'data-id'=>0,
-			'class'=>'btn-quitar-funcion btn btn-danger fa fa-2x fa-minus-circle pull-left',
+			'data-zid'=>$model->ZonasId,
+			'class'=>'btn-eliminar-zona btn btn-danger fa fa-2x fa-minus-circle pull-left',
 			'title'=>'Eliminar Zona '.$model->ZonasId
-	)); ?>
+	)):""; ?>
 <?php echo TbHtml::tag('span',array('class'=>'panel-head '),"Zona ".$model->ZonasNum.":".$model->ZonasId) ?>
 	</div>
 <table class="table table-condensed ">

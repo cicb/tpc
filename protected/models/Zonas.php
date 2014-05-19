@@ -134,7 +134,8 @@ class Zonas extends CActiveRecord
 	public function beforeDelete()
 	{
 			$identificador=array('EventoId'=>$this->EventoId,'FuncionesId'=>$this->FuncionesId,'ZonasId'=>$this->ZonasId);
-			if(Ventaslevel1::countByAttributes(array( 'EventoId'=>$this->EventoId))==0){
+			$ventas=Ventaslevel1::model()->countByAttributes(array( 'EventoId'=>$this->EventoId));
+			if($ventas==0){
 					//Si no hay ventas
 					Subzona::model()->deleteAllByAttributes($identificador);
 					Filas::model()->deleteAllByAttributes($identificador);
@@ -142,18 +143,19 @@ class Zonas extends CActiveRecord
 					Zonaslevel1::model()->deleteAllByAttributes($identificador);
 					Zonastipo::model()->deleteAllByAttributes($identificador);
 					Zonastipolevel1::model()->deleteAllByAttributes($identificador);
-					 $mapagrande=ConfigurlFuncionesMapaGrande::model()->findByAttributes(array(
-							 'EventoId'=>$this->EventoId,'FuncionId'=>$this->FuncionesId));	
-					 if (is_object($mapagrande)) {
-					 	// Si tiene un mapa grande se eliminan primero sus coordenadas para que no de restriccion de llaves foraneas
-							 ConfigurlMapaGrandeCoordenadas::model()->deleteAllByAttributes(array(
-									 'configurl_funcion_mapa_grande_id'=>$mapagrande->id));
-							 $mapagrande->delete();	
-					 }	
+					 //$mapagrande=ConfigurlFuncionesMapaGrande::model()->findByAttributes(array(
+							 //'EventoId'=>$this->EventoId,'FuncionId'=>$this->FuncionesId));	
+					 //if (is_object($mapagrande)) {
+						 //// Si tiene un mapa grande se eliminan primero sus coordenadas para que no de restriccion de llaves foraneas
+							 //ConfigurlMapaGrandeCoordenadas::model()->deleteAllByAttributes(array(
+									 //'configurl_funcion_mapa_grande_id'=>$mapagrande->id));
+							 //$mapagrande->delete();	
+					 //}	
 					return parent::beforeDelete();
 			}
 			else {
 					// Si hay ventas, no elimina
+					//error_log(sprintf("v:$ventas EID:%d\n",$this->EventoId),3,'/tmp/errores.php');
 					return false;
 			}
 

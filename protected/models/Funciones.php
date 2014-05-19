@@ -455,7 +455,7 @@ class Funciones extends CActiveRecord
 			return $model;
 		}
 		else
-			return $model;
+			return false;
 
 	}
 		private function agregarZonas($numero=1)
