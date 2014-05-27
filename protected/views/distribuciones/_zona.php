@@ -46,9 +46,16 @@ echo CHtml::dropDownList('ZonasTipo', $model->ZonasTipo,array(1=>'General',2=>'N
 				'class'=>'input-small text-center ZonasCanLug', 'prepend'=>'#',
 				'disabled'=>!$editar,
 				'data-id'=>$model->ZonasId,
-				'append'=>CHtml::link('Generar','',array(
-						'class'=>'btn ZonasCanLug',
+				'append'=>CHtml::link('Generar',array(
+						'generacionFilas',
+						'EventoId'=>$model->EventoId,
+						'FuncionesId'=>$model->FuncionesId,
+						'ZonasId'=>$model->ZonasId
+				),array(
+						'class'=>'btn btn-generar-asientos',
 						'disabled'=>!$editar,
+						'data-target'=>'#dlg-asientos',
+						'data-toggle' => 'modal',
 						'data-id'=>$model->ZonasId)))) ?>	    
 	    </td>
 	    <td>

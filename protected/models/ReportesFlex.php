@@ -26,10 +26,12 @@ class ReportesFlex extends CFormModel
 		else
 			$extra = "";
 		
-		if($fecha1 != "" && $fecha2 != "")
+					 
+		$rango = "";
+		if($fecha1 != "" && $fecha2 != "" 
+				and preg_match("(\d{4}-\d{2}-\d{2})",$fecha1)==1 
+				and preg_match("(\d{4}-\d{2}-\d{2})",$fecha2)==1 )
 			$rango = " AND DATE(VentasFecHor) BETWEEN '$fecha1' AND '$fecha2' ";
-		else
-			$rango = "";
 		$aforo = Lugares::model()->count("EventoId = '$EventoId' AND FuncionesId = '$FuncionesId' AND ZonasId = '$ZonasId'");
 		if ($FuncionesId>0) $funcion=" AND ventaslevel1.FuncionesId = '$FuncionesId' ";
 		else $funcion='';

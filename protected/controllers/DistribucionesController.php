@@ -623,4 +623,11 @@ endforeach;
 
 	}
 
+	public function actionGeneracionFilas($EventoId,$FuncionesId, $ZonasId)
+	{
+			// Genera filas distribuidas por las subzonas
+			$model=Zonas::model()->findByPk(compact('EventoId','FuncionesId','ZonasId'));
+			$this->renderPartial('editorFilas',compact('model'));
+	}
+
 }

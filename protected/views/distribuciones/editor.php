@@ -1,6 +1,7 @@
 <?php 
 Yii::app()->clientScript->registerScriptFile("js/holder.js"); 
 ?>
+<?php Yii::app()->clientScript->registerScriptFile('js/mindmup-editabletable.js') ?>
 
 <div class="controles">
         <?php echo CHtml::tag('legend',array(), 'Configuración de la Distribución'); ?>
@@ -72,6 +73,18 @@ echo  TbHtml::ajaxButton(
 
 	</div>
 </div>
+<?php $this->widget('bootstrap.widgets.TbModal', array(
+    'id' => 'dlg-asientos',
+    'header' => 'Generación de asientos',
+    'content' => '<div id=\'dlg-asientos-contenido\'></div>',
+    'footer' => implode(' ', array(
+			TbHtml::button('Close', array('data-dismiss' => 'modal')),
+			TbHtml::button('Guardar', array(
+            'data-dismiss' => 'modal',
+            'color' => TbHtml::BUTTON_COLOR_PRIMARY)
+        ),
+     )),
+)); ?>
 <?php 
 $EventoId=$model->EventoId;
 $FuncionesId=$model->FuncionesId;
@@ -121,10 +134,27 @@ $('.btn-eliminar-zona').live('click',function(){
 		});
 return false;
 })
-"); ?>
+
+		$('.btn-generar-asientos').on('click',function(){
+				$('#dlg-asientos-contenido').load($(this).attr('href'));
+				$('#tabla-filas').editableTableWidget();
+				//return false;		
+			});
+		$('#dlg-asientos').on('shown',function(){
+				$('#tabla-filas').editableTableWidget();
+				console.log('as');
+})
+			
+		"); ?>
 <?php $this->renderPartial('/distribuciones/js/arbol',array('EventoId'=>$EventoId,'FuncionesId'=>$FuncionesId),false,true); ?>
 <style type="text/css" media="screen">
 	li.nodo{
 		list-style-type:none;
 }
+tr{padding:5px;margin:7px;}
+#tabla-filas td{padding:8px;line-height:20px;}
+#dlg-asientos{width:65%;left:35%;}
 </style>
+
+
+
