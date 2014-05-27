@@ -8,6 +8,11 @@
 	<?php  Yii::app()->clientScript->registerCssFile(Yii::app()->request->baseUrl."/css/style.css"); ?>
 <!--	<link rel="stylesheet/less" type="text/css" href="<?php //echo Yii::app()->request->baseUrl; ?>/css/style.less"  />-->
 	<title><?php echo CHtml::encode($this->pageTitle); ?></title>
+    <style>
+    .nav-collapse.collapse{
+        z-index: 99;
+    }
+    </style>
 </head>
 <body>
 	<div id="mainmenu">
