@@ -135,14 +135,25 @@ $('.btn-eliminar-zona').live('click',function(){
 return false;
 })
 
-		$('.btn-generar-asientos').on('click',function(){
-				$('#dlg-asientos-contenido').load($(this).attr('href'));
-				$('#tabla-filas').editableTableWidget();
+		$('.btn-generar-asientos').live('click',function(){
+				var zid=$(this).data('id');
+				console.log($('.ZonasTipo[data-id='+zid+'] option:selected').val()) ;
+				if ($('.ZonasTipo[data-id='+zid+'] option:selected').val()==1) {
+						$.ajax({
+								url:'".$this->createUrl('generarAsientosGenerales',compact('EventoId','FuncionesId'))."',
+								type:'post',
+								data:{ZonasId:zid},
+								success:function(e){alert(e);},
+						});
+						return false;
+				}else{
+						$('#dlg-asientos-contenido').load($(this).attr('href'));
+						$('#tabla-filas').editableTableWidget();
+				}	
 				//return false;		
 			});
 		$('#dlg-asientos').on('shown',function(){
 				$('#tabla-filas').editableTableWidget();
-				console.log('as');
 })
 			
 		"); ?>

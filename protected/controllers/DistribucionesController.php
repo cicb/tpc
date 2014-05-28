@@ -8,7 +8,7 @@ class DistribucionesController extends Controller
 	{
 		// return the filter configuration for this controller, e.g.:
 		return array(
-			'postOnly + asignar asignarATodas ',
+			'postOnly + asignar asignarATodas generarAsientosGenerales',
 			'accessControl'
 			// array(
 			// 	'class'=>'path.to.FilterClass',
@@ -21,12 +21,12 @@ class DistribucionesController extends Controller
 				return array(
 						array(
 								'deny',
-								'actions'=>array('index'),
-								'users'=>array('?'),
+								//'actions'=>array('index'),
+								'users'=>array('@'),
 						),
 						array(
 								'allow',
-								'actions'=>array('asignar editor'),
+								'actions'=>array('asignar','editor','generarAsientosGenerales'),
 								'roles'=>array('admin'),
 						),
 						array(
@@ -528,7 +528,19 @@ endforeach;
         // $model=Zonas::model()->findByPk($_POST['EventoId'],$_POST['FuncionesId'],$_POST['ZonasId']);
         extract($_POST['Zonas']);
         $model=Zonas::model()->findByPk(compact('EventoId','FuncionesId','ZonasId'));
-        $model->attributes=$_POST['Zonas'];
+		if (isset($_POST['Zonas']['ZonasCantSubZon'])) {
+				// CASO ESPECIAL CUANDO SE CAMBIA EL NUMERO DE SUBZONAS
+				// Se eliminan todas las subzonas y con ello todas las filas y lugares de la zona y se generan las subzonas
+				$diff=$_POST['Zonas']['ZonasCantSubZon']-$model->ZonasCantSubZon;
+				if ($diff<0) {
+						//echo "Se va a modificar las subzonas ".$diff;
+					// Si el numero de zonas que se quiere es mayor al que se tiene solo se agregan l
+						 $model->eliminarSubzonas();
+						 $model->agregarSubzonas($_POST['Zonas']['ZonasCantSubZon']);
+				}else
+						 $model->agregarSubzonas($diff);
+		}	
+		$model->attributes=$_POST['Zonas'];
 		$model->save();
         echo CJSON::encode($model);
     }
@@ -623,6 +635,25 @@ endforeach;
 
 	}
 
+	public function actionAgregarSubzonas($EventoId,$FuncionesId, $ZonasId,$cantidad)
+	{
+			// Borra todas las subzonas que tenga la zona y le asigna nuevas subzonas en base a la cantidad
+			$zona=Zonas::model()->findByPk(compact('EventoId','FuncionesId','ZonasId'));
+			$zona->agregarSubzonas($cantidad);// Guarda nuevas subzonas
+
+	}
+	public function actionGenerarAsientosGenerales($EventoId, $FuncionesId)
+	{
+			if (isset($_POST['ZonasId'])) {
+					$ZonasId=$_POST['ZonasId'];
+					$zona=Zonas::model()->findByPk(compact('EventoId','FuncionesId','ZonasId'));
+					echo CJSON::encode($zona->generarLugares());
+			}	
+			else{
+					
+					throw new Exception("Error al procesar su petición, vefique integridad de parametros ", 1);
+			}
+	}
 	public function actionGeneracionFilas($EventoId,$FuncionesId, $ZonasId)
 	{
 			// Genera filas distribuidas por las subzonas

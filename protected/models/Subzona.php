@@ -33,6 +33,8 @@ class Subzona extends CActiveRecord
 	 * @param string $className active record class name.
 	 * @return Subzona the static model class
 	 */
+
+	public $maxId;
 	public static function model($className=__CLASS__)
 	{
 		return parent::model($className);
@@ -54,8 +56,8 @@ class Subzona extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('EventoId, FuncionesId, ZonasId, SubzonaId, SubzonaAcc, SubzonaNum, SubzonaCanFil, SubzonaFilCanLug, SubzonaBanExp, SubzonaX1, SubzonaY1, SubzonaX2, SubzonaY2, SubzonaX3, SubzonaY3, SubzonaX4, SubzonaY4, SubzonaX5, SubzonaY5, SubzonaFor, SubzonaColor', 'required'),
-			array('SubzonaNum, SubzonaCanFil, SubzonaFilCanLug, SubzonaBanExp, SubzonaX2, SubzonaY2, SubzonaX3, SubzonaY3, SubzonaX4, SubzonaY4, SubzonaX5, SubzonaY5', 'numerical', 'integerOnly'=>true),
+			array('EventoId, FuncionesId, ZonasId', 'required'),
+			//array('SubzonaNum, SubzonaCanFil, SubzonaFilCanLug, SubzonaBanExp, SubzonaX2, SubzonaY2, SubzonaX3, SubzonaY3, SubzonaX4, SubzonaY4, SubzonaX5, SubzonaY5', 'numerical', 'integerOnly'=>true),
 			array('EventoId, FuncionesId, ZonasId, SubzonaId, SubzonaAcc, SubzonaFor', 'length', 'max'=>20),
 			array('SubzonaX1', 'length', 'max'=>200),
 			array('SubzonaY1', 'length', 'max'=>100),
@@ -146,6 +148,17 @@ class Subzona extends CActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
+
+	public static function maxId($EventoId, $FuncionesId, $ZonasId)
+	 {
+			 $row = self::model()->find(array(
+					 'select'=>'max(SubzonaId) as maxId',
+					 'condition'=>"EventoId=:evento and FuncionesId=:funcion and ZonasId=:zona",
+					 'params'=>array('evento'=>$EventoId,'funcion'=>$FuncionesId,'zona'=>$ZonasId)
+			 ));
+			 return $row['maxId'];
+	 }
+
     public function getCoordenadasComoCadena() {
         $coordenadas = '';
         
@@ -176,4 +189,18 @@ class Subzona extends CActiveRecord
         
         return $coordenadas;
     }
+
+	public function beforeSave()
+	{
+		if ($this->scenario=='insert') {
+			$this->SubzonaId=self::maxId($this->EventoId,$this->FuncionesId,$this->ZonasId)+1;
+		}
+		return parent::beforeSave();
+	}
+
+	public function init()
+	{
+			// Valor iniciales del modelo
+			parent::init();
+	}
 }

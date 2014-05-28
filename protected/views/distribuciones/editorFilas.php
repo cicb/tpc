@@ -4,7 +4,8 @@
 	<tr>
 		<th>No. Filas</th>
 		<?php for ($i=0;$i<($model->ZonasCantSubZon);$i++) {
-				echo TbHtml::tag('th',array('colspan'=>2),"Subzona $i");
+				echo TbHtml::tag('th',array('colspan'=>2),"Subzona ".($i+1));
+				echo TbHtml::tag('th',array(),"Ctd.");
 		} ?>
 		<th>Total</th>
 	</tr>
@@ -14,7 +15,7 @@
 				for ($i=0;$i<($model->ZonasCantSubZon);$i++) {
 				$this->renderPartial('_fila',array('fid'=>1,'sid'=>$i));
 				} 
-				echo TbHtml::tag('td',array(),TbHtml::textField('FilasCanLug','',array('class'=>'FilasCanLug input-mini')));
+				echo TbHtml::tag('td',array(),TbHtml::textField('FilasCanLug','',array('class'=>'FilasCanLug pull-right input-mini')));
 				echo TbHtml::closeTag('tr');
 ?>
 </table>

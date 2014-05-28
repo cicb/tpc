@@ -222,4 +222,94 @@ class Zonas extends CActiveRecord
 					 $this->EventoId,$this->FuncionesId,$this->ZonasId
 			 ))->execute();
 	 }
+
+	 public function agregarSubzona()
+	 {
+	 	// Agrega un subzona con los valores por defecto
+		$subzona=new Subzona('insert');
+		$subzona->EventoId=$this->EventoId;
+		$subzona->FuncionesId=$this->FuncionesId;
+		$subzona->ZonasId=$this->ZonasId;
+		//$subzona->SubzonaId=1;
+		$subzona->SubzonaNum=0;
+		if ( $subzona->save() ) {
+				// Si se pudo guardar regresa el modelo de la subzona
+				return $subzona;
+		}	
+		else return false;
+	 }
+	 public function agregarSubzonas($cantidad)
+	 {
+			 // Agrega un numero ($cantidad) de subzonas con sus valores por defecto
+			 //$subzonas=array();
+			 $ret=0;
+			 for ($i = 0; $i <$cantidad; $i++) {
+			 	$subzona=$this->agregarSubzona(); 
+				if ($subzona) {
+					// Si se pudo crear la subzona entonces la contabiliza y continúa 
+						$ret++; 
+				}	
+				else {return 0; }
+			 }
+			 return $ret;
+	 }
+
+	 public function eliminarSubzonas()
+	 {
+			 #### !!!!!    Elimina todas las subzonas, filas y lugares de la zona	 !!!! ####
+			 $identificador=array('EventoId'=>$this->EventoId,'FuncionesId'=>$this->FuncionesId,'ZonasId'=>$this->ZonasId);
+			 $ventas=Ventaslevel1::model()->countByAttributes(array( 'EventoId'=>$this->EventoId));
+			 if($ventas==0){
+					 //Si no hay ventas elimina todas las subzonas filas y lugares
+					 $ret=Subzona::model()->deleteAllByAttributes($identificador);
+					 Filas::model()->deleteAllByAttributes($identificador);
+					 Lugares::model()->deleteAllByAttributes($identificador);
+					 return $ret; 
+			 }
+			 else
+					 return -1;
+
+	 }
+
+	 public function generarLugares()
+	 {
+			 // Genera los lugares dependiendo de si la zona es general o numerada.
+			 if ($this->ZonasTipo==1 and $this->ZonasCanLug>0) {
+					 // Cuando el tipo de zona sea general y se haya definido el numero de lugares
+					 $this->eliminarSubzonas();
+					 $tamanoFila=($this->ZonasCanLug/100.0)>1?100:10;	
+					 $numeroFilas=ceil($this->ZonasCanLug/$tamanoFila);
+					 $filas=array();
+					 $lugares=array();
+					 for ($i = 1; $i <=$numeroFilas; $i++) {
+							 $filas[]=sprintf("(%d,%d,%d,1,%d,'General',%d,%d,%d,%d)",
+									 $this->EventoId,$this->FuncionesId,$this->ZonasId,$i,$i,$tamanoFila,1,$tamanoFila
+							 );
+							 for ($j = 1; $j <=$tamanoFila; $j++) {
+									 $lugares[]=sprintf("(%d,%d,%d,1,%d,%d,%d,%d,'TRUE')",
+											 $this->EventoId,$this->FuncionesId,$this->ZonasId,$i,$j,$j,$j
+									 );
+							 }
+					 }
+					 $conexion=Yii::app()->db;
+					 $conexion->createCommand("INSERT IGNORE INTO filas 
+							 (EventoId,FuncionesId,ZonasId,SubzonaId,FilasId, FilasAli, FilasNum,FilasCanLug,LugaresIni,LugaresFin)
+							 VALUE ".implode(',',$filas))->execute();
+					 ### Hasta este punto se han creado las filas y solo hace falta agregar los lugares
+					 //----------------------------------------------------------------------------------
+					 $conexion->createCommand("INSERT IGNORE INTO lugares 
+							 (EventoId,FuncionesId,ZonasId,SubzonaId,FilasId, LugaresId, LugaresLug,LugaresNum, LugaresStatus)
+							 VALUE ".implode(',',$lugares))->execute();
+
+					 Lugares::model()->updateAll(array("LugaresStatus"=>"OFF"),
+							 sprintf("EventoId=$this->EventoId and FuncionesId=$this->FuncionesId and ZonasId=$this->ZonasId and
+							 SubzonaId=1 and FilasId=$numeroFilas and LugaresId>%d",$tamanoFila-(($tamanoFila*$numeroFilas)-$this->ZonasCanLug)
+			 ));
+
+					 return array('filas'=>$numeroFilas,'lugares'=>$this->ZonasCanLug);
+
+			 }	
+			 else return 0;
+
+	 }
 }
