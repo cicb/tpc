@@ -72,6 +72,7 @@ class Zonas extends CActiveRecord
 		'evento'	=> array(self::BELONGS_TO, 'Evento','EventoId'),
         'zonaslevel1'=>array(self::HAS_MANY,'Zonaslevel1', array('EventoId','FuncionesId','ZonasId')),
         'nzonas'=>	array(self::STAT,'Zonas','zonas(EventoId,FuncionesId)'),
+        'nfilas'=>	array(self::STAT, 'Filas','EventoId, FuncionesId,ZonasId','select'=>'COUNT(distinct FilasId)',),
         'max'=>	array(self::STAT,'Zonas','zonas(EventoId,FuncionesId,ZonasId)','select'=> 'MAX(ZonasId)'),
 		);
 	}

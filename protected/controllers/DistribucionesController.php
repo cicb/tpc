@@ -649,7 +649,7 @@ endforeach;
 			$filas=array();
 			foreach ($zona->subzonas as $subzona) {
 					//error_log("Subzona:".$subzona->SubzonaId."\n",3, '/tmp/error.log');
-				$tmpFila=$subzona->agregarFila(false);
+				$tmpFila=$subzona->agregarFila();
 				if ($tmpFila) {
 						$filas[]=$tmpFila;
 				}	
@@ -702,7 +702,7 @@ endforeach;
 	public function actionGeneracionFilas($EventoId,$FuncionesId, $ZonasId)
 	{
 			// Genera filas distribuidas por las subzonas
-			$model=Zonas::model()->findByPk(compact('EventoId','FuncionesId','ZonasId'));
+			$model=Zonas::model()->with('nfilas')->findByPk(compact('EventoId','FuncionesId','ZonasId'));
 			
 			Yii::app()->clientScript->scriptMap['jquery.js'] = false;
 			$this->renderPartial('editorFilas',compact('model'));

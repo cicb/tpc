@@ -1,4 +1,3 @@
-
 <div class='row-fluid'>
 <table border="0" class="table table-hover" id="tabla-filas">
 	<tr>
@@ -11,7 +10,7 @@
 	</tr>
 <?php 
 
-				for ($i=0;$i<($model->ZonasCantSubZon);$i++) {
+				for ($i=1;$i<=($model->nfilas);$i++) {
 						$this->actionVerFila($model->EventoId,$model->FuncionesId,$model->ZonasId,$i);
 				}
 ?>

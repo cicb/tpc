@@ -213,10 +213,10 @@ class Subzona extends CActiveRecord
 			$fila->ZonasId=$this->ZonasId;
 			$fila->SubzonaId=$this->SubzonaId;
 			if ($fila->save()) {
+				$this->saveCounters(array('SubzonaCanFil'=>1));
 				return $fila;
 			}			
 			else{
-					error_log(serialize($fila->getErrors()),3,'/tmp/error.log');
 					return false;}
 	}
 }
