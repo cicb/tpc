@@ -277,37 +277,45 @@ class Zonas extends CActiveRecord
 			 if ($this->ZonasTipo==1 and $this->ZonasCanLug>0) {
 					 // Cuando el tipo de zona sea general y se haya definido el numero de lugares
 					 $this->eliminarSubzonas();
-					 $tamanoFila=($this->ZonasCanLug/100.0)>1?100:10;	
-					 $numeroFilas=ceil($this->ZonasCanLug/$tamanoFila);
-					 $filas=array();
-					 $lugares=array();
-					 for ($i = 1; $i <=$numeroFilas; $i++) {
-							 $filas[]=sprintf("(%d,%d,%d,1,%d,'General',%d,%d,%d,%d)",
-									 $this->EventoId,$this->FuncionesId,$this->ZonasId,$i,$i,$tamanoFila,1,$tamanoFila
-							 );
-							 for ($j = 1; $j <=$tamanoFila; $j++) {
-									 $lugares[]=sprintf("(%d,%d,%d,1,%d,%d,%d,%d,'TRUE')",
-											 $this->EventoId,$this->FuncionesId,$this->ZonasId,$i,$j,$j,$j
+					 $subzona=$this->agregarSubzona() ;
+					 if ($subzona){
+							 $tamanoFila=($this->ZonasCanLug/100.0)>1?100:10;	
+							 $numeroFilas=ceil($this->ZonasCanLug/$tamanoFila);
+							 $filas=array();
+							 $lugares=array();
+							 for ($i = 1; $i <=$numeroFilas; $i++) {
+									 $filas[]=sprintf("(%d,%d,%d,1,%d,'General',%d,%d,%d,%d)",
+											 $this->EventoId,$this->FuncionesId,$this->ZonasId,$i,$i,$tamanoFila,1,$tamanoFila
 									 );
+									 for ($j = 1; $j <=$tamanoFila; $j++) {
+											 $lugares[]=sprintf("(%d,%d,%d,1,%d,%d,%d,%d,'TRUE')",
+													 $this->EventoId,$this->FuncionesId,$this->ZonasId,$i,$j,$j,$j
+											 );
+									 }
 							 }
-					 }
-					 $conexion=Yii::app()->db;
-					 $conexion->createCommand("INSERT IGNORE INTO filas 
-							 (EventoId,FuncionesId,ZonasId,SubzonaId,FilasId, FilasAli, FilasNum,FilasCanLug,LugaresIni,LugaresFin)
-							 VALUE ".implode(',',$filas))->execute();
-					 ### Hasta este punto se han creado las filas y solo hace falta agregar los lugares
-					 //----------------------------------------------------------------------------------
-					 $conexion->createCommand("INSERT IGNORE INTO lugares 
-							 (EventoId,FuncionesId,ZonasId,SubzonaId,FilasId, LugaresId, LugaresLug,LugaresNum, LugaresStatus)
-							 VALUE ".implode(',',$lugares))->execute();
+							 $conexion=Yii::app()->db;
+							 $conexion->createCommand("INSERT IGNORE INTO filas 
+									 (EventoId,FuncionesId,ZonasId,SubzonaId,FilasId, FilasAli, FilasNum,FilasCanLug,LugaresIni,LugaresFin)
+									 VALUE ".implode(',',$filas))->execute();
+							 ### Hasta este punto se han creado las filas y solo hace falta agregar los lugares
+							 //----------------------------------------------------------------------------------
+							 $conexion->createCommand("INSERT IGNORE INTO lugares 
+									 (EventoId,FuncionesId,ZonasId,SubzonaId,FilasId, LugaresId, LugaresLug,LugaresNum, LugaresStatus)
+									 VALUE ".implode(',',$lugares))->execute();
 
-					 Lugares::model()->updateAll(array("LugaresStatus"=>"OFF"),
-							 sprintf("EventoId=$this->EventoId and FuncionesId=$this->FuncionesId and ZonasId=$this->ZonasId and
-							 SubzonaId=1 and FilasId=$numeroFilas and LugaresId>%d",$tamanoFila-(($tamanoFila*$numeroFilas)-$this->ZonasCanLug)
-			 ));
+							 Lugares::model()->updateAll(array("LugaresStatus"=>"OFF"),
+									 sprintf("EventoId=$this->EventoId and FuncionesId=$this->FuncionesId and ZonasId=$this->ZonasId and
+									 SubzonaId=1 and FilasId=$numeroFilas and LugaresId>%d",$tamanoFila-(($tamanoFila*$numeroFilas)-$this->ZonasCanLug)
+							 ));
 
-					 return array('filas'=>$numeroFilas,'lugares'=>$this->ZonasCanLug);
+							 $this->ZonasCantSubZon=1;
+							 $subzona->SubzonaNum=1;
+							 $subzona->SubzonaCanFil=$numeroFilas;
+							 $this->save();
+							 $subzona->save();
+							 return array('filas'=>$numeroFilas,'lugares'=>$this->ZonasCanLug);
 
+					 } else {return false;}
 			 }	
 			 else return 0;
 

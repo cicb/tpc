@@ -21,12 +21,12 @@ class DistribucionesController extends Controller
 				return array(
 						array(
 								'deny',
-								//'actions'=>array('index'),
-								'users'=>array('@'),
+								'actions'=>array('index'),
+								'users'=>array('?'),
 						),
 						array(
 								'allow',
-								'actions'=>array('asignar','editor','generarAsientosGenerales'),
+								'actions'=>array('index', 'asignar','editor','generarAsientosGenerales'),
 								'roles'=>array('admin'),
 						),
 						array(
@@ -532,13 +532,12 @@ endforeach;
 				// CASO ESPECIAL CUANDO SE CAMBIA EL NUMERO DE SUBZONAS
 				// Se eliminan todas las subzonas y con ello todas las filas y lugares de la zona y se generan las subzonas
 				$diff=$_POST['Zonas']['ZonasCantSubZon']-$model->ZonasCantSubZon;
-				if ($diff<0) {
+				if ($diff!=0) {
 						//echo "Se va a modificar las subzonas ".$diff;
 					// Si el numero de zonas que se quiere es mayor al que se tiene solo se agregan l
 						 $model->eliminarSubzonas();
 						 $model->agregarSubzonas($_POST['Zonas']['ZonasCantSubZon']);
-				}else
-						 $model->agregarSubzonas($diff);
+				}
 		}	
 		$model->attributes=$_POST['Zonas'];
 		$model->save();
@@ -642,6 +641,52 @@ endforeach;
 			$zona->agregarSubzonas($cantidad);// Guarda nuevas subzonas
 
 	}
+
+	public function actionAgregarFila($EventoId,$FuncionesId,$ZonasId)
+	{
+			// Agrega una fila por cada subzona de una zona dada.
+			$zona=Zonas::model()->with('subzonas')->findByPk(compact('EventoId','FuncionesId','ZonasId'));
+			$filas=array();
+			foreach ($zona->subzonas as $subzona) {
+					//error_log("Subzona:".$subzona->SubzonaId."\n",3, '/tmp/error.log');
+				$tmpFila=$subzona->agregarFila(false);
+				if ($tmpFila) {
+						$filas[]=$tmpFila;
+				}	
+			}
+			if (sizeof($filas)>0) {
+					$this->actionVerFila($EventoId,$FuncionesId,$ZonasId,$filas[0]->FilasId);
+			}	
+			else
+			{
+					throw new Exception("Error al procesar su petición, vefique integridad de parametros ", 3);
+			}
+
+	}
+
+	public function actionVerFila($EventoId,$FuncionesId,$ZonasId,$FilasId)
+	{
+			// Muestra los controles de las una fila por subzona de una zona dada
+			$models=Filas::model()->findAllByAttributes(compact('EventoId','FuncionesId','ZonasId','FilasId'));
+			if (sizeof($models)>0) {
+					// Si existen tales filas 
+					echo TbHtml::openTag('tr');
+					echo TbHtml::tag('td',array(),
+							TbHtml::textField('FilasAli', $models[0]['FilasAli'],
+								array('class'=>'FilasAli input-mini', 'fid'=>$FilasId)));
+					foreach ($models as $model) {
+						// Por cada fila de las subzonas, renderiza sus campos  
+							$this->renderPartial('_fila',array('model'=>$model));
+					}
+					echo TbHtml::tag('td',array(),
+							CHtml::textField('Subtotal',0,array(
+									'class'=>'Subtotal pull-right text-right input-mini',
+									'id'=>'Subtotal-'.$FilasId,
+									'readonly'=>true,
+							)));
+					echo TbHtml::closeTag('tr');
+			}	
+	}
 	public function actionGenerarAsientosGenerales($EventoId, $FuncionesId)
 	{
 			if (isset($_POST['ZonasId'])) {
@@ -658,6 +703,8 @@ endforeach;
 	{
 			// Genera filas distribuidas por las subzonas
 			$model=Zonas::model()->findByPk(compact('EventoId','FuncionesId','ZonasId'));
+			
+			Yii::app()->clientScript->scriptMap['jquery.js'] = false;
 			$this->renderPartial('editorFilas',compact('model'));
 	}
 

@@ -24,6 +24,7 @@ class Filas extends CActiveRecord
 	 * Returns the static model of the specified AR class.
 	 * @return Filas the static model class
 	 */
+	public $maxId;	
 	public static function model($className=__CLASS__)
 	{
 		return parent::model($className);
@@ -45,7 +46,7 @@ class Filas extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('EventoId, FuncionesId, ZonasId, SubzonaId, FilasId, FilasAli, FilasNum, FilasCanLug, FilasIniCol, FilasIniFin, FilasBanExp, LugaresIni, LugaresFin', 'required'),
+			array('EventoId, FuncionesId, ZonasId, SubzonaId', 'required'),
 			array('FilasNum, FilasCanLug, FilasIniCol, FilasIniFin, FilasBanExp, LugaresIni, LugaresFin', 'numerical', 'integerOnly'=>true),
 			array('EventoId, FuncionesId, ZonasId, SubzonaId, FilasId', 'length', 'max'=>20),
 			array('FilasAli', 'length', 'max'=>40),
@@ -117,5 +118,26 @@ class Filas extends CActiveRecord
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
 		));
+	}
+	public static function maxId($EventoId, $FuncionesId, $ZonasId,$SubzonaId)
+	 {
+			 $row = self::model()->find(array(
+					 'select'=>'max(FilasId) as maxId',
+					 'condition'=>"EventoId=:evento and FuncionesId=:funcion and ZonasId=:zona and SubzonaId=:subzona",
+					 'params'=>array('evento'=>$EventoId,'funcion'=>$FuncionesId,'zona'=>$ZonasId,'subzona'=>$SubzonaId)
+			 ));
+			 return $row['maxId'];
+	 }
+	//public function init()
+	//{
+		//return parent::init();
+	//}
+	public function beforeSave()
+	{
+			if ($this->scenario=='insert') {
+				$this->FilasId=self::maxId($this->EventoId,$this->FuncionesId,$this->ZonasId,$this->SubzonaId)+1;
+				$this->FilasNum=$this->FilasId;
+			}	
+		return parent::beforeSave();
 	}
 }

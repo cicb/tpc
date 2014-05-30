@@ -25,6 +25,7 @@
 echo CHtml::dropDownList('ZonasTipo', $model->ZonasTipo,array(1=>'General',2=>'Numerada'),array(
 		'class'=>'ZonasTipo', 
 		'disabled'=>!$editar,
+		'id'=>'ZonasTipo-'.$model->ZonasId,
 		'data-id'=>$model->ZonasId));
 	    	?>
 	    </td>
@@ -36,9 +37,10 @@ echo CHtml::dropDownList('ZonasTipo', $model->ZonasTipo,array(1=>'General',2=>'N
 		</td>
 	    <td>
 	    	<?php echo CHtml::numberField('ZonasCantSubZon',$model->ZonasCantSubZon,array(
-					'class'=>'input-small text-center ZonasCantSubZon',		
-					'disabled'=>!$editar,
+					'class'=>' input-small text-center ZonasCantSubZon ',		
+					'disabled'=>!$editar or $model->ZonasTipo==1,
 					'data-id'=>$model->ZonasId,
+					'id'=>'ZonasCantSubZon-'.$model->ZonasId,
 			)); ?>
     	</td>
 	    <td>
@@ -46,13 +48,14 @@ echo CHtml::dropDownList('ZonasTipo', $model->ZonasTipo,array(1=>'General',2=>'N
 				'class'=>'input-small text-center ZonasCanLug', 'prepend'=>'#',
 				'disabled'=>!$editar,
 				'data-id'=>$model->ZonasId,
-				'append'=>CHtml::link('Generar',array(
+				'append'=>CHtml::link(' Generar',array(
 						'generacionFilas',
 						'EventoId'=>$model->EventoId,
 						'FuncionesId'=>$model->FuncionesId,
 						'ZonasId'=>$model->ZonasId
 				),array(
-						'class'=>'btn btn-generar-asientos',
+						'class'=>'btn btn-generar-asientos fa fa-bolt',
+						'id'=>'btn-generar-asientos-'.$model->ZonasId,
 						'disabled'=>!$editar,
 						'data-target'=>'#dlg-asientos',
 						'data-toggle' => 'modal',
@@ -69,7 +72,7 @@ echo CHtml::dropDownList('ZonasTipo', $model->ZonasTipo,array(1=>'General',2=>'N
 							//array('label' => ' ','class'=>'fa fa-building-o btn-primary'),
 							array('label' => ' ','class'=>'fa fa-bars btn',	'title'=>'Configurar Filas'),
 							array('label' => ' ','class'=>'fa fa-th-large',	'title'=>'Configurar Asientos'),
-					)); 
+					),array('class'=>$model->ZonasTipo==1?'hidden':'')); 
 			}	
 	    	?>
 	    </td>

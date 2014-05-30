@@ -78,8 +78,8 @@ echo  TbHtml::ajaxButton(
     'header' => 'Generación de asientos',
     'content' => '<div id=\'dlg-asientos-contenido\'></div>',
     'footer' => implode(' ', array(
-			TbHtml::button('Close', array('data-dismiss' => 'modal')),
-			TbHtml::button('Guardar', array(
+			TbHtml::button('Cerrar', array('data-dismiss' => 'modal')),
+			TbHtml::button('Aceptar', array(
             'data-dismiss' => 'modal',
             'color' => TbHtml::BUTTON_COLOR_PRIMARY)
         ),
@@ -107,6 +107,8 @@ $('.ZonasCantSubZon').live('focusout',function(){
 });
 $('.ZonasCanLug').live('focusout',function(){
 		cambiarValores($(this));
+		var zid=$(this).data('id');
+		$('#btn-generar-asientos-'+zid).addClass('btn-primary');
 });
 $('.ZonasCosBol').live('focusout',function(){
 		cambiarValores($(this));
@@ -116,6 +118,17 @@ $('.ZonasAli').live('focusout',function(){
 });
 $('.ZonasTipo').live('change',function(){
 		cambiarValores($(this));
+		var zid=$(this).data('id');
+		if ($(this).val()==1) {
+				/* Cuando sea general */
+			$('#ZonasCantSubZon-'+zid).val(1);	
+			$('#ZonasCantSubZon-'+zid).hide(500);	
+		}else{
+				$('#ZonasCantSubZon-'+zid).show(500);	
+				$('#ZonasCantSubZon-'+zid).prop('disabled',false);	
+				
+}	
+
 });
 $('.btn-eliminar-zona').live('click',function(){ 
 		var obj=$(this);
@@ -137,13 +150,16 @@ return false;
 
 		$('.btn-generar-asientos').live('click',function(){
 				var zid=$(this).data('id');
-				console.log($('.ZonasTipo[data-id='+zid+'] option:selected').val()) ;
-				if ($('.ZonasTipo[data-id='+zid+'] option:selected').val()==1) {
+				$(this).toggleClass('btn-primary','btn-success');
+				if ($('#ZonasTipo-'+zid).val()==1) {
 						$.ajax({
 								url:'".$this->createUrl('generarAsientosGenerales',compact('EventoId','FuncionesId'))."',
 								type:'post',
 								data:{ZonasId:zid},
-								success:function(e){alert(e);},
+								dataType:'json',
+								success:function(e){
+										$('#dlg-asientos-contenido').html(
+												'<div class=\'alert \'><h3>Asientos generados.</h3> <p>Se han generado '+e.lugares+' lugares </p></div> ');},
 						});
 						return false;
 				}else{
@@ -156,6 +172,43 @@ return false;
 				$('#tabla-filas').editableTableWidget();
 })
 			
+		$('#btn-agregar-fila').live('click',function(){
+				var obj=$(this);
+				$.ajax({
+						url:obj.attr('href'),	
+						success:function(resp){
+								$('#tabla-filas tr:last').after(resp)
+								return false;
+						},
+				});
+		return false;
+		});
+		function calcularTotal(fid){
+				var sum=0;
+				var total=0;
+				$('.FilasCanLug[data-fid='+fid+']').each(function(){sum+=parseInt($(this).val())||0;});
+					$('.Subtotal').each(function(){total+=parseInt($(this).val())||0;});
+				$('#FilasZonasCanLug').val(total);
+				$('#Subtotal-'+fid).val(sum);
+		}
+
+		$('.LugaresIni').live('change',function(){
+				var fid=$(this).data('fid');
+				var sid=$(this).data('sid');
+				$('#FilasCanLug-'+sid+'-'+fid).val(
+						Math.abs(
+								$('#LugaresFin-'+sid+'-'+fid).val()-$(this).val()));
+				calcularTotal(fid);		
+				});
+		$('.LugaresFin').live('change',function(){
+				var fid=$(this).data('fid');
+				var sid=$(this).data('sid');
+				$('#FilasCanLug-'+sid+'-'+fid).val(
+						Math.abs(
+								$('#LugaresIni-'+sid+'-'+fid).val()-$(this).val()));
+
+				calcularTotal(fid);		
+				});
 		"); ?>
 <?php $this->renderPartial('/distribuciones/js/arbol',array('EventoId'=>$EventoId,'FuncionesId'=>$FuncionesId),false,true); ?>
 <style type="text/css" media="screen">
@@ -163,7 +216,7 @@ return false;
 		list-style-type:none;
 }
 tr{padding:5px;margin:7px;}
-#tabla-filas td{padding:8px;line-height:20px;}
+#tabla-filas th{padding:8px;line-height:20px;}
 #dlg-asientos{width:65%;left:35%;}
 </style>
 

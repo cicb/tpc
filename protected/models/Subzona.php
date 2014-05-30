@@ -203,4 +203,20 @@ class Subzona extends CActiveRecord
 			// Valor iniciales del modelo
 			parent::init();
 	}
+
+	public function agregarFila()
+	{
+			// Crea una fila y la agrega a esta subzona;
+			$fila=new Filas;
+			$fila->EventoId=$this->EventoId;
+			$fila->FuncionesId=$this->FuncionesId;
+			$fila->ZonasId=$this->ZonasId;
+			$fila->SubzonaId=$this->SubzonaId;
+			if ($fila->save()) {
+				return $fila;
+			}			
+			else{
+					error_log(serialize($fila->getErrors()),3,'/tmp/error.log');
+					return false;}
+	}
 }
