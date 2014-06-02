@@ -102,6 +102,21 @@ function cambiarValores(control){
 						data:data,
 		});
 }
+function cambiarValoresFilas(control){
+		var key=control.attr('name');
+		var value=control.val();
+		var data={Filas:{ EventoId:$EventoId, FuncionesId:$FuncionesId, 
+				ZonasId:control.data('zid'), SubzonaId:control.data('sid'),
+				FilasId:control.data('fid'),
+		}};
+		data['Filas'][key]=value;
+		$.ajax({
+				url: '".$this->createUrl('AsignarValorFila')."',
+				type:'POST',
+				data:data,
+		});
+}
+
 $('.ZonasCantSubZon').live('focusout',function(){
 		cambiarValores($(this));
 });
@@ -197,7 +212,7 @@ return false;
 				var sid=$(this).data('sid');
 				$('#FilasCanLug-'+sid+'-'+fid).val(
 						Math.abs(
-								$('#LugaresFin-'+sid+'-'+fid).val()-$(this).val()));
+								$('#LugaresFin-'+sid+'-'+fid).val()-$(this).val())+1);
 				calcularTotal(fid);		
 				});
 		$('.LugaresFin').live('change',function(){
@@ -205,10 +220,25 @@ return false;
 				var sid=$(this).data('sid');
 				$('#FilasCanLug-'+sid+'-'+fid).val(
 						Math.abs(
-								$('#LugaresIni-'+sid+'-'+fid).val()-$(this).val()));
+								$('#LugaresIni-'+sid+'-'+fid).val()-$(this).val())+1);
 
 				calcularTotal(fid);		
 				});
+
+$('.vivo').live('focusout',function(){
+		cambiarValoresFilas($(this));
+});
+
+$('#btn-generar-numerados').live('click',function(){
+		var obj=$(this);
+				console.log(obj.attr('href'));
+		$.ajax({
+				url:obj.attr('href'),
+				success:function(resp){ console.log(resp); },
+		});
+return false;
+});
+
 		"); ?>
 <?php $this->renderPartial('/distribuciones/js/arbol',array('EventoId'=>$EventoId,'FuncionesId'=>$FuncionesId),false,true); ?>
 <style type="text/css" media="screen">

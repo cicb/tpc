@@ -16,6 +16,7 @@
 ?>
 
 </table>
+
 <?php 
 echo TbHtml::link(' Agregar fila',
 		array('agregarFila','EventoId'=>$model->EventoId,'FuncionesId'=>$model->FuncionesId,'ZonasId'=>$model->ZonasId),
@@ -23,6 +24,14 @@ echo TbHtml::link(' Agregar fila',
 				'id'=>'btn-agregar-fila',
 				'class'=>'btn btn-success fa fa-plus pull-left'));
 ?>
+<?php 
+echo TbHtml::link(' Generar asientos',
+		array('generarNumerados','EventoId'=>$model->EventoId,'FuncionesId'=>$model->FuncionesId,'ZonasId'=>$model->ZonasId),
+		array(
+				'id'=>'btn-generar-numerados',
+				'class'=>'btn btn-primary fa fa-circle-o-notch'));
+?>
+
 		<div class='pull-right'>
 <?php echo TbHtml::textField('ZonasCanLug',$model->ZonasCanLug,array(
 		'class'=>'input-small text-center  ZonasCanLug',		

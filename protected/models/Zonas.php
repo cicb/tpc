@@ -73,7 +73,7 @@ class Zonas extends CActiveRecord
         'zonaslevel1'=>array(self::HAS_MANY,'Zonaslevel1', array('EventoId','FuncionesId','ZonasId')),
         'nzonas'=>	array(self::STAT,'Zonas','zonas(EventoId,FuncionesId)'),
         'nfilas'=>	array(self::STAT, 'Filas','EventoId, FuncionesId,ZonasId','select'=>'COUNT(distinct FilasId)',),
-        'max'=>	array(self::STAT,'Zonas','zonas(EventoId,FuncionesId,ZonasId)','select'=> 'MAX(ZonasId)'),
+        'max'=>		array(self::STAT,'Zonas','zonas(EventoId,FuncionesId,ZonasId)','select'=> 'MAX(ZonasId)'),
 		);
 	}
 
@@ -272,6 +272,20 @@ class Zonas extends CActiveRecord
 
 	 }
 
+	 public function eliminarLugares()
+	 {
+			 // Elimina de la base de datos todos los lugares de esta zona dejando intacto las subzonas y las filas
+			 $identificador=array('EventoId'=>$this->EventoId,'FuncionesId'=>$this->FuncionesId,'ZonasId'=>$this->ZonasId);
+			 $ventas=Ventaslevel1::model()->countByAttributes(array( 'EventoId'=>$this->EventoId));
+			 if($ventas==0){
+					 //Si no hay ventas elimina todos los lugares
+					 $ret=Lugares::model()->deleteAllByAttributes($identificador);
+					 return $ret; 
+			 }
+			 else
+					 return -1;
+	 }
+
 	 public function generarLugares()
 	 {
 			 // Genera los lugares dependiendo de si la zona es general o numerada.
@@ -318,7 +332,15 @@ class Zonas extends CActiveRecord
 
 					 } else {return false;}
 			 }	
-			 else return 0;
+			 else if($this->ZonasTipo==2){
+					 //Elimina todos los posibles lugares creados previamente
+					 $this->eliminarLugares();
+					 //Generar asientos numerados
+				foreach ($this->filas as $fila) {
+						// Por cada fila de la zona genera sus lugares 
+						echo $fila->generarLugares()."\n";
+				}		
+			 }
 
 	 }
 }

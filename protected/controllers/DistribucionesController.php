@@ -8,7 +8,7 @@ class DistribucionesController extends Controller
 	{
 		// return the filter configuration for this controller, e.g.:
 		return array(
-			'postOnly + asignar asignarATodas generarAsientosGenerales',
+			'postOnly + asignar asignarATodas generarAsientosGenerales asignarValorFila',
 			'accessControl'
 			// array(
 			// 	'class'=>'path.to.FilterClass',
@@ -543,6 +543,21 @@ endforeach;
 		$model->save();
         echo CJSON::encode($model);
     }
+    public function actionAsignarValorFila()
+    {
+        # Cambia el nombre de una zona dada
+        // $model=Zonas::model()->findByPk($_POST['EventoId'],$_POST['FuncionesId'],$_POST['ZonasId']);
+        extract($_POST['Filas']);
+        $model=Filas::model()->findByPk(compact('EventoId','FuncionesId','ZonasId', 'SubzonaId','FilasId'));
+		if (isset($_POST['Filas']['FilasAli'])) {
+				// Si se trata del titulo de la fila
+				Filas::model()->updateAll(array('FilasAli'=>$model->FilasAli),
+						"EventoId=$EventoId AND FuncionesId=$FuncionesId and ZonasId=$ZonasId and FilasId=$FilasId");
+		}	
+		$model->attributes=$_POST['Filas'];
+		$model->save();
+        echo CJSON::encode($model);
+    }
 
 	public function actionEliminarZona()
 	{
@@ -673,7 +688,11 @@ endforeach;
 					echo TbHtml::openTag('tr');
 					echo TbHtml::tag('td',array(),
 							TbHtml::textField('FilasAli', $models[0]['FilasAli'],
-								array('class'=>'FilasAli input-mini', 'fid'=>$FilasId)));
+							array('class'=>'FilasAli input-mini vivo',
+							'data-fid'=>$FilasId,
+							'data-sid'=>$models[0]['SubzonaId'],
+							'data-zid'=>$ZonasId,
+					)));
 					foreach ($models as $model) {
 						// Por cada fila de las subzonas, renderiza sus campos  
 							$this->renderPartial('_fila',array('model'=>$model));
@@ -698,6 +717,14 @@ endforeach;
 					
 					throw new Exception("Error al procesar su petición, vefique integridad de parametros ", 1);
 			}
+	}
+	public function actionGenerarNumerados($EventoId, $FuncionesId, $ZonasId)
+	{
+			// Genera asientos numerados de una zona
+					// Si le han pasado el id de zona
+					$zona=	Zonas::model()->findByPk(compact('EventoId','FuncionesId', 'ZonasId'));
+					$zona->generarLugares();
+
 	}
 	public function actionGeneracionFilas($EventoId,$FuncionesId, $ZonasId)
 	{
