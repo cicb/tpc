@@ -5,7 +5,7 @@ $zid=$model->ZonasId;
 ?>
 <?php echo TbHtml::tag('td',array(),
 		TbHtml::numberField('LugaresIni',$model->LugaresIni,array(
-					'class'=>'input-mini text-center pull-right LugaresIni vivo',		
+					'class'=>'input-mini text-center pull-right LugaresIni limite vivo',		
 					'data-fid'=>$fid,
 					'data-sid'=>$sid,
 					'data-zid'=>$zid,
@@ -13,7 +13,7 @@ $zid=$model->ZonasId;
 			))); ?>
 <?php echo TbHtml::tag('td',array(), 
 		TbHtml::numberField('LugaresFin',$model->LugaresFin,array(
-					'class'=>'input-mini text-center pull-left LugaresFin vivo',		
+					'class'=>'input-mini text-center pull-left LugaresFin limite vivo',		
 					'data-fid'=>$fid,
 					'data-sid'=>$sid,
 					'data-zid'=>$zid,

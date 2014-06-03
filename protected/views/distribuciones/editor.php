@@ -162,6 +162,14 @@ $('.btn-eliminar-zona').live('click',function(){
 		});
 return false;
 })
+		function sumatoria(){
+				var sum=0;
+				$('.FilasCanLug').each(function(){sum+=parseInt($(this).val())||0;});
+				$('#FilasZonasCanLug').val(sum);
+				if(sum!=$('#Requeridos').val()){
+						$('#FilasZonasCanLug').css('color','#C00'); }
+				else{ $('#FilasZonasCanLug').css('color','black'); }
+		}
 
 		$('.btn-generar-asientos').live('click',function(){
 				var zid=$(this).data('id');
@@ -178,14 +186,11 @@ return false;
 						});
 						return false;
 				}else{
-						$('#dlg-asientos-contenido').load($(this).attr('href'));
+						$('#dlg-asientos-contenido').load($(this).attr('href'),function(){sumatoria();});
 						$('#tabla-filas').editableTableWidget();
 				}	
 				//return false;		
 			});
-		$('#dlg-asientos').on('shown',function(){
-				$('#tabla-filas').editableTableWidget();
-})
 			
 		$('#btn-agregar-fila').live('click',function(){
 				var obj=$(this);
@@ -202,20 +207,11 @@ return false;
 				var sum=0;
 				var total=0;
 				$('.FilasCanLug[data-fid='+fid+']').each(function(){sum+=parseInt($(this).val())||0;});
-					$('.Subtotal').each(function(){total+=parseInt($(this).val())||0;});
-				$('#FilasZonasCanLug').val(total);
+				$('.Subtotal').each(function(){total+=parseInt($(this).val())||0;});
 				$('#Subtotal-'+fid).val(sum);
+				sumatoria();
 		}
-
-		$('.LugaresIni').live('change',function(){
-				var fid=$(this).data('fid');
-				var sid=$(this).data('sid');
-				$('#FilasCanLug-'+sid+'-'+fid).val(
-						Math.abs(
-								$('#LugaresFin-'+sid+'-'+fid).val()-$(this).val())+1);
-				calcularTotal(fid);		
-				});
-		$('.LugaresFin').live('change',function(){
+		$('.Lugares').live('change',function(){
 				var fid=$(this).data('fid');
 				var sid=$(this).data('sid');
 				$('#FilasCanLug-'+sid+'-'+fid).val(
@@ -229,17 +225,10 @@ $('.vivo').live('focusout',function(){
 		cambiarValoresFilas($(this));
 });
 
-$('#btn-generar-numerados').live('click',function(){
-		var obj=$(this);
-				console.log(obj.attr('href'));
-		$.ajax({
-				url:obj.attr('href'),
-				success:function(resp){ console.log(resp); },
-		});
-return false;
-});
+
 
 		"); ?>
+
 <?php $this->renderPartial('/distribuciones/js/arbol',array('EventoId'=>$EventoId,'FuncionesId'=>$FuncionesId),false,true); ?>
 <style type="text/css" media="screen">
 	li.nodo{

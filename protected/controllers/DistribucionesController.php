@@ -731,8 +731,9 @@ endforeach;
 			// Genera filas distribuidas por las subzonas
 			$model=Zonas::model()->with('nfilas')->findByPk(compact('EventoId','FuncionesId','ZonasId'));
 			
-			Yii::app()->clientScript->scriptMap['jquery.js'] = false;
-			$this->renderPartial('editorFilas',compact('model'));
+			//Yii::app()->clientScript->scriptMap['jquery.js'] = false;
+			//$this->renderPartial('editorFilas',compact('model'));
+			$this->render('editorFilas',compact('model'));
 	}
 
 }

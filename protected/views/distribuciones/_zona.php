@@ -58,7 +58,7 @@ echo CHtml::dropDownList('ZonasTipo', $model->ZonasTipo,array(1=>'General',2=>'N
 						'id'=>'btn-generar-asientos-'.$model->ZonasId,
 						'disabled'=>!$editar,
 						'data-target'=>'#dlg-asientos',
-						'data-toggle' => 'modal',
+						//'data-toggle' => 'modal',
 						'data-id'=>$model->ZonasId)))) ?>	    
 	    </td>
 	    <td>

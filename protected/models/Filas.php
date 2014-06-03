@@ -143,10 +143,12 @@ class Filas extends CActiveRecord
 			 return $row['maxAsientos'];
 	 }
 
-	//public function init()
-	//{
-		//return parent::init();
-	//}
+	public function init()
+	{
+			$this->LugaresIni=1;
+			$this->LugaresFin=1;
+		return parent::init();
+	}
 	public function beforeSave()
 	{
 			if ($this->scenario=='insert') {
