@@ -149,6 +149,25 @@ class Filas extends CActiveRecord
 			$this->LugaresFin=1;
 		return parent::init();
 	}
+	public function beforeDelete()
+	{
+			//Antes de eliminar la fila verifica que no tenga ventas y elimina tambien sus lugares
+			$identificador=array('EventoId'=>$this->EventoId,
+					'FuncionesId'=>$this->FuncionesId,
+					'ZonasId'=>$this->ZonasId,
+					'SubzonaId'=>$this->SubzonaId,
+				   	'FilasId'=>$this->FilasId);
+			$ventas=Ventaslevel1::model()->countByAttributes(array( 'EventoId'=>$this->EventoId));
+			if($ventas==0){
+					//Si no hay ventas se procede a eliminar sus asientos
+					Lugares::model()->deleteAllByAttributes($identificador);
+					return parent::beforeDelete();
+			}
+			else{
+					//Si existen ventas no se puede eliminar
+					return false;
+			}
+	}
 	public function beforeSave()
 	{
 			if ($this->scenario=='insert') {

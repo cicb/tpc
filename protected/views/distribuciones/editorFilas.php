@@ -1,3 +1,8 @@
+<?php 
+$EventoId=$model->EventoId;
+$FuncionesId=$model->FuncionesId;
+?>
+
 <div class='controles'>
 <legend>Configuración de la distribución de asientos</legend>
 		<div class=''>
@@ -26,9 +31,12 @@
 		) ?>
 <?php 
 echo TbHtml::buttonGroup(array(
-		array('label' => ' Agregar fila','class'=>'fa fa-plus btn btn-success',
-		'url'=> array('agregarFila','EventoId'=>$model->EventoId,'FuncionesId'=>$model->FuncionesId,'ZonasId'=>$model->ZonasId),
-		'title'=>'Agregar una Fila'),
+		array(
+				'id' => 'btn-agregar-fila',
+				'label' => ' Agregar fila',
+				'class'=>'fa fa-plus btn btn-success',
+				'url'=> array('agregarFila','EventoId'=>$model->EventoId,'FuncionesId'=>$model->FuncionesId,'ZonasId'=>$model->ZonasId),
+				'title'=>'Agregar una Fila'),
 		array('label' => ' Generar asientos','class'=>'fa fa-delicious btn-primary',	
 		'id'=>'btn-generar-numerados',
 		'url'=> array('generarNumerados','EventoId'=>$model->EventoId,'FuncionesId'=>$model->FuncionesId,'ZonasId'=>$model->ZonasId),
@@ -42,6 +50,8 @@ echo TbHtml::buttonGroup(array(
 <div class='row-fluid '>
 <table border="0" class="table items table-bordered table-hover" id="tabla-filas">
 	<tr>
+		<th>#</th>
+		<th></th>
 		<th>No. Fila</th>
 		<?php for ($i=0;$i<($model->ZonasCantSubZon);$i++) {
 				echo TbHtml::tag('th',array('colspan'=>2),"Subzona ".($i+1));
@@ -62,34 +72,72 @@ echo TbHtml::buttonGroup(array(
 </div>
 
 <?php Yii::app()->clientScript->registerScript('acciones',"
-		$('#btn-agregar-fila').live('click',function(){
+
+function sumatoria(){
+				var sum=0;
+				$('.FilasCanLug').each(function(){
+						var fid=$(this).data('fid');
+						var sid=$(this).data('sid');
+						$(this).val(
+								Math.abs( $('#LugaresIni-'+sid+'-'+fid).val()-$('#LugaresFin-'+sid+'-'+fid).val())+1
+						);
+						sum+=parseInt($(this).val())||0;
+				});
+				$('.Subtotal').each(function(){
+						var sub=0;
+						var fid=$(this).data('fid');
+						$('.FilasCanLug[data-fid='+fid+']').each(function(){
+								sub+=parseInt($(this).val())||0;
+						});
+						$(this).val(sub);
+				});
+
+				$('#FilasZonasCanLug').val(sum);
+				if(sum!=$('#Requeridos').val()){
+						$('#FilasZonasCanLug').css('color','#C00'); }
+				else{ $('#FilasZonasCanLug').css('color','black'); }
+		}
+function cambiarValoresFilas(control){
+		var key=control.attr('name');
+		var value=control.val();
+		var data={Filas:{ EventoId:$EventoId, FuncionesId:$FuncionesId, 
+				ZonasId:control.data('zid'), SubzonaId:control.data('sid'),
+				FilasId:control.data('fid'),
+		}};
+		data['Filas'][key]=value;
+		$.ajax({
+				url: '".$this->createUrl('AsignarValorFila')."',
+				type:'POST',
+				data:data,
+		});
+}
+		$('#btn-agregar-fila').on('click',function(){
 				var obj=$(this);
 				$.ajax({
 						url:obj.attr('href'),	
 						success:function(resp){
-								$('#tabla-filas tr:last').after(resp)
-								return false;
+									$('#tabla-filas tr:last').after(resp)
 						},
 				});
-		return false;
+				return false;
 		});
 
-		function calcularTotal(fid){
-				var sum=0;
-				var total=0;
-				$('.FilasCanLug[data-fid='+fid+']').each(function(){sum+=parseInt($(this).val())||0;});
-				$('.Subtotal').each(function(){total+=parseInt($(this).val())||0;});
-				$('#Subtotal-'+fid).val(sum);
-				sumatoria();
-		}
 		$('.limite').live('change',function(){
-				var fid=$(this).data('fid');
-				var sid=$(this).data('sid');
-				$('#FilasCanLug-'+sid+'-'+fid).val(
-						Math.abs(
-								$('#LugaresIni-'+sid+'-'+fid).val()-$(this).val())+1);
+				if ($(this).val()<=0 || isNaN($(this).val())) {
+					$(this).css('color','red');
+				}	
+				else{
+						$(this).css('color','black');
 
-				calcularTotal(fid);		
+						cambiarValoresFilas($(this));
+						var fid=$(this).data('fid');
+						var sid=$(this).data('sid');
+						$('#FilasCanLug-'+sid+'-'+fid).val(
+								Math.abs(
+										$('#LugaresIni-'+sid+'-'+fid).val()-$('#LugaresFin-'+sid+'-'+fid).val())+1);
+
+						sumatoria();		
+				}
 				});
 
 $('.vivo').live('focusout',function(){
@@ -105,5 +153,25 @@ $('#btn-generar-numerados').live('click',function(){
 		});
 return false;
 });
+$('.btn-eliminar-fila').live('click',function(){ 
+		var obj=$(this);
+		var fid=obj.data('fid');
+		$.ajax({
+				url:obj.attr('href'),
+						type:'post',
+						success:function(resp){ 
+								if(resp=='true'){ $('#fila-'+fid).remove();return false;}
+								else {
+										alert('No se puede eliminar esta fila.Verifique que el Evento no tenga ventas');}},
+						beforeSend:function(){
+													   	return confirm('¿Esta seguro de que desea eliminar esta Fila?\\nEsta operación es irreversible.');						}						
+
+		});
+return false;
+});
+
+/*///////////////////////////////////////////////////////////*/
+
+sumatoria();
 
 "); ?>

@@ -31,7 +31,8 @@ class DistribucionesController extends Controller
 						),
 						array(
 								'deny',
-								'actions'=>array('asignar editor'),
+								'actions'=>array('@'),
+								//'actions'=>array('asignar editor'),
 								'users'=>array('*'),
 						),
 				);
@@ -570,7 +571,18 @@ endforeach;
 			}
 			
 	}
+	public function actionEliminarFila($EventoId,$FuncionesId, $ZonasId,$FilasId)
+	{
+					$filas=Filas::model()->findAllByAttributes(compact('EventoId','FuncionesId','ZonasId','FilasId'));
+					$ret=true;
+					foreach ($filas as $fila) {
+						// Por fila X de cada zona...
+							$ret=$ret and $fila->delete();
+					}
+					echo $ret?'true':'false';
 
+			
+	}
 	public function actionGenerarArbolCargos()
 	{
 			// Genera o repara el arbol de zonaslevel1
@@ -685,7 +697,22 @@ endforeach;
 			$models=Filas::model()->findAllByAttributes(compact('EventoId','FuncionesId','ZonasId','FilasId'));
 			if (sizeof($models)>0) {
 					// Si existen tales filas 
-					echo TbHtml::openTag('tr');
+					echo TbHtml::openTag('tr',array('id'=>"fila-$FilasId"));
+					echo TbHtml::tag('td',array(),$FilasId);
+					echo TbHtml::tag('td',array(),
+							TbHtml::link(' ',
+							array(
+									'eliminarFila',
+									'EventoId'=>$EventoId,
+									'FuncionesId'=>$FuncionesId,
+									'ZonasId'=>$ZonasId,
+									'FilasId'=>$FilasId,
+							),
+							array(
+									'data-fid'=>$FilasId,
+									'title'=>'Eliminar fila',
+									'class'=>'btn btn-mini btn-danger fa fa-times btn-eliminar-fila',
+							)));
 					echo TbHtml::tag('td',array(),
 							TbHtml::textField('FilasAli', $models[0]['FilasAli'],
 							array('class'=>'FilasAli input-mini vivo',
@@ -701,6 +728,7 @@ endforeach;
 							CHtml::textField('Subtotal',0,array(
 									'class'=>'Subtotal pull-right text-right input-mini',
 									'id'=>'Subtotal-'.$FilasId,
+									'data-fid'=>$FilasId,
 									'readonly'=>true,
 							)));
 					echo TbHtml::closeTag('tr');
@@ -735,5 +763,7 @@ endforeach;
 			//$this->renderPartial('editorFilas',compact('model'));
 			$this->render('editorFilas',compact('model'));
 	}
+
+
 
 }

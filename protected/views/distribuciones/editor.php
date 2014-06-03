@@ -162,15 +162,6 @@ $('.btn-eliminar-zona').live('click',function(){
 		});
 return false;
 })
-		function sumatoria(){
-				var sum=0;
-				$('.FilasCanLug').each(function(){sum+=parseInt($(this).val())||0;});
-				$('#FilasZonasCanLug').val(sum);
-				if(sum!=$('#Requeridos').val()){
-						$('#FilasZonasCanLug').css('color','#C00'); }
-				else{ $('#FilasZonasCanLug').css('color','black'); }
-		}
-
 		$('.btn-generar-asientos').live('click',function(){
 				var zid=$(this).data('id');
 				$(this).toggleClass('btn-primary','btn-success');
@@ -185,45 +176,10 @@ return false;
 												'<div class=\'alert \'><h3>Asientos generados.</h3> <p>Se han generado '+e.lugares+' lugares </p></div> ');},
 						});
 						return false;
-				}else{
-						$('#dlg-asientos-contenido').load($(this).attr('href'),function(){sumatoria();});
-						$('#tabla-filas').editableTableWidget();
-				}	
+				}
 				//return false;		
 			});
 			
-		$('#btn-agregar-fila').live('click',function(){
-				var obj=$(this);
-				$.ajax({
-						url:obj.attr('href'),	
-						success:function(resp){
-								$('#tabla-filas tr:last').after(resp)
-								return false;
-						},
-				});
-		return false;
-		});
-		function calcularTotal(fid){
-				var sum=0;
-				var total=0;
-				$('.FilasCanLug[data-fid='+fid+']').each(function(){sum+=parseInt($(this).val())||0;});
-				$('.Subtotal').each(function(){total+=parseInt($(this).val())||0;});
-				$('#Subtotal-'+fid).val(sum);
-				sumatoria();
-		}
-		$('.Lugares').live('change',function(){
-				var fid=$(this).data('fid');
-				var sid=$(this).data('sid');
-				$('#FilasCanLug-'+sid+'-'+fid).val(
-						Math.abs(
-								$('#LugaresIni-'+sid+'-'+fid).val()-$(this).val())+1);
-
-				calcularTotal(fid);		
-				});
-
-$('.vivo').live('focusout',function(){
-		cambiarValoresFilas($(this));
-});
 
 
 
