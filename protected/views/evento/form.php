@@ -171,10 +171,10 @@
 	
 
         <div class="form-actions">
-<?php echo TbHtml::link(' Regresar',array('index'),array('class'=>' btn btn-primary fa-arrow-left ')); ?>
+<?php echo TbHtml::link(' Regresar',array('index'),array('class'=>' btn fa-arrow-left ')); ?>
         <?php echo TbHtml::submitButton($model->isNewRecord ? ' Registrar' : ' Guardar',array(
 			'size'=>TbHtml::BUTTON_SIZE_LARGE,
-			'class'=>'btn btn-check fa fa-check'
+			'class'=>'btn btn-check  btn-primary fa fa-check'
         )); ?>
     </div>
 
@@ -221,9 +221,10 @@
     'footer' => implode(' ', array(
     	TbHtml::button('Guardar cambios', array(
     		'data-dismiss' => 'modal',
-    		'color' => TbHtml::BUTTON_COLOR_PRIMARY)
+			'class'=>'btn btn-primary',
+    		)
     	),
-    	TbHtml::button('Cerrar', array('data-dismiss' => 'modal')),
+    	TbHtml::button('Cerrar', array('class'=>'btn', 'data-dismiss' => 'modal')),
     	)),
 )); ?>
 

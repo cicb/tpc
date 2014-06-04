@@ -212,7 +212,7 @@ class Filas extends CActiveRecord
 					$conexion->createCommand($sql)->execute();
 					$this->FilasCanLug=abs($this->LugaresIni-$this->LugaresFin)+1;
 					$this->save();
-					return $sql;
+					return true;
 
 			}	
 	}

@@ -2,7 +2,12 @@
 $EventoId=$model->EventoId;
 $FuncionesId=$model->FuncionesId;
 ?>
-
+<div id="respuesta" class='hidden'>
+		<div class='centrado' id="mensaje" style="margin-top:120px">
+				<i class="fa fa-spinner fa-spin fa-2x text-warning"></i>
+				<h2 class="text-warning">Generando los asientos, por favor espere...</h2>
+		</div>
+</div>
 <div class='controles'>
 <legend>Configuración de la distribución de asientos</legend>
 		<div class=''>
@@ -61,8 +66,9 @@ echo TbHtml::buttonGroup(array(
 	</tr>
 <?php 
 
-				for ($i=1;$i<=($model->nfilas);$i++) {
-						$this->actionVerFila($model->EventoId,$model->FuncionesId,$model->ZonasId,$i);
+				//for ($i=1;$i<=($model->nfilas);$i++) {
+			foreach($model->disfilas as $fila){
+						$this->actionVerFila($model->EventoId,$model->FuncionesId,$model->ZonasId,$fila->FilasId);
 				}
 ?>
 
@@ -149,9 +155,14 @@ $('#btn-generar-numerados').live('click',function(){
 		var obj=$(this);
 		$.ajax({
 				url:obj.attr('href'),
-				success:function(resp){ console.log(resp); },
+						beforeSend:function(){ 
+								$('body').css('cursor','wait');
+								$('#respuesta').removeClass('hidden');
+},
+				success:function(resp){  $('#mensaje').html(resp); },
+
 		});
-return false;
+				return false;
 });
 $('.btn-eliminar-fila').live('click',function(){ 
 		var obj=$(this);
@@ -170,8 +181,23 @@ $('.btn-eliminar-fila').live('click',function(){
 return false;
 });
 
+$('#mensaje').on('click',function(){
+				$('body').css('cursor','default');
+				$('#respuesta').addClass('hidden');
+})
 /*///////////////////////////////////////////////////////////*/
 
 sumatoria();
 
 "); ?>
+<style type="text/css" media="screen">
+#respuesta{
+		background:rgba(30,35,30,.9);
+		width:100%;
+		height:100%;
+		z-index:1000;
+		position:absolute;
+
+}
+	
+</style>

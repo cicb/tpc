@@ -73,6 +73,8 @@ class Zonas extends CActiveRecord
         'zonaslevel1'=>array(self::HAS_MANY,'Zonaslevel1', array('EventoId','FuncionesId','ZonasId')),
         'nzonas'=>	array(self::STAT,'Zonas','zonas(EventoId,FuncionesId)'),
         'nfilas'=>	array(self::STAT, 'Filas','EventoId, FuncionesId,ZonasId','select'=>'COUNT(distinct FilasId)',),
+        'asientos'=>	array(self::STAT, 'Lugares','EventoId, FuncionesId,ZonasId'),
+        'disfilas'=>	array(self::HAS_MANY, 'Filas','EventoId, FuncionesId,ZonasId','select'=>'FilasId','group'=>'FilasId'),
         'max'=>		array(self::STAT,'Zonas','zonas(EventoId,FuncionesId,ZonasId)','select'=> 'MAX(ZonasId)'),
 		);
 	}
@@ -336,10 +338,14 @@ class Zonas extends CActiveRecord
 					 //Elimina todos los posibles lugares creados previamente
 					 $this->eliminarLugares();
 					 //Generar asientos numerados
+				$ret=true;
 				foreach ($this->filas as $fila) {
 						// Por cada fila de la zona genera sus lugares 
-						echo $fila->generarLugares()."\n";
+						$ret=$ret and $fila->generarLugares();
 				}		
+				$this->ZonasCanLug=$this->asientos;
+				$this->save();
+				return $ret;
 			 }
 
 	 }

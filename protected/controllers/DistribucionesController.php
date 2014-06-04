@@ -751,13 +751,25 @@ endforeach;
 			// Genera asientos numerados de una zona
 					// Si le han pasado el id de zona
 					$zona=	Zonas::model()->findByPk(compact('EventoId','FuncionesId', 'ZonasId'));
-					$zona->generarLugares();
+					if ($zona->generarLugares()){
+							echo TbHtml::openTag('div',array('style'=>'color:#FFF'));
+							echo TbHtml::tag('h2',array(),'Se han generado los lugares.');
+							echo TbHtml::tag('p', array(),'Los lugares se han registrado conforme a la configuración que ústed acaba de definir.' );
+							echo "<br>";
+							echo TbHtml::link(' Regresar a zonas', 
+									array('editor', 'EventoId'=>$EventoId, 'FuncionesId'=>$FuncionesId,'ZonasId'=>$ZonasId,'#'=>'zona-'.$ZonasId),
+								   	array(
+											'class'=>'btn btn-large btn-primary fa fa-arrow-left',
+									));
+							echo TbHtml::closeTag('div');
+					}
+					
 
 	}
 	public function actionGeneracionFilas($EventoId,$FuncionesId, $ZonasId)
 	{
 			// Genera filas distribuidas por las subzonas
-			$model=Zonas::model()->with('nfilas')->findByPk(compact('EventoId','FuncionesId','ZonasId'));
+			$model=Zonas::model()->with('disfilas')->findByPk(compact('EventoId','FuncionesId','ZonasId'));
 			
 			//Yii::app()->clientScript->scriptMap['jquery.js'] = false;
 			//$this->renderPartial('editorFilas',compact('model'));
