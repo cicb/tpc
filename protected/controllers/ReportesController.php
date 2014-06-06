@@ -6,7 +6,34 @@ class ReportesController extends Controller
 	public function actionCortesDiarios()
 	{
         $this->perfil();
-		$this->render('cortesDiarios');
+        /*$totalVentasNormales             = array();
+        $totalBoletosDuros               = array();
+        $totalVentasNormalesSinDescuento = array();
+        $totalCortesias                  = array();
+        $totalBoletos                    = array();
+        $totalBoletosCancelados          = array();*/
+        $totalVentas                     = array();
+        $eventos                         = array();
+        $model = new Ventas;
+        if(!empty($_POST)){
+            
+            $usuario_id = $_POST['usuario_id'];
+            $desde      = $_POST['desde'];
+            $hasta      = $_POST['hasta'];
+            //print_r($_POST);
+            /*$totalVentasNormales             = $model->getTotalVentasNormales($usuario_id,$desde,$hasta);
+            $totalBoletosDuros               = $model->getTotalBoletosDuros($usuario_id,$desde,$hasta);
+            $totalVentasNormalesSinDescuento = $model->getTotalVentasNormalSinDescuento($usuario_id,$desde,$hasta);
+            $totalCortesias                  = $model->getTotalCortesias($usuario_id,$desde,$hasta);
+            $totalBoletos                    = $model->getTotalBoletos($usuario_id,$desde,$hasta);
+            $totalBoletosCancelados          = $model->getTotalBoletosCancelados($usuario_id,$desde,$hasta);*/
+            $totalVentas                     = $model->getTotalVentas($usuario_id,$desde,$hasta);
+            $eventos                         = $model->getEventos($usuario_id,$desde,$hasta);
+        }
+		$this->render('cortesDiarios',compact('totalVentas',
+                                              'eventos',
+                                              'model'
+                                              ));
 	}
 	public function actionDesgloseVentas()
 	{
@@ -1327,6 +1354,13 @@ $objWriter->save('php://output');
 		}	
 
 	}
+    public function actionDetalleVentasAjax(){
+        if(!empty($_POST)){
+            $model = new Ventas;
+            $this->renderPartial("_detalleVentas",array('model'=>$model,'data'=>$_POST),false,true);
+        }
+        
+    }
 	// Uncomment the following methods and override them if needed
 	/*
 	public function filters()

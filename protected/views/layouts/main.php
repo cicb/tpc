@@ -48,7 +48,10 @@ $this->widget('bootstrap.widgets.TbNavbar',array(
 										array('label' => 'Conciliación Farmatodo',
 												'url' =>  $this->createUrl('reportes/conciliacionFarmatodo'),
 												'visible' => !Yii::app()->user->isGuest AND (Yii::app()->user->getState("Admin"))?true:false),
-										array('label' => 'Desglose De Ventas', 
+										array('label' => 'Cortes Diarios',
+												'url' =>  $this->createUrl('reportes/cortesDiarios'),
+												'visible' => !Yii::app()->user->isGuest AND (Yii::app()->user->getState("Admin"))?true:false),
+                                        array('label' => 'Desglose De Ventas', 
 												'url' =>  $this->createUrl('reportes/desgloseVentas'),'visible'
 												=> !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
 										array('label' => 'Historial De Cancelaciones Y Reimpresiones',
@@ -77,7 +80,6 @@ $this->widget('bootstrap.widgets.TbNavbar',array(
 										array('label' => 'Ventas Diarias',
 												'url' =>  $this->createUrl('reportes/ventasDiarias'),
 												'visible' => !Yii::app()->user->isGuest AND (Yii::app()->user->getState("Admin"))?true:false),
-
 								),
 						),
 
