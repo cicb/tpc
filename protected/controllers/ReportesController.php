@@ -1356,6 +1356,7 @@ $objWriter->save('php://output');
 	}
     public function actionDetalleVentasAjax(){
         if(!empty($_POST)){
+            set_time_limit(0);
             $model = new Ventas;
             $this->renderPartial("_detalleVentas",array('model'=>$model,'data'=>$_POST),false,true);
         }
