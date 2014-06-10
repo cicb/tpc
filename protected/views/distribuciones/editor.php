@@ -1,11 +1,44 @@
 <?php 
+$dist=$model->forolevel1;
 Yii::app()->clientScript->registerScriptFile("js/holder.js"); 
-?>
-<?php Yii::app()->clientScript->registerScriptFile('js/mindmup-editabletable.js') ?>
+Yii::app()->clientScript->registerScriptFile('js/mindmup-editabletable.js') ?>
 
 <div class="controles">
+<!--- ------------------------------------------------------------------------- Distribucion-------- --!>
+
         <?php echo CHtml::tag('legend',array(), 'Configuración de la Distribución'); ?>
-	<?php $this->renderPartial('actualizar',compact('model'),false,true); ?>
+	<div class="box box4  white-box">
+		<h3>Información básica</h3>
+		<?php $form=$this->beginWidget('bootstrap.widgets.TbActiveForm', array(
+		'id'=>'form-forolevel1',
+		'enableAjaxValidation'=>false,
+		'layout' => TbHtml::FORM_LAYOUT_HORIZONTAL,
+		)); ?>
+
+<?php echo $form->dropDownListControlGroup($dist,'ForoId',
+		CHtml::listData(
+				Foro::model()->findAll(),
+				'ForoId','ForoNom'),
+		array('class'=>'','disabled'=>true)		
+		); ?>
+<?php $this->widget('bootstrap.widgets.TbAlert'); ?>
+		<?php echo $form->textFieldControlGroup($dist,'ForoMapIntNom',
+		array('class'=>'forolevel1')		
+); ?>
+<?php echo TbHtml::hiddenField('YII_CSRF_TOKEN',Yii::app()->request->csrfToken) ?>
+<?php //echo TbHtml::submitButton(' Guardar información', 
+//array(
+		//'id'=>'btn-guardar',
+		//'class'=> 'btn fa fa-save ')
+		//); ?>
+<?php $this->endWidget(); ?>
+	</div>
+
+<!--- ------------------------------------------------------------------------- Distribucion-------- -->
+	<div class="box box6 white-box">
+		<h3>Configuración del mapa</h3>
+		<?php $this->renderPartial('actualizar',compact('model'),false,true); ?>
+	</div>
 	
 	<div class="box white-box">
 		<h3>Zonas</h3>
@@ -179,8 +212,20 @@ return false;
 				}
 				//return false;		
 			});
-			
 
+function actualizar(){
+		data=$('#form-forolevel1').serialize();
+		$.ajax({
+			url:'".$this->createUrl('actualizar', compact('EventoId','FuncionesId'))."',
+			data: data,		
+			type:'post',
+				
+		});
+}	
+
+$('.forolevel1').on('change',function(){
+		actualizar();
+});
 
 
 		"); ?>

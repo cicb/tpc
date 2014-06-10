@@ -20,7 +20,7 @@
 		echo "$this->forolevel1->ForoMapPat";
 	} ?>
 <?php
-		if (isset($model->zonas) and sizeof($model->zonas)>0) {
+		if ($model->ForoMapIntId>0) {
 				echo TbHtml::link(' Modificar distribución',array(
 						'distribuciones/editor',
 						'EventoId'=>$model->EventoId,

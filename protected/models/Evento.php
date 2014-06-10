@@ -83,6 +83,7 @@ class Evento extends CActiveRecord
              'subzona' => array(self::HAS_MANY, 'Subzona', array('SubzonaId','FuncionesId', 'EventoId')),
 			 'boletosVendidos'=>array(self::STAT, 'Ventaslevel1', 'EventoId','condition'=>"VentasSta NOT LIKE 'CANCELADO'"),
 			 'accesos'=>array(self::STAT, 'Acceso', 'EventoId'),
+			 'ventaslevel1'=>array(self::STAT,'Ventaslevel1', 'EventoId'),
 		);
 	}
 

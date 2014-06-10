@@ -291,7 +291,7 @@ class Funciones extends CActiveRecord
 					$maximo=Funciones::maxId($eventoId);
 					$model->FuncionesId=$maximo+1;
 					$anterior=Funciones::model()->findByPk(array('EventoId'=>$model->EventoId, 'FuncionesId'=>$maximo));
-					$model->ForoMapIntId=$anterior->ForoMapIntId;
+					//$model->ForoMapIntId=$anterior->ForoMapIntId;
 					$model->FuncionesFecIni=date('Y-m-d H:i:s');
 					$model->FuncionesFecHor=date('Y-m-d H:i:s');
 					$model->FuncPuntosventaId=$evento->PuntosventaId;
@@ -392,6 +392,17 @@ class Funciones extends CActiveRecord
 
 	 public function beforeDelete()
 	 {
+			 if ( $this->eliminarDistribucion()) {
+			 	// Si se elimina todo lo relacionado con esta funcion.
+					 return parent::beforeDelete();	 	
+			 }	
+			 else {
+			 	return false;
+			 }
+	 }
+
+	 public function eliminarDistribucion()
+	 {
 			 $identificador=array('EventoId'=>$this->EventoId) ;
 			 $nfunciones=Funciones::model()->countByAttributes($identificador);	 
 			 if ($nfunciones>1) {
@@ -410,13 +421,14 @@ class Funciones extends CActiveRecord
 									 'configurl_funcion_mapa_grande_id'=>$mapagrande->id));
 							 $mapagrande->delete();	
 					 }	
-					 return parent::beforeDelete();	 	
+					 $this->ForoMapIntId=0;
+					 $this->save();
+					 return true;	 	
 			 }	
 			 else {
 			 	return false;
 			 }
 	 }
-
 	 public function getConfiPvFuncion($puntosventaId)
 	{
 		#Devuelve el confiPvFuncion que este asociado

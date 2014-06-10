@@ -19,7 +19,7 @@ class Forolevel1 extends CActiveRecord
 	/**
 	 * @return string the associated database table name
 	 */
-	public $EventoId;
+	public $EventoId=0;
 	public $maxId;
 	public function tableName()
 	{
@@ -41,6 +41,7 @@ class Forolevel1 extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('ForoId', 'required'),
+			//array('ForoId, ForoMapIntId','on'=>'update', 'required'),
 			array('ForoMapZonIntWei, ForoMapZonIntHei', 'numerical', 'integerOnly'=>true),
 			array('ForoId, ForoMapIntId', 'length', 'max'=>20),
 			array('ForoMapIntNom', 'length', 'max'=>75),
@@ -65,7 +66,8 @@ class Forolevel1 extends CActiveRecord
 			'funciones'=> array(self::HAS_MANY,'Funciones', array('ForoId','ForoMapIntId')),
 			'funcion'=> array(self::HAS_ONE,'Funciones', array('ForoId','ForoMapIntId')),
 			'eventos'=>array(
-                self::HAS_MANY,'Evento',array('EventoId'=>'EventoId'),'through'=>'funciones','joinType'=>'INNER JOIN'
+					self::HAS_MANY,'Evento',array('EventoId'=>'EventoId'),'through'=>'funciones','joinType'=>'INNER JOIN',
+					//'group'=>'eventos.EventoId'
             ),
 			'evento'=>array(
                 self::HAS_ONE,'Evento',array('EventoId'=>'EventoId'),'through'=>'funciones',
@@ -115,6 +117,7 @@ class Forolevel1 extends CActiveRecord
 		$criteria=new CDbCriteria;
 
 		// error_log("EventoId: ".$this->EventoId,3,'/tmp/log');
+		$criteria->order="ForoId desc, ForoMapIntId desc";
 		if ($this->EventoId>0) {
 			$criteria->join="INNER JOIN funciones as t1 ON t1.ForoId=t.ForoId 
 							and t1.ForoMapIntId=t.ForoMapIntId ";
@@ -122,19 +125,18 @@ class Forolevel1 extends CActiveRecord
 			$criteria->compare('t1.EventoId ',$this->EventoId);
 			// $criteria->addCondition("t2.EventoId like ':EventoId' ")
 		}
-		
-		$criteria->compare('ForoId',$this->ForoId,true);
-		$criteria->compare('ForoMapIntId',$this->ForoMapIntId,true);
-		$criteria->compare('ForoMapIntNom',$this->ForoMapIntNom,true);
-		$criteria->compare('foroMapConfig',$this->foroMapConfig,true);
-		$criteria->compare('ForoMapIntIma',$this->ForoMapIntIma,true);
-		$criteria->compare('ForoMapZonInt',$this->ForoMapZonInt,true);
-		$criteria->compare('ForoMapZonIntWei',$this->ForoMapZonIntWei);
-		$criteria->compare('ForoMapZonIntHei',$this->ForoMapZonIntHei);
-		$criteria->compare('ForoMapPat',$this->ForoMapPat,true);
-		$criteria->order="ForoId desc, ForoMapIntId desc";
-
-		$criteria->addCondition('LENGTH(ForoMapPat)>3');
+		else{
+				$criteria->compare('ForoId',$this->ForoId,true);
+				$criteria->compare('ForoMapIntId',$this->ForoMapIntId,true);
+				$criteria->compare('ForoMapIntNom',$this->ForoMapIntNom,true);
+				//$criteria->compare('foroMapConfig',$this->foroMapConfig,true);
+				//$criteria->compare('ForoMapIntIma',$this->ForoMapIntIma,true);
+				//$criteria->compare('ForoMapZonInt',$this->ForoMapZonInt,true);
+				//$criteria->compare('ForoMapZonIntWei',$this->ForoMapZonIntWei);
+				//$criteria->compare('ForoMapZonIntHei',$this->ForoMapZonIntHei);
+				$criteria->compare('ForoMapPat',$this->ForoMapPat,true);
+		}
+		//$criteria->addCondition('LENGTH(ForoMapPat)>3');
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
 		));
@@ -392,14 +394,16 @@ class Forolevel1 extends CActiveRecord
 			return	'holder.js/369x272';	
 	}
 
-	public function esEditable($EventoId)
+	public function esEditable()
 	{
-			// Verifica que la distribucion solo este asignada a un evento que es el mismoq que el evento del que se quiere editar
-
-			if (sizeof($this->eventos)==1){
-					return  ($this->evento->EventoId==$EventoId) ;
-			}else
+			// Verifica que la distribucion solo este asignada a un evento que es el mismo que el evento del que se quiere editar
+			$neventos=sizeof($this->eventos);
+			if ($neventos>1){
 					return false;
-
+			}else if($neventos>0){
+					$ventas=Ventaslevel1::model()->countByAttributes(array( 'EventoId'=>$this->eventos[0]->EventoId));
+					return $ventas==0;
+			}
+			return false;
 	}
 }

@@ -548,6 +548,12 @@ class FuncionesController extends Controller
 
 
   }
+
+  public function actionDesasignarDistribucion($EventoId,$FuncionesId)
+  {
+		  $model=Funciones::model()->findByPk(compact('EventoId','FuncionesId'));
+		  echo CJSON::encode($model->eliminarDistribucion()?'true':'false');
+  }
 	// Uncomment the following methods and override them if needed
 	/*
 	public function filters()

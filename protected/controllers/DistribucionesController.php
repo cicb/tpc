@@ -108,7 +108,10 @@ class DistribucionesController extends Controller
 							if($distribucion->save()){
 									//Si se guarda correctamente la distribucion, se crea la primera zona
 									$funcion->ForoMapIntId=$distribucion->ForoMapIntId;
-									echo $funcion->agregarZona()?'true':'false';
+									if($funcion->agregarZona())
+											echo $funcion->save()?'true':'false';
+									else 
+											echo 'false';
 
 							}
 							else{
@@ -138,14 +141,14 @@ class DistribucionesController extends Controller
 
 
 
-	public function actionActualizar($scenario=""){
+	//public function actionActualizar($scenario=""){
 
-		$this->scenario=$scenario;	
-	     $eventoId = $_GET['eventoId']; 
-         $funcionId = $_GET['funcionId']; 
-	     $model = Funciones::model()->find("EventoId=$eventoId AND FuncionesId=$funcionId");  
-	     $this->render('actualizar',compact('model'));  
-	}
+		//$this->scenario=$scenario;	
+		 //$eventoId = $_GET['eventoId']; 
+         //$funcionId = $_GET['funcionId']; 
+		 //$model = Funciones::model()->find("EventoId=$eventoId AND FuncionesId=$funcionId");  
+		 //$this->render('actualizar',compact('model'));  
+	//}
     /****************************************************************************************
  *Manipulacion de coordenadas mapa Chico
  ****************************************************************************************/    
@@ -479,25 +482,32 @@ endforeach;
 
         // $model=Forolevel1::model()->with('zonas')->findByPk(compact('ForoId','ForoMapIntId'));
 		$this->scenario=$scenario;
-        $model=Funciones::model()->with(array('zonas'=>array('with'=>'evento'),'forolevel1'))->findByPk(compact('EventoId','FuncionesId'));
-        // if(is_object($model))
+		$model=Funciones::model()->with(
+				array(
+						'zonas'=>array(
+								'with'=>'evento'
+						),
+						array(
+								'forolevel1'=>array(
+										'with'=>array('eventos')
+								))))->findByPk(compact('EventoId','FuncionesId'));
+		 if(is_object($model))
 		switch ($scenario) {
 					case 'nueva':
 					case 'editar':
 						// En caso de la asignacion se cargan los formulario con campos deshabilitados
-							if (isset($model->forolevel1) and $model->forolevel1->esEditable($EventoId)) {
+							if (isset($model->forolevel1) and $model->forolevel1->esEditable()) {
 									// Si la funcion tiene efectivamente una distribucion y esta puede editarse por completo
 									$this->render('editor',compact('model'),false,true);
 									break;
 							}	
 							//else
-									//echo CHtml::tag('h1',array(),$model->forolevel1->ForoMapIntId);
-							//break;
+									//echo CHtml::tag('h1',array(),serialize($model->forolevel1->esEditable()));
+							break;
 					case 'asignacion':
 						// En caso de la asignacion se cargan los formulario con campos deshabilitados
 					default:
 						$this->render('asignar',compact('model'),false,true);
-						// code...
 						break;
 				}
         // else{
@@ -544,6 +554,33 @@ endforeach;
 		$model->save();
         echo CJSON::encode($model);
     }
+
+	public function actionActualizar($EventoId, $FuncionesId)
+	{
+			// Establece el los datos de la distribucion
+			$funcion=Funciones::model()->with('forolevel1')->findByPk(compact('EventoId','FuncionesId'));
+			if (isset($funcion->forolevel1)) {
+					$model=$funcion->forolevel1;
+					if (isset($_POST['Forolevel1'])) {
+							// Si se reciben datos del formulario de edicion de distribucion se guardan los datos
+							$model->attributes=$_POST['Forolevel1'];
+							if (isset($_POST['Forolevel1']['ForoId'])) {
+									// Si se cambio el foro  se cambia tambien en la funcion
+									$funcion->ForoId=$model->ForoId;
+									$funcion->save();
+							}	
+							if($model->save())
+									echo "true";
+							else
+									echo "false";
+					}	
+			}	
+			else {
+					  
+					throw new Exception("Error al procesar su petición, la función no tiene una distribucion valida ", 3);
+			}
+				
+	}
     public function actionAsignarValorFila()
     {
         # Cambia el nombre de una zona dada
@@ -757,7 +794,9 @@ endforeach;
 							echo TbHtml::tag('p', array(),'Los lugares se han registrado conforme a la configuración que ústed acaba de definir.' );
 							echo "<br>";
 							echo TbHtml::link(' Regresar a zonas', 
-									array('editor', 'EventoId'=>$EventoId, 'FuncionesId'=>$FuncionesId,'ZonasId'=>$ZonasId,'#'=>'zona-'.$ZonasId),
+									array('editor', 'EventoId'=>$EventoId, 'FuncionesId'=>$FuncionesId,'ZonasId'=>$ZonasId,
+									'scenario'=>'editar',
+									'#'=>'zona-'.$ZonasId),
 								   	array(
 											'class'=>'btn btn-large btn-primary fa fa-arrow-left',
 									));
@@ -774,6 +813,19 @@ endforeach;
 			//Yii::app()->clientScript->scriptMap['jquery.js'] = false;
 			//$this->renderPartial('editorFilas',compact('model'));
 			$this->render('editorFilas',compact('model'));
+	}
+
+	public function actionEditorSubzona($EventoId, $FuncionesId,$ZonasId,$SubzonaId)
+	{
+			// Muestra un editor de lugares ordenados por filas de una subzona dada
+			$subzona=Subzona::model()->with(array('filas'=>array('lugares')))->findByPk(compact('EventoId','FuncionesId', 'ZonasId','SubzonaId'));
+			if (is_object($subzona)) {
+					// 
+					
+					$this->render('editorSubzona',compact('subzona'));
+			}	
+					throw new Exception("Error al procesar su petición, vefique integridad de parametros ", 3);
+
 	}
 
 

@@ -70,7 +70,7 @@ echo CHtml::dropDownList('ZonasTipo', $model->ZonasTipo,array(1=>'General',2=>'N
 			if ($editar) {
 					echo TbHtml::buttonGroup(array(
 							//array('label' => ' ','class'=>'fa fa-building-o btn-primary'),
-							array('label' => ' ','class'=>'fa fa-bars btn',	'title'=>'Configurar Filas'),
+							array('label' => ' ','class'=>'fa fa-bars btn',	'title'=>'Configurar Filas','id'=>'btn-configurar-filas'),
 							array('label' => ' ','class'=>'fa fa-th-large',	'title'=>'Configurar Asientos'),
 					),array('class'=>$model->ZonasTipo==1?'hidden':'')); 
 			}	

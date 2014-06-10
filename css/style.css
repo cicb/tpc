@@ -299,6 +299,16 @@ th {
   vertical-align: top;
   width: 856px;
 }
+.box6 {
+  float: none;
+  margin: auto;
+  display: inline-block;
+  vertical-align: top;
+  width: 90%;
+}
+.box {
+  margin: 5px auto;
+}
 .btn {
   font-family: FontAwesome !important ;
 }

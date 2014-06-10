@@ -20,6 +20,16 @@
 		array('class'=>'btn fa fa-arrow-left'));
 	 ?>
 	<?php
+		echo TbHtml::link(' Desasignar de esta distribución',array(
+				'funciones/desasignarDistribucion',
+				'EventoId'=>$model->EventoId,
+				'FuncionesId'=>$model->FuncionesId,
+		),
+		array(
+				'id'=>'btn-desasignar',
+				'class'=>'btn btn-danger fa fa-minus-circle'));
+	 ?>
+	<?php
 //echo  TbHtml::ajaxButton( 
 		//' Asignar esta distribución a todas las funciones',
 		//$this->createUrl('distribuciones/asignarATodas'),
@@ -72,6 +82,20 @@ $('.ZonasAli').live('focusout',function(){
 		cambiarValores($(this));
 });
 
+$('#btn-desasignar').on('click',function(){
+		if (confirm('¿Esta seguro de quitar la distribución actual de la funcion? Esto eliminara todas su zonas, subzonas, filas y lugares permanentemente.')) {
+				var obj=$(this);
+				$.ajax({
+						url:obj.attr('href'),
+								type:'post',
+								dataType:'json'
+						success:function(resp){alert(resp);if(resp){window.location='".$this->createUrl('evento/actualizar',array('id'=>$EventoId))."'}}
+						
+});
+		return false;
+		}	
+
+});
 "); ?>
 <?php $this->renderPartial('/distribuciones/js/arbol',array('EventoId'=>$EventoId,'FuncionesId'=>$FuncionesId),false,true); ?>
 <style type="text/css" media="screen">
