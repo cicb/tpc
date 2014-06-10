@@ -1,6 +1,7 @@
 <?php
 	 //print_r($data);
      $detallePorZonaIndividual = $model->getVentasDetallePorZonaIndividual($data['eventoId'],$data['funcionId'],$data['usuarioId'],$data['desde'],$data['hasta']);
+     $detallePorZonaIndividual = $detallePorZonaIndividual->getData();
      //print_r($detallePorZonaIndividual);
      $totalIndividual = $model->getTotalIndividual($data['eventoId'],$data['funcionId'],$data['usuarioId'],$data['desde'],$data['hasta']);
      $totalIndividual = $totalIndividual->getData();
@@ -8,7 +9,7 @@
 ?>
 <br />
 <!--Detalle de boletos en ventas Normales-->
-<?php if(!empty($detallePorZonaIndividual->getData())):?>
+<?php if(!empty($detallePorZonaIndividual)):?>
     <div class="row" style="background: silver;">
         <div class="span7">
         Ventas
@@ -16,7 +17,7 @@
         <div class="span4">Cantidad: <?php echo $totalIndividual[0]['cantidad'] ?></div>
         <div class="span4">Total: $<?php echo number_format($totalIndividual[0]['VentasCosBolT']+$totalIndividual[0]['VentasCarSerT'],2) ?></div>
     </div>
-    <?php foreach($detallePorZonaIndividual->getData() as $key => $zona): ?>
+    <?php foreach($detallePorZonaIndividual as $key => $zona): ?>
     <table class="table">
         <thead style="background: none;color: black;">
             <tr>
