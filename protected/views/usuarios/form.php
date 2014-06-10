@@ -86,7 +86,7 @@ td{font-family:FontAwesome !important;}
 		<?php echo $form->error($model,'UsuariosStatus'); ?>
 	</div>
 <br />
-<div class='muted'>INFORMACION ADICIONAL</div>
+<div class='muted'>INFORMACIÓN ADICIONAL</div>
 <br />
 	<div class="row">
 		<?php echo $form->labelEx($model,'UsuariosNot'); ?>
@@ -103,7 +103,18 @@ td{font-family:FontAwesome !important;}
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'UsuariosVigencia'); ?>
-		<?php echo $form->dateField($model,'UsuariosVigencia'); ?>
+		<div class="input-append">
+		<?php $this->widget('yiiwheels.widgets.datepicker.WhDatePicker', array(
+				'name' => 'Usuarios[UsuariosVigencia]',
+				'value'=>$model->UsuariosVigencia,
+				'pluginOptions' => array(
+				'format' => 'yyyy-mm-dd'
+				)
+		));
+		?>
+		<span class="add-on"><icon class="icon-calendar"></icon></span>
+		</div>
+		<?php //echo $form->dateField($model,'UsuariosVigencia'); ?>
 		<?php echo $form->error($model,'UsuariosVigencia'); ?>
 	</div>
 <br />
@@ -229,6 +240,7 @@ $this->widget('bootstrap.widgets.TbGridView', array(
 				'EventoId','EventoNom'),
 				array(
 						'class'=>'span3 ' ,
+						'empty'=>'SELECCIONE UN EVENTO'
 				)); ?>
 <br />
 <br />

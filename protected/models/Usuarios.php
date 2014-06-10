@@ -305,7 +305,8 @@ class Usuarios extends CActiveRecord
 							$condiciones = " AND EventoId IN(".implode(',',$eventos).")";
 					}	
 			}
-			$eventos = Evento::model()->findAll(array('condition'=>" EventoSta='ALTA'".$condiciones,'order'=>"t.EventoId DESC"));
+			//$eventos = Evento::model()->findAll(array('condition'=>" EventoSta='ALTA'".$condiciones,'order'=>"t.EventoId DESC"));
+			$eventos=array();
 
 			return $eventos;
 	}
