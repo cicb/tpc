@@ -75,15 +75,15 @@ class Evento extends CActiveRecord
 			'categoria' => array(self::HAS_ONE, 'Categorialevel1', 'CategoriaId'),
 			'categoriaSub' => array(self::BELONGS_TO, 'Categorialevel1', 'CategoriaSubId'),
 			'puntoventa' => array(self::HAS_ONE, 'Puntosventa', 'PuntosventaId'),
-			'foro' => array(self::HAS_ONE, 'Foro', 'ForoId'),
-			//'distribucion' => array(self::HAS_ONE, 'Distribucionpuerta', 'IdDistribucionPuerta'),
-            
+			'foro' => array(self::BELONGS_TO, 'Foro', 'ForoId'),
+            'asientos'=>array(self::STAT,'Lugares','EventoId','condition'=>"LugaresStatus<>'OFF'"),
             'distribucionpuertalevel1' =>array(self::BELONGS_TO,'Distribucionpuertalevel1','EventoId'),
              'funciones' => array(self::HAS_MANY, 'Funciones', array( 'EventoId')),
-             'zonas' => array(self::HAS_MANY, 'Zonas', array('FuncionesId', 'EventoId')),
+             'zonas' => array(self::HAS_MANY, 'Zonas', array( 'EventoId','FuncionesId')),
              'subzona' => array(self::HAS_MANY, 'Subzona', array('SubzonaId','FuncionesId', 'EventoId')),
 			 'boletosVendidos'=>array(self::STAT, 'Ventaslevel1', 'EventoId','condition'=>"VentasSta NOT LIKE 'CANCELADO'"),
 			 'accesos'=>array(self::STAT, 'Acceso', 'EventoId'),
+			 'ventaslevel1'=>array(self::STAT,'Ventaslevel1', 'EventoId'),
 		);
 	}
 
@@ -94,7 +94,7 @@ class Evento extends CActiveRecord
 	{
 		return array(
 			'EventoId' => 'Evento',
-			'EventoNom' => 'Nombre: ',
+			'EventoNom' => 'Nombre del evento: ',
 			'EventoSta' => 'Estatus del Evento',
 			'EventoFecIni' => 'Fecha Inicio',
 			'EventoFecFin' => 'Fecha Fin',
@@ -333,6 +333,7 @@ class Evento extends CActiveRecord
 	 {
 				if ($this->scenario=='insert') {
 						$this->EventoId=Evento::getMaxId()+1;
+						$this->EventoTemFecFin=$this->EventoFecFin;
 				}	
 			 return parent::beforeSave();
 	 }

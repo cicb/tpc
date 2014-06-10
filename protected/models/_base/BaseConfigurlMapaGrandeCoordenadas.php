@@ -56,6 +56,7 @@ abstract class BaseConfigurlMapaGrandeCoordenadas extends GxActiveRecord {
 
 	public function relations() {
 		return array(
+            'mapagrande'=>  array(self::BELONGS_TO, 'MapaGrande', 'configurl_funcion_mapa_grande_id'),
 		);
 	}
 

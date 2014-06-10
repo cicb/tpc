@@ -24,6 +24,8 @@ class Filas extends CActiveRecord
 	 * Returns the static model of the specified AR class.
 	 * @return Filas the static model class
 	 */
+	public $maxId;	
+	public $maxAsientos;	
 	public static function model($className=__CLASS__)
 	{
 		return parent::model($className);
@@ -45,7 +47,7 @@ class Filas extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('EventoId, FuncionesId, ZonasId, SubzonaId, FilasId, FilasAli, FilasNum, FilasCanLug, FilasIniCol, FilasIniFin, FilasBanExp, LugaresIni, LugaresFin', 'required'),
+			array('EventoId, FuncionesId, ZonasId, SubzonaId', 'required'),
 			array('FilasNum, FilasCanLug, FilasIniCol, FilasIniFin, FilasBanExp, LugaresIni, LugaresFin', 'numerical', 'integerOnly'=>true),
 			array('EventoId, FuncionesId, ZonasId, SubzonaId, FilasId', 'length', 'max'=>20),
 			array('FilasAli', 'length', 'max'=>40),
@@ -63,7 +65,9 @@ class Filas extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-        'lugares' => array(self::HAS_MANY, 'Lugares', array('EventoId','FuncionesId','ZonasId','SubzonaId','FilasId')),
+				'lugares' => array(self::HAS_MANY, 'Lugares', array('EventoId','FuncionesId','ZonasId','SubzonaId','FilasId')),
+				'ancho'   => array(self::STAT, 'Filas','EventoId, FuncionesId,ZonasId,SubzonaId','select'=>'MAX(ABS(LugaresIni-LugaresFin))+1',),
+
 		);
 	}
 
@@ -117,5 +121,99 @@ class Filas extends CActiveRecord
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
 		));
+	}
+	public static function maxId($EventoId, $FuncionesId, $ZonasId,$SubzonaId)
+	 {
+			 $row = self::model()->find(array(
+					 'select'=>'max(FilasId) as maxId',
+					 'condition'=>"EventoId=:evento and FuncionesId=:funcion and ZonasId=:zona and SubzonaId=:subzona",
+					 'params'=>array('evento'=>$EventoId,'funcion'=>$FuncionesId,'zona'=>$ZonasId,'subzona'=>$SubzonaId)
+			 ));
+			 return $row['maxId'];
+	 }
+	public function maxAsientos()
+	 {
+			$EventoId= $FuncionesId= $ZonasId=$SubzonaId=0;
+			 extract($this->getAttributes(),EXTR_IF_EXISTS);
+			 $row = self::model()->find(array(
+					 'select'=>'MAX(ABS(LugaresIni-LugaresFin))+1 as maxAsientos',
+					 'condition'=>"EventoId=:evento and FuncionesId=:funcion and ZonasId=:zona and SubzonaId=:subzona",
+					 'params'=>array('evento'=>$EventoId,'funcion'=>$FuncionesId,'zona'=>$ZonasId,'subzona'=>$SubzonaId)
+			 ));
+			 return $row['maxAsientos'];
+	 }
+
+	public function init()
+	{
+			$this->LugaresIni=1;
+			$this->LugaresFin=1;
+		return parent::init();
+	}
+	public function beforeDelete()
+	{
+			//Antes de eliminar la fila verifica que no tenga ventas y elimina tambien sus lugares
+			$identificador=array('EventoId'=>$this->EventoId,
+					'FuncionesId'=>$this->FuncionesId,
+					'ZonasId'=>$this->ZonasId,
+					'SubzonaId'=>$this->SubzonaId,
+				   	'FilasId'=>$this->FilasId);
+			$ventas=Ventaslevel1::model()->countByAttributes(array( 'EventoId'=>$this->EventoId));
+			if($ventas==0){
+					//Si no hay ventas se procede a eliminar sus asientos
+					Lugares::model()->deleteAllByAttributes($identificador);
+					return parent::beforeDelete();
+			}
+			else{
+					//Si existen ventas no se puede eliminar
+					return false;
+			}
+	}
+	public function beforeSave()
+	{
+			if ($this->scenario=='insert') {
+				$this->FilasId=self::maxId($this->EventoId,$this->FuncionesId,$this->ZonasId,$this->SubzonaId)+1;
+				$this->FilasNum=$this->FilasId;
+			}	
+		return parent::beforeSave();
+	}
+
+	public function generarLugares($ignorar=false)
+	{
+			 //#Si el registro de la fila tiene todo lo necesario para generarlo
+			if ($this->LugaresIni>0 && $this->LugaresFin>0 ) {
+							// Si los indices limitantes estan establecidos...
+					$anchoMax=$this->maxAsientos();
+					$k=1;
+					$asientos=array();
+					$validos=range($this->LugaresIni, $this->LugaresFin) ;
+					for ($i = 1; $i <= $anchoMax; $i++) {
+							// lugares netos a crear
+							if ($i<=sizeof($validos)) {
+									// Para el subdominio de los asientos en TRUE
+									$status='TRUE';
+									$num=$validos[$i-1];
+							}	
+							else{
+									//Para los asientos en OFF
+									$num=0;
+									$status='OFF';
+							}
+							$asientos[]=sprintf("( %d, %d, %d, %d, %d, %d, %d, %d, '%s' )",
+									$this->EventoId,$this->FuncionesId, 
+									$this->ZonasId,$this->SubzonaId,$this->FilasId,
+									$i,$num,$num,$status);
+					}
+				$sql=sprintf("INSERT %s INTO lugares 
+							( EventoId, FuncionesId, ZonasId, SubzonaId, FilasId, LugaresId,
+								   	LugaresLug, LugaresNum, LugaresStatus) 
+									VALUES %s;" ,$ignorar?'IGNORE':'', implode(',',$asientos)
+							) ;
+					$conexion=Yii::app()->db;
+					$conexion->createCommand($sql)->execute();
+					$this->FilasCanLug=abs($this->LugaresIni-$this->LugaresFin)+1;
+					$this->save();
+					return true;
+
+			}	
 	}
 }

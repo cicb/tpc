@@ -1081,7 +1081,7 @@ $objWriter->save('php://output');
                 	    $contra .= ".".$boletoreimpresion['FilasId'].".".$boletoreimpresion['LugaresId']."-".date("m").".".date("d")."-".$boletoreimpresion['UsuariosId'];
                 	    $contra .= "R";
 						$ventaslevel1 = Ventaslevel1::model()->findByAttributes(array('VentasId'=>$boletoreimpresion['id'],'EventoId'=>$boletoreimpresion['EventoId'],'FuncionesId'=>$boletoreimpresion['FuncionesId'],'ZonasId'=>$boletoreimpresion['ZonasId'],'SubzonaId'=>$boletoreimpresion['SubzonaId'],'FilasId'=>$boletoreimpresion['FilasId'],'LugaresId'=>$boletoreimpresion['LugaresId']));
-						   $ventaslevel1->LugaresNumBol = $codigo;
+						$ventaslevel1->LugaresNumBol = $codigo;
 						$ventaslevel1->VentasCon = $contra;
 						$ventaslevel1->update();
                         $newdata[$key]['LugaresNumBol'] = $codigo;
@@ -1112,23 +1112,6 @@ $objWriter->save('php://output');
                         $contra = $boletoreimpresion['EventoId'].".".$boletoreimpresion['FuncionesId'].".".$boletoreimpresion['ZonasId'].".".$boletoreimpresion['SubzonaId'];
                 	    $contra .= ".".$boletoreimpresion['FilasId'].".".$boletoreimpresion['LugaresId']."-".date("m").".".date("d")."-".$boletoreimpresion['UsuariosId'];
                 	    $contra .= "PR$reimpresiones";
-<<<<<<< HEAD
-						$ventaslevel1 = Ventaslevel1::model()->findByAttributes(array('VentasId'=>$boletoreimpresion['id'],'EventoId'=>$boletoreimpresion['EventoId'],'FuncionesId'=>$boletoreimpresion['FuncionesId'],'ZonasId'=>$boletoreimpresion['ZonasId'],'SubzonaId'=>$boletoreimpresion['SubzonaId'],'FilasId'=>$boletoreimpresion['FilasId'],'LugaresId'=>$boletoreimpresion['LugaresId']));
-						   $ventaslevel1->LugaresNumBol = $codigo;
-						$ventaslevel1->VentasCon = $contra;
-						$ventaslevel1->update();
-						$ultimo = Reimpresiones::model()->findAll(array('limit'=>1,'order'=>'t.ReimpresionesId DESC'));
-						$ultimo = $ultimo[0]->ReimpresionesId + 1;
-						$hoy    = date("Y-m-d G:i:s"); 
-						$user_id = Yii::app()->user->id;
-						Yii::app()->db->createCommand("INSERT INTO reimpresiones VALUES($ultimo,".$boletoreimpresion['EventoId'].",".$boletoreimpresion['FuncionesId'].",".$boletoreimpresion['ZonasId'].",".$boletoreimpresion['SubzonaId'].",".$boletoreimpresion['FilasId'].",".$boletoreimpresion['LugaresId'].",'PANEL ADMINISTRATIVO','',$user_id,'$hoy','".$boletoreimpresion['LugaresNumBol']."')")->execute();
-						
-						$ultimologreimp = Logreimp::model()->findAll(array('limit'=>1,'order'=>'t.LogReimpId DESC'));
-						$ultimologreimp = $ultimologreimp[0]->LogReimpId + 1;
-						
-						Yii::app()->db->createCommand("INSERT INTO logreimp VALUES($ultimologreimp,'$hoy','".$boletoreimpresion['VentasBolTip']."',".$boletoreimpresion['cosBol'].",'".$boletoreimpresion['VentasBolTip']."',$user_id,0,".$boletoreimpresion['EventoId'].",".$boletoreimpresion['FuncionesId'].",".$boletoreimpresion['ZonasId'].",".$boletoreimpresion['SubzonaId'].",".$boletoreimpresion['FilasId'].",".$boletoreimpresion['LugaresId'].")")->execute();
-						
-=======
                         $ventaslevel1 = Ventaslevel1::model()->findByAttributes(array('VentasId'=>$boletoreimpresion['id'],'EventoId'=>$boletoreimpresion['EventoId'],'FuncionesId'=>$boletoreimpresion['FuncionesId'],'ZonasId'=>$boletoreimpresion['ZonasId'],'SubzonaId'=>$boletoreimpresion['SubzonaId'],'FilasId'=>$boletoreimpresion['FilasId'],'LugaresId'=>$boletoreimpresion['LugaresId']));
                    	    $ventaslevel1->LugaresNumBol = $codigo;
                         $ventaslevel1->VentasCon = $contra;
@@ -1143,8 +1126,7 @@ $objWriter->save('php://output');
                         $ultimologreimp = $ultimologreimp[0]->LogReimpId + 1;
                         
                         Yii::app()->db->createCommand("INSERT INTO logreimp VALUES($ultimologreimp,'$hoy','".$boletoreimpresion['VentasBolTip']."',".$boletoreimpresion['cosBol'].",'".$boletoreimpresion['VentasBolTip']."',$user_id,0,".$boletoreimpresion['EventoId'].",".$boletoreimpresion['FuncionesId'].",".$boletoreimpresion['ZonasId'].",".$boletoreimpresion['SubzonaId'].",".$boletoreimpresion['FilasId'].",".$boletoreimpresion['LugaresId'].")")->execute();
-                        
->>>>>>> a29e615d0da5c50d5f45df8f9b05b33223cd5f40
+
                         $newdata[$key]['LugaresNumBol'] = $codigo;
                         $newdata[$key]['VentasCon'] = $contra;
                         $newdata[$key]['cosBolCargo'] = $boletoreimpresion['cosBolCargo'];

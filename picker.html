@@ -1,0 +1,656 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="language" content="en" />
+			<!--	<link rel="stylesheet/less" type="text/css" href="/css/style.less"  />-->
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" type="text/css" href="/taquilla/control/assets/2305fcfd/chosen.css" />
+<link rel="stylesheet" type="text/css" href="/taquilla/control/css/jquery.datetimepicker.css" />
+<link rel="stylesheet" type="text/css" href="/taquilla/control/css/font-awesome.min.css" />
+<link rel="stylesheet" type="text/css" href="/taquilla/control/assets/802eaaf8/css/bootstrap.css" />
+<link rel="stylesheet" type="text/css" href="/taquilla/control/assets/802eaaf8/css/bootstrap-responsive.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="/taquilla/control/assets/802eaaf8/css/yiistrap.css" />
+<link rel="stylesheet" type="text/css" href="/taquilla/control/css/style.css" />
+<script type="text/javascript" src="/taquilla/control/assets/2da58153/jquery.js"></script>
+<script type="text/javascript" src="js/holder.js"></script>
+<script type="text/javascript" src="/taquilla/control/js/jquery.js"></script>
+<title>Panel de control - Actualizar Evento</title>
+</head>
+<body><script type="text/javascript" src="/taquilla/control/js/jquery.datetimepicker.js"></script>
+<script type="text/javascript">
+/*<![CDATA[*/
+
+$.fn.chosenDestroy = function () {
+$(this).show().removeClass('chzn-done').removeAttr('id');
+$(this).next().remove()
+  return $(this);
+}
+function updateChosen(obj){
+		$(obj).chosenDestroy();
+		$(obj).chosen();
+}
+
+
+
+/*]]>*/
+</script>
+
+	<div id="mainmenu">
+
+		   
+<div class="navbar navbar-fixed-top navbar-taquilla"><div class="navbar-inner"><div class="container-fluid"><a class="btn btn-navbar" data-toggle="collapse" data-target="#yw2"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><a class="brand" href="/taquilla/control/index.php"><i class="fa fa-th-large"></i> Panel de control</a><div class="nav-collapse collapse" id="yw2"><ul id="yw0" class="nav" role="menu"><li visible="1" class="dropdown" role="menuitem"><a class="dropdown-toggle" data-toggle="dropdown" href="/taquilla/control/index.php?r=reportes/index">Reportes <b class="caret"></b></a><ul class="dropdown-menu" id="yt7" aria-labelledby="yt7" role="menu"><li visible="1" role="menuitem"><a tabindex="-1" href="/taquilla/control/index.php?r=reportes/accesos">Accesos</a></li><li visible="1" role="menuitem"><a tabindex="-1" href="/taquilla/control/index.php?r=reportes/buscarBoleto">Buscar Boleto Y Referencias</a></li><li visible="1" role="menuitem"><a tabindex="-1" href="/taquilla/control/index.php?r=reportes/cancelarVentaFarmatodo">Cancelar Venta Farmatodo</a></li><li visible="1" role="menuitem"><a tabindex="-1" href="/taquilla/control/index.php?r=reportes/conciliacionFarmatodo">Conciliación Farmatodo</a></li><li visible="1" role="menuitem"><a tabindex="-1" href="/taquilla/control/index.php?r=reportes/desgloseVentas">Desglose De Ventas</a></li><li visible="1" role="menuitem"><a tabindex="-1" href="/taquilla/control/index.php?r=reportes/cancelacionesReimpresiones">Historial De Cancelaciones Y Reimpresiones</a></li><li visible="1" role="menuitem"><a tabindex="-1" href="/taquilla/control/index.php?r=reportes/lugares">Lugares</a></li><li visible="1" role="menuitem"><a tabindex="-1" href="/taquilla/control/index.php?r=reportes/lugaresVendidos">Lugares Vendidos</a></li><li visible="1" role="menuitem"><a tabindex="-1" href="/taquilla/control/index.php?r=reportes/ventasWeb">Ventas Web Y CallCenter</a></li><li visible="1" role="menuitem"><a tabindex="-1" href="/taquilla/control/index.php?r=reportes/ventasConCargo">Ventas Con Cargo</a></li><li visible="1" role="menuitem"><a tabindex="-1" href="/taquilla/control/index.php?r=reportes/ventasSinCargo">Ventas Sin Cargo</a></li><li visible="1" role="menuitem"><a tabindex="-1" href="/taquilla/control/index.php?r=reportes/ventasFarmatodo">Ventas De Farmatodo</a></li><li visible="1" role="menuitem"><a tabindex="-1" href="/taquilla/control/index.php?r=reportes/ventasDiarias">Ventas Diarias</a></li></ul></li><li visible="1" class="dropdown" role="menuitem"><a class="dropdown-toggle" data-toggle="dropdown" href="">Cupones Y Descuentos <b class="caret"></b></a><ul class="dropdown-menu" id="yt8" aria-labelledby="yt8" role="menu"><li visible="1" role="menuitem"><a tabindex="-1" href="/taquilla/control/index.php?r=descuentoslevel1/admin&amp;tipo=descuento&amp;query=">Lista De Descuentos</a></li><li visible="1" role="menuitem"><a tabindex="-1" href="/taquilla/control/index.php?r=descuentoslevel1/admin&amp;tipo=cupon&amp;query=">Lista De Cupones</a></li><li visible="1" role="menuitem"><a tabindex="-1" href="/taquilla/control/index.php?r=descuentos/create">Crear Cupón/Descuento</a></li></ul></li><li visible="1" class="dropdown" role="menuitem"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Eventos <b class="caret"></b></a><ul class="dropdown-menu" id="yt9" aria-labelledby="yt9" role="menu"><li role="menuitem"><a tabindex="-1" href="/taquilla/control/index.php?r=evento/index">Administración De Eventos</a></li><li role="menuitem"><a tabindex="-1" href="/taquilla/control/index.php?r=accesos/index">Configurador de accesos</a></li></ul></li><li class="dropdown" role="menuitem"><a class="dropdown-toggle" data-toggle="dropdown" href="">Usuarios <b class="caret"></b></a><ul class="dropdown-menu" id="yt10" aria-labelledby="yt10" role="menu"><li visible="1" role="menuitem"><a tabindex="-1" href="/taquilla/control/index.php?r=usuarios/index">Usuarios del Sistema</a></li><li visible="1" role="menuitem"><a tabindex="-1" href="/taquilla/control/index.php?r=usuarios/usuariosWeb">Usuarios Web</a></li></ul></li><li visible="1" role="menuitem"><a tabindex="-1" href="#">Boletos</a></li></ul><ul class="pull-right nav nav-right" id="yw1" role="menu"><li visible="1" role="menuitem"><a tabindex="-1" href="/taquilla/control/index.php?r=site/logout">Cerrar Sesión (sis1)</a></li></ul></div></div></div></div>
+</div><!-- mainmenu -->
+<div id='wrap'>
+	<div class="container-fluid " id="pagina">	
+		<div id="content">
+	<script type="text/javascript">
+	$("#yw1").blur(function(){
+		console.log($(this).val());
+	});
+	$(".datepicker-days td").on('click',function(){
+		console.log('day');
+		$("#yw1").focus();
+	});
+</script>
+    <div class="form">
+
+    <form id="evento-form" class="form-horizontal" action="/taquilla/control/index.php?r=evento/actualizar&amp;id=521" method="post">
+<div class='controles' style="min-height:100%">
+
+<h2>Actualizar Evento</h2>	<p class="help-block">Los campos con <span class="required">*</span> con requeridos.</p>
+	<br />
+
+		<div class='col-2 white-box box'>
+		<h3>Información básica</h3>
+
+			<div class="control-group"><label class="control-label required" for="Evento_EventoNom">Nombre:  <span class="required">*</span></label><div class="controls"><input maxlength="150" name="Evento[EventoNom]" id="Evento_EventoNom" class="span4" type="text" value="Porque los hombres aman a las cabronas" /></div></div>            <div class="control-group"><label class="control-label required" for="Evento_EventoDesBol">Descripción de Boleto <span class="required">*</span></label><div class="controls"><input maxlength="75" name="Evento[EventoDesBol]" id="Evento_EventoDesBol" class="span4" type="text" value="." /></div></div>            <div class="control-group"><label class="control-label" for="Evento_EventoDesWeb">Descripcion en Web</label><div class="controls"><input maxlength="200" name="Evento[EventoDesWeb]" id="Evento_EventoDesWeb" class="span4" type="text" value="" /></div></div>
+		<div class='alert'>
+			<div class="control-group"><label class="control-label required" for="Evento_EventoSta">Estatus del Evento <span class="required">*</span></label><div class="controls"><select class="span2" name="Evento[EventoSta]" id="Evento_EventoSta">
+<option value="1">BAJA</option>
+<option value="ALTA" selected="selected">ALTA</option>
+</select></div></div>		</div>
+        <div class="control-group"><label class="control-label" for="Evento_EventoSta2">Tipo</label><div class="controls"><select class="span2" name="Evento[EventoSta2]" id="Evento_EventoSta2">
+<option value="1" selected="selected">A la Venta</option>
+<option value="2">Proximamente</option>
+<option value="3">Sinopsis</option>
+<option value="4">Cancelado</option>
+</select></div></div>
+		<label class="control-label required" for="Evento_EventoFecIni">Fecha Inicio <span class="required">*</span></label>		<div class="input-append">
+		</div>
+
+
+<div class='control-group'>
+
+		<label class="control-label required" for="Evento_EventoFecFin">Fecha Fin <span class="required">*</span></label>		<div class="input-append " >
+		</div>
+</div>
+
+<div class='control-group'>
+		<label class="control-label" for="Evento_EventoTemFecFin">Evento Tem Fec Fin</label>		<div class="input-append">
+		</div>
+</div>		
+
+<div class='control-group'>
+	<label class="control-label required" for="Evento_CategoriaId">Categoria <span class="required">*</span></label>	<select class="span3 chosen" name="Evento[CategoriaId]" id="Evento_CategoriaId">
+<option value="">Sin categoria</option>
+<option value="1">Conciertos</option>
+<option value="2">Culturales</option>
+<option value="3">Deportes</option>
+<option value="4" selected="selected">Otros</option>
+<option value="5">Cine</option>
+<option value="6">Espectáculos</option>
+<option value="7">Sorteos</option>
+<option value="8">Congresos</option>
+<option value="9">Conferencias</option>
+<option value="10">Teatro</option>
+<option value="11">Comedia</option>
+<option value="12">Visitas</option>
+<option value="13">Cursos</option>
+<option value="14">tech house</option>
+<option value="15">Viajes</option>
+</select>	</div>
+<div class='control-group'>
+	<label class="control-label" for="Evento_CategoriaSubId">Sub Categoria </label>	<select class="span3 chosen" name="Evento[CategoriaSubId]" id="Evento_CategoriaSubId">
+<option value="">Sin subcategoria</option>
+<option value="1" selected="selected">.</option>
+</select>	</div>
+
+<div class='control-group'>
+	<label class="control-label required" for="Evento_ForoId">Foro <span class="required">*</span></label>	<select class="span3 chosen" name="Evento[ForoId]" id="Evento_ForoId">
+<option value="">Sin foro</option>
+<option value="0">Auditorio Benito Juárez, Veracruz</option>
+<option value="1">Auditorio CCU</option>
+<option value="2">Complejo Cultural Siglo XXI</option>
+<option value="3">Auditorio Complejo Cultural Universitario</option>
+<option value="4">Teatro CCU</option>
+<option value="5">Plaza de Toros &quot;El Relicario&quot;</option>
+<option value="6">Área de Seminarios CCU</option>
+<option value="7">Centro de Convenciones CCU</option>
+<option value="8">Sala de Cine de Arte CCU</option>
+<option value="9">Encuentro Mundial junto a CCA</option>
+<option value="10">Estadio de Beisbol Hermanos Serdán</option>
+<option value="11">Teatro Principal</option>
+<option value="12">Ex cinemas de la margarita</option>
+<option value="13">Hotel presidente intercontinental</option>
+<option value="14">Hotel Courtyard Marriott</option>
+<option value="15">Lomas de Angelópolis</option>
+<option value="16">Tecnológico de Monterrey</option>
+<option value="17">Container City Cholula</option>
+<option value="18">Museo del transporte</option>
+<option value="19">Auditorio Gota de Plata</option>
+<option value="20">Salón Maverick</option>
+<option value="21">Calle Astorga no. 2</option>
+<option value="22"></option>
+<option value="23">Sala Sinfónica del  CCU</option>
+<option value="24">Sala Forum</option>
+<option value="25">Centro Mexicano Libanés</option>
+<option value="26">Normal Veracruzana</option>
+<option value="27">Teatro La Paz</option>
+<option value="28">Zócalo de la Ciudad de Puebla</option>
+<option value="29">Auditorio Siglo XXI</option>
+<option value="30">Auditorio de la Tamayo</option>
+<option value="31">Holiday Inn Finsa</option>
+<option value="32">Explanada Complejo Cultural Universitario</option>
+<option value="33">Estadio Olímpico Zaragoza</option>
+<option value="34">JARDÍN SUNDARA</option>
+<option value="35">POLIFORO JUAN GABRIEL</option>
+<option value="36">Domo del Mar</option>
+<option value="37">R. Ferial &quot;Beto Ávila&quot; Huixcolotla</option>
+<option value="38">Nuevo León</option>
+<option value="39">Km.9 Carretera Federal Atlixco-Puebla</option>
+<option value="40">R. Ferial &quot;Beto Ávila&quot; Huixcolotla</option>
+<option value="41">Espacio Holístico, Mente, Cuerpo y Alma</option>
+<option value="42">Parque España I</option>
+<option value="43">Auditorio Benito Juárez, Veracruz</option>
+<option value="44">Autódromo Internacional Miguel E. Abed</option>
+<option value="45">Complejo Cultural Universitario</option>
+<option value="46">Auditorio UDLA</option>
+<option value="47">Estacionamiento Valle Fantástico</option>
+<option value="48">Auditorio Universidad IBERO</option>
+<option value="49">Damtsha (Isla de Angelopolis)</option>
+<option value="50">Palenque de Tuxtla Gutiérrez</option>
+<option value="51">4 Ote. 806, Cholula (Santuario Chivas)</option>
+<option value="52">Campo La ETA, Frontera Comalapa</option>
+<option value="53">Centro de convenciones La Hacienda</option>
+<option value="54">Poliforum B. Juarez</option>
+<option value="55">Plaza de Toros de Tapachula</option>
+<option value="56">Estadio de Futbol, Tuxtla Chico Chiapas</option>
+<option value="57">Estadio de Futbol, Ocosingo Chiapas</option>
+<option value="58">Estadio de Futbol, Cintalapa Chiapas</option>
+<option value="59">Plaza de Toros de Sn Roque</option>
+<option value="60">Palenque Feria Internacional Tapachula</option>
+<option value="61">Palenque Feria Huixtla</option>
+<option value="62">Campos de Futbol La Noria</option>
+<option value="63">Polyforum Chiapas</option>
+<option value="64">Foro Ah -Kim -Pech</option>
+<option value="65">Esc. Sec. Balboa - Tonala Chis.</option>
+<option value="66">Teatro de la ciudad</option>
+<option value="67">Desarrollo Estratégico Empresarial</option>
+<option value="68">The Grand Hotel Puebla</option>
+<option value="69">Centro Expositor (en los fuertes)</option>
+<option value="70">Auditorio Julio Glockner</option>
+<option value="71">Teatro de Bodegas del Molino</option>
+<option value="72">Hotel Estrella de Belem</option>
+<option value="73">Palenque de gallos feria Comitán 2011</option>
+<option value="74">Km 16.5 Blvd Capitán Carlos Camacho</option>
+<option value="75">La Hacienda</option>
+<option value="76">Salón WYNN</option>
+<option value="77">Arena Metropolitana</option>
+<option value="78">ITESM Campus  Puebla</option>
+<option value="79">Plaza de Toros &quot;San Roque&quot;.</option>
+<option value="80">Centro Convenciones TEC Monterrey</option>
+<option value="81">LAS BODEGAS DEL MOLINO</option>
+<option value="82">Lienzo Charro &quot;Esteban Figueroa&quot;</option>
+<option value="83">Lugar de Costumbre, Atoyatempan</option>
+<option value="84">Palenque de la feria</option>
+<option value="85">Campo de Béisbol San Andrés</option>
+<option value="86">TEATRO DEL PUEBLO EXPO FERIA</option>
+<option value="87">Salón Jardín Cisus (8 ote. 205)</option>
+<option value="88">PALENQUE FERIA CHIAPAS</option>
+<option value="89">plaza de toros la coleta</option>
+<option value="90">SALA FORUM</option>
+<option value="91">Iglesia La Medalla Milagrosa</option>
+<option value="92">Estadio Olímpico de Tapachula</option>
+<option value="93">Club Campestre de Puebla</option>
+<option value="94">Estadio municipal - Cintalapa chiapas</option>
+<option value="95">EXPLANADA EXPOFERIA COMITAN CHIAPAS</option>
+<option value="96">Parque Central - Coapilla chiapas</option>
+<option value="97">CINEMEX  (Paseo de San Francisco)</option>
+<option value="98">Terreno EL FALO, junto a la pirámide</option>
+<option value="99">Foro Ah-Kim-Pech, Campeche</option>
+<option value="100">Nuevo Teatro La Paz</option>
+<option value="101">Club Ambar</option>
+<option value="102">Auditorio Josefa Ortiz de Domínguez</option>
+<option value="103">Teatro de la ciudad Emilio Rabasa</option>
+<option value="104">Complejo Cultural Universitario</option>
+<option value="105">Auditorio del COLEGIO BENAVENTE</option>
+<option value="106">Estadio Municipal Futbol-Comitán</option>
+<option value="107">Estadio Municipal - Comitan</option>
+<option value="108">Teatro de la cd. &quot;Junchavin&quot;</option>
+<option value="109">Consorcio Transdisciplinario  SECARSOS</option>
+<option value="110">Museo Instituto Cultural Poblano</option>
+<option value="111">Centro Convenciones Puebla</option>
+<option value="112">TEATRO JORGE NEGRETE</option>
+<option value="113">Hotel Villas Arqueológicas, San Andres Cholula</option>
+<option value="114">Salón CANACOPE; Córdoba,Ver</option>
+<option value="115">Salida: Home Depot (Blvd. Atlixcayotl)</option>
+<option value="116">Estadio Mun. Fútbol  Atotonilco de Tula</option>
+<option value="117">MATO GROSSO JUAREZ</option>
+<option value="118">Universidad Tec Milenio - Puebla</option>
+<option value="119">Teatro Chumacero - Tepic</option>
+<option value="120">TEATRO DE LA REFORMA</option>
+<option value="121">Status Quo</option>
+<option value="122">Auditorio de la Universidad de las Américas</option>
+<option value="123">Teatro Fernando Soler</option>
+<option value="124">Teatro Ricardo Castro</option>
+<option value="125">Teatro Metropolitano</option>
+<option value="126">Teatro de Los Heroes</option>
+<option value="127">Teatro de la Ciudad</option>
+<option value="128">Campo Deportivo del EMP</option>
+<option value="129">AC</option>
+<option value="130">Consorcio SECARSOS , AC</option>
+<option value="131">Centro Cultural Ollin Yoliztli</option>
+<option value="132">Campo Deportivo del EMP</option>
+<option value="133">C. Cultural ACD.Teatro Melpómene</option>
+<option value="134">Hotel Gilfer</option>
+<option value="135">Centro Expositor Puebla</option>
+<option value="136">Salida del Mega Blvd Atlixcayotl</option>
+<option value="137">Hacienda Paraiso de los Angeles</option>
+<option value="138">Studio 803 de Puebla</option>
+<option value="139">Centro de Convenciones</option>
+<option value="140">ITESM Campus  Puebla</option>
+<option value="141" selected="selected">Centro Cultural Universitario Tlaxcala</option>
+</select>	</div>
+
+<div class='control-group'>
+	<label class="control-label" for="Evento_PuntosventaId">Punto de venta</label>	<select class="span3 chosen" name="Evento[PuntosventaId]" id="Evento_PuntosventaId">
+<option value="">Sin Punto de Venta</option>
+<option value="2">SUCURSAL 25 OTE</option>
+<option value="3">SUCURSAL VALSEQUILLO</option>
+<option value="4">SUCURSAL DIAGONAL</option>
+<option value="5">SUCURSAL 31 PONIENTE</option>
+<option value="6">SUCURSAL 16 DE SEPTIEMBRE</option>
+<option value="7">SUCURSAL LA PAZ</option>
+<option value="8">SUCURSAL MAYORAZGO</option>
+<option value="9">SUCURSAL REFORMA</option>
+<option value="10">SUCURSAL 11 SUR</option>
+<option value="11">SUCURSAL AMALUCAN</option>
+<option value="12">SUCURSAL SUBURBIA</option>
+<option value="13">SUCURSAL HUEXOTITLA</option>
+<option value="14">SUCURSAL HUMBOLDT</option>
+<option value="15">SUCURSAL MARGARITA</option>
+<option value="16">SUCURSAL JUAREZ</option>
+<option value="17">SUCURSAL TORRES</option>
+<option value="18">SUCURSAL HIDALGO</option>
+<option value="19">SUCURSAL MACRO</option>
+<option value="20">SUCURSAL ARBOLEDAS</option>
+<option value="21">SUCURSAL HOSPITAL</option>
+<option value="23">SUCURSAL MAZARIK</option>
+<option value="24">SUCURSAL PLAZA NORTE</option>
+<option value="25">SUCURSAL PLAZA SUR</option>
+<option value="30">SUCURSAL FORJADORES</option>
+<option value="31">SUCURSAL PLAZA UNIVERSIDAD</option>
+<option value="32">SUCURSAL PLAZA AGUA AZUL</option>
+<option value="35">SUCURSAL EL VERGEL</option>
+<option value="38">SUCURSAL LOS PILARES</option>
+<option value="39">SUCURSAL 9 NORTE</option>
+<option value="40">SUCURSAL CHIPILO</option>
+<option value="41">SUCURSAL BOSQUES</option>
+<option value="42">SUCURSAL CHOLULA</option>
+<option value="43">SUCURSAL S. ANDRES</option>
+<option value="44">SUCURSAL ZAVALETA</option>
+<option value="45">SUCURSAL SANTA FÉ</option>
+<option value="46"></option>
+<option value="47"></option>
+<option value="48"></option>
+<option value="101">WEB</option>
+<option value="102">CALL CENTER</option>
+<option value="103">TAQUILLA CCU AUDITORIO</option>
+<option value="104">TAQUILLA ANGELOPOLIS</option>
+<option value="105">TAQUILLA LA PAZ</option>
+<option value="106">TAQUILLA CCU CINE</option>
+<option value="107">MOVIL CCA</option>
+<option value="108">MOVIL JARIPEO</option>
+<option value="109">MOVIL ESTADIO HNS. SERDAN</option>
+<option value="110">TAQUILLA TEATRO PRINCIPAL</option>
+<option value="111">TAQUILLA HOTEL PRESIDENTE INTERCONTINENTAL</option>
+<option value="112">TAQUILLA  Hotel Courtyard Marriott</option>
+<option value="113">TAQUILLA LOMAS DE ANGELOPOLIS</option>
+<option value="114">TAQUILLA Tecnológico de Monterrey</option>
+<option value="115">TAQUILLA Stephan Bodzin</option>
+<option value="116">TAQUILLA PLAZA DE TOROS EL RELICARIO</option>
+<option value="117">TAQUILLA Mudeo del transporte</option>
+<option value="118">Taquilla Auditorio Gota de Plata</option>
+<option value="119">Taquilla Salón Maverick</option>
+<option value="120">Taquilla  Calle Astorga no. 2</option>
+<option value="121">Taquilla Proximamente</option>
+<option value="122">TAQUILLA SALA FORUM</option>
+<option value="123">TAQUILLA CENTRO LIBANÉS</option>
+<option value="124">Taquilla Normal Veracruzana</option>
+<option value="125">TAQUILLA ADMINISTRATIVO</option>
+<option value="126">Taquilla Teatro La Paz</option>
+<option value="127">Taquilla Zócalo de la Ciudad de Puebla</option>
+<option value="128">Taquilla Siglo XXI</option>
+<option value="129">Taquillla Holiday Inn Finsa</option>
+<option value="130">Nuevo León</option>
+<option value="131">Taquilla Estadio Olímpico Zaragoza</option>
+<option value="132">Recinto Ferial &quot;Beto Ávila&quot; Huixcolotla</option>
+<option value="133">Taquilla Auditorio UDLA</option>
+<option value="134">Taquilla Valle Fantástico</option>
+<option value="135">Taquilla Universidad Iberoamericana</option>
+<option value="136">Taquilla Damtsha (Isla de Angelopolis)</option>
+<option value="137">Taquilla Palenque Chiapas</option>
+<option value="138">Taquilla San Andrés Cholula</option>
+<option value="139">Taquilla Centro de convenciones La Hacienda</option>
+<option value="140">Taquilla Palenque Chiapas OV7</option>
+<option value="141">Taquilla B. Juarez</option>
+<option value="142">Taquilla Plaza de Toros de Tapachula</option>
+<option value="143">Taquilla Estadio de Futbol Chiapas</option>
+<option value="144">Taquilla Chiapas 1</option>
+<option value="145">Taquilla Campos Futbol La Noria</option>
+<option value="146">Taquilla Campeche</option>
+<option value="147">Taquilla teatro de la ciudad</option>
+<option value="148">4 Sur 3741 Col. Anzures</option>
+<option value="149">Taquilla de pruebas</option>
+<option value="150">Restaurante Las Bodegas Del Molino</option>
+<option value="151">taquilla Atoyatempan</option>
+<option value="152">Taquilla Campo de Béisbol San Andrés</option>
+<option value="153">Taquilla TEATRO DEL PUEBLO EXPO FERIA</option>
+<option value="154">taquilla Salón Jardín Cisus (8 ote. 205)</option>
+<option value="155">Taquillla PALENQUE FERIA CHIAPAS</option>
+<option value="156">Taquilla plaza de toros la coleta</option>
+<option value="157">Taquilla Iglesia La Medalla Milagrosa</option>
+<option value="158">Taquilla Estadio Olímpico de Tapachula</option>
+<option value="159">Taquilla Club Campestre de Puebla</option>
+<option value="160">Taquilla Estadio municipal - Cintalapa chiapas</option>
+<option value="161">Taquilla EXPLANADA EXPOFERIA COMITAN CHIAPAS</option>
+<option value="162">Taquilla CINEMEX  (Paseo de San Francisco)</option>
+<option value="163">Taquilla Terreno EL FALO, junto a la pirámide</option>
+<option value="164">Taquilla Ahkimpech, Campeche</option>
+<option value="165">Taquilla Nuevo Teatro La Paz</option>
+<option value="166">Taquilla Club Ambar</option>
+<option value="167">Taquilla Auditorio Josefa Ortiz de Domínguez</option>
+<option value="187">SUCURSAL BETANIA</option>
+<option value="188">The Grand Hotel Puebla</option>
+<option value="189">Taquilla Centro Expositor (en los fuertes)</option>
+<option value="190">Taquilla Auditorio Julio Glockner</option>
+<option value="191">SUCURSAL ANIMAS</option>
+<option value="192">Taquilla Autodromo Miguel E. Abed</option>
+<option value="193">Hotel Estrella de Belem</option>
+<option value="194">Taquilla Palenque de gallos</option>
+<option value="195">Taquilla Km 16.5 Blvd Capitán Carlos Camacho</option>
+<option value="196">La Hacienda</option>
+<option value="197">Taquilla Salón WYNN</option>
+<option value="198">Taquilla Arena Metropolitana</option>
+<option value="199">Taquilla Tec de Monterrey</option>
+<option value="200">Plaza de Toros &quot;San Roque&quot;.</option>
+<option value="201">Taquilla estadio de BeisBol Hnos Serdan</option>
+<option value="202">Taquilla Colegio Benavente</option>
+<option value="203">Taquilla Consorcio Transdisciplinario</option>
+<option value="204">Taquilla  Instituto Cultural Poblano</option>
+<option value="205">Centro Expositor Puebla</option>
+<option value="206">Taquilla Centro Expositor Puebla</option>
+<option value="207">Centro Expositor Puebla</option>
+<option value="208">Centro Expositor Puebla</option>
+<option value="209">Centro Expositor Puebla</option>
+<option value="210">Taquilla Hacienda Paraiso de los Angeles</option>
+<option value="211">Studio 803 de Puebla</option>
+<option value="212" selected="selected">TAQUILLA CCU TLAXCALA</option>
+<option value="300">FARMACIA FLEMMING</option>
+<option value="301">SUCURSAL MATRIZ</option>
+<option value="302">SUCURSAL BENITO JUAREZ</option>
+<option value="303">SUCURSAL CAPU</option>
+<option value="304">SUCURSAL  CENTRO</option>
+<option value="305">SUCURSAL POPULAR</option>
+<option value="306">SUCURSAL CU</option>
+<option value="307">SUCURSAL TECAMACHALCO</option>
+</select>	</div>
+
+		</div>
+	
+
+
+		<div class='col-3'>
+				<div class='span4 white-box box'>
+				<h3><em class="fa fa-picture-o"></em> Imagen en boleto</h3>
+					<img id="img-imabol" class="img-polaroid" src="holder.js/239x69" alt="" />					<br /><br />
+					<input span="2" maxlength="200" class="hidden" type="file" value="" name="imabol" id="imabol" />
+						<div class="input-append"><input placeholder="Nombre de la imagen en Boleto" name="Evento[EventoImaBol]" id="Evento_EventoImaBol" type="text" maxlength="200" value="" /><button class="btn btn-success" id="btn-subir-imabol" name="yt0" type="button">Seleccionar imagen</button></div>
+				</div>
+
+
+				<div class='span4 white-box box'>
+				<h3><em class="fa fa-picture-o"></em> Imagen para PV</h3>
+					<img id="img-imamin" class="img-polaroid" src="holder.js/130x130" alt="" />					<br /><br />
+					<input span="2" maxlength="200" class="hidden" type="file" value="" name="imamin" id="imamin" />					<div class="input-append"><input placeholder="Nombre de la imagen miniatura" name="Evento[EventoImaMin]" id="Evento_EventoImaMin" type="text" maxlength="200" value="" /><button class="btn btn-success" id="btn-subir-imamin" name="yt1" type="button">Seleccionar imagen</button></div>		
+				</div>
+                                <div class='span4 white-box box'>
+				<h3><em class="fa fa-picture-o"></em> Imagen Mapa Chico</h3>
+					<img id="img-imamapchi" style="width:140px;" class="img-polaroid" src="https://www.taquillacero.com/imagesbd/foro_141_2.jpg" alt="" />					<br /><br />
+					<input span="2" maxlength="200" class="hidden" type="file" value="" name="imamapchi" id="imamapchi" />					<div class="input-append"><input readonly="readonly" placeholder="Nombre de la imagen mapa chico" type="text" value="foro_141_2.jpg" name="MapaChico" id="MapaChico" /><button class="btn btn-success" id="btn-subir-imamapchi" name="yt2" type="button">Seleccionar imagen</button></div>		
+				</div>
+                <div class='span4 white-box box'>
+				<h3><em class="fa fa-picture-o"></em> Imagen Mapa Grande</h3>
+					<img id="img-imamapgra" style="width:340px;" class="img-polaroid" src="https://www.taquillacero.com/imagesbd/foro_141_grande_2.jpg" alt="" />					<br /><br />
+					<input span="2" maxlength="200" class="hidden" type="file" value="" name="imamapgra" id="imamapgra" />					<div class="input-append"><input readonly="readonly" placeholder="Nombre de la imagen mapa Gde." type="text" value="foro_141_grande_2.jpg" name="MapaGrande" id="MapaGrande" /><button class="btn btn-success" id="btn-subir-imamapgra" name="yt3" type="button">Seleccionar imagen</button></div>		
+				</div>
+                		</div>
+	
+
+        <div class="form-actions">
+<a class=" btn btn-primary fa-check " href="/taquilla/control/index.php?r=evento/index"> Regresar</a>        <button class="btn btn-check fa fa-check btn-large" type="submit" name="yt4"> Guardar</button>    </div>
+
+
+
+    </form>
+<!--<button class="btn btn-primary">ok</button>-->
+</div><!-- form -->
+<div class='row-fluid white-box box' id='listado-funciones'>
+<h3>Funciones</h3>
+<div class="col-3" >
+<input id="btn-quitar-funcion" class="btn btn-danger fa fa-minus-circle pull-left" name="yt5" type="button" value=" Quitar" /><input id="btn-agregar-funcion" class="btn btn-success fa fa-plus-circle pull-right" name="yt6" type="button" value=" Agregar" />		</div>
+
+
+<div class=' div-function' id='f-521-1'>
+<form id="evento-form" class="form-horizontal" action="/taquilla/control/index.php?r=funciones/actualizar&amp;eid=521&amp;fid=1" method="post">
+
+<div class="input-append">
+<label for="Funciones_FuncionesFecHor:">Funciones Fec Hor:</label><input class="picker" name="Funciones[FuncionesFecHor]" id="Funciones_FuncionesFecHor" type="text" value="2014-04-07 19:00:00" /></div>
+
+<div class="input-append " style="box-shadow:0">
+<label for="Funciones_funcionesTexto:">Funciones Texto:</label><input placeholder="funcionesTexto" class="span7" name="Funciones[funcionesTexto]" id="Funciones_funcionesTexto" type="text" maxlength="200" value="LUNES 07 - ABR - 2014 19:00 HRS" /></div>
+	</form></div>
+
+
+<div class=' div-function' id='f-521-2'>
+<form id="evento-form" class="form-horizontal" action="/taquilla/control/index.php?r=funciones/actualizar&amp;eid=521&amp;fid=2" method="post">
+
+<div class="input-append">
+<label for="Funciones_FuncionesFecHor:">Funciones Fec Hor:</label><input class="picker" name="Funciones[FuncionesFecHor]" id="Funciones_FuncionesFecHor" type="text" value="2014-04-07 21:30:00" /></div>
+
+<div class="input-append " style="box-shadow:0">
+<label for="Funciones_funcionesTexto:">Funciones Texto:</label><input placeholder="funcionesTexto" class="span7" name="Funciones[funcionesTexto]" id="Funciones_funcionesTexto" type="text" maxlength="200" value="LUNES 07 - ABR - 2014 21:30 HRS" /></div>
+	</form></div>
+
+
+<div class=' div-function' id='f-521-3'>
+<form id="evento-form" class="form-horizontal" action="/taquilla/control/index.php?r=funciones/actualizar&amp;eid=521&amp;fid=3" method="post">
+
+<div class="input-append">
+<label for="Funciones_FuncionesFecHor:">Funciones Fec Hor:</label><input class="picker" name="Funciones[FuncionesFecHor]" id="Funciones_FuncionesFecHor" type="text" value="2014-04-10 11:06:34" /></div>
+
+<div class="input-append " style="box-shadow:0">
+<label for="Funciones_funcionesTexto:">Funciones Texto:</label><input placeholder="funcionesTexto" class="span7" name="Funciones[funcionesTexto]" id="Funciones_funcionesTexto" type="text" maxlength="200" value="Thursday 10 - Apr - 2014 11:06 HRS" /></div>
+	</form></div>
+
+
+<div class=' div-function' id='f-521-4'>
+<form id="evento-form" class="form-horizontal" action="/taquilla/control/index.php?r=funciones/actualizar&amp;eid=521&amp;fid=4" method="post">
+
+<div class="input-append">
+<label for="Funciones_FuncionesFecHor:">Funciones Fec Hor:</label><input class="picker" name="Funciones[FuncionesFecHor]" id="Funciones_FuncionesFecHor" type="text" value="2014-04-10 11:34:32" /></div>
+
+<div class="input-append " style="box-shadow:0">
+<label for="Funciones_funcionesTexto:">Funciones Texto:</label><input placeholder="funcionesTexto" class="span7" name="Funciones[funcionesTexto]" id="Funciones_funcionesTexto" type="text" maxlength="200" value="Thursday 10 - Apr - 2014 11:34 HRS" /></div>
+	</form></div>
+
+
+<div class=' div-function' id='f-521-5'>
+<form id="evento-form" class="form-horizontal" action="/taquilla/control/index.php?r=funciones/actualizar&amp;eid=521&amp;fid=5" method="post">
+
+<div class="input-append">
+<label for="Funciones_FuncionesFecHor:">Funciones Fec Hor:</label><input class="picker" name="Funciones[FuncionesFecHor]" id="Funciones_FuncionesFecHor" type="text" value="2014-04-10 11:41:28" /></div>
+
+<div class="input-append " style="box-shadow:0">
+<label for="Funciones_funcionesTexto:">Funciones Texto:</label><input placeholder="funcionesTexto" class="span7" name="Funciones[funcionesTexto]" id="Funciones_funcionesTexto" type="text" maxlength="200" value="Thursday 10 - Apr - 2014 11:41 HRS" /></div>
+	</form></div>
+
+</div>
+
+<link rel="stylesheet" type="text/css" href="/taquilla/control/css/jquery.datetimepicker.css" />
+ 
+</div><!-- content -->
+		<div class="clear"></div>
+	</div><!-- page -->
+	<div id='push'></div>
+</div>
+<div id="footer">
+	<div class='container'>
+		Copyright &copy; 2014 por Taquilla Cero.<br/>
+		Reservados todos los derechos.<br/>
+	</div>
+</div><!-- footer -->
+
+
+<link rel="stylesheet" type="text/css" href="/taquilla/control/css/custom.css"  />
+<script type="text/javascript" src="/taquilla/control/assets/2305fcfd/chosen.jquery.min.js"></script>
+<script type="text/javascript" src="/taquilla/control/assets/802eaaf8/js/bootstrap.js"></script>
+<script type="text/javascript">
+/*<![CDATA[*/
+jQuery('body').popover({'selector':'a[rel=popover]'});
+jQuery('body').tooltip({'selector':'a[rel=tooltip]'});
+jQuery(function($) {
+$( '.chosen' ).chosen([]);
+jQuery('body').on('change','#Evento_CategoriaId',function(){jQuery.ajax({'type':'POST','url':'/taquilla/control/index.php?r=evento/cargarSubcategorias','success':function(data){$("#Evento_CategoriaSubId").html(data);updateChosen(".chosen");},'cache':false,'data':jQuery(this).parents("form").serialize()});return false;});
+
+						var ext= ['jpg','png','bmp','jpeg'];
+				$('#btn-subir-imabol').on('click',function(){ $('#imabol').trigger('click'); });
+			 $('#imabol').on('change',function(){
+					 if ($(this).val()!='' && $(this).val()!=null) {
+							 if ($.inArray($(this).val().split('.').pop(),ext)==-1) {
+									 alert('El archivo no tiene extension xls, por favor seleccione otro.');
+									$(this).val('');	
+						}else{	 
+								var fd = new FormData();
+								var imagen = document.getElementById('imabol');
+								fd.append('imagen', imagen.files[0]);
+								fd.append('prefijo', 'boleto_');
+								$.ajax({
+										url: '/taquilla/control/index.php?r=evento/subirImagen',
+												type: 'POST',
+												data: fd,
+												processData: false,  // tell jQuery not to process the data
+												contentType: false,   // tell jQuery not to set contentType
+												success: function(data){ 
+														if (data) {
+																$('#Evento_EventoImaBol').val(data);
+																$('#img-imabol').attr('src','../imagesbd/'+data);
+
+														}	
+												 }
+								}).fail(function(){alert('Error!')});		
+						}	
+				 }
+			});
+			$('#btn-subir-imamin').on('click',function(){ $('#imamin').trigger('click'); });
+			 $('#imamin').on('change',function(){
+					 if ($(this).val()!='' && $(this).val()!=null) {
+							 if ($.inArray($(this).val().split('.').pop(),ext)==-1) {
+									 alert('El archivo no tiene extension xls, por favor seleccione otro.');
+									$(this).val('');	
+						}else{	 
+								var fd = new FormData();
+								var imagen = document.getElementById('imamin');
+								fd.append('imagen', imagen.files[0]);
+								fd.append('prefijo', 'pv_');
+								$.ajax({
+										url: '/taquilla/control/index.php?r=evento/subirImagen',
+												type: 'POST',
+												data: fd,
+												processData: false,  // tell jQuery not to process the data
+												contentType: false,   // tell jQuery not to set contentType
+												success: function(data){ 
+														if (data) {
+																$('#Evento_EventoImaMin').val(data);
+																$('#img-imamin').attr('src','../imagesbd/'+data);
+
+														}	
+												 }
+								}).fail(function(){alert('Error!')});		
+						}	
+				 }
+			});
+            $('#btn-subir-imamapchi').on('click',function(){ $('#imamapchi').trigger('click'); });
+            $('#imamapchi').on('change',function(){
+					 if ($(this).val()!='' && $(this).val()!=null) {
+							 if ($.inArray($(this).val().split('.').pop(),ext)==-1) {
+									 alert('El archivo no tiene extension valida, (jpg,png,bmp,jpeg), por favor seleccione otro.');
+									$(this).val('');	
+					         }else{	
+								var fd = new FormData();
+								var imagen = document.getElementById('imamapchi');
+								fd.append('imagen', imagen.files[0]);
+								fd.append('prefijo', 'pv_');
+                                console.log(fd);
+								/*$.ajax({
+										url: '/taquilla/control/index.php?r=evento/subirImagen',
+												type: 'POST',
+												data: fd,
+												processData: false,  // tell jQuery not to process the data
+												contentType: false,   // tell jQuery not to set contentType
+												success: function(data){ 
+														if (data) {
+																$('#Evento_EventoImaMin').val(data);
+																$('#img-imamin').attr('src','../imagesbd/'+data);
+
+														}	
+												 }
+								}).fail(function(){alert('Error!')});	*/	
+                            }	
+				 }
+			});
+            $('#btn-subir-imamapgra').on('click',function(){ $('#imamapgra').trigger('click'); });
+				
+
+
+						
+
+			$('#btn-agregar-funcion').on('click',function(){
+					$.ajax({
+							url:'/taquilla/control/index.php?r=funciones/insertar&eid=521',
+									type:'get',
+							success:function(data){
+									$('#listado-funciones').append(data);
+								}
+						});
+});
+
+$('#btn-quitar-funcion').on('click',function(){
+		console.log('click');
+		$.ajax({url:'/taquilla/control/index.php?r=funciones/quitar&eid=521',
+				'success': function(){
+						$('#listado-funciones :last').empty();
+						$('#listado-funciones :last').remove();
+				}
+		});
+});
+
+});
+$('.picker').datetimepicker();
+
+/*]]>*/
+</script>
+</body>
+</html>
