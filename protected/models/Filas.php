@@ -66,6 +66,8 @@ class Filas extends CActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 				'lugares' => array(self::HAS_MANY, 'Lugares', array('EventoId','FuncionesId','ZonasId','SubzonaId','FilasId')),
+				//'' => array(self::HAS_MANY, 'Lugares', array('EventoId','FuncionesId','ZonasId','SubzonaId','FilasId'),
+				//'condition'=>"LugaresStatus='OFF'"),
 				'ancho'   => array(self::STAT, 'Filas','EventoId, FuncionesId,ZonasId,SubzonaId','select'=>'MAX(ABS(LugaresIni-LugaresFin))+1',),
 
 		);
@@ -215,5 +217,40 @@ class Filas extends CActiveRecord
 					return true;
 
 			}	
+	}
+
+	public function alinear($direccion)
+	{
+			// Alinea los lugares todos a la izquierda
+			$ide=array(
+					'EventoId'=>$this->EventoId,
+					'FuncionesId'=>$this->FuncionesId,
+					'ZonasId'=>$this->ZonasId,
+					'SubzonaId'=>$this->SubzonaId,
+					'FilasId'=>$this->FilasId
+			);
+			//Cantidad de lugares en estatus OFF
+			$noff=Lugares::model()->countByAttributes($ide,"LugaresStatus='OFF'");	
+			Lugares::model()->deleteAllByAttributes($ide,"LugaresStatus='OFF'");
+			$criteria=new CDbCriteria;
+			foreach ($ide as $item=>$val) {
+					// Aplana la condicion
+						$criteria->compare($item,$val);
+			}
+			switch ($direccion) {
+			case 'derecha':
+					//A la derecha todo
+					$criteria->order="LugaresId desc";
+					echo Lugares::model()->updateCounters(array('LugaresId'=>$noff),$criteria);
+					break;
+			case 'izquierda':
+					//A la izquierda todo
+					$criteria->order="LugaresId";
+					echo Lugares::model()->updateCounters(array('LugaresIdsd'=>-$noff),$criteria);
+					break;			
+			default:
+					// code...
+					break;
+			}
 	}
 }

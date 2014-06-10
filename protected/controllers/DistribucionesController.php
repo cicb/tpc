@@ -818,14 +818,26 @@ endforeach;
 	public function actionEditorSubzona($EventoId, $FuncionesId,$ZonasId,$SubzonaId)
 	{
 			// Muestra un editor de lugares ordenados por filas de una subzona dada
-			$subzona=Subzona::model()->with(array('filas'=>array('lugares')))->findByPk(compact('EventoId','FuncionesId', 'ZonasId','SubzonaId'));
+			$subzona=Subzona::model()->with(array('hermanas', 'filas'=>array('lugares')))->findByPk(compact('EventoId','FuncionesId', 'ZonasId','SubzonaId'));
 			if (is_object($subzona)) {
 					// 
 					
 					$this->render('editorSubzona',compact('subzona'));
 			}	
+			else
 					throw new Exception("Error al procesar su petición, vefique integridad de parametros ", 3);
 
+	}
+
+	public function actionAlinearSubzona($EventoId, $FuncionesId,$ZonasId,$SubzonaId,$direccion='izquierda')
+	{
+			// alinea todos los lugares de una fila 
+			$subzona=Subzona::model()->with('filas')->findByPk(compact('EventoId','FuncionesId','ZonasId','SubzonaId'));
+			foreach ($subzona->filas as $fila) {
+					// alinea los lugares de cada fila
+					$fila->alinear($direccion);
+			}
+			 
 	}
 
 

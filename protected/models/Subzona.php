@@ -76,8 +76,9 @@ class Subzona extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-        'filas' => array(self::HAS_MANY, 'Filas', array('EventoId','FuncionesId','ZonasId','SubzonaId')),
+        'filas' => array(self::HAS_MANY, 'Filas', array('EventoId','FuncionesId','ZonasId','SubzonaId'),'order'=>'FilasId'),
         'zonas' => array(self::BELONGS_TO, 'Zonas', array('EventoId','FuncionesId','ZonasId')),
+		'hermanas'=>array(self::HAS_MANY, 'Subzona',array('EventoId','FuncionesId','ZonasId') ),
 		);
 	}
 
@@ -158,6 +159,11 @@ class Subzona extends CActiveRecord
 			 ));
 			 return $row['maxId'];
 	 }
+
+	public function getNombre()
+	{
+		return "Subzona ".$this->SubzonaId;
+	}
 
     public function getCoordenadasComoCadena() {
         $coordenadas = '';
