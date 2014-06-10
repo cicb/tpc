@@ -91,8 +91,11 @@ class UsuariosController extends Controller {
 	{
 	        $this->perfil();
 			$model=new Usuarios('insert');	
-			$this->saveModel($model);
-			$this->render('form',compact('model'));
+			$id=$this->saveModel($model);
+			if($id>0)
+					$this->redirect(array('usuarios/actualizar','id'=>$id));
+			else	
+					$this->render('form',compact('model'));
 	}
 
 	public function actionActualizar($id)
@@ -110,7 +113,7 @@ class UsuariosController extends Controller {
 			if(isset($_POST['Usuarios']))
         {
             $this->performAjaxValidation($usuario);
-            $msg = $usuario->saveModel($_POST['Usuarios']);
+            return $usuario->saveModel($_POST['Usuarios']);
 		}
     }
 	public function actionConmutarEstatus()
