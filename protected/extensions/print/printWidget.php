@@ -82,8 +82,8 @@
         $path = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'media';
         $url = Yii::app()->getAssetManager()->publish($path); 
         $imgUrl = $url.'/print.png';
-        echo CHtml::link("<i class='icon-white icon-print'></i>&nbsp;IMPRIMIR", 
-                        "#", array_merge($this->htmlOptions, array('onclick'=>'return processPrint();')));
+        echo CHtml::link("<i class='icon-white icon-print'></i>&nbsp;Imprimir", 
+                        "#", array_merge($this->htmlOptions, array('onclick'=>'return processPrint();','class'=>'btn btn-info')));
         self::$count++;
         if (self::$count == 1) {
             $cs = Yii::app()->getClientScript();

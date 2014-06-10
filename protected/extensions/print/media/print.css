@@ -64,4 +64,8 @@
     {
         display: none;
     }
+    #mainmenu,
+    #footer,
+    .info{display: none;}
+    
 }
