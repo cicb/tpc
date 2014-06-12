@@ -794,9 +794,10 @@ endforeach;
 							echo TbHtml::tag('p', array(),'Los lugares se han registrado conforme a la configuración que ústed acaba de definir.' );
 							echo "<br>";
 							echo TbHtml::link(' Regresar a zonas', 
-									array('editor', 'EventoId'=>$EventoId, 'FuncionesId'=>$FuncionesId,'ZonasId'=>$ZonasId,
-									'scenario'=>'editar',
-									'#'=>'zona-'.$ZonasId),
+									array('editorSubzona', 'EventoId'=>$EventoId, 'FuncionesId'=>$FuncionesId,'ZonasId'=>$ZonasId,'SubzonaId'=>1
+									//'scenario'=>'editar',
+									//'#'=>'zona-'.$ZonasId
+							),
 								   	array(
 											'class'=>'btn btn-large btn-primary fa fa-arrow-left',
 									));
@@ -831,13 +832,56 @@ endforeach;
 
 	public function actionAlinearSubzona($EventoId, $FuncionesId,$ZonasId,$SubzonaId,$direccion='izquierda')
 	{
-			// alinea todos los lugares de una fila 
+			// alinea todos los lugares de una subzona 
 			$subzona=Subzona::model()->with('filas')->findByPk(compact('EventoId','FuncionesId','ZonasId','SubzonaId'));
 			foreach ($subzona->filas as $fila) {
 					// alinea los lugares de cada fila
 					$fila->alinear($direccion);
 			}
 			 
+	}
+	public function actionAlinearFila($EventoId, $FuncionesId,$ZonasId,$SubzonaId, $FilasId,$direccion='izquierda')
+	{
+			// alinea todos los lugares de una fila 
+			$fila=Filas::model()->findByPk(compact('EventoId','FuncionesId','ZonasId','SubzonaId','FilasId'));
+			$fila->alinear($direccion);
+	}
+	public function actionMoverFila($EventoId, $FuncionesId,$ZonasId,$SubzonaId, $FilasId,$direccion='izquierda')
+	{
+			// alinea todos los lugares de una fila 
+			$fila=Filas::model()->findByPk(compact('EventoId','FuncionesId','ZonasId','SubzonaId','FilasId'));
+			$delta=array('izquierda'=>-1,'derecha'=>1);
+			if($fila->recorrer($delta[$direccion])){
+					echo "true";
+			}
+			else
+					throw new Exception("Error ejecutar los cambios verifique el log", 1);
+
+	}
+
+	public function actionCambiarLugar()
+	{
+		// Cambia el valor de un lugar y en base a su contenido lo pone en OFF o en TRUE
+			if (isset($_POST['Lugares'])) {
+					extract($_POST['Lugares']);
+					$lugar=Lugares::model()->findByPk(compact('EventoId','FuncionesId','ZonasId','SubzonaId','FilasId','LugaresId'));
+					$lugar->attributes=$_POST['Lugares'];
+					if (isset($_POST['Lugares']['LugaresNum']))
+						   if( empty($_POST['Lugares']['LugaresNum'])){
+									$lugar->LugaresStatus='OFF';
+							}
+						   else{
+								   $lugar->LugaresStatus='TRUE';
+						   }
+					if ($lugar->save()) {
+							// Si los datos son correctos
+							echo 'true';
+					}	
+					else
+							throw new Exception("Error al validar los datos", 1);
+			}	
+			else
+					throw new Exception("Datos incompletos, verifique parametros", 1);
 	}
 
 

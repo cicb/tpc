@@ -66,10 +66,18 @@ class Filas extends CActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 				'lugares' => array(self::HAS_MANY, 'Lugares', array('EventoId','FuncionesId','ZonasId','SubzonaId','FilasId')),
+				'nlugares' => array(self::STAT, 'Lugares', 'EventoId,FuncionesId,ZonasId,SubzonaId,FilasId', ),
 				//'' => array(self::HAS_MANY, 'Lugares', array('EventoId','FuncionesId','ZonasId','SubzonaId','FilasId'),
 				//'condition'=>"LugaresStatus='OFF'"),
 				'ancho'   => array(self::STAT, 'Filas','EventoId, FuncionesId,ZonasId,SubzonaId','select'=>'MAX(ABS(LugaresIni-LugaresFin))+1',),
-
+				'minTrue'   => array(self::STAT, 'Lugares','EventoId, FuncionesId,ZonasId,SubzonaId, FilasId','select'=>'MIN(LugaresId)', 
+						'condition'=>"LugaresStatus='TRUE'"
+				),
+				'maxTrue'   => array(self::STAT, 'Lugares','EventoId, FuncionesId,ZonasId,SubzonaId, FilasId','select'=>'MAX(LugaresId)', 
+						'condition'=>"LugaresStatus='TRUE'"
+				),
+				'minLugar'   => array(self::STAT, 'Lugares','EventoId, FuncionesId,ZonasId,SubzonaId, FilasId','select'=>'MIN(LugaresId)' ),
+				'maxLugar'   => array(self::STAT, 'Lugares','EventoId, FuncionesId,ZonasId,SubzonaId, FilasId','select'=>'MAX(LugaresId)' ),
 		);
 	}
 
@@ -219,6 +227,74 @@ class Filas extends CActiveRecord
 			}	
 	}
 
+	public function actualizarLugaresId($delta,$condicion="true")
+	{
+			// Suma el delta al id
+			if ($delta!=0) {
+					// solo cuando el delta sea distinto de cero 
+					$ide=array(
+							'EventoId'=>$this->EventoId,
+							'FuncionesId'=>$this->FuncionesId,
+							'ZonasId'=>$this->ZonasId,
+							'SubzonaId'=>$this->SubzonaId,
+							'FilasId'=>$this->FilasId
+					);
+					$ordenamiento="ORDER BY LugaresId ";
+					if ($delta>0) {
+						// para recorridos a la izquierda empezar con el primero
+							$ordenamiento.="DESC";
+					}	
+					$nlugares=$this->nlugares;
+					//Elimina los OFF
+					Lugares::model()->deleteAllByAttributes($ide,"LugaresStatus='OFF'");
+					//Actualiza los ID
+					$sql="UPDATE lugares set LugaresId=LugaresId+$delta WHERE 
+							EventoId=%d AND 
+							FuncionesId=%d AND 
+							ZonasId=%d AND 
+							SubzonaId=%d AND 
+							FilasId=%d AND
+							%s %s";
+
+					$params=array_values($this->getPrimaryKey());
+					$params[]=$condicion;
+					$params[]=$ordenamiento;
+					$sql=vsprintf($sql,$params);
+					$conexion=Yii::app()->db;
+					$transaccion=$conexion->beginTransaction(); 
+					try{
+							$affected=$conexion->createCommand($sql)->execute();
+							$this->restaurarLugaresOff();
+							$transaccion->commit();
+							return $affected;
+					}
+					catch( Exception $e ){
+							$transaccion->rollback();
+							return false;
+					}
+			}	
+			else {
+					return 0;
+			}
+	}
+
+	public function restaurarLugaresOff()
+	{
+			// Completa los huecos vacios con lugares en OFF
+			$conexion=Yii::app()->db;
+			$asientos=array();
+			$totalLugares=$this->maxAsientos();
+			for ($i = 1; $i <= $totalLugares; $i++) {
+							$asientos[]=sprintf("( %d, %d, %d, %d, %d, %d, 0, 0, 'OFF' )",
+									$this->EventoId,$this->FuncionesId, 
+									$this->ZonasId,$this->SubzonaId,$this->FilasId,
+									$i);
+			}
+			$sql=sprintf("INSERT IGNORE INTO lugares ( EventoId, FuncionesId, ZonasId, SubzonaId, FilasId, LugaresId,
+								   	LugaresLug, LugaresNum, LugaresStatus) VALUES  %s ",implode(',',$asientos));
+			$conexion->createCommand($sql)->execute();
+	}
+
 	public function alinear($direccion)
 	{
 			// Alinea los lugares todos a la izquierda
@@ -229,28 +305,92 @@ class Filas extends CActiveRecord
 					'SubzonaId'=>$this->SubzonaId,
 					'FilasId'=>$this->FilasId
 			);
-			//Cantidad de lugares en estatus OFF
+			//Numero de lugares en la fila
+			$nlugares=$this->nlugares;
+			//Numero de lugares en OFF
 			$noff=Lugares::model()->countByAttributes($ide,"LugaresStatus='OFF'");	
-			Lugares::model()->deleteAllByAttributes($ide,"LugaresStatus='OFF'");
-			$criteria=new CDbCriteria;
-			foreach ($ide as $item=>$val) {
-					// Aplana la condicion
-						$criteria->compare($item,$val);
+			if ($nlugares>0 and $noff>1) {
+					// Solamente si existen lugares en la fila...
+					switch ($direccion) {
+					case 'derecha':
+							//A lado derecha todo
+							$ultimoLugar=Lugares::model()->findAllByAttributes($ide,array( 
+									'order'=>'LugaresId desc', 'limit'=>1,));	
+							$ultimoLugar=$ultimoLugar[0];
+							if ($ultimoLugar->LugaresStatus!="TRUE") {
+									// Si el lugar mas a la derecha es true no hay nada mas que mover, sino
+									$maxTrue=	Lugares::model()->findAllByAttributes($ide,array(
+											'condition'=>"LugaresStatus='TRUE'",
+											'order'=>'LugaresId desc',
+											'limit'=>1
+									));	
+									if (sizeof($maxTrue)>0) {
+											// SI existe un asiento true en la fila
+
+											$delta=$nlugares-$maxTrue[0]->LugaresId;
+											print ($delta.",");
+											$this->actualizarLugaresId($delta);
+									}	
+							}
+							break;
+					case 'izquierda':
+							//A la izquierda todo
+							$primerLugar=Lugares::model()->findAllByAttributes($ide,array( 
+									'order'=>'LugaresId', 'limit'=>1,));	
+							$primerLugar=$primerLugar[0];
+							if ($primerLugar->LugaresStatus!="TRUE") {
+									// Si el lugar mas a la izquierda es true no hay nada mas que mover, sino
+									$minTrue=	Lugares::model()->findAllByAttributes($ide,array(
+											'condition'=>"LugaresStatus='TRUE'",
+											'order'=>'LugaresId',
+											'limit'=>1
+									));	
+									if (sizeof($minTrue>0)) {
+										// Si exite un asiento en true 
+											$delta=$minTrue[0]->LugaresId-1;
+											print $delta;
+											$this->actualizarLugaresId(-$delta);
+									}	
+							}
+
+							break;			
+					case 'centro':
+							//A la derecha todo
+							if($noff>1){
+									$noff=ceil($noff/2);
+									$minTrue=	Lugares::model()->findAllByAttributes($ide,array(
+											'condition'=>"LugaresStatus='TRUE'",
+											'order'=>'LugaresId',
+											'limit'=>1
+									));	
+									$delta=$noff-$minTrue[0]->LugaresId;
+									$this->actualizarLugaresId($delta);
+							}
+							break;
+
+					default:
+							// code...
+							break;
+					}
+			}	
+
+			else{
+					$this->restaurarLugaresOff();
 			}
-			switch ($direccion) {
-			case 'derecha':
-					//A la derecha todo
-					$criteria->order="LugaresId desc";
-					echo Lugares::model()->updateCounters(array('LugaresId'=>$noff),$criteria);
-					break;
-			case 'izquierda':
-					//A la izquierda todo
-					$criteria->order="LugaresId";
-					echo Lugares::model()->updateCounters(array('LugaresIdsd'=>-$noff),$criteria);
-					break;			
-			default:
-					// code...
-					break;
-			}
+	}
+
+	public function recorrer($delta=1 )
+	{
+			// Recorre los id de asientos en  delta posiciones en direccion $direccion
+			if (	$delta!=0 
+					and $this->maxTrue+$delta<=$this->maxLugar
+					and $this->minTrue+$delta>0
+			) {
+					// Si al sumar el delta al maximo asiento en true no supera al ultimo lugar
+					// o si la suma de minimo y el delta en siempre mayor a 0
+				return	$this->actualizarLugaresId($delta);
+			}	
+			else return false;
+
 	}
 }

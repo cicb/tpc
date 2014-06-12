@@ -167,6 +167,7 @@ $('#btn-generar-numerados').live('click',function(){
 $('.btn-eliminar-fila').live('click',function(){ 
 		var obj=$(this);
 		var fid=obj.data('fid');
+		var id=obj.data('id');
 		$.ajax({
 				url:obj.attr('href'),
 						type:'post',
@@ -175,7 +176,7 @@ $('.btn-eliminar-fila').live('click',function(){
 								else {
 										alert('No se puede eliminar esta fila.Verifique que el Evento no tenga ventas');}},
 						beforeSend:function(){
-													   	return confirm('¿Esta seguro de que desea eliminar esta Fila?\\nEsta operación es irreversible.');						}						
+								return confirm('¿Esta seguro de que desea eliminar esta Fila?\\nEsta operación es irreversible.');						}						
 
 		});
 return false;
