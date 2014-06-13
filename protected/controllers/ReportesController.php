@@ -6,7 +6,34 @@ class ReportesController extends Controller
 	public function actionCortesDiarios()
 	{
         $this->perfil();
-		$this->render('cortesDiarios');
+        /*$totalVentasNormales             = array();
+        $totalBoletosDuros               = array();
+        $totalVentasNormalesSinDescuento = array();
+        $totalCortesias                  = array();
+        $totalBoletos                    = array();
+        $totalBoletosCancelados          = array();*/
+        $totalVentas                     = array();
+        $eventos                         = array();
+        $model = new Ventas;
+        if(!empty($_POST)){
+            
+            $usuario_id = $_POST['usuario_id'];
+            $desde      = $_POST['desde'];
+            $hasta      = $_POST['hasta'];
+            //print_r($_POST);
+            /*$totalVentasNormales             = $model->getTotalVentasNormales($usuario_id,$desde,$hasta);
+            $totalBoletosDuros               = $model->getTotalBoletosDuros($usuario_id,$desde,$hasta);
+            $totalVentasNormalesSinDescuento = $model->getTotalVentasNormalSinDescuento($usuario_id,$desde,$hasta);
+            $totalCortesias                  = $model->getTotalCortesias($usuario_id,$desde,$hasta);
+            $totalBoletos                    = $model->getTotalBoletos($usuario_id,$desde,$hasta);
+            $totalBoletosCancelados          = $model->getTotalBoletosCancelados($usuario_id,$desde,$hasta);*/
+            $totalVentas                     = $model->getTotalVentas($usuario_id,$desde,$hasta);
+            $eventos                         = $model->getEventos($usuario_id,$desde,$hasta);
+        }
+		$this->render('cortesDiarios',compact('totalVentas',
+                                              'eventos',
+                                              'model'
+                                              ));
 	}
 	public function actionDesgloseVentas()
 	{
@@ -1081,7 +1108,8 @@ $objWriter->save('php://output');
                 	    $contra .= ".".$boletoreimpresion['FilasId'].".".$boletoreimpresion['LugaresId']."-".date("m").".".date("d")."-".$boletoreimpresion['UsuariosId'];
                 	    $contra .= "R";
 						$ventaslevel1 = Ventaslevel1::model()->findByAttributes(array('VentasId'=>$boletoreimpresion['id'],'EventoId'=>$boletoreimpresion['EventoId'],'FuncionesId'=>$boletoreimpresion['FuncionesId'],'ZonasId'=>$boletoreimpresion['ZonasId'],'SubzonaId'=>$boletoreimpresion['SubzonaId'],'FilasId'=>$boletoreimpresion['FilasId'],'LugaresId'=>$boletoreimpresion['LugaresId']));
-						   $ventaslevel1->LugaresNumBol = $codigo;
+
+						$ventaslevel1->LugaresNumBol = $codigo;
 						$ventaslevel1->VentasCon = $contra;
 						$ventaslevel1->update();
                         $newdata[$key]['LugaresNumBol'] = $codigo;
@@ -1113,21 +1141,21 @@ $objWriter->save('php://output');
                 	    $contra .= ".".$boletoreimpresion['FilasId'].".".$boletoreimpresion['LugaresId']."-".date("m").".".date("d")."-".$boletoreimpresion['UsuariosId'];
                 	    $contra .= "PR$reimpresiones";
 
-						$ventaslevel1 = Ventaslevel1::model()->findByAttributes(array('VentasId'=>$boletoreimpresion['id'],'EventoId'=>$boletoreimpresion['EventoId'],'FuncionesId'=>$boletoreimpresion['FuncionesId'],'ZonasId'=>$boletoreimpresion['ZonasId'],'SubzonaId'=>$boletoreimpresion['SubzonaId'],'FilasId'=>$boletoreimpresion['FilasId'],'LugaresId'=>$boletoreimpresion['LugaresId']));
-						   $ventaslevel1->LugaresNumBol = $codigo;
-						$ventaslevel1->VentasCon = $contra;
-						$ventaslevel1->update();
-						$ultimo = Reimpresiones::model()->findAll(array('limit'=>1,'order'=>'t.ReimpresionesId DESC'));
-						$ultimo = $ultimo[0]->ReimpresionesId + 1;
-						$hoy    = date("Y-m-d G:i:s"); 
-						$user_id = Yii::app()->user->id;
-						Yii::app()->db->createCommand("INSERT INTO reimpresiones VALUES($ultimo,".$boletoreimpresion['EventoId'].",".$boletoreimpresion['FuncionesId'].",".$boletoreimpresion['ZonasId'].",".$boletoreimpresion['SubzonaId'].",".$boletoreimpresion['FilasId'].",".$boletoreimpresion['LugaresId'].",'PANEL ADMINISTRATIVO','',$user_id,'$hoy','".$boletoreimpresion['LugaresNumBol']."')")->execute();
-						
-						$ultimologreimp = Logreimp::model()->findAll(array('limit'=>1,'order'=>'t.LogReimpId DESC'));
-						$ultimologreimp = $ultimologreimp[0]->LogReimpId + 1;
-						
-						Yii::app()->db->createCommand("INSERT INTO logreimp VALUES($ultimologreimp,'$hoy','".$boletoreimpresion['VentasBolTip']."',".$boletoreimpresion['cosBol'].",'".$boletoreimpresion['VentasBolTip']."',$user_id,0,".$boletoreimpresion['EventoId'].",".$boletoreimpresion['FuncionesId'].",".$boletoreimpresion['ZonasId'].",".$boletoreimpresion['SubzonaId'].",".$boletoreimpresion['FilasId'].",".$boletoreimpresion['LugaresId'].")")->execute();
-						
+                        $ventaslevel1 = Ventaslevel1::model()->findByAttributes(array('VentasId'=>$boletoreimpresion['id'],'EventoId'=>$boletoreimpresion['EventoId'],'FuncionesId'=>$boletoreimpresion['FuncionesId'],'ZonasId'=>$boletoreimpresion['ZonasId'],'SubzonaId'=>$boletoreimpresion['SubzonaId'],'FilasId'=>$boletoreimpresion['FilasId'],'LugaresId'=>$boletoreimpresion['LugaresId']));
+                   	    $ventaslevel1->LugaresNumBol = $codigo;
+                        $ventaslevel1->VentasCon = $contra;
+                        $ventaslevel1->update();
+                        $ultimo = Reimpresiones::model()->findAll(array('limit'=>1,'order'=>'t.ReimpresionesId DESC'));
+                        $ultimo = $ultimo[0]->ReimpresionesId + 1;
+                        $hoy    = date("Y-m-d G:i:s"); 
+                        $user_id = Yii::app()->user->id;
+                        Yii::app()->db->createCommand("INSERT INTO reimpresiones VALUES($ultimo,".$boletoreimpresion['EventoId'].",".$boletoreimpresion['FuncionesId'].",".$boletoreimpresion['ZonasId'].",".$boletoreimpresion['SubzonaId'].",".$boletoreimpresion['FilasId'].",".$boletoreimpresion['LugaresId'].",'PANEL ADMINISTRATIVO','',$user_id,'$hoy','".$boletoreimpresion['LugaresNumBol']."')")->execute();
+                        
+                        $ultimologreimp = Logreimp::model()->findAll(array('limit'=>1,'order'=>'t.LogReimpId DESC'));
+                        $ultimologreimp = $ultimologreimp[0]->LogReimpId + 1;
+                        
+                        Yii::app()->db->createCommand("INSERT INTO logreimp VALUES($ultimologreimp,'$hoy','".$boletoreimpresion['VentasBolTip']."',".$boletoreimpresion['cosBol'].",'".$boletoreimpresion['VentasBolTip']."',$user_id,0,".$boletoreimpresion['EventoId'].",".$boletoreimpresion['FuncionesId'].",".$boletoreimpresion['ZonasId'].",".$boletoreimpresion['SubzonaId'].",".$boletoreimpresion['FilasId'].",".$boletoreimpresion['LugaresId'].")")->execute();
+
 
                         $newdata[$key]['LugaresNumBol'] = $codigo;
                         $newdata[$key]['VentasCon'] = $contra;
@@ -1328,6 +1356,14 @@ $objWriter->save('php://output');
 		}	
 
 	}
+    public function actionDetalleVentasAjax(){
+        if(!empty($_POST)){
+            set_time_limit(0);
+            $model = new Ventas;
+            $this->renderPartial("_detalleVentas",array('model'=>$model,'data'=>$_POST),false,true);
+        }
+        
+    }
 	// Uncomment the following methods and override them if needed
 	/*
 	public function filters()

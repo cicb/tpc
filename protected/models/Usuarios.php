@@ -26,12 +26,12 @@ class Usuarios extends CActiveRecord
 	private $_taquillaPrincipal=-1;
 	private $taquilla=null;
 	private $_permisos=array(
-			'boletos_duros'=>array('id'=>1,'valor'=>-1),
-			'cortesias'=>array('id'=>2,'valor'=>-1),
-			'cupones'=>array('id'=>3,'valor'=>-1),
-			'descuentos'=>array('id'=>4,'valor'=>-1),
-			'reservaciones'=>array('id'=>5,'valor'=>-1),
-			'reimpresiones'=>array('id'=>6,'valor'=>-1),
+			'boletos_duros'=>array('id'=>1,'valor'=>0),
+			'cortesias'=>array('id'=>2,'valor'=>0),
+			'cupones'=>array('id'=>3,'valor'=>0),
+			'descuentos'=>array('id'=>4,'valor'=>0),
+			'reservaciones'=>array('id'=>5,'valor'=>0),
+			'reimpresiones'=>array('id'=>6,'valor'=>0),
 	);
 	/**
 	 * Returns the static model of the specified AR class.
@@ -305,8 +305,9 @@ class Usuarios extends CActiveRecord
 							$condiciones = " AND EventoId IN(".implode(',',$eventos).")";
 					}	
 			}
+			else
+			{return array();}
 			$eventos = Evento::model()->findAll(array('condition'=>" EventoSta='ALTA'".$condiciones,'order'=>"t.EventoId DESC"));
-
 			return $eventos;
 	}
 

@@ -26,10 +26,12 @@ class ReportesFlex extends CFormModel
 		else
 			$extra = "";
 		
-		if($fecha1 != "" && $fecha2 != "")
+					 
+		$rango = "";
+		if($fecha1 != "" && $fecha2 != "" 
+				and preg_match("(\d{4}-\d{2}-\d{2})",$fecha1)==1 
+				and preg_match("(\d{4}-\d{2}-\d{2})",$fecha2)==1 )
 			$rango = " AND DATE(VentasFecHor) BETWEEN '$fecha1' AND '$fecha2' ";
-		else
-			$rango = "";
 		$aforo = Lugares::model()->count("EventoId = '$EventoId' AND FuncionesId = '$FuncionesId' AND ZonasId = '$ZonasId'");
 		if ($FuncionesId>0) $funcion=" AND ventaslevel1.FuncionesId = '$FuncionesId' ";
 		else $funcion='';
@@ -105,7 +107,7 @@ class ReportesFlex extends CFormModel
 					));             
     }
 
-    public function getVendidosPor($EventoId, $FuncionesId, $pv){
+    public function getVendidosPor($EventoId, $FuncionesId, $pv,$verNoImpresos="",$busqueda=""){
 		//*********************************************************************************
 		//Regresa el REPORTE DE VENTAS EN WEB O CALL CENTER, dependiendo el punto de venta $pv
 		//						minimamente se requiere del id del eventos
@@ -114,8 +116,13 @@ class ReportesFlex extends CFormModel
 			$cadenaFuncion = " AND lugares.FuncionesId = '$FuncionesId'";	
 		else
 			$cadenaFuncion = "";
+       
+       if($busqueda!=null AND $busqueda!="")
+            $busqueda = " AND (ventas.VentasNumRef LIKE '%$busqueda%' OR email LIKE '%$busqueda%' OR ventas.VentasNumTar LIKE '%$busqueda%') ";
 
-
+      if($verNoImpresos=="1")
+            $verNoImpresos = " AND ventaslevel1.LugaresNumBol=''";
+            
             $query = "SELECT '' as id,
 					  evento.EventoNom,
 					  funciones.funcionesTexto,
@@ -166,6 +173,8 @@ class ReportesFlex extends CFormModel
 					  AND ventaslevel1.VentasSta <> 'CANCELADO'
 					  AND  (ventas.PuntosventaId = '$pv')
 					  	$cadenaFuncion
+                        $busqueda
+                        $verNoImpresos
 					  ORDER BY ZonasAli, FilasAli, LugaresLug";
 		
 		  return new CSqlDataProvider($query, array(

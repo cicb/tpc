@@ -22,12 +22,12 @@ class UsuariosController extends Controller {
 			$esAdmin = @Yii::app()->user->getState("Admin") ;
 
 			return array(
-					array('allow', // allow authenticated user to perform 'create' and 'update' actions
+			/*		array('allow', // allow authenticated user to perform 'create' and 'update' actions
 					'expression'=>$esAdmin . '== true',
 			),
 			array('deny',  // deny all users
 			'users'=>array('*'),
-	),
+	        ),*/
 			);
 	}
 
@@ -89,13 +89,18 @@ class UsuariosController extends Controller {
 
 	public function actionRegistro()
 	{
+	        $this->perfil();
 			$model=new Usuarios('insert');	
-			$this->saveModel($model);
-			$this->render('form',compact('model'));
+			$id=$this->saveModel($model);
+			if($id>0)
+					$this->redirect(array('usuarios/actualizar','id'=>$id));
+			else	
+					$this->render('form',compact('model'));
 	}
 
 	public function actionActualizar($id)
 	{
+	        $this->perfil();
 			$model=$this->loadModel($id);
 			$model->scenario='update';
 			$this->saveModel($model);
@@ -108,7 +113,7 @@ class UsuariosController extends Controller {
 			if(isset($_POST['Usuarios']))
         {
             $this->performAjaxValidation($usuario);
-            $msg = $usuario->saveModel($_POST['Usuarios']);
+            return $usuario->saveModel($_POST['Usuarios']);
 		}
     }
 	public function actionConmutarEstatus()
@@ -140,7 +145,7 @@ class UsuariosController extends Controller {
 	}
 	public function actionDesasignarEvento()
 	{
-
+             $this->perfil();
 			if (Yii::app()->request->isAjaxRequest ){
 					$this->validarUsuario();
 					$model=$this->loadModel();
@@ -154,6 +159,7 @@ class UsuariosController extends Controller {
 	}
 	public function actionEventosAsignados()
 	{
+	        $this->perfil();
 			if (Yii::app()->request->isAjaxRequest ){
 					$this->validarUsuario();
 					$model=$this->loadModel();
@@ -171,6 +177,7 @@ class UsuariosController extends Controller {
 	}
 	public function actionTablaReportes()
 	{
+	        $this->perfil();
 			if (Yii::app()->request->isAjaxRequest ){
 					$this->validarUsuario();
 					if (isset($_GET['evento_id'])) {
@@ -183,7 +190,8 @@ class UsuariosController extends Controller {
 
 	}
 		public function actionAutorizarReporte()
-		{
+		{ 
+		    $this->perfil();
 			if (Yii::app()->request->isAjaxRequest ){
 					$this->validarUsuario();
 					if (isset($_GET['id'])) {
@@ -196,6 +204,7 @@ class UsuariosController extends Controller {
 		}
 		public function actionDenegarReporte()
 		{
+		   $this->perfil();
 			if (Yii::app()->request->isAjaxRequest ){
 					$this->validarUsuario();
 					if (isset($_GET['id'])) {
@@ -242,6 +251,7 @@ class UsuariosController extends Controller {
 		}
 		public function actionHistorialCompras()
 		{
+		       $this->perfil();
 				if (isset($_GET['id']) and $_GET['id']>0) {
 						$model=CrugeUser::model()->findByPk($_GET['id']);
 						$this->render('historialCompras',compact('model'));
@@ -249,6 +259,7 @@ class UsuariosController extends Controller {
 		}
 		public function actionVerTarjetas()
 		{
+		       $this->perfil();
 				if (Yii::app()->request->isAjaxRequest){
 						$this->validarUsuario();
 						if (isset($_GET['id']) and $_GET['id']>0) {

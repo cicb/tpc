@@ -306,7 +306,7 @@ class ReportesVentas extends CFormModel
 		}
 
 
-	public function getUltimasVentas($eventoId,$funcionesId="TODAS",$desde=0,$hasta=0)
+	public function getUltimasVentas($eventoId,$funcionesId="TODAS")
 	{
 			$modelo=new ReportesFlex;
 			$desde=date("Y-m-d",strtotime("-2 day"));
@@ -319,10 +319,10 @@ class ReportesVentas extends CFormModel
 			$reporte=$modelo->getReporte($eventoId,$funcion,$desde,$hasta,$cargo=false, 
 					$tipoBoleto='NORMAL,BOLETO DURO',$where='', 
 					$group_by='DAYOFYEAR(VentasFecHor)',$campos=", 	CASE DATE(VentasFecHor) 
-					WHEN DATE(VentasFecHor)=DATE_SUB(DATE(VentasFecHor), INTERVAL 2 DAY) THEN 'antier'
-					WHEN DATE(VentasFecHor)=DATE_SUB(DATE(VentasFecHor), INTERVAL 1 DAY) THEN 'ayer'
-					WHEN DATE(VentasFecHor)=CURDATE() THEN 'hoy'
-					END  AS dia" );
+					WHEN DATE_SUB(curdate(), INTERVAL 2 DAY) THEN 'antier'
+					WHEN DATE_SUB(curdate(), INTERVAL 1 DAY) THEN 'ayer'
+					WHEN CURDATE() THEN 'hoy'
+					END  AS dia " );
 
 			$matrix=array(
 					'hoy' 		=> array('titulo' =>'Venta hoy','boletos'=>0,'importe'=>0 ),

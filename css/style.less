@@ -11,6 +11,7 @@
 @belize:#2980b9;
 @calabaza:#d35400;
 @zanahoria:#e67e22;
+@asbestos:#7f8c8d;
 .gamarillo(){
 background: #fce300;
 background: -moz-linear-gradient(top,  #fce300 0%, #e8b500 100%);
@@ -29,7 +30,7 @@ color:#333;
  background: rgb(236,236,236);color:rgb(96, 106, 112);
 }
 .texturizado(){
-	background:@secundario;background-image:url('../images/sos.png');
+	background:@secundario;background-image:url('../images/shattered.png');
 }
 .area-0(){padding:0;margin:0;}
 .area{}
@@ -83,7 +84,6 @@ min-height:100%;height:auto !important;height:100%;margin: 0 auto -60px; margin-
 #push,#footer{height:60px;}
  html,
  body {
-		color:#333;
         height: 100%;
         background:#fff;   
         /* The html and body elements cannot have any padding or margin. */
@@ -108,9 +108,9 @@ min-height:100%;height:auto !important;height:100%;margin: 0 auto -60px; margin-
 .panel-normal{.normal}
 .panel-head{.normal;font-weight: 800; text-align: center; text-transform: uppercase; font-size: 110%;}
 .panel-foot{background:@midnight;color:#fff;}
-.nav{
-		background:@primario !important;
-}
+// .nav{
+// 		background:@primario !important;
+// }
 .nav-collapse{
 		background:#fff;
 }
@@ -156,5 +156,26 @@ th{text-align:center !important;}
 .box3{.col();width:328px;}
 .box4{.col();width:530px;}
 .box5{.col();width:856px;}
+.box6{.col();width:90%;}
+.box{margin:5px auto; }
+.btn{ font-family: FontAwesome !important ;
 
+}
+@font-face {
+    font-family: "FontAwesome";
+}
+ ul.arbol, ul.arbol ul {
+     list-style-type: none;
+   }
+ /* ul.rama-pvs{max-height:220px;overflow:scroll;}*/
+ tr.gris-head{
+ 	background:@asbestos;color:#FFF;font-weight: 800; text-align: center; text-transform: uppercase; font-size: 90%
+ }
+
+ /*BOTONES*/
+.flat(){padding:7px 5px;border:1.5px solid @asbestos;margin:4px;}
+ .flat-warning{
+		 .flat();
+		 background: @amarillo; color:@midnight;border-color: darken(@midnight,20%); 
+ }
 

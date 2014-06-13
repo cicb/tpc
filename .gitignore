@@ -16,4 +16,5 @@ protected/runtime/application.log
 *.sw*
 .swm
 *~
+tags
 

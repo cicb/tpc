@@ -21,7 +21,7 @@ class Controller extends CController
 	 */
 	public $breadcrumbs=array();
     public function perfil(){
-		if(Yii::app()->user->isGuest OR !Yii::app()->user->getState("Admin")){
+		if(Yii::app()->user->isGuest OR !(Yii::app()->user->getState("Admin") or Yii::app()->user->getState("TipUsrId") )){
 			$this->redirect(array("site/logout"));
 		}
 	}

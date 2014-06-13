@@ -57,24 +57,64 @@ class EventoController extends Controller
 	}
 
 	public function actionRegistro()
-	{       
-	        $this->perfil();
-			$model=new Evento('insert');	
+	{
+			$model=new Evento('insert');
+            $puntosventa = new Puntosventa;	
 			$this->saveModel($model);
-			$this->render('form',compact('model'));
+			$this->render('form',compact('model','puntosventa'));
 	}
 
 	public function actionActualizar($id)
 	{
-            $this->perfil();
-			$model=$this->loadModel($id);
+			$model=Evento::model()->with(array('funciones'=>array('with'=>'forolevel1')))->findByPk($id);
 			$model->scenario='update';
 			$this->saveModel($model);
-            
+            $puntosventa = new Puntosventa;
             $funciones = Funciones::model()->find("EventoId=$id");
             //$forolevel1 = Forolevel1::model()->findByAttributes(array('ForoId'=>$funciones->ForoId,'ForoMapIntId'=>$funciones->ForoMapIntId));
-			$this->render('form',compact('model','funciones'));
+			$this->render('form',compact('model','funciones','puntosventa'));
 	}
+    public function actionAgregarPuntoVentaAjax(){
+        $model = new Puntosventa;
+        if(isset($_POST['Puntosventa'])){
+            $model->attributes=$_POST['Puntosventa'];
+            if($model->validate()){
+                $rango1 = 1000;
+                $rango2 = 1300;
+                if($_POST['tipo_sucursal']=="FF"){
+                    $rango1 = 1;
+                    $rango2 = 99;
+                }elseif($_POST['tipo_sucursal']=="T"){
+                    $rango1 = 102;
+                    $rango2 = 299;
+                }elseif($_POST['tipo_sucursal']=="FL"){
+                    $rango1 = 300;
+                    $rango2 = 999;
+                } 
+                
+                $pv_id = Puntosventa::model()->find(array('condition'=>"PuntosventaId BETWEEN $rango1 AND $rango2",'order'=>'PuntosventaId DESC'));
+    			$pv_id = (empty($pv_id->PuntosventaId)?$rango1:$pv_id->PuntosventaId) + 1;
+       
+                $model->PuntosventaId = $pv_id;
+                $model->PuntosventaIdeTra = $_POST['tipo_sucursal'].$pv_id;
+                if($model->save()){
+			         echo 'ok';
+				//$this->redirect(array('view','id'=>$model->PuntosventaId));
+			    }
+                
+            }else{
+                $error = $model->getErrors();
+                if(!empty($error['PuntosventaNom'])){
+                    echo 'El campo Nombre del Punto de Venta es Requerido</br>';
+                }
+                if(!empty($error['PuntosventaInf'])){
+                    echo 'El campo Información es Requerido';
+                }
+            }
+            
+        }
+		
+    }
 	/**
 	 * Displays a particular model.
 	 * @param integer $id the ID of the model to be displayed
@@ -226,6 +266,5 @@ class EventoController extends Controller
 
 		
 	}
-
 
 }

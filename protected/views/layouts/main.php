@@ -8,6 +8,11 @@
 	<?php  Yii::app()->clientScript->registerCssFile(Yii::app()->request->baseUrl."/css/style.css"); ?>
 <!--	<link rel="stylesheet/less" type="text/css" href="<?php //echo Yii::app()->request->baseUrl; ?>/css/style.less"  />-->
 	<title><?php echo CHtml::encode($this->pageTitle); ?></title>
+    <style>
+    .nav-collapse.collapse{
+        z-index: 99;
+    }
+    </style>
 </head>
 <body>
 	<div id="mainmenu">
@@ -48,7 +53,10 @@ $this->widget('bootstrap.widgets.TbNavbar',array(
 										array('label' => 'Conciliación Farmatodo',
 												'url' =>  $this->createUrl('reportes/conciliacionFarmatodo'),
 												'visible' => !Yii::app()->user->isGuest AND (Yii::app()->user->getState("Admin"))?true:false),
-										array('label' => 'Desglose De Ventas', 
+										array('label' => 'Cortes Diarios',
+												'url' =>  $this->createUrl('reportes/cortesDiarios'),
+												'visible' => !Yii::app()->user->isGuest AND (Yii::app()->user->getState("Admin"))?true:false),
+                                        array('label' => 'Desglose De Ventas', 
 												'url' =>  $this->createUrl('reportes/desgloseVentas'),'visible'
 												=> !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
 										array('label' => 'Historial De Cancelaciones Y Reimpresiones',
@@ -77,7 +85,6 @@ $this->widget('bootstrap.widgets.TbNavbar',array(
 										array('label' => 'Ventas Diarias',
 												'url' =>  $this->createUrl('reportes/ventasDiarias'),
 												'visible' => !Yii::app()->user->isGuest AND (Yii::app()->user->getState("Admin"))?true:false),
-
 								),
 						),
 
@@ -101,7 +108,8 @@ $this->widget('bootstrap.widgets.TbNavbar',array(
 								array('label' => 'Eventos', 
 								'items'=>array(
 										array('label'=>'Administración De Eventos', 'url'=>$this->createUrl('evento/index')),
-										array('label'=>'Configurador de accesos', 'url'=>$this->createUrl('accesos/index')),
+                                        array('label'=>'Administración De Puntos De Venta', 'url'=>$this->createUrl('puntosventa/index')),
+										array('label'=>'Configurador De Accesos', 'url'=>$this->createUrl('accesos/index')),
 								),
 								'url' => '#','visible' => !Yii::app()->user->isGuest AND Yii::app()->user->getState("Admin")?true:false),
 								array('label'=>'Usuarios','items'=>array(

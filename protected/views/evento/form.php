@@ -1,12 +1,3 @@
-<script type="text/javascript">
-	$("#yw1").blur(function(){
-		console.log($(this).val());
-	});
-	$(".datepicker-days td").on('click',function(){
-		console.log('day');
-		$("#yw1").focus();
-	});
-</script>
 <?php
 /* @var $this EventoController */
 /* @var $model Evento */
@@ -32,7 +23,7 @@
 <div class='controles' style="min-height:100%">
 
 <?php echo sprintf("<h2>%s</h2>",$model->scenario=="insert"?'Nuevo Registro De Evento':'Actualizar Evento'); ?>
-	<p class="help-block">Los campos con <span class="required">*</span> con requeridos.</p>
+	<p class="help-block">Los campos con <span class="required">*</span> son requeridos.</p>
 	<?php echo $form->errorSummary($model); ?>
 <br />
 <?php if(Yii::app()->user->hasFlash('success')):?>
@@ -46,8 +37,6 @@
 
 			<?php echo $form->textFieldControlGroup($model,'EventoNom',array('span'=>4,'maxlength'=>150)); ?>
             <?php echo $form->textFieldControlGroup($model,'EventoDesBol',array( 'span'=>4,'maxlength'=>75)); ?>
-            <?php echo $form->textFieldControlGroup($model,'EventoDesWeb',array('span'=>4,'maxlength'=>200)); ?>
-
 		<div class='alert'>
 			<?php echo $form->dropDownListControlGroup($model, 'EventoSta',
 					array('1'=>'BAJA', 'ALTA'=>'ALTA'), array('class' => 'span2')); ?>
@@ -55,49 +44,24 @@
         <?php echo $form->dropDownListControlGroup($model, 'EventoSta2',
 					array('1'=>'A la Venta', '2'=>'Proximamente','3'=>'Sinopsis','4'=>'Cancelado'), array('class' => 'span2')); ?>
 
-		<?php echo $form->labelEx($model,'EventoFecIni',array('class'=>'control-label')); ?>
-		<div class="input-append">
-				<?php $this->widget('yiiwheels.widgets.datetimepicker.WhDateTimePicker', array(
-						'name' => 'Evento[EventoFecIni]',
-						'value'=>$model->EventoFecIni,
-						'pluginOptions' => array(
-								'lenguage'=>'es-MX',
-								'format' => 'yyyy-MM-dd hh:mm:ss'
-						)
-				));
-				?>
-		</div>
-
-
 <div class='control-group'>
-
+		<?php echo $form->labelEx($model,'EventoFecIni',array('class'=>'control-label')); ?>
+ <div class="input-append">
+		<?php echo $form->textField($model,'EventoFecIni',array('class'=>'picker')) ;?>
+ </div>
+</div>
+<div class='control-group'>
 		<?php echo $form->labelEx($model,'EventoFecFin',array('class'=>'control-label')); ?>
-		<div class="input-append " >
-				<?php $this->widget('yiiwheels.widgets.datetimepicker.WhDateTimePicker', array(
-						'name' => 'Evento[EventoFecFin]',
-						'value'=>$model->EventoFecFin,
-						'pluginOptions' => array(
-								'lenguage'=>'es-MX',
-								'format' => 'yyyy-MM-dd hh:mm:ss'
-						)
-				));
-				?>
-		</div>
+ <div class="input-append">
+		<?php echo $form->textField($model,'EventoFecFin',array('class'=>'picker')) ;?>
+ </div>
 </div>
 
 <div class='control-group'>
 		<?php echo $form->labelEx($model,'EventoTemFecFin',array('class'=>'control-label')); ?>
-		<div class="input-append">
-				<?php $this->widget('yiiwheels.widgets.datetimepicker.WhDateTimePicker', array(
-						'name' => 'Evento[EventoTemFecFin]',
-						'value'=>$model->EventoTemFecFin,
-						'pluginOptions' => array(
-								'lenguage'=>'es-MX',
-								'format' => 'yyyy-MM-dd hh:mm:ss'
-						)
-				));
-				?>
-		</div>
+ <div class="input-append">
+		<?php echo $form->textField($model,'EventoTemFecFin',array('class'=>'picker')) ;?>
+ </div>
 </div>		
 
 <div class='control-group'>
@@ -118,21 +82,6 @@
 	) ; ?>
 	<?php echo $form->error($model,'CategoriaId'); ?>
 </div>
-<?php
-Yii::app()->clientScript->registerScript('remove-chosen',"
-$.fn.chosenDestroy = function () {
-$(this).show().removeClass('chzn-done').removeAttr('id');
-$(this).next().remove()
-  return $(this);
-}
-function updateChosen(obj){
-		$(obj).chosenDestroy();
-		$(obj).chosen();
-}
-
-
-",CClientScript::POS_BEGIN);
-?>
 <div class='control-group'>
 	<?php echo $form->labelEx($model,'CategoriaSubId',array('class'=>'control-label')); ?>
 	<?php echo $form->dropDownList($model,'CategoriaSubId',
@@ -165,7 +114,15 @@ function updateChosen(obj){
 					'PuntosventaId','PuntosventaNom'),
 			array('empty'=>'Sin Punto de Venta','class'=>'span3 chosen')
 	) ; ?>
-	<?php echo $form->error($model,'PuntosventaId'); ?>
+	<?php //echo $form->error($model,'PuntosventaId'); ?>
+    <?php echo TbHtml::button('Agregar Punto de Venta', array(
+    'style' => 'margin-top:-18px;',
+    'class' => 'btn btn-primary',
+    'size' => TbHtml::BUTTON_SIZE_SMALL,
+    'data-toggle' => 'modal',
+    'data-target' => '#ModalPuntoVenta',
+)); ?>
+            
 </div>
 
 		</div>
@@ -200,83 +157,76 @@ function updateChosen(obj){
 		
 				</div>
                 <?php if($model->scenario=='update' AND !empty($funciones)): ?>
-                <div class='span4 white-box box'>
-				<h3><?php echo TbHtml::i('',array('class'=>'fa fa-picture-o')); ?> Imagen Mapa Chico</h3>
-					<?php echo TbHtml::imagePolaroid(strlen($funciones->getForoPequenio())>3?$funciones->getForoPequenio():'holder.js/300x300','',
-                    array('id'=>'img-imamapchi','style'=>'width:140px;')); ?>
-					<br /><br />
-					<?php  echo TbHtml::fileField('imamapchi','' , array('span'=>2,'maxlength'=>200, 'class'=>'hidden')); ?>
-					<?php echo TbHtml::textField('MapaChico',$funciones->getUrlForoPequenio(),array(
-                                'readonly'=>'readonly',
-								'append'=>TbHtml::button('Seleccionar imagen',
-								array('class'=>'btn btn-success','id'=>'btn-subir-imamapchi')),
-								'placeholder'=>'Nombre de la imagen mapa chico',
-                                )); ?>
-		
-				</div>
-                <div class='span4 white-box box'>
-				<h3><?php echo TbHtml::i('',array('class'=>'fa fa-picture-o')); ?> Imagen Mapa Grande</h3>
-					<?php echo TbHtml::imagePolaroid(strlen($funciones->getForoPequenio())>3?$funciones->getForoGrande():'holder.js/300x300','',
-                    array('id'=>'img-imamapgra','style'=>'width:340px;')); ?>
-					<br /><br />
-					<?php  echo TbHtml::fileField('imamapgra','' , array('span'=>2,'maxlength'=>200, 'class'=>'hidden')); ?>
-					<?php echo TbHtml::textField('MapaGrande',$funciones->getUrlForoGrande(),array(
-                                'readonly'=>'readonly',
-								'append'=>TbHtml::button('Seleccionar imagen',
-								array('class'=>'btn btn-success','id'=>'btn-subir-imamapgra')),
-								'placeholder'=>'Nombre de la imagen mapa Gde.')); ?>
-		
-				</div>
-                <?php else: ?>
-                <?php echo TbHtml::button('Agregar mapas', array('color' => TbHtml::BUTTON_COLOR_PRIMARY)); ?>
+                <style>
+	            .modal-body {
+                    max-height: 100%;
+                }
+                .modal-footer{
+                    padding: 2px 15px;
+                }
+               </style>
+                
                 <?php endif;?>
 		</div>
 	
 
         <div class="form-actions">
-<?php echo TbHtml::link(' Regresar',array('index'),array('class'=>'fa fa-chevron-circle-left btn ')); ?>
+<?php echo TbHtml::link(' Regresar',array('index'),array('class'=>' btn fa-arrow-left ')); ?>
         <?php echo TbHtml::submitButton($model->isNewRecord ? ' Registrar' : ' Guardar',array(
-            'color'=>TbHtml::BUTTON_COLOR_PRIMARY,
 			'size'=>TbHtml::BUTTON_SIZE_LARGE,
-			'class'=>'fa fa-check'
+			'class'=>'btn btn-check  btn-primary fa fa-check'
         )); ?>
     </div>
 
 
 
     <?php $this->endWidget(); ?>
-
-<?php echo TbHtml::button('Agregar', array('color' => TbHtml::BUTTON_COLOR_PRIMARY,'id'=>'btn-agregar-funcion')); ?>
+            <?php $this->widget('bootstrap.widgets.TbModal', array(
+                    'id' => 'ModalPuntoVenta',
+                    'header' => 'Punto de Venta',
+					'content' => $this->renderPartial('_form_pv',array('model'=>$puntosventa),true),
+                    'footer' => array(
+                        //TbHtml::button('Save Changes', array('data-dismiss' => 'modal', 'color' => TbHtml::BUTTON_COLOR_PRIMARY)),
+                        //TbHtml::button('Cerrar', array('data-dismiss' => 'modal')),
+                     ),
+                     'htmlOptions' => array('style' => 'width: 700px;margin-left: -400px;'), 
+                )); ?>
 <!--<button class="btn btn-primary">ok</button>-->
+</div>
 </div><!-- form -->
 <?php if(!$model->isNewRecord):?>
-<?php $lista_funciones = Funciones::model()->findAll("EventoId=".$_GET['id']);?>
-<ul id="lista-funciones">
-	<?php foreach ($lista_funciones as $key => $value):?>
-		<li><?php echo $value->FuncionesId;?></li>
-	<?php endforeach;?>	
-</ul>
+<input type="hidden" id="coor-funcionid" data-funcionId="1" />
 
 
+<div class=' white-box box text-center' >
+	<h3 id="funciones">Funciones</h3>
+<div id='listado-funciones'>
+	<?php
+	foreach($model->funciones as $funcion){
+			$this->renderPartial('/funciones/formulario',array('model'=>$funcion));
+	};
+	?>
 </div>
-<script type="text/javascript">
-	$("#btn-agregar-funcion").click(function(){
-		
-		$.ajax({
-			  url:'<?php echo Yii::app()->createUrl('funciones/pruebaajax');?>',
-              type:'post',
-              error:function(error){
-              	alert(error);
-              },
-              data:{id:<?php echo $_GET['id']; ?>,funcion:$("ul#lista-funciones li").length},
-              success:function(datos){
-              	console.log(datos);
-              	$("ul#lista-funciones").append("<li>"+datos+"</li>");
-              }
-		});
-	});
-</script>
+<i id="feedback-funcion" class="fa fa-3x" ></i><br/><br/>
+	<?php echo TbHtml::button(' Agregar una función', array(
+			'class'=>'btn-agregar-funcion btn btn-success fa fa-2x fa-plus-circle center'
+	)); ?>
+</div>
+
 <?php endif;?>
+<?php $this->widget('bootstrap.widgets.TbModal', array(
+    'id' => 'dlg-confiPvFuncion',
+    'header' => 'Selecciona el rango de fechas',
+    'content' => "<div is='dlg'></div>",
+    'footer' => implode(' ', array(
+    	TbHtml::button('Guardar cambios', array(
+    		'data-dismiss' => 'modal',
+			'class'=>'btn btn-primary',
+    		)
+    	),
+    	TbHtml::button('Cerrar', array('class'=>'btn', 'data-dismiss' => 'modal')),
+    	)),
+)); ?>
 
 <?php 
 				Yii::app()->clientScript->registerScriptFile("js/holder.js");
@@ -338,36 +288,194 @@ function updateChosen(obj){
 						}	
 				 }
 			});
-            $('#btn-subir-imamapchi').on('click',function(){ $('#imamapchi').trigger('click'); });
-            $('#imamapchi').on('change',function(){
-					 if ($(this).val()!='' && $(this).val()!=null) {
-							 if ($.inArray($(this).val().split('.').pop(),ext)==-1) {
-									 alert('El archivo no tiene extension valida, (jpg,png,bmp,jpeg), por favor seleccione otro.');
-									$(this).val('');	
-					         }else{	
-								var fd = new FormData();
-								var imagen = document.getElementById('imamapchi');
-								fd.append('imagen', imagen.files[0]);
-								fd.append('prefijo', 'pv_');
-                                console.log(fd);
-								/*$.ajax({
-										url: '".Yii::app()->createUrl('evento/subirImagen')."',
-												type: 'POST',
-												data: fd,
-												processData: false,  // tell jQuery not to process the data
-												contentType: false,   // tell jQuery not to set contentType
-												success: function(data){ 
-														if (data) {
-																$('#Evento_EventoImaMin').val(data);
-																$('#img-imamin').attr('src','../imagesbd/'+data);
-
-														}	
-												 }
-								}).fail(function(){alert('Error!')});	*/	
-                            }	
-				 }
-			});
-            $('#btn-subir-imamapgra').on('click',function(){ $('#imamapgra').trigger('click'); });
-						");
+   ");
 
 ?>
+
+<?php 
+if (isset($model) and is_object($model) and $model->EventoId) {
+Yii::app()->clientScript->registerScript('agregar-funcion',sprintf("
+
+
+$('.btn-quitar-funcion').live('click',function(){
+		if(confirm('¿Esta usted seguro de querer eliminar esta función? Esta operación es irreversible')){			
+			var ff=$(this).data('id');
+			$.ajax({
+				url:'".$this->createUrl('funciones/quitar')."',
+				type:'post',
+				data:{eid:".$model->EventoId.",fid:ff},
+				success: function(){
+					$('#f-".$model->EventoId."-'+ff).remove();
+				}
+			});
+		}
+});
+
+$('.btn-generar-arbol').live('click',function(){
+		var obj=$(this);
+		var fid=obj.data('fid')
+		$.ajax({
+				url:obj.attr('href'),
+				type:'POST',
+				data:{Funciones:{EventoId:".$model->EventoId.", FuncionesId:fid}},
+				success:function(resp){ $('#arbol-'+fid).html(resp)}
+		});		
+		return false;
+});
+
+",$this->createUrl('funciones/insertar',array('eid'=>$model->EventoId))),CClientScript::POS_READY);
+}
+?>
+<?php Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl. '/js/jquery.datetimepicker.js',CClientScript::POS_BEGIN); ?>
+<?php Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl. '/js/evento.js'); ?>
+<?php Yii::app()->clientScript->registerCssFile(Yii::app()->request->baseUrl. '/css/jquery.datetimepicker.css'); ?>
+<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl."/css/jquery.datetimepicker.css" ; ?>" />
+ <script type="text/javascript" charset="utf-8">
+ 
+$('.picker').datetimepicker({
+		
+		lang:'es'}); 
+
+function actualizarf(datos, funcionid) 
+{
+	$.ajax(
+		{url: "<?php echo CController::createUrl('Funciones/update',array('EventoId'=>$model->EventoId)); ?>&FuncionesId="+funcionid,
+		data:datos,
+		type:'POST',
+		dataType:'JSON',
+		success:function(data)
+		{
+			if (data.respuesta)
+			{
+				console.log('La actualización se realizo con exito');
+			}
+		}
+	})
+
+}
+$('.CPVFSta').live('click', 
+	function()
+	{
+		var pvid=$(this).data('pid');
+		var funcid=$(this).data('fid');
+		$.ajax(
+			{url: "<?php echo CController::createUrl('Funciones/ActualizarPv'); ?>",
+			data:{EventoId:'<?php echo $model->EventoId?>',FuncionesId:funcid,PuntosventaId:pvid,atributo:'ConfiPVFuncionSta',valor:($(this).prop('checked')==true ? 'ALTA' : 'BAJA')},
+			type:'GET',
+			success:function(data)
+			{
+				console.log(data);
+			}
+		});
+	});
+
+$('.CPVFFecIni').live('change', 
+	function()
+	{
+		var pvid=$(this).data('pid');
+		var funcid=$(this).data('fid');
+		$.ajax(
+			{url: "<?php echo CController::createUrl('Funciones/ActualizarPv'); ?>",
+			data:{EventoId:'<?php echo $model->EventoId?>',FuncionesId:funcid,PuntosventaId:pvid,atributo:'ConfiPVFuncionFecIni',valor:$(this).val()},
+			type:'GET',
+			success:function(data)
+			{
+				console.log(data);
+			}
+		});
+	});
+$('.CPVFFecFin').live('change', 
+	function()
+	{
+		var pvid=$(this).data('pid');
+		var funcid=$(this).data('fid');
+		$.ajax(
+			{url: "<?php echo CController::createUrl('Funciones/ActualizarPv'); ?>",
+			data:{EventoId:'<?php echo $model->EventoId?>',FuncionesId:funcid,PuntosventaId:pvid,atributo:'ConfiPVFuncionFecFin',valor:$(this).val()},
+			type:'GET',
+			success:function(data)
+			{
+				console.log(data);
+			}
+		});
+	});
+
+$('.btn-agregar-funcion').live('click',function(){
+	var btn=$('#feedback-funcion');
+	btn.toggleClass('fa-spinner fa-spin','hidden');
+	$.ajax({
+		url:'<?php echo CController::createUrl("funciones/insertar",array("eid"=>$model->EventoId));?>',
+		type:'get',
+		complete:function(){
+			btn.toggleClass('fa-spinner fa-spin','hidden');
+		},
+		success:function(data){
+			$('#listado-funciones').append(data);
+			$('.picker').datetimepicker({allowTimes:1});
+
+		}
+	});
+});
+
+	$('.CPVFFecFin').live('change', 
+		function()
+		{
+			var pvid=$(this).data('pid');
+			var funcid=$(this).data('fid');
+			$.ajax(
+				{url: "<?php echo CController::createUrl('Funciones/ActualizarPv'); ?>",
+				data:{EventoId:'<?php echo $model->EventoId?>',FuncionesId:funcid,PuntosventaId:pvid,atributo:'ConfiPVFuncionFecFin',valor:$(this).val()},
+				type:'GET',
+				success:function(data)
+				{
+					console.log(data);
+				}
+			});
+		});
+</script>	
+
+
+<script>
+  	$(function() {
+  	  // Apparently click is better chan change? Cuz IE?
+      $('input[type="checkbox"]').change(function(e) {
+      var checked = $(this).prop("checked"),
+          container = $(this).parent(),
+          siblings = container.siblings();
+  
+      container.find('input[type="checkbox"]').prop({
+          indeterminate: false,
+          checked: checked
+      });
+  
+      function checkSiblings(el) {
+          var parent = el.parent().parent(),
+              all = true;
+  
+          el.siblings().each(function() {
+              return all = ($(this).children('input[type="checkbox"]').prop("checked") === checked);
+          });
+  
+          if (all && checked) {
+              parent.children('input[type="checkbox"]').prop({
+                  indeterminate: false,
+                  checked: checked
+              });
+              checkSiblings(parent);
+          } else if (all && !checked) {
+              parent.children('input[type="checkbox"]').prop("checked", checked);
+              parent.children('input[type="checkbox"]').prop("indeterminate", (parent.find('input[type="checkbox"]:checked').length > 0));
+              checkSiblings(parent);
+          } else {
+              el.parents("li").children('input[type="checkbox"]').prop({
+                  indeterminate: true,
+                  checked: false
+              });
+          }
+        }
+    
+        checkSiblings(container);
+      });
+    });
+    </script>
+

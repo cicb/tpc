@@ -76,7 +76,7 @@ body {
   color: #555;
   text-align: center;
   background: #ebebeb;
-  background-image: url('../images/sos.png');
+  background-image: url('../images/shattered.png');
   box-shadow: 0px -1px 5px;
 }
 #push,
@@ -85,7 +85,6 @@ body {
 }
 html,
 body {
-  color: #333;
   height: 100%;
   background: #fff;
   /* The html and body elements cannot have any padding or margin. */
@@ -96,7 +95,7 @@ body {
 }
 .controles {
   background: #ebebeb;
-  background-image: url('../images/sos.png');
+  background-image: url('../images/shattered.png');
   height: 100%;
   margin: 0px;
   width: 100%;
@@ -152,9 +151,6 @@ body {
 .panel-foot {
   background: #2c3e50;
   color: #fff;
-}
-.nav {
-  background: #266088 !important;
 }
 .nav-collapse {
   background: #fff;
@@ -302,4 +298,42 @@ th {
   display: inline-block;
   vertical-align: top;
   width: 856px;
+}
+.box6 {
+  float: none;
+  margin: auto;
+  display: inline-block;
+  vertical-align: top;
+  width: 90%;
+}
+.box {
+  margin: 5px auto;
+}
+.btn {
+  font-family: FontAwesome !important ;
+}
+@font-face {
+  font-family: "FontAwesome";
+}
+ul.arbol,
+ul.arbol ul {
+  list-style-type: none;
+}
+/* ul.rama-pvs{max-height:220px;overflow:scroll;}*/
+tr.gris-head {
+  background: #7f8c8d;
+  color: #FFF;
+  font-weight: 800;
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 90%;
+}
+/*BOTONES*/
+.flat-warning {
+  padding: 7px 5px;
+  border: 1.5px solid #7f8c8d;
+  margin: 4px;
+  background: #e0d53b;
+  color: #2c3e50;
+  border-color: #080b0e;
 }

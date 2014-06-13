@@ -9,7 +9,12 @@
 		'validateOnSubmit'=>true,
 	),
 )); ?>
-
+<?php 
+        $this->widget( 'ext.EChosen.EChosen', array(
+            'target' => '.chosen',
+      ));
+    ?>
+    
 <?php 
 $models = Evento::model()->findAll(array('condition' => 'EventoSta = "ALTA"','order' => 'EventoNom'));
 $list = CHtml::listData($models, 'EventoId', 'EventoNom');
@@ -28,21 +33,19 @@ $list = CHtml::listData($models, 'EventoId', 'EventoNom');
 ?>
 </div>
 <div class="row" >
-    <input id="pvweb" type="radio" name="pv" <?php echo @$_POST["pv"]=='101'?'checked="checked"':''; ?>   value="101"/><label style="display: inline-block;width: 250px;text-align: left;" for="pvweb">Web</label>
-</div>
-<br />
-<div class="row" >
-    <input id="pvcallcenter" type="radio" name="pv" <?php echo @$_POST["pv"]=='102'?'checked="checked"':''; ?> value="102"/> <label style="display: inline-block;width: 250px;text-align: left;" for="pvcallcenter">Call Center</label>
+    <input id="pvweb" type="radio" name="pv" <?php echo @$_POST["pv"]=='101'?'checked="checked"':''; ?>   value="101"/><label style="display: inline-block;width: 100px;text-align: left;" for="pvweb">Web</label>
+    <input id="pvcallcenter" type="radio" name="pv" <?php echo @$_POST["pv"]=='102'?'checked="checked"':''; ?> value="102"/> <label style="display: inline-block;width: 100px;text-align: left;" for="pvcallcenter">Call Center</label>
 </div>
 <br />
 <div class="row">
 <?php
 $funcionId = @$_POST["Ventaslevel1"]["funcion"];
-echo CHtml::label('Evento','evento_id', array('style'=>'width:70px; display:inline-table;'));
+echo CHtml::label('Evento','evento_id', array('style'=>'width:200px; display:inline-table;'));
 $modeloEvento = Evento::model()->findAll(array('condition' => 'EventoSta = "ALTA"','order'=>'EventoNom'));
 $list = CHtml::listData($modeloEvento,'EventoId','EventoNom');
             echo CHtml::dropDownList('evento_id',@$_POST['evento_id'],$list,
               array(
+                'class'=>'chosen span3',
                 'ajax' => array(
                   'type' => 'POST',
                   //'data' => 'FuncionId='.@$_POST['Ventaslevel1']['funcion'],
@@ -58,25 +61,33 @@ $list = CHtml::listData($modeloEvento,'EventoId','EventoNom');
                     $('#Ventaslevel1_funcion option:nth-child('+child+')').attr('selected', 'selected');}
                     ",
                   'update' => '#Ventaslevel1_funcion',
-                  ),'prompt' => 'Seleccione un Evento...'
+                  ),'prompt' => 'Seleccione un Evento...','style'=>''
                 ));
 ?>
 	<span id="fspin" class="fa"></span>
 	</div>
 
 	<div class="row">
-<?php
-echo CHtml::label('Funcion','Ventaslevel1_funcion', array('style'=>'width:70px; display:inline-table;'));
-echo CHtml::dropDownList('Ventaslevel1[funcion]','',array());
-?>
+    <?php
+    echo CHtml::label('Función','Ventaslevel1_funcion', array('style'=>'width:200px; display:inline-table;'));
+    echo CHtml::dropDownList('Ventaslevel1[funcion]','',array(),array('class'=>'span3'));
+    ?>
 	</div>
+    <div class="row">
+    <?php
+	   $busqueda = @$_POST["busqueda"];
+    ?>
+    <?php echo CHtml::label('Búsqueda (correo, referencia, TC)','', array('style'=>'width:200px; display:inline-table;'));?>
+    <?php echo CHtml::textField('busqueda',$busqueda!=""?$busqueda:'',array('class'=>'span3','placeholder'=>'correo, referencia, TC'))?>
+    </div>
 	<div class='row'>
     <?php echo CHtml::hiddenField('grid_mode', 'view'); ?>                                                                      
     <?php echo CHtml::hiddenField('funcion_id', '<?php @echo $_POST["Ventaslevel1"]["funcion"]; ?>'); ?>                                                                      
     <?php echo $form->error($model,'evento_id'); ?>
 	</div>
-
-
+    <div class="row">
+        <input id="" type="checkbox" name="verNoImpresos" <?php echo !empty(@$_POST["verNoImpresos"])?'checked="checked"':''; ?> value="1"/> <label style="display: inline-block;width: 200px;text-align: left;" for="pvcallcenter">Ver Boletos No Impresos</label>
+    </div>
 	<div class="row buttons">
 		<?php echo CHtml::submitButton('Exportar',array('class'=>'btn btn-medium','onclick'=>'$("#grid_mode").val("export");')) ; ?>
          <?php echo CHtml::submitButton('Ver reporte',array('class'=>'btn btn-primary','onclick'=>'$("#grid_mode").val("show");')); ?>
@@ -134,7 +145,7 @@ $this->widget('zii.widgets.grid.CGridView', array(
 <?php
 if(isset($eventoId,$funcionesId) and $eventoId>0):
 $this->widget('application.extensions.EExcelView', array(
- 'dataProvider'=> $model->getVendidosPor($eventoId,$funcionesId,@$_POST["pv"]),
+ 'dataProvider'=> $model->getVendidosPor($eventoId,$funcionesId,@$_POST["pv"],@$_POST["verNoImpresos"],@$_POST["busqueda"]),
  'grid_mode'=>$grid_mode,
  'htmlOptions'=>array('class'=>'principal'),
  'type'=>'condensed',

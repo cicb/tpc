@@ -4,11 +4,43 @@ class FuncionesController extends Controller
 {
 	public function actionIndex()
 	{
-      echo "Hola mundo";
     $this->render('index');
   
   }
+   public function filters()
+   {
+	 return array(
+	   'accessControl', // perform access control for CRUD operations
+	   'postOnly + generarArbolCPVF', // we only allow deletion via POST request
+	 );
+   }
 
+  /**
+   * Specifies the access control rules.
+   * This method is used by the 'accessControl' filter.
+   * @return array access control rules
+   */
+  /*public function accessRules()
+  {
+    return array(
+      array('allow',  // allow all users to perform 'index' and 'view' actions
+        'actions'=>array('index','view'),
+        'users'=>array('*'),
+      ),
+      array('allow', // allow authenticated user to perform 'create' and 'update' actions
+        'actions'=>array('create','update'),
+        'users'=>array('@'),
+      ),
+      array('allow', // allow admin user to perform 'admin' and 'delete' actions
+        'actions'=>array('admin','delete'),
+        'users'=>array('admin'),
+      ),
+            /*
+      array('deny',  // deny all users
+        'users'=>array('*'),
+      ),                           
+    );
+  }*/
   public function actionRegistro()
   {
     $model=new Funciones('insert');  
@@ -364,6 +396,164 @@ class FuncionesController extends Controller
      endforeach;
      echo "</table>";
     }
+
+		public function actionQuitar()
+		{
+				// Quitar funcion elimina la ultima funcion de la cola
+				// echo Funciones::quitarUltima($eid);
+        if (isset($_POST['eid'],$_POST['fid'])) {
+          # SI se le envian el id del evento y de la funcion
+          extract($_POST);
+          $funcion=Funciones::model()->findByPk(array('EventoId'=>$eid,'FuncionesId'=>$fid));
+          if (is_object($funcion)) {
+            $funcion->delete();
+          }
+        }
+        else
+          "Parametros invalidos";
+
+		}
+
+	public function actionInsertar($eid)
+	{
+			//Genera un formulario para una funcion
+			$retorno=Funciones::insertar($eid);
+			if ($retorno ) {
+					// Si regresa un objeto
+					$this->renderPartial('formulario',array('model'=>$retorno));	
+			}	
+			else
+					echo CJSON::encode($retorno);
+	}
+
+  public function actionConfigPuntoventa($eid,$fid,$pvid)
+  {
+    # 
+    if (isset($_POST['Confipvfuncion'])) {
+        $model=Confipvfuncion::model()->findByPk(array('EventoId'=>$eid,'FuncionesId'=>$fid,'PuntosventaId'=>$pvid));
+
+    }
+    $funcion=Funciones::model()->with('evento')->findByPk(array('EventoId'=>$eid,'FuncionesId'=>$fid));
+    $evento=$function->evento;
+
+    $this->renderPartial('_confiPvFuncion');
+  }
+
+  public function actionUpdate($EventoId, $FuncionesId)
+  {
+      $model=Funciones::model()->findByPk(array('EventoId'=>$EventoId,'FuncionesId'=>$FuncionesId));
+      if (isset($_POST['Funciones']))
+      {
+        if (!is_null($model))
+        {
+          $model->attributes=$_POST['Funciones'];
+          if ($model->update())
+          {
+            $cols=$_POST['Funciones'];
+            if (array_key_exists('FuncionesFecHor', $cols) or array_key_exists('FuncionesFecIni', $cols) ) 
+            {
+              $model->actualizarConfipvfunciones();
+              echo CJSON::encode(array('respuesta'=>true));
+            }           
+            else 
+              echo CJSON::encode(array('respuesta'=>var_export($cols)));
+          }
+          else
+            echo CJSON::encode(array('respuesta'=>false));
+        }
+      }
+  }
+
+  public function actionActualizarPv($EventoId,$FuncionesId,$PuntosventaId,$atributo,$valor)
+  {
+    $cpf=Confipvfuncion::model()->with(array('puntoventa'=>array('with'=>'hijos')))->findByPk(compact('EventoId','FuncionesId','PuntosventaId'));
+    if (!is_null($cpf)) {
+      #"Si existe "
+      $evento=Evento::model()->findByPk($EventoId);
+      $cpf[$atributo]=$valor;
+      $cpf->update($atributo);
+      if ($cpf->puntoventa->hijos) {
+        $criteria=new CDbCriteria;
+        $criteria->addCondition("EventoId=:evento");
+        $criteria->addCondition("FuncionesId=:funcion");
+        $criteria->addCondition("confipvfuncion.PuntosventaId<>".$evento->PuntosventaId);
+        $criteria->join=" inner join puntosventa as t2  on confipvfuncion.PuntosventaId=t2.PuntosventaId 
+        and t2.PuntosventaSuperId=:actual";
+        $criteria->params=array('actual'=>$PuntosventaId,'evento'=>$EventoId,'funcion'=>$FuncionesId);
+      // $criteria->addInCondition("PuntosventaId",$padres);
+        $actualizados=Confipvfuncion::model()->updateAll(array($atributo=>$valor), $criteria);
+        $hijosPadres=$cpf->puntoventa->getChildrens(' and tipoid=0');
+        foreach ($hijosPadres as $hijoPadre) {
+          if ($hijoPadre->PuntosventaSuperId==$PuntosventaId) {
+            $this->actionActualizarPv($EventoId,$FuncionesId,$hijoPadre->PuntosventaId,$atributo,$valor);
+          }
+        }
+        #En esta seccion se cambia el PuntosventaId al de la taquilla del evento para a esta asignarle 4 horas mas
+
+        // if (strcasecmp($atributo, "FuncionesFecHor")) {
+        //   #SI el campo que se esta intentando cambiar es el fechor entonces se debera anadir 4 horas adicionales a la taquilla del evento
+        //   $PuntosventaId=$evento->PuntosventaId;
+        //   $taquilla=Confipvfuncion::model()->findByPk(compact('EventoId','FuncionesId','PuntosventaId'));
+        //   $taquilla->ConfiPVFuncionFecFin=date("Y-m-d H:i:s", strtotime ('+4 hour' , strtotime ($taquilla->ConfiPVFuncionFecFin)));
+        //   $taquilla->update();
+        // }
+      }
+
+      }
+    else {
+      echo"No existe un Confipvfuncion";
+      return 0;
+    }
+
+  }
+
+  public function actionGenerarArbolCPVF(){
+		  $model=Funciones::model()->with('evento')->findByPk($_POST['Funciones']);
+		  $model->agregarConfpvfuncion();
+		  $this->renderPartial('_arbolCPVF',compact('model'));
+  }
+
+  public function actionVerHoja($EventoId,$FuncionesId,$PuntosventaId){
+		  #Genera el una rama del arbol apartir de un cofipvfuncion que cumpla 
+		  $cpvf=Confipvfuncion::model()->with(array('puntoventa'))->findByPk(
+				  compact('EventoId','FuncionesId','PuntosventaId'));
+		  $Pv=$cpvf->puntoventa;
+		  if (is_object($cpvf)) 
+				  $this->renderPartial('_nodoCPVF',array('model'=>$cpvf));
+  }
+  
+  public function actionVerRama($EventoId,$FuncionesId,$PuntosventaId){
+		  #Genera el una rama del arbol apartir de un cofipvfuncion que cumpla 
+		  $evento=Evento::model()->findByPk($EventoId);
+		  $cpvf=Confipvfuncion::model()->with(
+				  array(
+						  'puntoventa'=>array(
+								  'with'=>array(
+										  'hijos'=>array(
+												  'condition'=>"hijos.PuntosventaSta='ALTA' and hijos.PuntosventaId<>".$evento->PuntosventaId
+										  )))
+								  ))->findByPk(compact('EventoId','FuncionesId','PuntosventaId'));
+		  $Pv=$cpvf->puntoventa;
+		  echo CHtml::openTag('ul',array('id'=>"rama-".$FuncionesId.'-'.$PuntosventaId, 'class'=>"rama "));
+		  foreach ($Pv->hijos as $hijo) {
+				  $model=Confipvfuncion::model()->with(
+						  'puntoventa')->findByPk(
+								  array('EventoId'=>$EventoId,'FuncionesId'=>$FuncionesId,
+								  'PuntosventaId'=>$hijo->PuntosventaId));
+				  if (is_object($model)) 
+						  $this->renderPartial('_nodoCPVF',array('model'=>$model));
+
+		  }
+		  echo CHtml::closeTag('ul');
+
+
+  }
+
+  public function actionDesasignarDistribucion($EventoId,$FuncionesId)
+  {
+		  $model=Funciones::model()->findByPk(compact('EventoId','FuncionesId'));
+		  echo CJSON::encode($model->eliminarDistribucion()?'true':'false');
+  }
 	// Uncomment the following methods and override them if needed
 	/*
 	public function filters()
@@ -390,4 +580,5 @@ class FuncionesController extends Controller
 		);
 	}
 	*/
+
 }
