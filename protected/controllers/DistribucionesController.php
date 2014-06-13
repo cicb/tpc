@@ -819,7 +819,7 @@ endforeach;
 	public function actionEditorSubzona($EventoId, $FuncionesId,$ZonasId,$SubzonaId,$modo='completo')
 	{
 			// Muestra un editor de lugares ordenados por filas de una subzona dada
-			$subzona=Subzona::model()->with(array('hermanas', 'filas'=>array('lugares')))->findByPk(compact('EventoId','FuncionesId', 'ZonasId','SubzonaId'));
+			$subzona=Subzona::model()->with(array('hermanas', 'filas'=>array('lugares','ntrue')))->findByPk(compact('EventoId','FuncionesId', 'ZonasId','SubzonaId'));
 			if (is_object($subzona)) {
 					// 
 					if ($modo=="completo") {
@@ -832,7 +832,7 @@ endforeach;
 					}
 			}	
 			else
-					throw new Exception("Error al procesar su petición, vefique integridad de parametros ", 403);
+					throw new Exception("Error al procesar su petición, vefique integridad de parametros ", 3);
 
 	}
 
@@ -861,7 +861,7 @@ endforeach;
 					echo "true";
 			}
 			else
-					throw new Exception("Error ejecutar los cambios verifique el log", 1);
+					echo 'false';
 
 	}
 
@@ -883,8 +883,7 @@ endforeach;
 							// Si los datos son correctos
 							echo 'true';
 					}	
-					else
-							throw new Exception("Error al validar los datos", 1);
+
 			}	
 			else
 					throw new Exception("Datos incompletos, verifique parametros", 1);

@@ -58,6 +58,7 @@ array('class'=>'input-medium panel-head')); ?>
 	table{background:#eeD}	
 	th,td{margin:5px;padding:5px !important;}
 	.input-mini{width:25px;text-align:center}	
+	.input-warning{color:#FFF !important;background:#E74C3C !important;}	
 .off{color:#C00 !important}
 </style>
 <script type="text/javascript" charset="utf-8">
@@ -78,27 +79,38 @@ $('.asiento').live('change',function(){
 				// En caso de escribir un caracter no valido...
 				$(this).addClass('text-danger');
 				}else{
-
 						$(this).removeClass('text-danger');
-						//var lugar=JSON.parse('$lugarJson');
 						var lugar=JSON.parse('$lugarJson');		
 						lugar['FilasId']=fila;
 						lugar['LugaresId']=id;
 						lugar['LugaresNum']=valor;
-						console.log(JSON.stringify(lugar));
 						$.ajax({
 								url:'".$this->createUrl('cambiarLugar')."',
 										data:{Lugares:lugar},		
 										type:'post',
 										success:function(){
+												var nlugares=$('#FilasCanLug-'+fila).val();
+												var nlorigen=parseInt($('#FilasCanLug-'+fila).data('lugares'));
 												if (valor=='') {
 														// Si se ha eliminado su contenido
-														obj.addClass('off');
-														$('.off[data-fid='+fila+']').removeClass('hidden');
+														obj.addClass('off hidden');
+														nlugares=nlugares-1;
 												}else{
 														obj.removeClass('off');
 														$('.off[data-fid='+fila+']').addClass('hidden');
+														nlugares=parseInt(nlugares)+1;
+
 												}	
+												$('#FilasCanLug-'+fila).val(nlugares);
+												if(nlugares!=nlorigen){
+														$('#FilasCanLug-'+fila).addClass('input-warning');
+														if (nlugares<nlorigen) {
+																$('.off[data-fid='+fila+']').removeClass('hidden');
+														}	
+												}
+												else {
+														$('#FilasCanLug-'+fila).removeClass('input-warning');
+												}
 								}
 						});	
 				}	
