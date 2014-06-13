@@ -52,25 +52,17 @@ echo TbHtml::openTag('table',array('width'=>'auto','class'=>'table-bordered cent
 														'data-id'=>$fila->FilasId,
 														'title'=>'Recorrer a la derecha', 
 														'class'=>'fa fa-angle-right  btn-alinear btn btn-info', 
-														'url'=>array('moverFila',
-														'EventoId'=>$subzona->EventoId,
-														'FuncionesId'=>$subzona->FuncionesId,
-														'ZonasId'=>$subzona->ZonasId,
-														'SubzonaId'=>$subzona->SubzonaId,
-														'FilasId'=>$fila->FilasId,
-														'direccion'=>'derecha')
+														'url'=>array_merge(
+																(array)'moverFila',$fila->getPrimaryKey(),
+																array('direccion'=>'derecha'))
 												),
 												array(
 														'data-id'=>$fila->FilasId,
 														'title'=>'Alinear todo a la derecha', 
 														'class'=>'fa fa-angle-double-right  btn-alinear btn btn-info', 
-														'url'=>array('alinearFila',
-														'EventoId'=>$subzona->EventoId,
-														'FuncionesId'=>$subzona->FuncionesId,
-														'ZonasId'=>$subzona->ZonasId,
-														'SubzonaId'=>$subzona->SubzonaId,
-														'FilasId'=>$fila->FilasId,
-														'direccion'=>'derecha')
+														'url'=>array_merge(
+																(array)'alinearFila',$fila->getPrimaryKey(),
+																array('direccion'=>'derecha'))
 												),
 										))
 								);	
@@ -79,6 +71,11 @@ echo TbHtml::openTag('table',array('width'=>'auto','class'=>'table-bordered cent
 						'onclick'=>'activarOff('.$fila->FilasId.')',
 						'class'=>'btn fa fa-adjust',
 				)));	
+				echo TbHtml::tag('td',array(),TbHtml::textField('FilasCanLug-'.$fila->FilasId,$fila->ntrue,array(
+						'class'=>'input-mini',
+						'data-lugares'=>$fila->nlugares,
+						'append'=>'Lugares',
+						'readonly'=>true)));	
 				echo TbHtml::closeTag('tr');
 
 		}

@@ -67,6 +67,8 @@ class Filas extends CActiveRecord
 		return array(
 				'lugares' => array(self::HAS_MANY, 'Lugares', array('EventoId','FuncionesId','ZonasId','SubzonaId','FilasId')),
 				'nlugares' => array(self::STAT, 'Lugares', 'EventoId,FuncionesId,ZonasId,SubzonaId,FilasId', ),
+				'ntrue' => array(self::STAT, 'Lugares', 'EventoId,FuncionesId,ZonasId,SubzonaId,FilasId',
+						'condition'=>"LugaresStatus='TRUE'"),
 				//'' => array(self::HAS_MANY, 'Lugares', array('EventoId','FuncionesId','ZonasId','SubzonaId','FilasId'),
 				//'condition'=>"LugaresStatus='OFF'"),
 				'ancho'   => array(self::STAT, 'Filas','EventoId, FuncionesId,ZonasId,SubzonaId','select'=>'MAX(ABS(LugaresIni-LugaresFin))+1',),
