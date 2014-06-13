@@ -50,111 +50,15 @@ array('class'=>'input-medium panel-head')); ?>
 		) ?>
 
 </div>
-
-<?php 
-echo TbHtml::openTag('table',array('width'=>'auto','class'=>'table-bordered centrado box'));
-foreach ($subzona->filas as $fila) {
-		// Por filas
-		//$this->renderPartial('_filaAsiento',array('asientos'=>$fila->asientos));
-		echo TbHtml::openTag('tr');
-		echo TbHtml::tag('th',array(),$fila->FilasAli);	
-		foreach ($fila->lugares as $asiento) {
-				//Por cada Asiento
-				$clase="";
-				if ($asiento->LugaresStatus=='OFF') {
-						$clase.=" off hidden";
-				}
-				$control=TbHtml::textField('asiento',$asiento->LugaresNum, array(
-						'class'=>'input-mini asiento'.$clase,
-						'data-fid'=>$asiento->FilasId,
-						'data-id'=>$asiento->LugaresId,
-				));
-				echo TbHtml::tag('td',array('class'=>' '),$control);	
-
-		}
-
-		echo TbHtml::tag('td',array(),
-				TbHtml::buttonGroup(
-						array( 
-								array(
-										'data-id'=>$fila->FilasId,
-										'title'=>'Alinear todo a la izquierda',  
-										'class'=>'fa fa-angle-double-left btn btn-info btn-alinear', 
-										'url'=>array('alinearFila',
-										'EventoId'=>$subzona->EventoId,
-										'FuncionesId'=>$subzona->FuncionesId,
-										'ZonasId'=>$subzona->ZonasId,
-										'SubzonaId'=>$subzona->SubzonaId,
-										'FilasId'=>$fila->FilasId,   
-										'direccion'=>'izquierda')
-								),
-								array(
-										'data-id'=>$fila->FilasId,
-										'title'=>'Recorrer a la izquierda',  
-										'class'=>'fa fa-angle-left btn btn-info btn-alinear', 
-										'url'=>array('moverFila',
-										'EventoId'=>$subzona->EventoId,
-										'FuncionesId'=>$subzona->FuncionesId,
-										'ZonasId'=>$subzona->ZonasId,
-										'SubzonaId'=>$subzona->SubzonaId,
-										'FilasId'=>$fila->FilasId,   
-										'direccion'=>'izquierda')
-								),
-								array(
-										'data-id'=>$fila->FilasId,
-										'title'=>'Alinear todo al centro',  
-										'class'=>'fa fa-angle-double-up btn-alinear btn btn-info', 
-										'url'=>array('alinearFila',
-										'EventoId'=>$subzona->EventoId,
-										'FuncionesId'=>$subzona->FuncionesId,
-										'ZonasId'=>$subzona->ZonasId,
-										'SubzonaId'=>$subzona->SubzonaId,
-										'FilasId'=>$fila->FilasId,
-										'direccion'=>'centro')
-								),
-								array(
-										'data-id'=>$fila->FilasId,
-										'title'=>'Recorrer a la derecha', 
-									   	'class'=>'fa fa-angle-right  btn-alinear btn btn-info', 
-										'url'=>array('moverFila',
-										'EventoId'=>$subzona->EventoId,
-										'FuncionesId'=>$subzona->FuncionesId,
-										'ZonasId'=>$subzona->ZonasId,
-										'SubzonaId'=>$subzona->SubzonaId,
-										'FilasId'=>$fila->FilasId,
-										'direccion'=>'derecha')
-								),
-								array(
-										'data-id'=>$fila->FilasId,
-										'title'=>'Alinear todo a la derecha', 
-									   	'class'=>'fa fa-angle-double-right  btn-alinear btn btn-info', 
-										'url'=>array('alinearFila',
-										'EventoId'=>$subzona->EventoId,
-										'FuncionesId'=>$subzona->FuncionesId,
-										'ZonasId'=>$subzona->ZonasId,
-										'SubzonaId'=>$subzona->SubzonaId,
-										'FilasId'=>$fila->FilasId,
-										'direccion'=>'derecha')
-								),
-						))
-		);	
-
-		echo TbHtml::tag('td',array(),TbHtml::button('',array(
-				'onclick'=>'activarOff('.$fila->FilasId.')',
-				'class'=>'btn fa fa-adjust',
-	   	)));	
-		echo TbHtml::closeTag('tr');
-
-}
-echo TbHtml::closeTag('table');
-?>
-
+<div id='area-subzona'>
+		<?php $this->renderPartial('_subzona',compact('subzona')); ?>
+</div>
 <br />
 <style type="text/css" media="screen">
 	table{background:#eeD}	
 	th,td{margin:5px;padding:5px !important;}
 	.input-mini{width:25px;text-align:center}	
-.off{color:#C00}
+.off{color:#C00 !important}
 </style>
 <script type="text/javascript" charset="utf-8">
 function activarOff(fila){
@@ -165,7 +69,7 @@ function activarOff(fila){
 <?php 
 $lugarJson=CJSON::encode($subzona->getPrimaryKey());
 Yii::app()->clientScript->registerScript('efecto',"
-$('.asiento').on('change',function(){
+$('.asiento').live('change',function(){
 		var fila=$(this).data('fid');
 		var id=$(this).data('id');
 		var valor=$(this).val();
@@ -189,7 +93,7 @@ $('.asiento').on('change',function(){
 										success:function(){
 												if (valor=='') {
 														// Si se ha eliminado su contenido
-														$(this).addClass('off');
+														obj.addClass('off');
 														$('.off[data-fid='+fila+']').removeClass('hidden');
 												}else{
 														obj.removeClass('off');
@@ -199,15 +103,15 @@ $('.asiento').on('change',function(){
 						});	
 				}	
 });
-$('.btn-alinear').on('click',function(){
+$('.btn-alinear').live('click',function(){
 		var href=$(this).attr('href');
 		$.ajax({
 				url:href,
-				success:function(resp){location.reload(); } ,	
+				success:function(resp){ $('#area-subzona').load(window.location.href+'&modo=simple'); } ,	
 		}).fail(function(){alert('Error, no se ha podido completar la alineación general')});
 return false;
 });
-$('#SubzonaId').on('change',function(){
+$('#SubzonaId').live('change',function(){
 		var url=document.location.href;
 		window.location=url.replace(/SubzonaId=\d+/g,'SubzonaId='+$(this).val());
 });

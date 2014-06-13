@@ -816,17 +816,23 @@ endforeach;
 			$this->render('editorFilas',compact('model'));
 	}
 
-	public function actionEditorSubzona($EventoId, $FuncionesId,$ZonasId,$SubzonaId)
+	public function actionEditorSubzona($EventoId, $FuncionesId,$ZonasId,$SubzonaId,$modo='completo')
 	{
 			// Muestra un editor de lugares ordenados por filas de una subzona dada
 			$subzona=Subzona::model()->with(array('hermanas', 'filas'=>array('lugares')))->findByPk(compact('EventoId','FuncionesId', 'ZonasId','SubzonaId'));
 			if (is_object($subzona)) {
 					// 
-					
-					$this->render('editorSubzona',compact('subzona'));
+					if ($modo=="completo") {
+						// Se renderiza toda la pagina del editor
+							$this->render('editorSubzona',compact('subzona'));
+					}	
+					else{
+							//Sino solo se renderiza parcialmente la tabla con los lugares actualizados
+							$this->renderPartial('_subzona',compact('subzona'));
+					}
 			}	
 			else
-					throw new Exception("Error al procesar su petición, vefique integridad de parametros ", 3);
+					throw new Exception("Error al procesar su petición, vefique integridad de parametros ", 403);
 
 	}
 
@@ -887,3 +893,4 @@ endforeach;
 
 
 }
+

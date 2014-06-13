@@ -167,7 +167,6 @@ $('#btn-generar-numerados').live('click',function(){
 $('.btn-eliminar-fila').live('click',function(){ 
 		var obj=$(this);
 		var fid=obj.data('fid');
-		var id=obj.data('id');
 		$.ajax({
 				url:obj.attr('href'),
 						type:'post',

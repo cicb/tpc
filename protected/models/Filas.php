@@ -328,7 +328,6 @@ class Filas extends CActiveRecord
 											// SI existe un asiento true en la fila
 
 											$delta=$nlugares-$maxTrue[0]->LugaresId;
-											print ($delta.",");
 											$this->actualizarLugaresId($delta);
 									}	
 							}
@@ -348,7 +347,6 @@ class Filas extends CActiveRecord
 									if (sizeof($minTrue>0)) {
 										// Si exite un asiento en true 
 											$delta=$minTrue[0]->LugaresId-1;
-											print $delta;
 											$this->actualizarLugaresId(-$delta);
 									}	
 							}
@@ -357,14 +355,20 @@ class Filas extends CActiveRecord
 					case 'centro':
 							//A la derecha todo
 							if($noff>1){
-									$noff=ceil($noff/2);
-									$minTrue=	Lugares::model()->findAllByAttributes($ide,array(
-											'condition'=>"LugaresStatus='TRUE'",
-											'order'=>'LugaresId',
-											'limit'=>1
-									));	
-									$delta=$noff-$minTrue[0]->LugaresId;
-									$this->actualizarLugaresId($delta);
+									if(			isset($this->minTrue)
+											and isset($this->minLugar)
+											and isset($this->maxTrue)
+											and isset($this->maxLugar)){
+													// SI existen lugares ...
+													$minTrue=$this->minTrue;
+													$maxTrue=$this->maxTrue;
+													$minLugar=$this->minLugar;
+													$maxLugar=$this->maxLugar;
+													$noff=abs($minTrue-$minLugar)+abs($maxLugar-$maxTrue)+1;
+													$noff=ceil($noff/2);
+													$delta=$noff-$minTrue;
+													$this->actualizarLugaresId($delta);
+											}
 							}
 							break;
 
