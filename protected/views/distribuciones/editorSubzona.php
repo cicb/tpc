@@ -90,11 +90,10 @@ $('.asiento').live('change',function(){
 										type:'post',
 										success:function(){
 												var nlugares=$('#FilasCanLug-'+fila).val();
-												var nlorigen=$('#FilasCanLug-'+fila).data('lugares');
+												var nlorigen=parseInt($('#FilasCanLug-'+fila).data('lugares'));
 												if (valor=='') {
 														// Si se ha eliminado su contenido
-														obj.addClass('off');
-														$('.off[data-fid='+fila+']').removeClass('hidden');
+														obj.addClass('off hidden');
 														nlugares=nlugares-1;
 												}else{
 														obj.removeClass('off');
@@ -105,6 +104,9 @@ $('.asiento').live('change',function(){
 												$('#FilasCanLug-'+fila).val(nlugares);
 												if(nlugares!=nlorigen){
 														$('#FilasCanLug-'+fila).addClass('input-warning');
+														if (nlugares<nlorigen) {
+																$('.off[data-fid='+fila+']').removeClass('hidden');
+														}	
 												}
 												else {
 														$('#FilasCanLug-'+fila).removeClass('input-warning');

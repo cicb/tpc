@@ -73,7 +73,7 @@ echo TbHtml::openTag('table',array('width'=>'auto','class'=>'table-bordered cent
 				)));	
 				echo TbHtml::tag('td',array(),TbHtml::textField('FilasCanLug-'.$fila->FilasId,$fila->ntrue,array(
 						'class'=>'input-mini',
-						'data-lugares'=>$fila->nlugares,
+						'data-lugares'=>$fila->ntrue,
 						'append'=>'Lugares',
 						'readonly'=>true)));	
 				echo TbHtml::closeTag('tr');
