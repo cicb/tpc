@@ -33,11 +33,8 @@ $list = CHtml::listData($models, 'EventoId', 'EventoNom');
 ?>
 </div>
 <div class="row" >
-    <input id="pvweb" type="radio" name="pv" <?php echo @$_POST["pv"]=='101'?'checked="checked"':''; ?>   value="101"/><label style="display: inline-block;width: 250px;text-align: left;" for="pvweb">Web</label>
-</div>
-<br />
-<div class="row" >
-    <input id="pvcallcenter" type="radio" name="pv" <?php echo @$_POST["pv"]=='102'?'checked="checked"':''; ?> value="102"/> <label style="display: inline-block;width: 250px;text-align: left;" for="pvcallcenter">Call Center</label>
+    <input id="pvweb" type="radio" name="pv" <?php echo @$_POST["pv"]=='101'?'checked="checked"':''; ?>   value="101"/><label style="display: inline-block;width: 100px;text-align: left;" for="pvweb">Web</label>
+    <input id="pvcallcenter" type="radio" name="pv" <?php echo @$_POST["pv"]=='102'?'checked="checked"':''; ?> value="102"/> <label style="display: inline-block;width: 100px;text-align: left;" for="pvcallcenter">Call Center</label>
 </div>
 <br />
 <div class="row">
@@ -88,8 +85,9 @@ $list = CHtml::listData($modeloEvento,'EventoId','EventoNom');
     <?php echo CHtml::hiddenField('funcion_id', '<?php @echo $_POST["Ventaslevel1"]["funcion"]; ?>'); ?>                                                                      
     <?php echo $form->error($model,'evento_id'); ?>
 	</div>
-
-
+    <div class="row">
+        <input id="" type="checkbox" name="verNoImpresos" <?php echo !empty(@$_POST["verNoImpresos"])?'checked="checked"':''; ?> value="1"/> <label style="display: inline-block;width: 200px;text-align: left;" for="pvcallcenter">Ver Boletos No Impresos</label>
+    </div>
 	<div class="row buttons">
 		<?php echo CHtml::submitButton('Exportar',array('class'=>'btn btn-medium','onclick'=>'$("#grid_mode").val("export");')) ; ?>
          <?php echo CHtml::submitButton('Ver reporte',array('class'=>'btn btn-primary','onclick'=>'$("#grid_mode").val("show");')); ?>
@@ -147,7 +145,7 @@ $this->widget('zii.widgets.grid.CGridView', array(
 <?php
 if(isset($eventoId,$funcionesId) and $eventoId>0):
 $this->widget('application.extensions.EExcelView', array(
- 'dataProvider'=> $model->getVendidosPor($eventoId,$funcionesId,@$_POST["pv"],@$_POST["busqueda"]),
+ 'dataProvider'=> $model->getVendidosPor($eventoId,$funcionesId,@$_POST["pv"],@$_POST["verNoImpresos"],@$_POST["busqueda"]),
  'grid_mode'=>$grid_mode,
  'htmlOptions'=>array('class'=>'principal'),
  'type'=>'condensed',

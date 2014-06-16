@@ -107,7 +107,7 @@ class ReportesFlex extends CFormModel
 					));             
     }
 
-    public function getVendidosPor($EventoId, $FuncionesId, $pv,$busqueda=""){
+    public function getVendidosPor($EventoId, $FuncionesId, $pv,$verNoImpresos="",$busqueda=""){
 		//*********************************************************************************
 		//Regresa el REPORTE DE VENTAS EN WEB O CALL CENTER, dependiendo el punto de venta $pv
 		//						minimamente se requiere del id del eventos
@@ -120,6 +120,9 @@ class ReportesFlex extends CFormModel
        if($busqueda!=null AND $busqueda!="")
             $busqueda = " AND (ventas.VentasNumRef LIKE '%$busqueda%' OR email LIKE '%$busqueda%' OR ventas.VentasNumTar LIKE '%$busqueda%') ";
 
+      if($verNoImpresos=="1")
+            $verNoImpresos = " AND ventaslevel1.LugaresNumBol=''";
+            
             $query = "SELECT '' as id,
 					  evento.EventoNom,
 					  funciones.funcionesTexto,
@@ -171,6 +174,7 @@ class ReportesFlex extends CFormModel
 					  AND  (ventas.PuntosventaId = '$pv')
 					  	$cadenaFuncion
                         $busqueda
+                        $verNoImpresos
 					  ORDER BY ZonasAli, FilasAli, LugaresLug";
 		
 		  return new CSqlDataProvider($query, array(
