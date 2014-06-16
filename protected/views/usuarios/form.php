@@ -338,6 +338,7 @@ Yii::app()->clientScript->registerScript('asignacion',"
 								success:function(data){
 										if(data==false) {alert('Esta asignación no esta permitida');}
 										else{
+												$('#eventos_asignados').change();
 												$('#evento_id option:nth-child(1)').attr('selected', 'selected');
 												$.fn.yiiGridView.update('usrval-grid');
 												$.get('".$this->createUrl('usuarios/eventosAsignados')."',
@@ -347,12 +348,16 @@ Yii::app()->clientScript->registerScript('asignacion',"
 								}
 				});
 });
-$('#eventos_asignados').change(function(){ 
-		$.get('".$this->createUrl('usuarios/tablaReportes')."',
-			{id:'".$model->UsuariosId."',nick:'".$model->UsuariosNick."',
-				'evento_id':$('#eventos_asignados option:selected').val() },
-		function(data){ $('#tabla-reportes').html(data);}
-		);
+$('#eventos_asignados').on('change',function(){ 
+		var eventoid= $('#eventos_asignados option:selected').val();
+		if (!isNaN(eventoid) && parseInt(eventoid)>0){
+
+				$.get('".$this->createUrl('usuarios/tablaReportes')."',
+				{id:'".$model->UsuariosId."',nick:'".$model->UsuariosNick."',
+				'evento_id':eventoid },
+				function(data){ $('#tabla-reportes').html(data);}
+				);
+		}
  });
 
 $('#eventos_asignados').change();
