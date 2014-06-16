@@ -36,7 +36,7 @@ echo CHtml::dropDownList('ZonasTipo', $model->ZonasTipo,array(1=>'General',2=>'N
 			?>
 		</td>
 	    <td>
-	    	<?php echo CHtml::numberField('ZonasCantSubZon',$model->ZonasCantSubZon,array(
+	    	<?php echo CHtml::textField('ZonasCantSubZon',$model->ZonasCantSubZon,array(
 					'class'=>' input-small text-center ZonasCantSubZon ',		
 					'disabled'=>!$editar or $model->ZonasTipo==1,
 					'data-id'=>$model->ZonasId,
@@ -44,7 +44,7 @@ echo CHtml::dropDownList('ZonasTipo', $model->ZonasTipo,array(1=>'General',2=>'N
 			)); ?>
     	</td>
 	    <td>
-	    <?php echo TbHtml::numberField('ZonasCanLug',$model->ZonasCanLug,array(
+	    <?php echo TbHtml::textField('ZonasCanLug',$model->ZonasCanLug,array(
 				'class'=>'input-small text-center ZonasCanLug', 'prepend'=>'#',
 				'disabled'=>!$editar,
 				'data-id'=>$model->ZonasId,
@@ -62,7 +62,7 @@ echo CHtml::dropDownList('ZonasTipo', $model->ZonasTipo,array(1=>'General',2=>'N
 						'data-id'=>$model->ZonasId)))) ?>	    
 	    </td>
 	    <td>
-	    	<?php echo TbHtml::numberField('ZonasCosBol',$model->ZonasCosBol,array(
+	    	<?php echo TbHtml::textField('ZonasCosBol',$model->ZonasCosBol,array(
 	    	'class'=>'input-small text-center ZonasCosBol', 'data-id'=>$model->ZonasId, 'prepend'=>'$')) ?>
 	    </td>
 	    <td>
