@@ -129,7 +129,7 @@ td{font-family:FontAwesome !important;}
 			 CHtml::listData(
 					Puntosventa::model()->findAll(),
 					'PuntosventaId','PuntosventaNom'),
-			array('empty'=>'Sin taquilla','class'=>'span3')
+			array('empty'=>'Sin taquilla','class'=>'span3 chosen')
 	) ; ?>
 	<?php echo $form->error($model,'taquillaPrincipal'); ?>
 
@@ -210,7 +210,7 @@ $this->widget('bootstrap.widgets.TbGridView', array(
 					array(
 							'class'=>'CButtonColumn',
 							'header'=>'',
-							'template'=>'{eliminar}  ',
+							'template'=>' {eliminar} {permisos} ',
 							'buttons'=>array(
 									'eliminar'=>array(
 											'label'=>'<span class="text-error fa fa-times-circle"> Quitar</span>',
@@ -224,31 +224,48 @@ $this->widget('bootstrap.widgets.TbGridView', array(
 													event.preventDefault(); }',
 
 									),
+									'permisos'=>array(
+											'label'=>TbHtml::button('Reportes',
+											array(
+													'class'=>'btn btn-info',
+													'data-toggle'=>'modal',
+													'data-target'=>'#modal-permisos-reportes',
+											)
+									)
 							)
 
 					)
 
 
-   ),
+   )),
 )); ?>
 		</div><!-- asignacion de eventos-->
-<div class='span5 white-box'>
-		<h3>Reportes permitidos</h3>
-<label>Disponibles:</label>
-<?php echo CHtml::dropDownList( 'eventos_asignados',0, CHtml::listData( 
-		$model->getEventosAsignados(),
-				'EventoId','EventoNom'),
-				array(
-						'class'=>'span3 ' ,
-						'empty'=>'SELECCIONE UN EVENTO'
-				)); ?>
-<br />
-<br />
-		<div id="tabla-reportes">
-			
-		</div>
-</div>
-</div>
+<?php
+													$asignadosHtml=TbHtml::openTag('div',array('class'=>'text-center')) ;
+													$asignadosHtml.=TbHtml::dropDownList( 
+															'eventos_asignados',0,
+															CHtml::listData( 
+																	$model->getEventosAsignados(),
+																	'EventoId','EventoNom'),
+															array(
+																	'class'=>'span3 ' ,
+																	'empty'=>'SELECCIONE UN EVENTO'
+															));
+													$asignadosHtml.="<br/><br/>";
+													$asignadosHtml.=TbHtml::tag('table', array('id'=>'tabla-reportes'),'');
+													$asignadosHtml.=TbHtml::closeTag('div') ;
+
+	$this->widget('bootstrap.widgets.TbModal', array(
+    'id' => 'modal-permisos-reportes',
+    'header' => 'Reportes permitidos',
+	'htmlOptions'=>array('class'=>'text-center'),
+    'content' =>  $asignadosHtml, 
+	'footer' => 	TbHtml::button('Cerrar', array('data-dismiss' => 'modal'))
+	)
+); ?>
+
+
+
 <br />
 <?php
 	$this->widget('bootstrap.widgets.TbModal', array(
@@ -271,7 +288,7 @@ $this->widget('bootstrap.widgets.TbGridView', array(
 								 'disabled'=>true,'data-dismiss'=>false,
 								 'id'=>'btn-cambiar-clave',
 						 )),
-							TbHtml::button('Close', array('data-dismiss' => 'modal')),
+							TbHtml::button('Cerrar', array('data-dismiss' => 'modal')),
      )),
 )); ?>
 
