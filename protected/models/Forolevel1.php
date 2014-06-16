@@ -126,8 +126,8 @@ class Forolevel1 extends CActiveRecord
 			// $criteria->addCondition("t2.EventoId like ':EventoId' ")
 		}
 		else{
-				$criteria->compare('ForoId',$this->ForoId,true);
-				$criteria->compare('ForoMapIntId',$this->ForoMapIntId,true);
+				$criteria->compare('ForoId',$this->ForoId);
+				$criteria->compare('ForoMapIntId',$this->ForoMapIntId);
 				$criteria->compare('ForoMapIntNom',$this->ForoMapIntNom,true);
 				//$criteria->compare('foroMapConfig',$this->foroMapConfig,true);
 				//$criteria->compare('ForoMapIntIma',$this->ForoMapIntIma,true);
