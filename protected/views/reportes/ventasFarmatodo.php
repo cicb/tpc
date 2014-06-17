@@ -1,3 +1,18 @@
+<?php Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl."/js/jquery.tablesorter.js",CClientScript::POS_HEAD); ?>
+<style>
+th.headerSortUp { 
+    background:#3399FF url(images/asc.gif) no-repeat right; 
+} 
+th.headerSortDown { 
+    background:#3399FF url(images/desc.gif) no-repeat right;  
+}
+th.header { 
+    cursor: pointer; 
+}  
+tr.sub-total td{
+    text-align: right;
+} 
+</style>
 <div class='controles'>
     <h2>Ventas En Farmatodo</h2>
     <?php 
@@ -19,6 +34,7 @@
                 $this->widget('zii.widgets.jui.CJuiDatePicker',
                     array(          
                       'name'=>'desde',
+                      'value'=>@$_POST['desde'],
                       'attribute'=>'fecha_revision',  
                       'language' => 'es',             
                       'htmlOptions' => array(         
@@ -50,6 +66,7 @@
     $this->widget('zii.widgets.jui.CJuiDatePicker',
         array(          
             'name'=>'hasta',
+            'value'=>@$_POST['hasta'],
             'attribute'=>'fecha_revision',  
             'language' => 'es',             
             'htmlOptions' => array(         
@@ -130,10 +147,17 @@
 <?php 
 	$data=$ventas->getData();
 	$i=0;
-foreach ($data as $key=>$fila) {
-		$data[$key]['i']=$i;
+    $importeTotal       = 0;
+    $transaccionesTotal = 0;
+    $boletosTotal       = 0;
+foreach ($data as $key => $fila) {
+		$importeTotal       += $fila['importe'];
+        $transaccionesTotal += $fila['ventas'];
+        $boletosTotal       += $fila['boletos'];
+        $data[$key]['i']=$i;
 		$i++;
 }
+echo $importeTotal;
 		$this->widget('application.extensions.morris.MorrisChartWidget', array(
 				'id'      => 'grafica-ventas',
 				'options' => array(
@@ -146,4 +170,9 @@ foreach ($data as $key=>$fila) {
 				),
 		));
         ?>
+<script>
+    $('#farmatodo-grid table :last').append("<tfoot><tr class='sub-total'><td><strong>Sub Total</strong></td><td><strong><?php echo number_format($importeTotal);?></strong></td><td><strong><?php echo $transaccionesTotal;?></strong></td><td style='text-align:center;'><strong><?php echo $boletosTotal;?></strong></td><td>&nbsp;</td></tr></tfoot>"); 
+    $("#farmatodo-grid table").tablesorter(); 
+</script>
 <?php endif;?>
+

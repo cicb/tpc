@@ -497,6 +497,32 @@ class ReportesVentas extends CFormModel
 					//)
 					//)
 			));
+            
+            /*$rawData=Yii::app()->db->createCommand(sprintf("SELECT t.PuntosventaId as id,
+					PuntosventaNom,
+					SUM(t1.VentasCosBol+t1.VentasCarSer) as importe,
+					COUNT(*) as boletos,
+					COUNT(distinct t.VentasId) as ventas,
+					MAX(VentasFecHor) as ultimo
+					%s
+					FROM ventas AS t
+					INNER JOIN ventaslevel1 as t1 ON t.VentasId=t1.VentasId 
+					INNER JOIN puntosventa  as t2 ON t2.PuntosventaId=t.PuntosVentaId
+					WHERE DATE(t.VentasFecHor) BETWEEN '$desde' AND '$hasta'
+					AND VentasCosBol>10 
+					AND t.VentasSta NOT LIKE 'CANCELADO' AND t1.VentasSta NOT LIKE 'CANCELADO'
+					AND  %s 
+					GROUP BY %s ORDER BY %s ",$criterio['select'],$criterio['condition'],$criterio['group'],$criterio['order']))->queryAll();
+            // or using: $rawData=User::model()->findAll();
+            return new CArrayDataProvider($rawData, array(
+                'id'=>'id',
+                'sort'=>array(
+                    'attributes'=>array(
+                         'id','PuntosventaNom','importe'
+                    ),
+                ),
+                'pagination'=>false,
+            ));*/
 
 	}
 	public function getVentasFarmatodo($desde,$hasta,$turno='ambos')
