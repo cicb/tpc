@@ -95,19 +95,19 @@ if (isset($ref) and !empty($ref)) {
 				$columnas=array_merge($columnas,array(
 						array(
 								'header'=>'Estatus de venta',
-								'value'=> '@$data->venta->VentasSta'
+								'value'=> '$data->venta->VentasFecHor'
 						),
 						array(
 								'header'=>'Tipo de Bol.',
-								'value'=> '@$data->VentasBolTip'
+								'value'=> '$data->VentasBolTip'
 						),
 						array(
 								'header'=>'Numero de Referencia',
-								'value'=> '@$data->venta->VentasNumRef'
+								'value'=> '$data->venta->VentasNumRef'
 						),
 						array(
 								'header'=>'Numero de Boleto.',
-								'value'=> '@$data->LugaresNumBol'
+								'value'=> '$data->LugaresNumBol'
 						),
 						array(
 								'header'=>'Último acceso',
@@ -116,6 +116,14 @@ if (isset($ref) and !empty($ref)) {
 						array(
 								'header'=>'No. Bol. Reimpreso',
 								'value'=> '@$data->reimpresion->LugaresNumBol'
+						),
+						array(
+								'header'=>'Punto de venta',
+								'value'=> '$data->venta->puntoventa->PuntosventaNom'
+						),
+						array(
+								'header'=>'Fecha/Hora Venta',
+								'value'=> '$data->venta->VentasFecHor'
 						),
 				));	
 		}
@@ -126,6 +134,11 @@ if (isset($ref) and !empty($ref)) {
 								'header'=>'Numero de Referencia',
 								'value'=> '$data->tempLugaresNumRef'
 						),
+						array(
+								'header'=>'Punto de venta',
+								'value'=> '$data->puntoventa->PuntosventaNom'
+						),
+						'TempLugaresFecHor',
 				));
 		}
 		$this->widget('bootstrap.widgets.TbGridView', array(

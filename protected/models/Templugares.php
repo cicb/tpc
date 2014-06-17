@@ -88,6 +88,7 @@ class Templugares extends CActiveRecord
 					'subzona'=>array(self::BELONGS_TO, 'Subzona',array('EventoId','FuncionesId','ZonasId','SubzonaId')),
 					'fila'=>array(self::BELONGS_TO, 'Filas',array('EventoId','FuncionesId','ZonasId','SubzonaId','FilasId')),
 					'lugar'=>array(self::BELONGS_TO, 'Lugares',array('EventoId','FuncionesId','ZonasId','SubzonaId','FilasId','LugaresId')),
+					'puntoventa' => array(self::BELONGS_TO, 'Puntosventa', 'PuntosventaId'),
 			);
 	}
 
@@ -120,7 +121,7 @@ class Templugares extends CActiveRecord
 			'FilasAli' => 'Fila',
 			'LugaresLug' => 'Asiento',
 			'TempLugaresSta' => 'Estatus',
-			'TempLugaresFecHor' => 'Fecha',
+			'TempLugaresFecHor' => 'Fecha/Hora',
 			'tempLugaresNumRef' => 'Referencia',
 		);
 	}
