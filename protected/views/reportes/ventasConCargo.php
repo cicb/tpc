@@ -190,8 +190,8 @@ else if (isset($_GET['dispositivo']) and $_GET['dispositivo']=='movil')
             </div>
             </div>
 <div class="row-fluid">
-        <div class="span4" style="margin:10px; <?php
-				echo $esMovil?"float:none;margin:auto;display:block;":"";
+        <div class="span4 text-center" style="margin:10px; <?php
+				echo $esMovil?"float:left;margin:auto;padding:10px;display:block;":"";
         ?>">
 				<div class='panel-primario'>Resumen de evento</div>
 				<?php 

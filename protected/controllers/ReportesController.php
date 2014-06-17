@@ -1264,20 +1264,10 @@ $objWriter->save('php://output');
          return strtoupper($key);
     }
 
-	public function actionBuscarBoleto()
+	public function actionBuscarBoleto($ref='',$tipo='venta')
 	{
-	   $this->perfil();
 		$model=new ReportesVentas;	
-		$ref=null;	
-		$tipo="venta";
-		if(!empty($_GET['buscar'])){
-			$ref = $_GET['buscar'];
-			if(isset($_GET['tipo']) ){
-				$tipo=$_GET['tipo'];
-			}
-		}
-
-			$this->render('buscarBoleto',array('model'=>$model,'ref'=>$ref,'tipo'=>$tipo));
+	   $this->render('buscarBoleto',array('model'=>$model,'ref'=>$ref,'tipo'=>$tipo));
 	}
 	public function actionAccesos()
 	{
@@ -1364,20 +1354,27 @@ $objWriter->save('php://output');
         }
         
     }
-	// Uncomment the following methods and override them if needed
-	/*
-	public function filters()
-	{
-		// return the filter configuration for this controller, e.g.:
-		return array(
-			'inlineFilterName',
-			array(
-				'class'=>'path.to.FilterClass',
-				'propertyName'=>'propertyValue',
-			),
-		);
-	}
+    public function filters() { 
+			return array ( 
+					'accessControl' 
+			); // ejercer control de acceso sobre las Operaciones CRUD. 
+	} 
+	public function accessRules() { 
+			//$usuario = Usuarios::model()->findByPk(Yii::app()->user->id); 
+			//$isMesa = isset($usuario)?$usuario->esMesaDeControl:false ;
 
+					return array( 
+							array(
+									'allow', // allow authenticated user to perform 'create' and 'update' actions 
+									'users'=>array('@'), 
+							), 
+							array('deny',  // deny all users 
+							'users'=>array('*'), 
+					), 
+			);
+
+	} 
+/*
 	public function actions()
 	{
 		// return external action classes, e.g.:

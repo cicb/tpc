@@ -79,10 +79,16 @@ class Templugares extends CActiveRecord
 	 */
 	public function relations()
 	{
-		// NOTE: you may need to adjust the relation name and the related
-		// class name for the relations automatically generated below.
-		return array(
-		);
+			// NOTE: you may need to adjust the relation name and the related
+			// class name for the relations automatically generated below.
+			return array(
+					'evento'=>array(self::BELONGS_TO, 'Evento','EventoId'),
+					'funcion'=>array(self::BELONGS_TO, 'Funciones',array('EventoId','FuncionesId')),
+					'zona'=>array(self::BELONGS_TO, 'Zonas',array('EventoId','FuncionesId','ZonasId')),
+					'subzona'=>array(self::BELONGS_TO, 'Subzona',array('EventoId','FuncionesId','ZonasId','SubzonaId')),
+					'fila'=>array(self::BELONGS_TO, 'Filas',array('EventoId','FuncionesId','ZonasId','SubzonaId','FilasId')),
+					'lugar'=>array(self::BELONGS_TO, 'Lugares',array('EventoId','FuncionesId','ZonasId','SubzonaId','FilasId','LugaresId')),
+			);
 	}
 
 	/**

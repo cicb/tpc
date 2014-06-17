@@ -4,6 +4,7 @@ class ReportesVentas extends CFormModel
 	public function ventasWeb($value='')
 	{
 		
+						$criteria->with[]='venta';
 	}
 
 	public function getReporte($evento,$funcion="TODAS",$desde="",$hasta="", $cargo=false, $tipoBoleto='NORMAL',$where='', $group_by='puntos')
@@ -338,72 +339,48 @@ class ReportesVentas extends CFormModel
 
 		public function  getVentasPorRef($ref,$tipo='venta' )
 		{
-				//$filtro="	(ventaslevel1.LugaresNumBol LIKE '%$ref%')";
-				//if(strcasecmp($tipo,'venta')==0){
-					//$filtro= "(ventas.VentasNumRef LIKE '%$ref%')";
-				//}		
 				$criteria=new CDbCriteria;
 				$criteria->with=array(
-						'acceso',
-						'reimpresion',
-						'venta', 'evento'=>array('joinType'=>'INNER JOIN'),
+						'evento'=>array('joinType'=>'INNER JOIN'),
 						'funcion'=>array('joinType'=>'INNER JOIN'),
 						'zona'=>array('joinType'=>'INNER JOIN'),
 						'subzona'=>array('joinType'=>'INNER JOIN'),
 						'fila'=>array('joinType'=>'INNER JOIN'),
 						'lugar'=>array('joinType'=>'INNER JOIN')
 				);
-				if(strcasecmp($tipo,'venta')==0)
+				switch ($tipo) {
+					case 'venta':
+						// Cuando este buscando 
+						$criteria->with[]='acceso';
+						$criteria->with[]='venta';
 						$criteria->addSearchCondition("VentasNumRef ", $ref);
-				else if(strcasecmp($tipo,'reimpresion')==0)
-						$criteria->addSearchCondition("reimpresion.LugaresNumBol", $ref,true,'OR');
-				else
-						$criteria->addSearchCondition("t.LugaresNumBol", $ref, true,'OR');
+						break;
+					
+					case 'reimpresion':
+							$criteria->with[]='reimpresion';
+							$criteria->with[]='venta';
+							$criteria->with[]='acceso';
+							$criteria->addSearchCondition("reimpresion.LugaresNumBol", $ref,true,'OR');
+							break;
+					case 'boleto':
+							$criteria->with[]='acceso';
+							$criteria->with[]='venta';
+							$criteria->addSearchCondition("t.LugaresNumBol", $ref, true,'OR');
+							break;	
+					case 'reservado':
+							$criteria->addCondition("LENGTH(tempLugaresNumRef)>1");
+							$criteria->addSearchCondition("tempLugaresNumRef", $ref);
+							return new CActiveDataProvider('Templugares',array(
+									'criteria'=>$criteria,
+									'pagination'=>array('pageSize'=>20),
+							));
+							break;
+
+				}
 				return new CActiveDataProvider('Ventaslevel1',array(
 						'criteria'=>$criteria,
 						'pagination'=>array('pageSize'=>20),
 				));
-
-				//$query = "SELECT
-							//'' as id,		
-							  //zonas.ZonasAli,
-							  //filas.FilasAli,
-							  //lugares.LugaresLug as Asiento,
-							  //ventaslevel1.VentasSta,
-							  //ventaslevel1.VentasBolTip,
-							  //evento.EventoNom,
-							  //funciones.FuncionesFecHor,
-							  //ventas.VentasNumRef,
-							  //ventaslevel1.LugaresNumBol as NumBol,
-							  //IFNULL(acceso.AccesoFecha,'Sin acceso') as UltimoAcceso,
-							  //IdTerminal,
-							  //reimpresiones.LugaresNumBol
-							//FROM
-							 //filas
-							 //INNER JOIN lugares ON (filas.EventoId=lugares.EventoId)
-							  //AND (filas.FuncionesId=lugares.FuncionesId)
-							  //AND (filas.ZonasId=lugares.ZonasId)
-							  //AND (filas.SubzonaId=lugares.SubzonaId)
-							  //AND (filas.FilasId=lugares.FilasId)
-							 //INNER JOIN zonas ON (zonas.EventoId=filas.EventoId)
-							  //AND (zonas.FuncionesId=filas.FuncionesId)
-							  //AND (zonas.ZonasId=filas.ZonasId)
-							 //INNER JOIN ventaslevel1 ON (lugares.EventoId=ventaslevel1.EventoId)
-							  //AND (lugares.FuncionesId=ventaslevel1.FuncionesId)
-							  //AND (lugares.ZonasId=ventaslevel1.ZonasId)
-							  //AND (lugares.SubzonaId=ventaslevel1.SubzonaId)
-							  //AND (lugares.FilasId=ventaslevel1.FilasId)
-							  //AND (lugares.LugaresId=ventaslevel1.LugaresId)
-							 //INNER JOIN evento ON (evento.EventoId=zonas.EventoId)
-							 //INNER JOIN funciones ON (funciones.EventoId=evento.EventoId)
-							  //AND (funciones.FuncionesId=zonas.FuncionesId)
-							 //INNER JOIN ventas ON (ventas.VentasId=ventaslevel1.VentasId)
-							 //LEFT JOIN acceso ON ventaslevel1.LugaresNumBol=acceso.BoletoNum 
-							 //LEFT JOIN reimpresiones ON 
-							 //WHERE   $filtro ";
-				//return new CSqlDataProvider($query, array(
-							//'pagination'=>false,
-					//));
 		}
 
 	public function getReservacionesFarmatodo($ref)
