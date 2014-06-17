@@ -5,7 +5,10 @@ th.headerSortUp {
 } 
 th.headerSortDown { 
     background:#3399FF url(images/desc.gif) no-repeat right;  
-} 
+}
+th.header { 
+    cursor: pointer; 
+}  
 tr.sub-total td{
     text-align: right;
 } 
@@ -168,7 +171,7 @@ echo $importeTotal;
 		));
         ?>
 <script>
-    $('#farmatodo-grid table > tbody:last').append("<tr class='sub-total'><td><strong>Sub Total</strong></td><td><strong><?php echo number_format($importeTotal);?></strong></td><td><strong><?php echo $transaccionesTotal;?></strong></td><td style='text-align:center;'><strong><?php echo $boletosTotal;?></strong></td><td>&nbsp;</td></tr>"); 
+    $('#farmatodo-grid table :last').append("<tfoot><tr class='sub-total'><td><strong>Sub Total</strong></td><td><strong><?php echo number_format($importeTotal);?></strong></td><td><strong><?php echo $transaccionesTotal;?></strong></td><td style='text-align:center;'><strong><?php echo $boletosTotal;?></strong></td><td>&nbsp;</td></tr></tfoot>"); 
     $("#farmatodo-grid table").tablesorter(); 
 </script>
 <?php endif;?>
