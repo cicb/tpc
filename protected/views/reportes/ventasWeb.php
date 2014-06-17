@@ -86,7 +86,10 @@ $list = CHtml::listData($modeloEvento,'EventoId','EventoNom');
     <?php echo $form->error($model,'evento_id'); ?>
 	</div>
     <div class="row">
-        <input id="" type="checkbox" name="verNoImpresos" <?php echo !empty(@$_POST["verNoImpresos"])?'checked="checked"':''; ?> value="1"/> <label style="display: inline-block;width: 200px;text-align: left;" for="pvcallcenter">Ver Boletos No Impresos</label>
+        <input id="" type="checkbox" name="verNoImpresos" <?php 
+        echo isset($_POST["verNoImpresos"])?'checked="checked"':'';
+         ?> value="1"/>
+         <label style="display: inline-block;width: 200px;text-align: left;" for="pvcallcenter">Ver Boletos No Impresos</label>
     </div>
 	<div class="row buttons">
 		<?php echo CHtml::submitButton('Exportar',array('class'=>'btn btn-medium','onclick'=>'$("#grid_mode").val("export");')) ; ?>
