@@ -130,9 +130,12 @@ $this->widget('bootstrap.widgets.TbNavbar',array(
 						'type'=>'right',
 						'htmlOptions'=>array('class'=>'pull-right'),
 						'items' => array(
+								array('label'=>'Acerca de ','visible' => !Yii::app()->user->isGuest, 'url'=>array('/site/about')),
 								array('label'=>'Iniciar Sesión', 'url'=>array('/site/login'), 'visible'=>Yii::app()->user->isGuest),
-								array('label'=>'Cerrar Sesión ('.Yii::app()->user->name.')', 'url'=>array('/site/logout'), 'visible'=>!Yii::app()->user->isGuest)
-						)
+								array(
+										'label'=>'Cerrar Sesión ('.Yii::app()->user->name.')', 
+										'url'=>array('/site/logout'), 'visible'=>!Yii::app()->user->isGuest)
+								)
 				),	
 		),
 )); 
