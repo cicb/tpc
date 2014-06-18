@@ -3,6 +3,17 @@
 /* @var $model Usuarios */
 /* @var $form CActiveForm */
 ?>
+<style>
+.formato_seleccionado{
+    border: 2px red solid;
+}
+#formatos input[type=radio]{
+    display: none;
+}
+.modal{
+    width:600px ;
+}
+</style>
 <?php $form=$this->beginWidget('bootstrap.widgets.TbActiveForm', array(
 		'id'=>'usuarios-form-form',
 		'enableAjaxValidation'=>false,
@@ -96,11 +107,37 @@ td{font-family:FontAwesome !important;}
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'UsuariosRegion'); ?>
-		<?php echo $form->numberField($model,'UsuariosRegion'); ?>
+		<?php echo $form->textField($model,'UsuariosRegion',array('readonly'=>'readonly','style'=>'width:20px;')); ?><a href="#" id="boton-asignar-formato" onclick="$('#myModal').modal('show');return false;" class="btn btn-success"><i class="fa fa-ticket"></i> Asignar</a>
 		<?php echo $form->error($model,'UsuariosRegion'); ?>
 	</div>
-
-
+    <!--Inicio Modal-->
+    <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="myModalLabel">Formato de impresi&oacute;n</h3>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="select_tipo_impresion" value="0" />
+        <div id="formatos">
+            <?php
+            
+                $img_formato = Formatosimpresion::model()->findAll("FormatoSta='ALTA'");
+                $selected_formato = !empty($model->UsuariosRegion)?$model->UsuariosRegion:"1";
+                foreach($img_formato as $key => $formato):
+                    echo CHtml::radioButton('impresion',($formato->FormatoId==$selected_formato?true:false),array('value'=>$formato->FormatoId,'id'=>"formato_".$formato->FormatoId,'style'=>'margin:0 5px;'));
+                    ?>
+                        <label style="display: inline-block;" for="formato_<?php echo $formato->FormatoId;?>"><img id="imagen_formato<?php echo $formato->FormatoId; ?>" class="<?php echo $formato->FormatoId==$selected_formato?"formato_seleccionado":""; ?>" src="<?php echo Yii::app()->request->baseUrl."/images/".$formato->FormatoIma;?>" style="width: 180px;height: 350px;"  /></label>
+                    <?php
+                    
+                endforeach;
+            ?> 
+        </div> 
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Close</button>
+      </div>
+    </div>
+    <!--Fin Modal-->
 	<div class="row">
 		<?php echo $form->labelEx($model,'UsuariosVigencia'); ?>
 		<div class="input-append">
@@ -370,3 +407,23 @@ $('#eventos_asignados').change();
 				}	
 })
 		"); ?>
+<script>
+$("#formatos input[type=radio]").click(function(){
+    $("#formatos img").removeClass("formato_seleccionado");
+    $("#formatos img#imagen_formato"+this.value).addClass("formato_seleccionado");
+    $("#Usuarios_UsuariosRegion").val(this.value);
+    $('#myModal').modal('hide');
+    /*$.ajax({
+        type:'POST',
+        data:{ region_id: this.value},
+        url:'<?php echo $this->createUrl('reportes/ActualizarRegion') ?>',
+        beforeSend:function(){
+            $("#imprimir_boletos").hide();
+        },
+        success:function(){
+            $("#imprimir_boletos").show();
+        }
+    });*/
+    
+}); 
+</script>
