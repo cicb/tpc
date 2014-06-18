@@ -199,8 +199,7 @@ class Ventas extends CActiveRecord
                                              (ventas.UsuariosId = '$id') AND
                                              (ventaslevel1.VentasSta = 'VENDIDO') AND
                                              (ventaslevel1.VentasBolTip = 'BOLETO DURO') AND
-                                             (ventas.VentasFecHor BETWEEN '$desde 00:00:00' AND '$hasta 23:59:00')                                                                                         
-                                             GROUP BY ventaslevel1.EventoId, funciones.FuncionesId")->queryAll();
+                                             (ventas.VentasFecHor BETWEEN '$desde 00:00:00' AND '$hasta 23:59:00')")->queryAll();
        return new CArrayDataProvider($data, array(
                             'pagination'=>false,
 			));                                      

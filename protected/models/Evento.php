@@ -101,7 +101,7 @@ class Evento extends CActiveRecord
 			'CategoriaId' => 'Categoria',
 			'CategoriaSubId' => 'Sub Categoria ',
 			'EventoTemFecFin' => 'Evento Tem Fec Fin',
-			'EventoDesBol' => 'Descripción de Boleto',
+			'EventoDesBol' => 'Texto en el Boleto',
 			'EventoImaBol' => 'Imagen del boleto',
 			'EventoImaMin' => 'Imagen para PV',
 			'EventoDesWeb' => 'Descripcion en Web',

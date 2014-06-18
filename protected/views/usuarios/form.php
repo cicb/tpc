@@ -162,7 +162,7 @@ td{font-family:FontAwesome !important;}
 </div>
 
 		<div class='span5 white-box' style="text-align:center">
-				<h3 >Eventos asignados</h3>
+				<h3 >Eventos asignados para reportes</h3>
 
 <label>Disponibles:</label>
 <?php echo CHtml::dropDownList( 'evento_id','0', CHtml::listData( 

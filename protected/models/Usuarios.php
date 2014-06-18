@@ -113,7 +113,7 @@ class Usuarios extends CActiveRecord
 			'UsuariosCiu' => 'Ciudad',
 			'UsuariosTelMov' => 'Tel. Movil',
 			'UsuariosNot' => 'Notas',
-			'UsuariosNick' => 'Nombre de usuario',
+			'UsuariosNick' => 'Nickname',
 			'UsuariosPass' => 'Contraseña',
 			'UsuariosPasCon' => 'Confirme contraseña',
 			'UsuariosGruId' => 'Grupo',
