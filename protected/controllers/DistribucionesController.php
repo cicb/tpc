@@ -879,7 +879,7 @@ endforeach;
 						   else{
 								   $lugar->LugaresStatus='TRUE';
 						   }
-					if ($lugar->save()) {
+					if ($lugar->save(false)) {
 							// Si los datos son correctos
 							echo 'true';
 					}	
