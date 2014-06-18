@@ -1,5 +1,6 @@
 ##Historial de versiones
 ### Versión 1.0.1
+* Ordenamiento de columnas en reporte Ventas de farmatodo
 * Se incluyen los campos de fecha/hora y el punto de venta de un boleto
 vendido o reservado en el reporte de "Buscar boletos y referencias"
 * Se integro la busqueda de boletos reservados en el reporte de "Buscar boletos
