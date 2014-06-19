@@ -150,18 +150,18 @@ function cambiarValoresFilas(control){
 		});
 }
 
-$('.ZonasCantSubZon').live('focusout',function(){
+$('.ZonasCantSubZon').live('change',function(){
 		cambiarValores($(this));
 });
-$('.ZonasCanLug').live('focusout',function(){
+$('.ZonasCanLug').live('change',function(){
 		cambiarValores($(this));
 		var zid=$(this).data('id');
 		$('#btn-generar-asientos-'+zid).addClass('btn-primary');
 });
-$('.ZonasCosBol').live('focusout',function(){
+$('.ZonasCosBol').live('change',function(){
 		cambiarValores($(this));
 });
-$('.ZonasAli').live('focusout',function(){
+$('.ZonasAli').live('change',function(){
 		cambiarValores($(this));
 });
 $('.ZonasTipo').live('change',function(){
