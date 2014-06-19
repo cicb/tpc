@@ -59,3 +59,6 @@ if (isset($_GET['evento_id'])) {
 						);
 }
 ?>
+<script>
+$("strong:contains(Autorizado)").css({'color':'blue'});
+</script>
