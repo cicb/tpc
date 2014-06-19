@@ -42,7 +42,7 @@ class Funciones extends CActiveRecord
     public function init() {
 
         //$this->pathUrlImagesBD = Yii::app()->baseUrl . '/imagesbd/';
-        $this->pathUrlImagesBD =  'https://www.taquillacero.com/imagesbd/';
+        $this->pathUrlImagesBD = 'https://'.$_SERVER['SERVER_NAME'].'/imagesbd/';
         return parent::init();
     }
 	public static function model($className=__CLASS__)

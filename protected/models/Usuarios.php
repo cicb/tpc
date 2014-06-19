@@ -492,8 +492,11 @@ class Usuarios extends CActiveRecord
 				$usrval->UsrValRef2='funciones.FuncionesId';
 				$usrval->usrValIdRef2='TODAS';
 				if (!$usrval->existe) {
-						$usrval->UsrValPrivId=$usrval->maxPrivId+1;
+				        $privId = $usrval->maxPrivId+1;
+						$usrval->UsrValPrivId=$privId;
+                        Yii::app()->db->createCommand("INSERT INTO idvalopc VALUES($this->UsuariosId,$privId,2,4,4)")->execute();
 						return $usrval->save(false);
+                        
 				}			
 
 			}
@@ -502,6 +505,8 @@ class Usuarios extends CActiveRecord
 	public function desasignarEvento($eventoId,$funcionesId)
 	{
 			if ($eventoId>0 or $eventoId=='TODAS') {
+			       $usrValPrivId = Usrval::model()->find("UsuarioId=$this->UsuariosId AND usrValIdRef='$eventoId'");
+                   Yii::app()->db->createCommand("DELETE FROM idvalopc WHERE UsuarioId=$this->UsuariosId AND UsrValPrivId=$usrValPrivId->UsrValPrivId")->execute();
 					return Usrval::model()->deleteAllByAttributes(array(
 							'UsuarioId'=>$this->UsuariosId,
 							'UsrTipId'=>2,
