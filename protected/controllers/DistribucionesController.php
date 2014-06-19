@@ -857,7 +857,7 @@ endforeach;
 					}
 			}	
 			else
-					$this->render(TbHtml::tag('strong',array(),'No se encontraron subzonas.'));
+					echo TbHtml::tag('strong',array(),'No se encontraron subzonas.');
 					//throw new Exception("Error al procesar su petición, vefique integridad de parametros ", 3);
 
 	}
