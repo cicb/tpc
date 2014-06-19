@@ -297,6 +297,7 @@ class Forolevel1 extends CActiveRecord
 							FilasId, LugaresId, LugaresLug, LugaresNum, LugaresStatus, LugaresNumBol
 							FROM lugares WHERE EventoId=%d and FuncionesId=%d);
 					",$funcion->EventoId,$funcion->FuncionesId,$origen->EventoId,$origen->FuncionesId),
+
 					//'zonaslevel1'=>sprintf("   
 						//INSERT INTO zonaslevel1 (SELECT %d, %d, ZonasId, PuntosventaId,
 							//ZonasFacCarSer, ZonasBanVen FROM zonaslevel1 WHERE EventoId=%d and FuncionesId=%d);

@@ -482,8 +482,6 @@ class Usuarios extends CActiveRecord
 	//}
 	public function asignarEvento($eventoId)
 	{
-
-
 			if ($eventoId>0 or $eventoId=='TODAS') {
 				$usrval=new Usrval();
 				$usrval->UsuarioId=$this->UsuariosId;
