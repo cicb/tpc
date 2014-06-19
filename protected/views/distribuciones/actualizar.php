@@ -10,7 +10,7 @@
 						'funcionId'=>$model->FuncionesId),true),
 					'active' => true),
 			array(
-					'label' => 'Mapa Web', 
+					'label' => 'Mapa Web y Farmatodo', 
 					'content' => $this->renderPartial('_mapaGrande',array(
 							'model'=>$model,
 							'eventoId'=>$model->EventoId,

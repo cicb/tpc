@@ -274,7 +274,7 @@ class DistribucionesController extends Controller
                 $coordenada = Yii::app()->db->createCommand("SELECT * FROM configurl_mapa_grande_coordenadas WHERE configurl_funcion_mapa_grande_id=$mapa_grande->id AND ZonasId=$zonaId AND SubzonaId=$subzonaId")->queryRow();
                 
                 //$subzona = Subzona::model()->find("eventoId=$eventoId AND FuncionesId=$funcionId AND ZonasId=$zonaId AND SubzonaId=$subzonaId");
-				for($i=0;$i<15;$i++){
+				for($i=1;$i<15;$i++){
 						$data['x'.$i] = $coordenada['x'.$i];
 						$data['y'.$i] = $coordenada['y'.$i];
 				}
@@ -291,13 +291,38 @@ class DistribucionesController extends Controller
                 $funcionId = $_POST['funcionId'];
                 $escenario = $_POST['escenario'];
                 $query = "eventoId=$eventoId AND FuncionId=$funcionId";
-                if($escenario=="todas")
+                if($escenario=="todas"){
                     $query = "eventoId=$eventoId";
+                    $configUrlMapaGrande = ConfigUrlFuncionesMapaGrande::model()->findAll($query);
+                    foreach($configUrlMapaGrande as $key => $mapaGrande):
+                        $coordenadasMapaGrande = ConfigurlMapaGrandeCoordenadas::model()->find("configurl_funcion_mapa_grande_id=$mapaGrande->id AND ZonasId=$zonaId AND SubzonaId=$subzonaId");
+                        if(empty($coordenadasMapaGrande)){
+                            $nuevaCoordenada = new ConfigurlMapaGrandeCoordenadas;
+                            $nuevaCoordenada->configurl_funcion_mapa_grande_id = $mapaGrande->id;
+                            $nuevaCoordenada->ZonasId                          = $zonaId;
+                            $nuevaCoordenada->SubzonaId                        = $subzonaId;
+                            $nuevaCoordenada->save(false);
+                        }
+                    endforeach;
+                    
+                }else{
+                    $configUrlMapaGrande = ConfigUrlFuncionesMapaGrande::model()->find($query);
+                    $coordenadasMapaGrande = ConfigurlMapaGrandeCoordenadas::model()->find("configurl_funcion_mapa_grande_id=$configUrlMapaGrande->id AND ZonasId=$zonaId AND SubzonaId=$subzonaId");
+                        if(empty($coordenadasMapaGrande)){
+                            $nuevaCoordenada = new ConfigurlMapaGrandeCoordenadas;
+                            $nuevaCoordenada->configurl_funcion_mapa_grande_id = $configUrlMapaGrande->id;
+                            $nuevaCoordenada->ZonasId                          = $zonaId;
+                            $nuevaCoordenada->SubzonaId                        = $subzonaId;
+                            $nuevaCoordenada->save(false);
+                        }
+                }
+                    
+                
                     
                 $mapa_grande = MapaGrande::model()->findAll($query);
                 foreach($mapa_grande as $key =>$mapa):
 						$coords=array();
-						for($i=0;$i<15;$i++){
+						for($i=1;$i<15;$i++){
 								$coords['x'.$i]=(empty($_POST['x'.$i])?null:$_POST['x'.$i]);
 								$coords['y'.$i]=(empty($_POST['y'.$i])?null:$_POST['y'.$i]);
 						}

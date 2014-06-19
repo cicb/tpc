@@ -1,3 +1,8 @@
+<style>
+strong:contains[text*=Autorizado]{
+    color: blue;
+}
+</style>
 <?php 
 if (isset($_GET['evento_id'])) {
 		$this->widget('bootstrap.widgets.TbGridView', array(
@@ -13,7 +18,7 @@ if (isset($_GET['evento_id'])) {
 						array(
 								'header'=>'Estado',
 								'type'=>'raw',
-								'value'=>'$data["estado"]>0?"Autorizado":"Denegado"'
+								'value'=>'$data["estado"]>0?"<strong>Autorizado</strong>":"<strong>Denegado</strong>"'
 						),
 						array(
 								'class'=>'CButtonColumn',
