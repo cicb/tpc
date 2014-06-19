@@ -895,17 +895,20 @@ endforeach;
 		// Cambia el valor de un lugar y en base a su contenido lo pone en OFF o en TRUE
 			if (isset($_POST['Lugares'])) {
 					extract($_POST['Lugares']);
-					$lugar=Lugares::model()->findByPk(compact('EventoId','FuncionesId','ZonasId','SubzonaId','FilasId','LugaresId'));
+					$lugar=Lugares::model()->with('zona')->findByPk(compact('EventoId','FuncionesId','ZonasId','SubzonaId','FilasId','LugaresId'));
 					$lugar->attributes=$_POST['Lugares'];
 					if (isset($_POST['Lugares']['LugaresLug']))
 						   if( empty($_POST['Lugares']['LugaresLug'])){
 									$lugar->LugaresStatus='OFF';
+								   $lugar->zona->ZonasCanLug=$lugar->zona->ZonasCanLug-1;
 							}
 						   else{
 								   $lugar->LugaresStatus='TRUE';
+								   $lugar->zona->ZonasCanLug=$lugar->zona->ZonasCanLug+1;
 						   }
 					if ($lugar->save(false)) {
 							// Si los datos son correctos
+							$lugar->zona->save();
 							echo 'true';
 					}	
 

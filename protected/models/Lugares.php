@@ -103,6 +103,7 @@ class Lugares extends CActiveRecord
             'evento' => array(self::BELONGS_TO, 'Evento', 'EventoId'),
             'funciones' => array(self::BELONGS_TO, 'Funciones', array('EventoId','FuncionesId')),
             'zonas' => array(self::BELONGS_TO, 'Zonas', array('EventoId','FuncionesId','ZonasId')),
+            'zona' => array(self::BELONGS_TO, 'Zonas', array('EventoId','FuncionesId','ZonasId')),
             'subzonas' => array(self::BELONGS_TO, 'Subzonas', array('EventoId','FuncionesId','ZonasId','SubzonaId')),
             'filas' => array(self::BELONGS_TO, 'Filas', array('EventoId','FuncionesId','ZonasId','SubzonaId','FilasId')),
 		);
