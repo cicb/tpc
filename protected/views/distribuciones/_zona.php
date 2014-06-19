@@ -76,7 +76,7 @@ echo CHtml::dropDownList('ZonasTipo', $model->ZonasTipo,array(1=>'General',2=>'N
 									'EventoId'=>$model->EventoId,
 									'FuncionesId'=>$model->FuncionesId,
 									'ZonasId'=>$model->ZonasId,
-									'SubzonaId'=>$model->ZonasId
+									'SubzonaId'=>1
 							),
 							'id'=>'btn-configurar-filas'),
 							//array('label' => ' ','class'=>'fa fa-th-large',	'title'=>'Configurar Asientos'),

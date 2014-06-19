@@ -844,7 +844,7 @@ endforeach;
 	public function actionEditorSubzona($EventoId, $FuncionesId,$ZonasId,$SubzonaId,$modo='completo')
 	{
 			// Muestra un editor de lugares ordenados por filas de una subzona dada
-			$subzona=Subzona::model()->with(array('hermanas', 'filas'=>array('lugares','ntrue')))->findByPk(compact('EventoId','FuncionesId', 'ZonasId','SubzonaId'));
+			$subzona=Subzona::model()->findByPk(compact('EventoId','FuncionesId', 'ZonasId','SubzonaId'));
 			if (is_object($subzona)) {
 					// 
 					if ($modo=="completo") {
@@ -857,7 +857,8 @@ endforeach;
 					}
 			}	
 			else
-					throw new Exception("Error al procesar su petición, vefique integridad de parametros ", 3);
+					$this->render(TbHtml::tag('strong',array(),'No se encontraron subzonas.'));
+					//throw new Exception("Error al procesar su petición, vefique integridad de parametros ", 3);
 
 	}
 
