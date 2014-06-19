@@ -74,6 +74,7 @@ class Zonas extends CActiveRecord
         'nzonas'=>	array(self::STAT,'Zonas','zonas(EventoId,FuncionesId)'),
         'nfilas'=>	array(self::STAT, 'Filas','EventoId, FuncionesId,ZonasId','select'=>'COUNT(distinct FilasId)',),
         'asientos'=>	array(self::STAT, 'Lugares','EventoId, FuncionesId,ZonasId'),
+        'lugaresTrue'=>	array(self::STAT, 'Lugares','EventoId, FuncionesId,ZonasId', 'condition'=>"LugaresStatus = 'TRUE' "),
         'disfilas'=>	array(self::HAS_MANY, 'Filas','EventoId, FuncionesId,ZonasId','select'=>'FilasId','group'=>'FilasId'),
         'max'=>		array(self::STAT,'Zonas','zonas(EventoId,FuncionesId,ZonasId)','select'=> 'MAX(ZonasId)'),
 		);
@@ -316,11 +317,11 @@ class Zonas extends CActiveRecord
 									 VALUE ".implode(',',$filas))->execute();
 							 ### Hasta este punto se han creado las filas y solo hace falta agregar los lugares
 							 //----------------------------------------------------------------------------------
-							 $conexion->createCommand("INSERT IGNORE INTO lugares 
+							 $nlugares=$conexion->createCommand("INSERT IGNORE INTO lugares 
 									 (EventoId,FuncionesId,ZonasId,SubzonaId,FilasId, LugaresId, LugaresLug,LugaresNum, LugaresStatus)
 									 VALUE ".implode(',',$lugares))->execute();
 
-							 Lugares::model()->updateAll(array("LugaresStatus"=>"OFF"),
+							 $noff=Lugares::model()->updateAll(array("LugaresStatus"=>"OFF"),
 									 sprintf("EventoId=$this->EventoId and FuncionesId=$this->FuncionesId and ZonasId=$this->ZonasId and
 									 SubzonaId=1 and FilasId=$numeroFilas and LugaresId>%d",$tamanoFila-(($tamanoFila*$numeroFilas)-$this->ZonasCanLug)
 							 ));
@@ -343,7 +344,7 @@ class Zonas extends CActiveRecord
 						// Por cada fila de la zona genera sus lugares 
 						$ret=$ret and $fila->generarLugares();
 				}		
-				$this->ZonasCanLug=$this->asientos;
+				$this->ZonasCanLug=$this->lugaresTrue;
 				$this->save();
 				return $ret;
 			 }
