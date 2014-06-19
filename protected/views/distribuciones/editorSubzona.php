@@ -91,7 +91,7 @@ $('.asiento').live('change',function(){
 										success:function(){
 												var nlugares=$('#FilasCanLug-'+fila).val();
 												var nlorigen=parseInt($('#FilasCanLug-'+fila).data('lugares'));
-												if (valor=='') {
+												if (valor=='' || valor==0) {
 														// Si se ha eliminado su contenido
 														obj.addClass('off hidden');
 														nlugares=nlugares-1;
