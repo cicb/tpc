@@ -897,14 +897,14 @@ endforeach;
 					extract($_POST['Lugares']);
 					$lugar=Lugares::model()->findByPk(compact('EventoId','FuncionesId','ZonasId','SubzonaId','FilasId','LugaresId'));
 					$lugar->attributes=$_POST['Lugares'];
-					if (isset($_POST['Lugares']['LugaresNum']))
-						   if( empty($_POST['Lugares']['LugaresNum'])){
+					if (isset($_POST['Lugares']['LugaresLug']))
+						   if( empty($_POST['Lugares']['LugaresLug'])){
 									$lugar->LugaresStatus='OFF';
 							}
 						   else{
 								   $lugar->LugaresStatus='TRUE';
 						   }
-					if ($lugar->save()) {
+					if ($lugar->save(false)) {
 							// Si los datos son correctos
 							echo 'true';
 					}	

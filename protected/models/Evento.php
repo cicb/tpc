@@ -73,6 +73,7 @@ class Evento extends CActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			'categoria' => array(self::HAS_ONE, 'Categorialevel1', 'CategoriaId'),
+			'configurl' => array(self::HAS_ONE, 'Configurl', 'EventoId'),
 			'categoriaSub' => array(self::BELONGS_TO, 'Categorialevel1', 'CategoriaSubId'),
 			'puntoventa' => array(self::HAS_ONE, 'Puntosventa', 'PuntosventaId'),
 			'foro' => array(self::BELONGS_TO, 'Foro', 'ForoId'),

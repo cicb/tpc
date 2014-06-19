@@ -83,7 +83,7 @@ class Lugares extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('LugaresNum', 'numerical', 'integerOnly'=>true),
+			array('LugaresLug', 'numerical', 'integerOnly'=>true),
 			array('EventoId, FuncionesId, ZonasId, SubzonaId, FilasId, LugaresId, LugaresLug, LugaresStatus', 'length', 'max'=>20),
 			array('LugaresNumBol', 'length', 'max'=>64),
 			// The following rule is used by search().

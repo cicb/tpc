@@ -278,6 +278,10 @@ $this->widget('application.extensions.morris.MorrisChartWidget', array(
 
 
 
+<?php else: ?>
+<style type='text/css'>
+.contenido{width:310px !important}
+</style>
 <?php endif; //Fin de validacion movil ?>
 <?php endif; ?>
 </div>

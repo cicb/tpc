@@ -83,7 +83,7 @@ $('.asiento').live('change',function(){
 						var lugar=JSON.parse('$lugarJson');		
 						lugar['FilasId']=fila;
 						lugar['LugaresId']=id;
-						lugar['LugaresNum']=valor;
+						lugar['LugaresLug']=valor;
 						$.ajax({
 								url:'".$this->createUrl('cambiarLugar')."',
 										data:{Lugares:lugar},		

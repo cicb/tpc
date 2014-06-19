@@ -283,7 +283,7 @@ class Funciones extends CActiveRecord
 	 {
 			//Genera una funcion minima
 			$ret=array('estado'=>false,'modelo'=>null);	
-			$evento=Evento::model()->with('foro')->findByPk($eventoId);
+			$evento=Evento::model()->with('foro','configurl')->findByPk($eventoId);
 			$model=new Funciones('insert');
 			if (is_object($evento)) {
 				// Si el id del evento es valido
@@ -300,6 +300,15 @@ class Funciones extends CActiveRecord
 					$model->funcionesTexto=strtoupper(strftime('%A %d - %b - %Y %H:%M HRS'));
 					$model->FuncionesSta='ALTA';
 					if ($model->save()){
+							if (isset($evento->configurl) and is_object($model->configurl)) {
+									// Si existe el configurl ...
+									$mapagrande=new ConfigurlFuncionesMapaGrande;
+									$mapagrande->configurl_Id=$evento->configurl->ConfigurlId;	
+									$mapagrande->EventoId=$model->EventoId;
+									$mapagrande->FuncionId=$model->FuncionesId;
+									$mapagrande->nombre_imagen="no_image.png";
+									$mapagrande->save();
+							}	
 							return $model;
 					}
 			}	

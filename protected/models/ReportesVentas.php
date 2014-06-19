@@ -349,32 +349,33 @@ class ReportesVentas extends CFormModel
 						'lugar'=>array('joinType'=>'INNER JOIN')
 				);
 				switch ($tipo) {
-					case 'venta':
+				case 'venta':
 						// Cuando este buscando 
 						$criteria->with[]='acceso';
 						$criteria->with[]='venta';
 						$criteria->addSearchCondition("VentasNumRef ", $ref);
 						break;
-					
-					case 'reimpresion':
-							$criteria->with[]='reimpresion';
-							$criteria->with[]='venta';
-							$criteria->with[]='acceso';
-							$criteria->addSearchCondition("reimpresion.LugaresNumBol", $ref,true,'OR');
-							break;
-					case 'boleto':
-							$criteria->with[]='acceso';
-							$criteria->with[]='venta';
-							$criteria->addSearchCondition("t.LugaresNumBol", $ref, true,'OR');
-							break;	
-					case 'reservado':
-							$criteria->addCondition("LENGTH(tempLugaresNumRef)>1");
-							$criteria->addSearchCondition("tempLugaresNumRef", $ref);
-							return new CActiveDataProvider('Templugares',array(
-									'criteria'=>$criteria,
-									'pagination'=>array('pageSize'=>20),
-							));
-							break;
+
+				case 'reimpresion':
+						$criteria->with[]='reimpresion';
+						$criteria->with[]='venta';
+						$criteria->with[]='acceso';
+						$criteria->addSearchCondition("reimpresion.LugaresNumBol", $ref,true,'OR');
+						break;
+				case 'boleto':
+						$criteria->with[]='acceso';
+						$criteria->with[]='venta';
+						$criteria->addSearchCondition("t.LugaresNumBol", $ref, true,'OR');
+						break;	
+				case 'reservado':
+						$criteria->with[]='puntoventa';
+						$criteria->addCondition("LENGTH(tempLugaresNumRef)>1");
+						$criteria->addSearchCondition("tempLugaresNumRef", $ref);
+						return new CActiveDataProvider('Templugares',array(
+								'criteria'=>$criteria,
+								'pagination'=>array('pageSize'=>20),
+						));
+						break;
 
 				}
 				return new CActiveDataProvider('Ventaslevel1',array(

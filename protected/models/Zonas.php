@@ -348,5 +348,16 @@ class Zonas extends CActiveRecord
 				return $ret;
 			 }
 
+			 $coords=$conexion->createCommand(sprintf("
+					 INSERT IGNORE INTO configurl_mapa_grande_coordenadas 
+					 ( configurl_funcion_mapa_grande_id,ZonasId, SubzonaId )
+					 (SELECT %d, ZonasId, SubzonaId FROM subzonas
+					 WHERE  EventoId== %d and FuncionesId=%d and ZonasId=%d 
+			 ) ",
+			 $this->funcion->mapagrande->id,
+			 $this->EventoId,
+			 $this->FuncionesId,
+			 $this->ZonasId
+	 ))->execute();
 	 }
 }

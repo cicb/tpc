@@ -130,9 +130,12 @@ $this->widget('bootstrap.widgets.TbNavbar',array(
 						'type'=>'right',
 						'htmlOptions'=>array('class'=>'pull-right'),
 						'items' => array(
+								array('label'=>'Acerca de ','visible' => !Yii::app()->user->isGuest, 'url'=>array('/site/about')),
 								array('label'=>'Iniciar Sesión', 'url'=>array('/site/login'), 'visible'=>Yii::app()->user->isGuest),
-								array('label'=>'Cerrar Sesión ('.Yii::app()->user->name.')', 'url'=>array('/site/logout'), 'visible'=>!Yii::app()->user->isGuest)
-						)
+								array(
+										'label'=>'Cerrar Sesión ('.Yii::app()->user->name.')', 
+										'url'=>array('/site/logout'), 'visible'=>!Yii::app()->user->isGuest)
+								)
 				),	
 		),
 )); 
@@ -158,8 +161,10 @@ $this->widget('bootstrap.widgets.TbNavbar',array(
 <?php //Yii::app()->clientScript->registerCssFile(Yii::app()->request->baseUrl."/css/style.less",CClientScript::POS_END); ?>
 <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/custom.css"  />
 <?php 
-		if(Yii::app()->mobileDetect->isMobile())
+		if(Yii::app()->mobileDetect->isMobile()){
+				echo "<!-- ES MOVIL -->";
 				Yii::app()->clientScript->registerCssFile(Yii::app()->request->baseUrl."/css/mobile.css",CClientScript::POS_BEGIN);
+		}
  ?>
 </body>
 </html>

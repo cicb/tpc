@@ -273,6 +273,9 @@ echo " <div class='row' style='text-align:center'><span>Versi&oacute;n completa<
 echo "<div class='row' style='text-align:center'>".CHtml::link('Versi&oacute;n completa',$this->createUrl('reportes/ventasSinCargo',
 		array('dispositivo'=>'pc')))." <span>Versi&oacute;n para moviles</span></div>";
 ?>
+<style type='text/css'>
+.contenido{width:340px !important}
+</style>
 <?php endif; //Fin de validacion movil ?>
 <?php endif; ?>
 </div>

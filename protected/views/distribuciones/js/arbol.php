@@ -1,6 +1,7 @@
 <?php 
 Yii::app()->clientScript->registerScript('arbol',
  "
+var start=Math.round((new Date()).getTime() / 1000);
 $( '.nodo-toggle').live('click',function(){
 		var uid= $(this).data('uid');
 		var link= $(this);
@@ -42,7 +43,7 @@ $( '.nodo-toggle').live('click',function(){
 								$('#nodo-'+zid+'-'+pid+' input').val(valor);
 						});
 
-						$('.ZonasFacCarSer').live('focusout',function(){
+						$('.ZonasFacCarSer').live('change',function(){
 								if (Math.round((new Date()).getTime() / 1000)-start>1) {
 										// Si la estampa de tiempo es mayor a 1 segundos
 										start=Math.round((new Date()).getTime() / 1000);

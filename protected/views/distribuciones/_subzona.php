@@ -11,7 +11,7 @@ echo TbHtml::openTag('table',array('width'=>'auto','class'=>'table-bordered cent
 						if ($asiento->LugaresStatus=='OFF') {
 								$clase.=" off hidden";
 						}
-						$control=TbHtml::textField('asiento',$asiento->LugaresNum, array(
+						$control=TbHtml::textField('asiento',$asiento->LugaresLug, array(
 								'class'=>'input-mini asiento'.$clase,
 								'data-fid'=>$asiento->FilasId,
 								'data-id'=>$asiento->LugaresId,
