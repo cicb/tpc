@@ -17,4 +17,5 @@ protected/runtime/application.log
 .swm
 *~
 tags
-
+*.phar
+vendor/*
