@@ -30,6 +30,8 @@ class Ventas extends CActiveRecord
 		 * @param string $className active record class name.
 		 * @return Ventas the static model class
 		 */
+		public $maxId;
+
 		public static function model($className=__CLASS__)
 		{
 				return parent::model($className);
@@ -58,6 +60,7 @@ class Ventas extends CActiveRecord
 						array('VentasNumRef', 'length', 'max'=>30),
 						array('VentasBloq', 'length', 'max'=>2),
 						array('VentasBloqDes', 'length', 'max'=>300),
+						array('VentasId, VentasNumRef','unique'),
 						// The following rule is used by search().
 						// Please remove those attributes that should not be searched.
 						array('VentasId, PuntosventaId, VentasSec, VentasNumTar, VentasFecHor, TempLugaresTipUsr, UsuariosId, VentasSta, VentasNomDerTar, VentasMesExpTar, VentasAniExpTar, VentasTip, VentasTipTar, VentasNumAut, VentasMonMetEnt, VentasNumRef, VentasBloq, VentasBloqDes', 'safe', 'on'=>'search'),
@@ -138,6 +141,21 @@ class Ventas extends CActiveRecord
 				return new CActiveDataProvider($this, array(
 						'criteria'=>$criteria,
 				));
+		}
+
+		public static function getMaxId()
+		{
+			$row = Ventas::model()->find(array('select'=>'MAX(VentasId) as maxId'));
+			return $row['maxId'];
+		}
+
+		public function beforeSave()
+		{
+			if ($this->scenario=='insert') {
+				$this->VentasId=self::getMaxId()+1;
+				$this->VentasFecHor=date('Y-m-d H:i:s');
+			}	
+			return parent::beforeSave();
 		}
 
 		public function getTarjeta()

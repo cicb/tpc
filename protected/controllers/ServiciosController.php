@@ -22,23 +22,6 @@ class ServiciosController extends CController
 
 	}
 
-    public function validarEntrada($referencia)
-    {   
-		#Valida que en referencia entrada sea una referencia o un numero de referencia valido
-    	if (empty($referencia)) {
-    	    throw new Exception("La cadena esta vacía.", 100);
-    	}                     
-    	if (!is_string($referencia) ){
-    		throw new Exception("Entrada no es una cadena", 101);
-    	}
-    	if (strlen($referencia)!=16){
-    		throw new Exception("Numero invalido de caracteres ", 102);
-    	} 
-    	if (is_numeric(substr($referencia,0,6))){
-    		throw new Exception("Formato de cadena inválido", 103);
-    	}
-    	return $referencia;
-    }
     /**
      * @param str/string referencia es una cadena con cualquier serie de simbolos
      * @param int/integer Punto de venta
@@ -64,7 +47,8 @@ class ServiciosController extends CController
     public function validarNumeroLugares($referencia, $numeroLugares)
     {
     	$numeroRef=substr($referencia,-2);
-    	$numeroBd=sizeof($lugares);
+    	#Toma los dos últimos digitos de la referencia que deberian ser numericos
+    	$numeroBd=$numeroLugares; 
     	if ($numeroBd==0) {
     		throw new Exception("No hay reservaciones con esos datos", 201);    		
     	}
@@ -74,22 +58,31 @@ class ServiciosController extends CController
     public function validacionesVenta($referencia,$pv)
     {
     	# Lleva a cabo todas las validaciones necesarias antes de insertar una venta
+    	$servicios=new Servicios();
     	try {
-    		$referencia=$this->validarEntrada($referencia);
+    		$referencia=$servicios->validarEntrada($referencia);
     		# Valida que el punto de venta sea un valor válido
     		if (is_numeric($pv) and $pv>0) {
 				throw new Exception("El punto de venta no es válido", 1);
+				return false;
     		}
     		$lugares=$this->validarEnBD($referencia,$pv);
-    		$this->validarNumeroLugares($referencia,sizeof($lugares));
+    		#Le envia la referencia y los lugares que encontro.
+    		return $this->validarNumeroLugares($referencia,sizeof($lugares));
 			
     	} catch (Exception $e) {
     		throw new Exception("No se ha validado la integridad de la referencia", 200);
     		return false;
     	}
     	#Validación de formato
-
     }
+
+    public function insertarVentaEnBD($referencia,$pv)
+    {
+    	
+    }
+
+
 
     public function actionIndex($valor, $pv)
     {
@@ -104,13 +97,26 @@ class ServiciosController extends CController
      */
     public function imprimir()
     {
-    	$path= '/home/david/botelos.pdf';
-    	$data = file_get_contents($path);
-    	// $base64 = 'data:application/pdf;base64,' . base64_encode($data);
-    	$base64 = base64_encode($data);
+
+    	$pdf = Yii::createComponent ( 'application.extensions.html2pdf.html2pdf' );
+    	$html2pdf = new HTML2PDF ( 
+    		'P', array(75,180), 'es', true, 'UTF-8', 
+    		array (0, 0, 0, 0 ) );
+    	$documento=$this->renderPartial("/ventas/formatoBoleto",array(),true,false);
+    	$html2pdf->writeHTML ($documento, false );
+    	$pdf=$html2pdf->Output ('', 'S' );
+
+    	// $path= '/home/david/botelos.pdf';
+    	// $data = file_get_contents($path);
+    	// //$base64 = 'data:application/pdf;base64,' . base64_encode($data);
+    	$base64 = base64_encode($pdf);
     	return $base64;
     }
 
+    public function actionImprimir()
+    {
+    	echo $this->imprimir();
+    }
 
     /**
      * @param str/string valor es una cadena con cualquier serie de simbolos

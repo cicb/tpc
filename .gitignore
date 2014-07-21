@@ -18,4 +18,5 @@ protected/runtime/application.log
 *~
 tags
 *.phar
+vendor/
 vendor/*
