@@ -73,15 +73,17 @@ class Servicios extends CFormModel{
     	}
     	#Validación de formato
     }
+    
     public function registrarVenta($referencia,$pv)
     {
     	try {
     		$lugares=$this->validacionesVenta($referencia,$pv);
+    		$numeroLugares=sizeof($lugares);
     		
     	} catch (Exception $e) {
     		   $this->registrarError($e->getMessage(), $e->getCode()); 
     		   /* 
-    		   *<<<<<<<<<<<<Sale con codigo 2 >>>>>>>>>>>>
+    		   *	<<<<<<<<<<<<Sale con codigo 2 >>>>>>>>>>>>
     		   */
     		   return 2	;
 
@@ -102,41 +104,102 @@ class Servicios extends CFormModel{
     			### !!! SE INSERTAN LOS VENTASLEVEL1 !!!
     				$query=" INSERT INTO ventaslevel1 
     					SELECT '%s' AS VentasId, 
-							templugares.EventoId,  
-							templugares.FuncionesId,
-						    templugares.ZonasId, 
-						    templugares.SubzonaId,
-						    templugares.FilasId,  
-						    templugares.LugaresId,
-						    '0' AS DescuentosId,  
-						    '0' AS VentasMonDes,
-	    					'NORMAL' as VentasBolTip,
-	                        zonas.ZonasCosBol AS VentasCosBol,  
-	                        zonaslevel1.ZonasFacCarSer AS VentasCarSer,
-	                        VENDIDO' AS VentasSta,
-	                        'codigoBarras' AS LugaresNumBol,  
-	                        '' AS VentasBolPara,
-	                        'contrasena' AS VentasCon,
-	                        '0' AS CancelUsuarioId,
-	                        '' AS CancelFecHor 
-                        FROM  zonas 
-                        INNER JOIN templugares 
-                        			ON (zonas.EventoId=templugares.EventoId)  
-                        			AND (zonas.FuncionesId=templugares.FuncionesId)
-                        			AND (zonas.ZonasId=templugares.ZonasId) 
-            			INNER JOIN zonaslevel1 
-            						ON (templugares.EventoId=zonaslevel1.EventoId)  
-            						AND (templugares.FuncionesId=zonaslevel1.FuncionesId)
-                                    AND (templugares.ZonasId=zonaslevel1.ZonasId)  
-                                    AND (templugares.PuntosventaId=zonaslevel1.PuntosventaId) 
+							t1.EventoId,  
+							t1.FuncionesId,
+						    t1.ZonasId, 
+						    t1.SubzonaId,
+						    t1.FilasId,  
+						    t1.LugaresId,
+						    t1.DescuentosId,  
+						    t2.VentasCosBolDes AS VentasMonDes,
+	    					'NORMAL' 			AS VentasBolTip,
+	                        t2.VentasCosBol 	AS VentasCosBol,  
+	                        t2.VentasCarSer-IFNULL(t2.VentasCarSerDes,0) 
+												AS VentasCarSer,
+	                        'VENDIDO' 			AS VentasSta,
+	                        FLOOR(100000000000 + RAND() * (999999999999 - 100000000000)) 
+    											AS LugaresNumBol,  
+	                        '' 					AS VentasBolPara,
+	                        CONCAT_WS('-',
+	                        	CONCAT_WS('.',
+	                        		t1.EventoId,t1.FuncionesId,t1.ZonasId,
+	                        		t1.SubzonaId,t1.FilasId, t1.LugaresId
+	                        		),
+	                        	CONCAT_WS('.',MONTH(CURDATE()),DAY(CURDATE()) ),
+	                        	'F%s'
+	                        	) 				AS VentasCon,
+	                        '0' 				AS CancelUsuarioId,
+	                        '' 					AS CancelFecHor 
+                        FROM  templugares as t1 
+                        INNER JOIN preciostemplugares t2 
+                        			ON (t2.EventoId=t1.EventoId)  
+                        			AND (t2.FuncionesId=t1.FuncionesId)
+                        			AND (t2.ZonasId=t1.ZonasId) 
+                        			AND (t2.SubzonaId=t1.SubzonaId) 
+                        			AND (t2.FilasId=t1.FilasId) 
+                        			AND (t2.LugaresId=t1.LugaresId) 
+                        			AND (t2.PuntosventaId=t1.PuntosventaId) 
                         WHERE  (tempLugaresNumRef = '%s')";
+                    	$query=sprintf($query,$venta->VentasId,$pv,$referencia);
+                    	$ret=Yii::app()->db->createCommand($query)->queryAll();
+                    	if ($ret!=$numeroLugares ) {
+                    		throw new Exception("Numero de ventaslevel1 insertados no coincide", 301);
+                    		return 2;
+                    	}
+
+                    	// Pone todos los templugares en estatus de FALSE (Como vendidos)
+                    	$numTemplugares=Templugares::model()->updateAll(array('TempLugaresSta'=>'FALSE'),
+                    		array("tempLugaresNumRef = '$referencia'"));
+                    	if ($numTemplugares!=$numeroLugares ) {
+                    		throw new Exception("Numero de templugares actualizados con status FALSE difiere", 302);
+                    		return 2;
+                    	}
+                    	// Pone todos los lugares en estatus de FALSE (Como vendidos)
+                    	$actualizados=0;
+                    	foreach ($lugares as $tmplugar) {
+                    		$lugar=Lugares::model()->updateByPk(
+                    			$tmplugar->getPrimaryKey(),
+                    			array('LugaresStatus'=>'FALSE'),
+                    			"PuntosventaId= :pv",
+                    			array('pv'=>$pv)
+                    			);
+                    		$actualizados++;
+                    	}
+                    	if ($actualizados!=$numeroLugares ) {
+                    		throw new Exception("Numero de lugares con status FALSE difiere", 303);
+                    		return 2;
+                    	}
+                    	// Si llega a este punto sin problemas entonces compromete la BD
+                    	$transaction->commit();
+
     		}
     	} catch (Exception $e) {
-    		
+    		//Algo sucedio, no se compromete la base de datos, ningun dato guardado
+    		$transaction->rollback();
+    		echo $e->getMessage();
+    		return 2;
     	}
 
     }
 
+    public function generarCodigoBarras($codigo=null)
+    {
+    	# Genera un codigo  de barras aleatorio de EAN 12 
+    	if (!is_null($codigo) and is_string($codigo)) {
+    		$unico=Ventaslevel1::model()->count("LugaresNumBol = '$codigo' ");
+    		if ($unico==0) {
+    			# Si no existe ese codigo entonces es UNICO
+    			return mt_rand(100000000000,999999999999);
+    		}
+    		else{
+    			return $this->generarCodigoBarras($codigo);
+    		}
+    		
+    	}
+    	else{
+    		return $this->generarCodigoBarras(mt_rand(100000000000,999999999999));
+    	}
+    }
 
 
    public function registrarError($msg,$codigo)
