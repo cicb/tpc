@@ -2,6 +2,16 @@
 
 class Servicios extends CFormModel{
 
+	public $referencia;
+	public $pv;
+
+	public function Servicios($referencia,$pv)
+	{
+		$this->referencia=$referencia;
+		$this->pv=$pv;
+
+	}
+
     public function validarEntrada($referencia)
     {   
 		#Valida que en referencia entrada sea una referencia o un numero de referencia valido
@@ -21,14 +31,16 @@ class Servicios extends CFormModel{
     }
 
 
-        public function validarEnBD($referencia,$pv)
+        public function validarEnBD()
     {
+    	$referencia=$this->referencia;
+    	$pv=$this->pv;
     	# Valida que el referencia de la referencia se encuentre en la base de datos 
     	$criteria=new CDbCriteria;
     	$criteria->compare("tempLugaresNumRef",$referencia);
-    	// $criteria->compare("TempLugaresSta",'SELECTED'); //(Desactivado por prueba)
+    	$criteria->compare("TempLugaresSta",'SELECTED'); //(Desactivado por prueba)
     	$criteria->compare("PuntosventaId",$pv); //Compara que sean mis boletos
-    	$criteria->compare("UsuariosId",2);//Compara que los lugares sean de Farmatodo
+    	// $criteria->compare("UsuariosId",2);//Compara que los lugares sean de Farmatodo
     	$tlugares= Templugares::model()->findAll($criteria);
     	$tmps=array();
     	foreach ($tlugares as $lugar) {
@@ -41,11 +53,10 @@ class Servicios extends CFormModel{
     {
     	$numeroRef=substr($referencia,-2);
     	#Toma los dos últimos digitos de la referencia que deberian ser numericos
-    	$numeroBd=$numeroLugares; 
-    	if ($numeroBd==0) {
+    	if ($numeroLugares==0) {
     		throw new Exception("No hay reservaciones con esos datos", 201);    		
     	}
-    	return (int)$numeroBd==(int)$numeroRef;
+    	return (int)$numeroLugares==(int)$numeroRef;
     }
 
     public function validacionesVenta($referencia,$pv)
@@ -54,13 +65,15 @@ class Servicios extends CFormModel{
     	try {
     		$referencia=$this->validarEntrada($referencia);
     		# Valida que el punto de venta sea un valor válido
-    		if (is_numeric($pv) and $pv>0) {
-    			throw new Exception("El punto de venta no es válido", 1);
+    		if (!is_numeric($pv) or $pv<0) {
+    			throw new Exception("El punto de venta '$pv' no es válido", 104);
+    			$this->registrarError($e);
+
     			return false;
     		}
     		$lugares=$this->validarEnBD($referencia,$pv);
     		#Le envia la referencia y los lugares que encontro.
-    		if $this->validarNumeroLugares($referencia,sizeof($lugares)){
+    		if ($this->validarNumeroLugares($referencia,sizeof($lugares))){
     			return $lugares;
     		}
     		else{
@@ -68,27 +81,26 @@ class Servicios extends CFormModel{
     			return false;
     		}			
     	} catch (Exception $e) {
+    		$this->registrarError($e);
     		throw new Exception("No se ha podido validar la integridad de la referencia", 200);
     		return false;
     	}
     	#Validación de formato
     }
     
-    public function registrarVenta($referencia,$pv)
+    public function registrarVenta()
     {
+    	$referencia=$this->referencia;
+    	$pv=$this->pv;
     	try {
     		$lugares=$this->validacionesVenta($referencia,$pv);
     		$numeroLugares=sizeof($lugares);
     		
     	} catch (Exception $e) {
-    		   $this->registrarError($e->getMessage(), $e->getCode()); 
-    		   /* 
-    		   *	<<<<<<<<<<<<Sale con codigo 2 >>>>>>>>>>>>
-    		   */
-    		   return 2	;
-
+    		   $this->registrarError($e); 
+    		   return $e->getCode()	;
     	}
-    	$venta=new Venta;
+    	$venta=new Ventas;
     	$venta->PuntosventaId=$pv;
     	$venta->VentasSec="FARMATODO";
     	$venta->TempLugaresTipUsr='usuarios';
@@ -97,12 +109,15 @@ class Servicios extends CFormModel{
     	$venta->VentasMonMetEnt=0;
     	$venta->VentasTip='EFECTIVO';
     	$venta->VentasNumRef=$referencia;
+    	/*  
+    	* COMIENZA LA TRANSACCION
+    	*/
     	$transaction = Yii::app()->db->beginTransaction();
     	try {
-    		if ($venta->save()) {
+    		if ($venta->save(false)) {
     			# Si la venta se pudo realizar
     			### !!! SE INSERTAN LOS VENTASLEVEL1 !!!
-    				$query=" INSERT INTO ventaslevel1 
+    				$query=" INSERT INTO ventaslevel1 (
     					SELECT '%s' AS VentasId, 
 							t1.EventoId,  
 							t1.FuncionesId,
@@ -111,7 +126,8 @@ class Servicios extends CFormModel{
 						    t1.FilasId,  
 						    t1.LugaresId,
 						    t1.DescuentosId,  
-						    t2.VentasCosBolDes AS VentasMonDes,
+						    IFNULL(t2.VentasCosBolDes,0)
+						    					AS VentasMonDes,
 	    					'NORMAL' 			AS VentasBolTip,
 	                        t2.VentasCosBol 	AS VentasCosBol,  
 	                        t2.VentasCarSer-IFNULL(t2.VentasCarSerDes,0) 
@@ -129,7 +145,7 @@ class Servicios extends CFormModel{
 	                        	'F%s'
 	                        	) 				AS VentasCon,
 	                        '0' 				AS CancelUsuarioId,
-	                        '' 					AS CancelFecHor 
+	                        '0000-00-00' 				AS CancelFecHor 
                         FROM  templugares as t1 
                         INNER JOIN preciostemplugares t2 
                         			ON (t2.EventoId=t1.EventoId)  
@@ -139,72 +155,114 @@ class Servicios extends CFormModel{
                         			AND (t2.FilasId=t1.FilasId) 
                         			AND (t2.LugaresId=t1.LugaresId) 
                         			AND (t2.PuntosventaId=t1.PuntosventaId) 
-                        WHERE  (tempLugaresNumRef = '%s')";
+                        WHERE  (tempLugaresNumRef = '%s'))";
                     	$query=sprintf($query,$venta->VentasId,$pv,$referencia);
-                    	$ret=Yii::app()->db->createCommand($query)->queryAll();
+                    	try {
+                    		$ret=Yii::app()->db->createCommand($query)->execute();
+                    	} catch (Exception $e) {
+                    		$this->registrarError($e);
+                    		throw $e;
+                    		return 300;
+                    	}
                     	if ($ret!=$numeroLugares ) {
                     		throw new Exception("Numero de ventaslevel1 insertados no coincide", 301);
-                    		return 2;
+                    		return 301;
                     	}
 
                     	// Pone todos los templugares en estatus de FALSE (Como vendidos)
                     	$numTemplugares=Templugares::model()->updateAll(array('TempLugaresSta'=>'FALSE'),
-                    		array("tempLugaresNumRef = '$referencia'"));
+                    		"tempLugaresNumRef = '$referencia'");
+
                     	if ($numTemplugares!=$numeroLugares ) {
                     		throw new Exception("Numero de templugares actualizados con status FALSE difiere", 302);
-                    		return 2;
+                    		return 302;
                     	}
                     	// Pone todos los lugares en estatus de FALSE (Como vendidos)
                     	$actualizados=0;
                     	foreach ($lugares as $tmplugar) {
-                    		$lugar=Lugares::model()->updateByPk(
-                    			$tmplugar->getPrimaryKey(),
-                    			array('LugaresStatus'=>'FALSE'),
-                    			"PuntosventaId= :pv",
-                    			array('pv'=>$pv)
+                    		if (is_array($tmplugar)) {
+
+		                		Lugares::model()->updateByPk(
+                    			array_slice($tmplugar,0,6),
+                    			array('LugaresStatus'=>'FALSE')
+                    			// "PuntosventaId= :pv",
+                    			// array('pv'=>$pv)
                     			);
                     		$actualizados++;
+                    		}
+    
                     	}
                     	if ($actualizados!=$numeroLugares ) {
                     		throw new Exception("Numero de lugares con status FALSE difiere", 303);
-                    		return 2;
+                    		return 303;
                     	}
                     	// Si llega a este punto sin problemas entonces compromete la BD
-                    	$transaction->commit();
+
+    		}
+    		else{
+    			throw new Exception("No fue posible guardar la venta con los datos actuales", 304);
 
     		}
     	} catch (Exception $e) {
     		//Algo sucedio, no se compromete la base de datos, ningun dato guardado
     		$transaction->rollback();
-    		echo $e->getMessage();
-    		return 2;
+    		$this->registrarError($e);
+    		return $e->getCode();
     	}
-
-    }
-
-    public function generarCodigoBarras($codigo=null)
-    {
-    	# Genera un codigo  de barras aleatorio de EAN 12 
-    	if (!is_null($codigo) and is_string($codigo)) {
-    		$unico=Ventaslevel1::model()->count("LugaresNumBol = '$codigo' ");
-    		if ($unico==0) {
-    			# Si no existe ese codigo entonces es UNICO
-    			return mt_rand(100000000000,999999999999);
-    		}
-    		else{
-    			return $this->generarCodigoBarras($codigo);
-    		}
-    		
+    	$ventaslevel1=Ventaslevel1::model()->findAllByAttributes(
+    		array('VentasId'=>$venta->VentasId,'VentasSta'=>'VENDIDO' ));
+    	if (sizeof($ventaslevel1)!=sizeof($lugares)) {
+    		#Si el numero de ventaslevel1 es distinto que el numero de templugares seleccionados en primer lugar
+    		#Entonces hubo un error 
+    		$transaction->rollback();
+    		$this->registrarError(new Exception("No se paso la prueba de integridad en el registro de ventas", 305));
+    		return 305;
     	}
     	else{
-    		return $this->generarCodigoBarras(mt_rand(100000000000,999999999999));
+    	/*Verifica que los numero de boletos generados sean unicos
+    	*/
+    		// foreach ($ventaslevel1 as $vl1 ) {
+    		// 	if (is_object($vl1)) {
+    		// 		# code...
+    		// 		$vt1->LugaresNumBol=$this->generarCodigoBarras();
+    		// 		$vl1->save(false);
+    		// 	}
+    		// }
+    		$transaction->commit();
+    		return array('venta'=>$venta,'ventaslevel1'=>$ventaslevel1);
+    		return 1000;
     	}
     }
 
+    // public function generarCodigoBarras($codigo=0,$intentos=0)
+    // {
+    // 	# Genera un codigo  de barras aleatorio de EAN 12 
+    // 	// if (!is_null($codigo)) {
+    // 		$unico=Ventaslevel1::model()->count("LugaresNumBol = '$codigo' ");
+    // 		if ($unico==0) {
+    // 			# Si no existe ese codigo entonces es UNICO
+    // 			return $codigo;
+    // 		}    			
+    // 	// }
+    // 		return $this->generarCodigoBarras(mt_rand(100000000000,999999999999),$intentos+1);    		
+    // 	}
 
-   public function registrarError($msg,$codigo)
+
+   public function registrarError($error)
    {
-   		return true;
+   	$errorpath="/tmp/error.log";
+   	if (file_exists($errorpath) and filesize($errorpath)>(1024*100)) {
+   		$fp = fopen($errorpath, "r+");
+// clear content to 0 bits
+   		ftruncate($fp, 0);
+//close file
+   		fclose($fp);
+   	}   	
+   	error_log(
+   		sprintf("(%s)| R:%s | E%s : %s \n",date("d.M.y H:i:s"),
+   			$this->referencia,$error->getCode(),$error->getMessage()),
+   		3, $errorpath);
+   	return true;
    }
 
     

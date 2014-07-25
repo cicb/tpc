@@ -36,7 +36,7 @@ height: 168mm; font-size: 9pt;font-weight: bold;
                 <div style="border: none solid 1px; width: 50px;text-align: center; position: absolute;top:109px ;left:220px ;"> $30</div>
                 <div style="border: none solid 1px; width: 95px;text-align: center; position: absolute;top:530px ;left:192px ;"> $30</div>
                 <div style="border: none solid 1px; width: 95px;text-align: center; position: absolute;top:610px ;left:192px ;"> $30</div>
-                <div style="border: none solid 1px; width: 75mm;height: 69px; text-align: center; position: absolute;top:125px ;left:2px ;"><img src="http://localhost:80//taquilla/control/imagesbd/blanco.jpg" alt=""> </div>
+                <div style="border: none solid 1px; width: 75mm;height: 69px; text-align: center; position: absolute;top:125px ;left:2px ;"><img src="https://taquillacero.com/imagesbd/blanco.jpg" alt=""> </div>
                 <div style="border: none solid 1px; width: 50mm;height: 69px; text-align: center; position: absolute;top:380px ;left:108px ;text-align:center;"> <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAUQAAAA2AQMAAACFuXL7AAAABlBMVEX///8AAABVwtN+AAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAUklEQVRIiWNgIBowPp9//o/8wQfy59k/VP5hPvhHrvJ5Q4WN/M8///jZ/9U/bz7/R65iVOWoylGVoypHVY6qHFUJVdnAgAoqH6AJjKokQSXRAABMrsROSeDc5wAAAABJRU5ErkJggg==" style="height:55px;width:200px"><br> 081015&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;175259</div>     
             </div> 
                                 <div style="margin-bottom: 110px;position:relative;border: white solid 1px;width: 77mm;height: 168mm; font-size: 9pt;font-weight: bold; font-family: Arial;">
@@ -67,7 +67,7 @@ height: 168mm; font-size: 9pt;font-weight: bold;
                 <div style="border: none solid 1px; width: 50px;text-align: center; position: absolute;top:109px ;left:220px ;"> $30</div>
                 <div style="border: none solid 1px; width: 95px;text-align: center; position: absolute;top:530px ;left:192px ;"> $30</div>
                 <div style="border: none solid 1px; width: 95px;text-align: center; position: absolute;top:610px ;left:192px ;"> $30</div>
-                <div style="border: none solid 1px; width: 75mm;height: 69px; text-align: center; position: absolute;top:125px ;left:2px ;"><img src="http://localhost:80//taquilla/control/imagesbd/blanco.jpg" alt=""> </div>
+                <div style="border: none solid 1px; width: 75mm;height: 69px; text-align: center; position: absolute;top:125px ;left:2px ;"><img src="https://taquillacero.com/imagesbd/blanco.jpg" alt=""> </div>
                 <div style="border: none solid 1px; width: 50mm;height: 69px; text-align: center; position: absolute;top:387px ;left:108px ;text-align:center;"> <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAUQAAAA2AQMAAACFuXL7AAAABlBMVEX///8AAABVwtN+AAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAUklEQVRIiWNgIBowPp/H+OdD/fMGfvv5P9ibzzP8q3z+r8L+88EHzOeff6h8wPzfRq5iVOWoylGVoypHVY6qHFUJVdnAgAoqH6AJjKokQSXRAAAzNbpW0VWbRwAAAABJRU5ErkJggg==" style="height:55px;width:200px"><br> 940388&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;499326</div>     
             </div> 
                     <div id="comprobante" class="comprobante" style="margin-bottom: 110px;position:relative;border: white solid 1px;width: 75mm;height: 170mm; font-size: 9pt;font-family: Arial;">
@@ -131,7 +131,7 @@ height: 168mm; font-size: 9pt;font-weight: bold;
                 <div style="border: none solid 1px; width: 50px;text-align: center; position: absolute;top:109px ;left:220px ;"> $30</div>
                 <div style="border: none solid 1px; width: 95px;text-align: center; position: absolute;top:530px ;left:192px ;"> $30</div>
                 <div style="border: none solid 1px; width: 95px;text-align: center; position: absolute;top:610px ;left:192px ;"> $30</div>
-                <div style="border: none solid 1px; width: 75mm;height: 69px; text-align: center; position: absolute;top:125px ;left:2px ;"><img src="http://localhost:80//taquilla/control/imagesbd/blanco.jpg" alt=""> </div>
+                <div style="border: none solid 1px; width: 75mm;height: 69px; text-align: center; position: absolute;top:125px ;left:2px ;"><img src="https://taquillacero.com/imagesbd/blanco.jpg" alt=""> </div>
                 <div style="border: none solid 1px; width: 50mm;height: 69px; text-align: center; position: absolute;top:387px ;left:108px ;text-align:center;"> <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAUQAAAA2AQMAAACFuXL7AAAABlBMVEX///8AAABVwtN+AAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAUUlEQVRIiWNgIBowPm+o/PP5//Pm/wxylf+bzzP8q3z+od5+/sEHH/j/fKiw/3yeQa5iVOWoylGVoypHVY6qHFUJU8mACiofoAmMqiRBJdEAAErC9G6Nl2OrAAAAAElFTkSuQmCC" style="height:55px;width:200px"><br> 396065&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;412895</div>     
             </div> 
                                 <div style="margin-bottom: 110px;position:relative;border: white solid 1px;width: 77mm;height: 168mm; font-size: 9pt;font-weight: bold; font-family: Arial;">
@@ -162,7 +162,7 @@ height: 168mm; font-size: 9pt;font-weight: bold;
                 <div style="border: none solid 1px; width: 50px;text-align: center; position: absolute;top:109px ;left:220px ;"> $30</div>
                 <div style="border: none solid 1px; width: 95px;text-align: center; position: absolute;top:530px ;left:192px ;"> $30</div>
                 <div style="border: none solid 1px; width: 95px;text-align: center; position: absolute;top:610px ;left:192px ;"> $30</div>
-                <div style="border: none solid 1px; width: 75mm;height: 69px; text-align: center; position: absolute;top:125px ;left:2px ;"><img src="http://localhost:80//taquilla/control/imagesbd/blanco.jpg" alt=""> </div>
+                <div style="border: none solid 1px; width: 75mm;height: 69px; text-align: center; position: absolute;top:125px ;left:2px ;"><img src="https://taquillacero.com/imagesbd/blanco.jpg" alt=""> </div>
                 <div style="border: none solid 1px; width: 50mm;height: 69px; text-align: center; position: absolute;top:387px ;left:108px ;text-align:center;"> <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAUQAAAA2AQMAAACFuXL7AAAABlBMVEX///8AAABVwtN+AAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAUklEQVRIiWNgIBowPm/+YSPH/7z5v/38HzbM5x/8q3zeUGHzgfF/8/nnHyrYm8//kasYVTmqclTlqMpRlaMqR1VCVTYwoILKB2gCoypJUEk0AABTbrgamRq5IwAAAABJRU5ErkJggg==" style="height:55px;width:200px"><br> 112087&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;176027</div>     
             </div> 
                     <div id="comprobante" class="comprobante" style="margin-bottom: 110px;position:relative;border: white solid 1px;width: 75mm;height: 170mm; font-size: 9pt;font-family: Arial;">
@@ -226,7 +226,7 @@ height: 168mm; font-size: 9pt;font-weight: bold;
                 <div style="border: none solid 1px; width: 50px;text-align: center; position: absolute;top:109px ;left:220px ;"> $30</div>
                 <div style="border: none solid 1px; width: 95px;text-align: center; position: absolute;top:530px ;left:192px ;"> $30</div>
                 <div style="border: none solid 1px; width: 95px;text-align: center; position: absolute;top:610px ;left:192px ;"> $30</div>
-                <div style="border: none solid 1px; width: 75mm;height: 69px; text-align: center; position: absolute;top:125px ;left:2px ;"><img src="http://localhost:80//taquilla/control/imagesbd/blanco.jpg" alt=""> </div>
+                <div style="border: none solid 1px; width: 75mm;height: 69px; text-align: center; position: absolute;top:125px ;left:2px ;"><img src="https://taquillacero.com/imagesbd/blanco.jpg" alt=""> </div>
                 <div style="border: none solid 1px; width: 50mm;height: 69px; text-align: center; position: absolute;top:387px ;left:108px ;text-align:center;"> <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAUQAAAA2AQMAAACFuXL7AAAABlBMVEX///8AAABVwtN+AAAACXBIWXMAAA7EAAAOxAGVKw4bAAAATUlEQVRIiWNgIBowPp9/wOb/wQdy9ezNP2yYgYzK581gEebzfz7UP28+zyBXMapyVOWoylGVoypHVY6qhKpsYEAFlQ/QBEZVkqCSaAAAOGmtypgsJZwAAAAASUVORK5CYII=" style="height:55px;width:200px"><br> 455927&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;784399</div>     
             </div> 
                                 <div style="margin-bottom: 110px;position:relative;border: white solid 1px;width: 77mm;height: 168mm; font-size: 9pt;font-weight: bold; font-family: Arial;">
@@ -257,7 +257,7 @@ height: 168mm; font-size: 9pt;font-weight: bold;
                 <div style="border: none solid 1px; width: 50px;text-align: center; position: absolute;top:109px ;left:220px ;"> $30</div>
                 <div style="border: none solid 1px; width: 95px;text-align: center; position: absolute;top:530px ;left:192px ;"> $30</div>
                 <div style="border: none solid 1px; width: 95px;text-align: center; position: absolute;top:610px ;left:192px ;"> $30</div>
-                <div style="border: none solid 1px; width: 75mm;height: 69px; text-align: center; position: absolute;top:125px ;left:2px ;"><img src="http://localhost:80//taquilla/control/imagesbd/blanco.jpg" alt=""> </div>
+                <div style="border: none solid 1px; width: 75mm;height: 69px; text-align: center; position: absolute;top:125px ;left:2px ;"><img src="https://taquillacero.com/imagesbd/blanco.jpg" alt=""> </div>
                 <div style="border: none solid 1px; width: 50mm;height: 69px; text-align: center; position: absolute;top:387px ;left:108px ;text-align:center;"> <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAUQAAAA2AQMAAACFuXL7AAAABlBMVEX///8AAABVwtN+AAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAUklEQVRIiWNgIBowPp9X/+df/YN/9fb/Kmz+n2eQq3z++YfNB8YHcvwMH+qfNx+wkasYVTmqclTlqMpRlaMqR1VCVTYwoILKB2gCoypJUEk0AAA3hqfG/1Ce7gAAAABJRU5ErkJggg==" style="height:55px;width:200px"><br> 168239&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;326779</div>     
             </div> 
                                 <div style="margin-bottom: 110px;position:relative;border: white solid 1px;width: 77mm;height: 168mm; font-size: 9pt;font-weight: bold; font-family: Arial;">
@@ -288,7 +288,7 @@ height: 168mm; font-size: 9pt;font-weight: bold;
                 <div style="border: none solid 1px; width: 50px;text-align: center; position: absolute;top:109px ;left:220px ;"> $30</div>
                 <div style="border: none solid 1px; width: 95px;text-align: center; position: absolute;top:530px ;left:192px ;"> $30</div>
                 <div style="border: none solid 1px; width: 95px;text-align: center; position: absolute;top:610px ;left:192px ;"> $30</div>
-                <div style="border: none solid 1px; width: 75mm;height: 69px; text-align: center; position: absolute;top:125px ;left:2px ;"><img src="http://localhost:80//taquilla/control/imagesbd/blanco.jpg" alt=""> </div>
+                <div style="border: none solid 1px; width: 75mm;height: 69px; text-align: center; position: absolute;top:125px ;left:2px ;"><img src="https://taquillacero.com/imagesbd/blanco.jpg" alt=""> </div>
                 <div style="border: none solid 1px; width: 50mm;height: 69px; text-align: center; position: absolute;top:387px ;left:108px ;text-align:center;"> <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAUQAAAA2AQMAAACFuXL7AAAABlBMVEX///8AAABVwtN+AAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAU0lEQVRIiWNgIBowPp9//s//gw+YzzPIVbDPP/jgX+Xzf/w28j//N59n+FBh//ng/3kVoypHVY6qHFU5qnJU5ahKqMoGBlRQ+QBNQG5UJfEqiQYAUHrokm3fNyoAAAAASUVORK5CYII=" style="height:55px;width:200px"><br> 685669&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;205075</div>     
             </div> 
                     <div id="comprobante" class="comprobante" style="margin-bottom: 110px;position:relative;border: white solid 1px;width: 75mm;height: 170mm; font-size: 9pt;font-family: Arial;">
@@ -352,7 +352,7 @@ height: 168mm; font-size: 9pt;font-weight: bold;
                 <div style="border: none solid 1px; width: 50px;text-align: center; position: absolute;top:109px ;left:220px ;"> $30</div>
                 <div style="border: none solid 1px; width: 95px;text-align: center; position: absolute;top:530px ;left:192px ;"> $30</div>
                 <div style="border: none solid 1px; width: 95px;text-align: center; position: absolute;top:610px ;left:192px ;"> $30</div>
-                <div style="border: none solid 1px; width: 75mm;height: 69px; text-align: center; position: absolute;top:125px ;left:2px ;"><img src="http://localhost:80//taquilla/control/imagesbd/blanco.jpg" alt=""> </div>
+                <div style="border: none solid 1px; width: 75mm;height: 69px; text-align: center; position: absolute;top:125px ;left:2px ;"><img src="https://taquillacero.com/imagesbd/blanco.jpg" alt=""> </div>
                 <div style="border: none solid 1px; width: 50mm;height: 69px; text-align: center; position: absolute;top:387px ;left:108px ;text-align:center;"> <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAUQAAAA2AQMAAACFuXL7AAAABlBMVEX///8AAABVwtN+AAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAUklEQVRIiWNgIBowPp9//g/zzwcf+O0/VNh/PmA/r/L5h3r75p/P//EzyFXYMP/8I1cxqnJU5ajKUZWjKkdVjqqEqmxgQAWVD9AERlWSoJJoAAD94qESMfZiJwAAAABJRU5ErkJggg==" style="height:55px;width:200px"><br> 380754&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;011438</div>     
             </div> 
                     <div id="comprobante" class="comprobante" style="margin-bottom: 110px;position:relative;border: white solid 1px;width: 75mm;height: 170mm; font-size: 9pt;font-family: Arial;">
@@ -416,7 +416,7 @@ height: 168mm; font-size: 9pt;font-weight: bold;
                 <div style="border: none solid 1px; width: 50px;text-align: center; position: absolute;top:109px ;left:220px ;"> $30</div>
                 <div style="border: none solid 1px; width: 95px;text-align: center; position: absolute;top:530px ;left:192px ;"> $30</div>
                 <div style="border: none solid 1px; width: 95px;text-align: center; position: absolute;top:610px ;left:192px ;"> $30</div>
-                <div style="border: none solid 1px; width: 75mm;height: 69px; text-align: center; position: absolute;top:125px ;left:2px ;"><img src="http://localhost:80//taquilla/control/imagesbd/blanco.jpg" alt=""> </div>
+                <div style="border: none solid 1px; width: 75mm;height: 69px; text-align: center; position: absolute;top:125px ;left:2px ;"><img src="https://taquillacero.com/imagesbd/blanco.jpg" alt=""> </div>
                 <div style="border: none solid 1px; width: 50mm;height: 69px; text-align: center; position: absolute;top:387px ;left:108px ;text-align:center;"> <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAUQAAAA2AQMAAACFuXL7AAAABlBMVEX///8AAABVwtN+AAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAUklEQVRIiWNgIBowPp9/wOb/weef/7N//mHffP7Bv8rn//htGCofyPE/+FfB8Pm/jVzFqMpRlaMqR1WOqhxVOaoSqrKBARVUPkATGFVJgkqiAQCplNjuezC9iAAAAABJRU5ErkJggg==" style="height:55px;width:200px"><br> 755821&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;103713</div>     
             </div> 
                                 <div style="margin-bottom: 110px;position:relative;border: white solid 1px;width: 77mm;height: 168mm; font-size: 9pt;font-weight: bold; font-family: Arial;">
@@ -447,7 +447,7 @@ height: 168mm; font-size: 9pt;font-weight: bold;
                 <div style="border: none solid 1px; width: 50px;text-align: center; position: absolute;top:109px ;left:220px ;"> $30</div>
                 <div style="border: none solid 1px; width: 95px;text-align: center; position: absolute;top:530px ;left:192px ;"> $30</div>
                 <div style="border: none solid 1px; width: 95px;text-align: center; position: absolute;top:610px ;left:192px ;"> $30</div>
-                <div style="border: none solid 1px; width: 75mm;height: 69px; text-align: center; position: absolute;top:125px ;left:2px ;"><img src="http://localhost:80//taquilla/control/imagesbd/blanco.jpg" alt=""> </div>
+                <div style="border: none solid 1px; width: 75mm;height: 69px; text-align: center; position: absolute;top:125px ;left:2px ;"><img src="https://taquillacero.com/imagesbd/blanco.jpg" alt=""> </div>
                 <div style="border: none solid 1px; width: 50mm;height: 69px; text-align: center; position: absolute;top:387px ;left:108px ;text-align:center;"> <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAUQAAAA2AQMAAACFuXL7AAAABlBMVEX///8AAABVwtN+AAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAUklEQVRIiWNgIBowPp/H+Eeu/vkHfhv5H+zNB+znVT7/x2/DfPDBB/4/chX2n88zyFWMqhxVOapyVOWoylGVoyqhKhsYUEHlAzSBUZUkqCQaAABshDECCz+UVwAAAABJRU5ErkJggg==" style="height:55px;width:200px"><br> 849508&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;007805</div>     
             </div> 
                     <div id="comprobante" class="comprobante" style="margin-bottom: 110px;position:relative;border: white solid 1px;width: 75mm;height: 170mm; font-size: 9pt;font-family: Arial;">
@@ -511,7 +511,7 @@ height: 168mm; font-size: 9pt;font-weight: bold;
                 <div style="border: none solid 1px; width: 50px;text-align: center; position: absolute;top:109px ;left:220px ;"> $30</div>
                 <div style="border: none solid 1px; width: 95px;text-align: center; position: absolute;top:530px ;left:192px ;"> $30</div>
                 <div style="border: none solid 1px; width: 95px;text-align: center; position: absolute;top:610px ;left:192px ;"> $30</div>
-                <div style="border: none solid 1px; width: 75mm;height: 69px; text-align: center; position: absolute;top:125px ;left:2px ;"><img src="http://localhost:80//taquilla/control/imagesbd/blanco.jpg" alt=""> </div>
+                <div style="border: none solid 1px; width: 75mm;height: 69px; text-align: center; position: absolute;top:125px ;left:2px ;"><img src="https://taquillacero.com/imagesbd/blanco.jpg" alt=""> </div>
                 <div style="border: none solid 1px; width: 50mm;height: 69px; text-align: center; position: absolute;top:387px ;left:108px ;text-align:center;"> <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAUQAAAA2AQMAAACFuXL7AAAABlBMVEX///8AAABVwtN+AAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAUUlEQVRIiWNgIBowPm/+YfOh/vkHfvbPP+w/H7D5V/m8gd9+/sEH/8/bA8Wbz/+RqxhVOapyVOWoylGVoypHVUJVNjCggsoHaAKjKklQSTQAAHKZBSm/GQOHAAAAAElFTkSuQmCC" style="height:55px;width:200px"><br> 810524&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;932549</div>     
             </div> 
                 <div id="comprobante" class="comprobante" style="margin-bottom: 110px;position:relative;border: white solid 1px;width: 75mm;height: 170mm; font-size: 9pt;font-family: Arial;">
