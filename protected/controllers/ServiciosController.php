@@ -38,12 +38,70 @@ class ServiciosController extends CController
     }
 
 
-
-    public function actionIndex($valor, $pv)
+    /**
+     * @param str/string valor es una cadena con cualquier serie de simbolos
+     * @param int/integer valor es una cadena con cualquier serie de simbolos
+     * @return str/string      si es la entrada cumple con los requerimientos
+     * @soap
+     */
+    public function verBoletos($referencia,$pv)
     {
-    	echo CHtml::openTag("pre");
-    	print_r($this->validarEnBD($valor,$pv));
-    	echo CHtml::closeTag('pre');
+    	$servicios=new Servicios($referencia,$pv);
+    	// echo CHtml::openTag("pre");
+    	$lugares=$servicios->buscarBoletos();
+    	$tickets=array();
+    	$coords=Formatosimpresionlevel1::model()->findAllByAttributes(array('FormatoId'=>3));
+    	$matrizCoord=array();
+    	foreach ($coords as $coord ) {
+    		$matrizCoord[$coord->FormatoObj]=array($coord->FormatoX,$coord->FormatoY);
+    	}
+    	foreach ($lugares as $lugar) {
+    		// print_r($lugar);
+    		$tickets[]=	array(
+    			// 'subzona.SubzonaAcc , zona.ZonasAli, fila.FilasAli,
+    			// lugar.LugaresLug, VentasBolTip, precios.VentasCosBol, 
+    			//VentasCarSer, EventoDesBol, EventoNom, ForoNom, funcionesTexto, 
+    			//VentasCon, LugaresNumBol';
+	    			'SubzonaAcc'=>$lugar->subzona->SubzonaAcc,
+					'ZonasAli'=>$lugar->zona->ZonasAli,
+					'FilasAli'=>$lugar->fila->FilasAli,
+					'LugaresLug'=>$lugar->lugar->LugaresLug,
+					'VentasBolTip'=>$lugar->VentasBolTip,
+					'VentasCosBol'=>$lugar->precios->VentasCosBol,
+					'VentasCarSer'=>$lugar->precios->VentasCarSer,
+					'EventoDesBol'=>$lugar->evento->EventoDesBol,
+					'EventoNom'=>$lugar->evento->EventoNom,
+					'ForoNom'=>$lugar->foro->ForoNom,
+					'funcionesTexto'=>$lugar->funcion->funcionesTexto,
+					'contenedor1'=>"",
+					'VentasCon'=>$lugar->VentasCon,
+					'LugaresNumBol'=>$lugar->LugaresNumBol,
+	    		);
+    	}
+    	$boletos=array('boletos'=>$tickets);
+    	// echo "<pre>";
+    	$e=Yii::app()->mustache->render('BoletoFormatoSimple', $boletos, null,null,false);
+    	$jes=CJSON::decode($e);
+    	$ret=array();
+    	array_pop($jes);
+    	// var_export($jes);
+    	foreach ($jes as $boleto) {
+    		foreach ($boleto as $key=>$item ) {
+    			try {
+    				if (array_key_exists($key, $matrizCoord)) {
+    					$boleto[$key][0]+=$matrizCoord[$key][0];
+    					$boleto[$key][1]+=$matrizCoord[$key][1];
+    				}
+    			} catch (Exception $e) {
+
+    			}
+    		}
+    		$ret[]=array_values($boleto);
+    	}
+    	// print_r($ret);
+    	// echo "</pre>";
+    	// echo CHtml::closeTag('pre');
+    	return CJSON::encode($ret);
     }
 
     /**
@@ -140,14 +198,34 @@ class ServiciosController extends CController
      * @return str/string      si es la entrada cumple con los requerimientos
      * @soap
      */
-    public function validarReferencia($ref)
+    public function actionPreformato()
     {
-    	try{	
-   			return $this->validarEnBD();
-    	}
-    	catch(Exception $e){
-    		return $e;
-    	}
+
+
+    	$boletos=array('boletos'=>array(
+	    		array(
+	    			'acceso'=>"3-4",
+					'zonasAli'=>"Luneta",
+					'FilasAli'=>"A",
+					'lugaresLug'=>"10",
+					'tipo'=>"NORMAL",
+					'cosBol'=>"$370",
+					'carSer'=>"30",
+					'desBol'=>"",
+					'evento'=>"La Dama de Negro con un nombre muy largo",
+					'foro'=>"Foro del Teatro Principan de la Ciudad De Puebla",
+					'funcion'=>"MARTES 39- OCT  -2013 19:00 HRS",
+					'contenedor1'=>"",
+					'clave'=>"509.1.1.2.2.18-03.24.184T",
+					'codigo'=>964098444856,
+
+	    		),
+    		)
+    	);
+    	echo "<pre>";
+    	$e=Yii::app()->mustache->render('BoletoFormato3', $boletos, null,null,true);
+    	echo "</pre>";
+
     	
     }
 
@@ -161,5 +239,18 @@ class ServiciosController extends CController
     // {
     // 	#Esta función se encarga de leer un error y generar un reporte en el log de errores
     // }
+
+
+        public function actionVerBoletos($referencia,$pv)
+    {
+    	$boletos=$CJSON::decode(($this->verBoletos($referencia,$pv)));
+
+//     	echo "<pre>";
+//     	echo "<svg width="400" height="110">
+//   <rect width="300" height="100" style="fill:rgb(0,0,255);stroke-width:3;stroke:rgb(0,0,0)">
+//   Sorry, your browser does not support inline SVG.  
+// </svg>"
+//     	echo "</pre>";
+    }
 }
 ?>

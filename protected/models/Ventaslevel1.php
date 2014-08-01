@@ -91,9 +91,11 @@ class Ventaslevel1 extends CActiveRecord
 		'subzona'=>array(self::BELONGS_TO, 'Subzona',array('EventoId','FuncionesId','ZonasId','SubzonaId')),
 		'fila'=>array(self::BELONGS_TO, 'Filas',array('EventoId','FuncionesId','ZonasId','SubzonaId','FilasId')),
 		'lugar'=>array(self::BELONGS_TO, 'Lugares',array('EventoId','FuncionesId','ZonasId','SubzonaId','FilasId','LugaresId')),
+		'precios'=>array(self::BELONGS_TO, 'Preciostemplugares',array('EventoId','FuncionesId','ZonasId','SubzonaId','FilasId','LugaresId')),
 		'acceso'=>array(self::BELONGS_TO,	'Acceso',	'LugaresNumBol'),
 		'reimpresion'=>array(self::HAS_ONE, 'Reimpresiones',array('EventoId'=>'EventoId', 'FuncionesId'=>'FuncionesId', 'ZonasId'=> 'ZonasId','SubzonaId'=>'SubzonaId','FilasId'=>'FilasId', 'LugaresId'=>'LugaresId')),
 		'reimpresiones'=>array(self::HAS_MANY, 'Reimpresiones', array('EventoId'=>'EventoId', 'FuncionesId'=>'FuncionesId', 'ZonasId'=> 'ZonasId','SubzonaId'=>'SubzonaId','FilasId'=>'FilasId', 'LugaresId'=>'LugaresId') ),
+		'foro'=>array(self::HAS_ONE,'Foro', array('ForoId'=>'ForoId'),'through'=>'funcion'),
 		);
 	}
 

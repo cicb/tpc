@@ -265,6 +265,25 @@ class Servicios extends CFormModel{
    	return true;
    }
 
+   public function buscarBoletos()
+   {
+   	# Busca los boletos de la venta y los devuelve en el formato de impresion de boletos
+   	// $boletos = Yii::app()->db->createCommand()
+    // ->select('SubzonaAcc , ZonasAli, FilasAli, LugaresLug, VentasBolTip, VentasCosBol, VentasCarSer, EventoDesBol, EventoNom, ForoNom, funcionesTexto, VentasCon, LugaresNumBol')
+    // ->from('ventaslevel1')
+    // ->join("INNER JOIN evento")
+    // ->where('id=:id', array(':id'=>1))
+    // ->queryRow();
+    $criteria=new CDbCriteria;
+    $criteria->limit=10;
+    $criteria->select='subzona.SubzonaAcc , zona.ZonasAli, fila.FilasAli, lugar.LugaresLug, VentasBolTip, precios.VentasCosBol, VentasCarSer, EventoDesBol, EventoNom, ForoNom, funcionesTexto, VentasCon, LugaresNumBol';
+    $boletos=Ventaslevel1::model()
+    ->with(array('venta'=>array('condition'=>sprintf("VentasNumRef= '%s'",$this->referencia)),'evento','funcion', 'zona','subzona','fila','lugar','precios', 'foro'))
+    ->findAll(array('limit'=>10));
+    return $boletos;
+
+   }
+
     
 }
 
