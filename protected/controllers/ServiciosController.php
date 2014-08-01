@@ -193,58 +193,29 @@ class ServiciosController extends CController
     	echo $this->imprimir();
     }
 
-    /**
-     * @param str/string valor es una cadena con cualquier serie de simbolos
-     * @return str/string      si es la entrada cumple con los requerimientos
-     * @soap
-     */
-    public function actionPreformato()
-    {
-
-
-    	$boletos=array('boletos'=>array(
-	    		array(
-	    			'acceso'=>"3-4",
-					'zonasAli'=>"Luneta",
-					'FilasAli'=>"A",
-					'lugaresLug'=>"10",
-					'tipo'=>"NORMAL",
-					'cosBol'=>"$370",
-					'carSer'=>"30",
-					'desBol'=>"",
-					'evento'=>"La Dama de Negro con un nombre muy largo",
-					'foro'=>"Foro del Teatro Principan de la Ciudad De Puebla",
-					'funcion'=>"MARTES 39- OCT  -2013 19:00 HRS",
-					'contenedor1'=>"",
-					'clave'=>"509.1.1.2.2.18-03.24.184T",
-					'codigo'=>964098444856,
-
-	    		),
-    		)
-    	);
-    	echo "<pre>";
-    	$e=Yii::app()->mustache->render('BoletoFormato3', $boletos, null,null,true);
-    	echo "</pre>";
-
-    	
-    }
-
-  //   public function filterValidarEntrada($filterChain)
-  //   {
-		// $this->validarEntrada();
-  //     	$filterChain->run() //to continue filtering and action execution
-  //   }
-
-    // public function reportarError($error)
-    // {
-    // 	#Esta función se encarga de leer un error y generar un reporte en el log de errores
-    // }
 
 
         public function actionVerBoletos($referencia,$pv)
     {
-    	$boletos=$CJSON::decode(($this->verBoletos($referencia,$pv)));
-
+    	$boletos=CJSON::decode(($this->verBoletos($referencia,$pv)));
+    	foreach ($boletos as $boleto) {
+    	echo CHtml::openTag('svg',array('width'=>400,'height'=>700));
+    	echo CHtml::tag('rect',array('width'=>289,'height'=>670,
+    			'style'=>"stroke:#999;stroke-width:1;fill:#FFF"
+    		));
+    		foreach ($boleto as $campo) {
+    			echo CHtml::tag('text',array('x'=>$campo[0],'y'=>$campo[1],
+    				'style'=>sprintf("font-family:'%s';font-size:%s;font-weight:%s",
+    					$campo[3],$campo[4],$campo[5])),
+    			$campo[2]);
+    		}
+    		# code...
+    	echo CHtml::closeTag('svg');
+    	}
+//     	$this->widget('application.extensions.svgbar.CBarras',array(
+//     'tipo'=>'Code39','codigo'=>'976794448751','width'=>100,'x'
+// ));
+// <text x="0" y="15" fill="red">I love SVG!</text>
 //     	echo "<pre>";
 //     	echo "<svg width="400" height="110">
 //   <rect width="300" height="100" style="fill:rgb(0,0,255);stroke-width:3;stroke:rgb(0,0,0)">
