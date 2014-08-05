@@ -12,11 +12,13 @@ class CBarras extends CWidget{
 	public	$code_string = "";
 	public	$htmlOptions = array();
 	private $_encoder;
+	public  $out="img";
 
 public function init()
 {
 		if (!isset($this->text)) $this->text= "0";
 		if (!isset($this->size))	$this->size = "20";
+		if (!isset($this->out))	$this->out = "img";
 		if (!isset($this->orientation))	$this->orientation = "horizontal";
 		if (!isset($this->code_type))	$this->code_type = "code128";
 		if (!isset($this->htmlOptions))	$this->htmlOptions= array();
@@ -151,9 +153,15 @@ public function run()
 		}
         // Draw barcode to the screen
         //header ('Content-type: image/png');
+		switch ($this->out) {
+			case 'base64':
+				$this->out= base64_encode ($image_data);
+				break;			
+			default:
+				echo '<img src="data:image/png;base64,'.base64_encode ($image_data).'" '.$this->htmlOptions.'/>'; 
+				break;
+		}
 
-
-		echo '<img src="data:image/png;base64,'.base64_encode ($image_data).'" '.$this->htmlOptions.'/>'; 
 }
 
 }

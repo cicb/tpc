@@ -78,7 +78,7 @@ class EAN13 {
 		   
       $this->_height = $this->scale*60;
       $this->_width  = 1.8*$this->_height;
-	  $this->_height *= .3;
+	  $this->_height *= .618;
 
       $this->_image = imagecreate($this->_width, $this->_height);
       $bg_color=ImageColorAllocate($this->_image, 0xFF, 0xFF, 0xFF);

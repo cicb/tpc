@@ -12,7 +12,7 @@ class Servicios extends CFormModel{
 
 	}
 
-    public function validarEntrada($referencia)
+    public function validarEntrada($referencia,$tipo='referencia')
     {   
 		#Valida que en referencia entrada sea una referencia o un numero de referencia valido
     	if (!$referencia OR empty($referencia)) {
@@ -24,8 +24,22 @@ class Servicios extends CFormModel{
     	if (strlen($referencia)!=16){
     		throw new Exception("Numero invalido de caracteres ", 102);
     	} 
-    	if (!is_numeric(substr($referencia,0,6))){
-    		throw new Exception("Formato de cadena inválido", 103);
+    	switch ($tipo) {
+    		case 'reimpresion':
+    			# En el caso que se valida una Referencia de Impresion
+	    		if (!is_numeric(substr($referencia,0,6)))
+	    			throw new Exception("Formato de cadena inválido", 103);
+    			break;
+
+			case 'referencia':
+				# Referencia de farmatodo
+	    		if (!is_numeric(substr($referencia,1,7)))
+	    			throw new Exception("Formato de cadena inválido", 103);				
+				break;
+    		
+    		default:
+	    		throw new Exception("Tipo invalido de referencia", 105);				
+    			break;
     	}
     	return $referencia;
     }
@@ -98,7 +112,8 @@ class Servicios extends CFormModel{
     		
     	} catch (Exception $e) {
     		   $this->registrarError($e); 
-    		   return $e->getCode()	;
+    		   throw $e;
+    		   // return $e->getCode()	;
     	}
     	$venta=new Ventas;
     	$venta->PuntosventaId=$pv;
@@ -250,7 +265,7 @@ class Servicios extends CFormModel{
 
    public function registrarError($error)
    {
-   	$errorpath="/tmp/error.log";
+   	$errorpath="tmp.error.log";
    	if (file_exists($errorpath) and filesize($errorpath)>(1024*100)) {
    		$fp = fopen($errorpath, "r+");
 // clear content to 0 bits
@@ -268,12 +283,6 @@ class Servicios extends CFormModel{
    public function buscarBoletos()
    {
    	# Busca los boletos de la venta y los devuelve en el formato de impresion de boletos
-   	// $boletos = Yii::app()->db->createCommand()
-    // ->select('SubzonaAcc , ZonasAli, FilasAli, LugaresLug, VentasBolTip, VentasCosBol, VentasCarSer, EventoDesBol, EventoNom, ForoNom, funcionesTexto, VentasCon, LugaresNumBol')
-    // ->from('ventaslevel1')
-    // ->join("INNER JOIN evento")
-    // ->where('id=:id', array(':id'=>1))
-    // ->queryRow();
     $criteria=new CDbCriteria;
     $criteria->limit=10;
     $criteria->select='subzona.SubzonaAcc , zona.ZonasAli, fila.FilasAli, lugar.LugaresLug, VentasBolTip, precios.VentasCosBol, VentasCarSer, EventoDesBol, EventoNom, ForoNom, funcionesTexto, VentasCon, LugaresNumBol';
@@ -281,6 +290,12 @@ class Servicios extends CFormModel{
     ->with(array('venta'=>array('condition'=>sprintf("VentasNumRef= '%s'",$this->referencia)),'evento','funcion', 'zona','subzona','fila','lugar','precios', 'foro'))
     ->findAll(array('limit'=>10));
     return $boletos;
+
+   }
+
+   public function reimprimir(){
+   		$this->validarEntrada($this->referencia);
+
 
    }
 
