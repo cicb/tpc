@@ -24,6 +24,9 @@ class Reimpresiones extends CActiveRecord
 	 * @param string $className active record class name.
 	 * @return Reimpresiones the static model class
 	 */
+
+	public $maxId;
+
 	public static function model($className=__CLASS__)
 	{
 		return parent::model($className);
@@ -62,14 +65,30 @@ class Reimpresiones extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-				'ventalevel1'=>array(self::BELONGS_TO,'Ventaslevel1', array('EventoId','FuncionesId','ZonasId',
-				'SubzonaId','FilasId','LugaresId') ),
+				'ventaslevel1'=>array(self::BELONGS_TO,'Ventaslevel1', 
+					array('EventoId','FuncionesId','ZonasId',
+						'SubzonaId','FilasId','LugaresId') ),
+				'venta'=>array(self::BELONGS_TO,'Ventas', 'VentasId' ),
 				'log'=>array(self::BELONGS_TO,'Logreimp', array('EventoId','FuncionesId','ZonasId',
 				'SubzonaId','FilasId','LugaresId') ),
 				'usuario'=>array(self::BELONGS_TO,'Usuarios','UsuarioId')
 		);
 	}
+	public static function getMaxId()
+	{
+		$row = Reimpresiones::model()->find(array('select'=>'MAX(ReimpresionesId) as maxId'));
+		return $row['maxId'];
+	}
 
+		public function beforeSave()
+	{
+		if ($this->scenario=='insert') {
+			$this->ReimpresionesId=self::getMaxId()+1;
+			$this->ReimpresionesFecHor=new CDbExpression('NOW()');
+
+		}	
+		return parent::beforeSave();
+	}
 	/**
 	 * @return array customized attribute labels (name=>label)
 	 */

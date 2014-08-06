@@ -5,18 +5,17 @@ class Servicios extends CFormModel{
 	public $referencia;
 	public $pv;
 
-	public function Servicios($referencia,$pv)
+	public function Servicios($referencia,$pv=0)
 	{
 		$this->referencia=$referencia;
 		$this->pv=$pv;
-
 	}
 
     public function validarEntrada($referencia,$tipo='referencia')
     {   
 		#Valida que en referencia entrada sea una referencia o un numero de referencia valido
     	if (!$referencia OR empty($referencia)) {
-    	    throw new Exception("La cadena esta vacía.", 100);
+    	    throw new Exception("La cadena '$referencia' esta vacía.", 100);
     	}                     
     	if (!is_string($referencia) ){
     		throw new Exception("Entrada no es una cadena", 101);
@@ -25,16 +24,16 @@ class Servicios extends CFormModel{
     		throw new Exception("Numero invalido de caracteres ", 102);
     	} 
     	switch ($tipo) {
-    		case 'reimpresion':
-    			# En el caso que se valida una Referencia de Impresion
+    		case 'referencia':
+				# Referencia de farmatodo
 	    		if (!is_numeric(substr($referencia,0,6)))
 	    			throw new Exception("Formato de cadena inválido", 103);
     			break;
 
-			case 'referencia':
-				# Referencia de farmatodo
-	    		if (!is_numeric(substr($referencia,1,7)))
-	    			throw new Exception("Formato de cadena inválido", 103);				
+			case 'reimpresion':
+    			# En el caso que se valida una Referencia de Impresion
+	    		if (!is_numeric(substr($referencia,1,6)))
+	    			throw new Exception("Formato de cadena inválido", 107);				
 				break;
     		
     		default:
@@ -58,6 +57,10 @@ class Servicios extends CFormModel{
     	$tlugares= Templugares::model()->findAll($criteria);
     	$tmps=array();
     	foreach ($tlugares as $lugar) {
+    		if ($lugar->PuntosventaId!=$this->pv) {
+    			throw new Exception("El punto de venta de al menos uno de los lugares no corresponde a este punto de venta", 203);
+    			
+    		}
     		$tmps[]=$lugar->getAttributes();
     	}
     	return $tmps;
@@ -73,10 +76,12 @@ class Servicios extends CFormModel{
     	return (int)$numeroLugares==(int)$numeroRef;
     }
 
-    public function validacionesVenta($referencia,$pv)
+    public function validacionesVenta()
     {
+    	$referencia=$this->referencia;
+    	$pv=$this->pv;
     	# Lleva a cabo todas las validaciones necesarias antes de insertar una venta
-    	try {
+    	// try {
     		$referencia=$this->validarEntrada($referencia);
     		# Valida que el punto de venta sea un valor válido
     		if (!is_numeric($pv) or $pv<0) {
@@ -94,12 +99,26 @@ class Servicios extends CFormModel{
     			throw new Exception("Existen inconsistencias entre el numero de boletos encontrados.", 202);
     			return false;
     		}			
-    	} catch (Exception $e) {
+    	// } catch (Exception $e) {
+    	// 	$this->registrarError($e);
+    	// 	throw new Exception("No se ha podido validar la integridad de la referencia", 200);
+    	// 	return false;
+    	// }
+    	#Validación de formato
+    }
+
+    public function validarPV($pv)
+    {
+    	if (!is_numeric($pv) or $pv<0) {
+    		throw new Exception("El punto de venta '$pv' no es válido", 104);
     		$this->registrarError($e);
-    		throw new Exception("No se ha podido validar la integridad de la referencia", 200);
+
     		return false;
     	}
-    	#Validación de formato
+    	else
+    		if (is_null(Puntosventa::model()->findByPk($pv))){
+				throw new Exception("No existe el punto de venta", 151);
+    		}
     }
     
     public function registrarVenta()
@@ -107,7 +126,7 @@ class Servicios extends CFormModel{
     	$referencia=$this->referencia;
     	$pv=$this->pv;
     	try {
-    		$lugares=$this->validacionesVenta($referencia,$pv);
+    		$lugares=$this->validacionesVenta();
     		$numeroLugares=sizeof($lugares);
     		
     	} catch (Exception $e) {
@@ -249,57 +268,165 @@ class Servicios extends CFormModel{
     	}
     }
 
-    // public function generarCodigoBarras($codigo=0,$intentos=0)
-    // {
-    // 	# Genera un codigo  de barras aleatorio de EAN 12 
-    // 	// if (!is_null($codigo)) {
-    // 		$unico=Ventaslevel1::model()->count("LugaresNumBol = '$codigo' ");
-    // 		if ($unico==0) {
-    // 			# Si no existe ese codigo entonces es UNICO
-    // 			return $codigo;
-    // 		}    			
-    // 	// }
-    // 		return $this->generarCodigoBarras(mt_rand(100000000000,999999999999),$intentos+1);    		
-    // 	}
+    public function generarCodigoBarras($codigo=0,$intentos=0)
+    {
+    	# Genera un codigo  de barras aleatorio de EAN 12 
+    	// if (!is_null($codigo)) {
+    		$unico=Ventaslevel1::model()->count("LugaresNumBol = '$codigo' ");
+    		if ($unico==0) {
+    			# Si no existe ese codigo entonces es UNICO
+    			return $codigo;
+    		}    			
+    	// }
+    		return $this->generarCodigoBarras(mt_rand(100000000000,999999999999),$intentos+1);    		
+    	}
 
 
    public function registrarError($error)
    {
-   	$errorpath="tmp.error.log";
-   	if (file_exists($errorpath) and filesize($errorpath)>(1024*100)) {
-   		$fp = fopen($errorpath, "r+");
-// clear content to 0 bits
-   		ftruncate($fp, 0);
-//close file
-   		fclose($fp);
-   	}   	
-   	error_log(
-   		sprintf("(%s)| R:%s | E%s : %s \n",date("d.M.y H:i:s"),
-   			$this->referencia,$error->getCode(),$error->getMessage()),
-   		3, $errorpath);
+//    	$errorpath="/tmp/error.log";
+//    	if (file_exists($errorpath) and filesize($errorpath)>(1024*100)) {
+//    		$fp = fopen($errorpath, "r+");
+// // clear content to 0 bits
+//    		ftruncate($fp, 0);
+// //close file
+//    		fclose($fp);
+//    	}   	
+//    	error_log(
+//    		sprintf("(%s)| R:%s | E%s : %s \n",date("d.M.y H:i:s"),
+//    			$this->referencia,$error->getCode(),$error->getMessage()),
+//    		3, $errorpath);
    	return true;
    }
 
-   public function buscarBoletos()
+   public function buscarBoletos($referencia=false,$numerosBoletos=false)
    {
+   	if (!($referencia or $numerosBoletos)) {
+   		# Si ambos filtros estan desactivados regresa vacio
+   		return array();
+   	}
+   	else{
+   		$criteria=new CDbCriteria;
+   		$criteria->limit=10;
+   		if ($numerosBoletos and is_array($numerosBoletos)) {
+   		# Si pasan un arreglo de numeros de boletos
+   			$criteria->addInCondition('t.LugaresNumBol',$numerosBoletos);
+   		}
+   		if ($referencia and is_string($referencia)) {
+   		# Si le pasan una referencia
+   			$criteria->compare('venta.VentasNumRef',$referencia);
+   		}
    	# Busca los boletos de la venta y los devuelve en el formato de impresion de boletos
-    $criteria=new CDbCriteria;
-    $criteria->limit=10;
-    $criteria->select='subzona.SubzonaAcc , zona.ZonasAli, fila.FilasAli, lugar.LugaresLug, VentasBolTip, precios.VentasCosBol, VentasCarSer, EventoDesBol, EventoNom, ForoNom, funcionesTexto, VentasCon, LugaresNumBol';
-    $boletos=Ventaslevel1::model()
-    ->with(array('venta'=>array('condition'=>sprintf("VentasNumRef= '%s'",$this->referencia)),'evento','funcion', 'zona','subzona','fila','lugar','precios', 'foro'))
-    ->findAll(array('limit'=>10));
-    return $boletos;
+   		// $criteria=new CDbCriteria;
+   		// $criteria->limit=10;
+   		// $criteria->select='subzona.SubzonaAcc , zona.ZonasAli, fila.FilasAli, lugar.LugaresLug, VentasBolTip, precios.VentasCosBol, VentasCarSer, EventoDesBol, EventoNom, ForoNom, funcionesTexto, VentasCon, LugaresNumBol';
+   		$boletos=Ventaslevel1::model()
+   		->with(array('venta','evento','funcion', 'zona','subzona','fila','lugar','precios', 'foro'))
+   		->findAll($criteria);
+   		return $boletos;
+   	}
 
    }
+
+   // REIMPRESION---------------------------REIMPRESION--------------------REIMPRESION
 
    public function reimprimir(){
-   		$this->validarEntrada($this->referencia);
+   	try {
+   		$this->validarEntrada($this->referencia,'reimpresion');
+   		if ($this->pv!=0) {
+   			$this->validarPv($this->pv);
+   		}
+   		$refreimps=$this->buscarReimpresion($this->referencia);
+   		if (empty($refreimps)) {
+   			# Si no se encontraron registros
+   			return false;
+   		}
+   		else{
+   			$numerosBoletos=array();
+   			$transaction = Yii::app()->db->beginTransaction();
+   			foreach ($refreimps as $refreimp ) {
+   				# Por cada refreimp
+				##-------------------------------------------[ Actualiza Logreimp ] 
+   				$logreimp=new Logreimp;
+   				$logreimp->LogReimpTip=$refreimp->ventalevel1->VentasBolTip;
+   				$logreimp->LogCosAnt=$refreimp->ventalevel1->VentasCosBol;
+   				$logreimp->LogReimpTipAnt=$refreimp->ventalevel1->VentasBolTip;
+   				$logreimp->LogReimpUsuId=2;
+   				if ($this->pv==0) {
+   					# Cuando sea 0 toma el punto de venta que vendio y no el que esta reimprimiendo
+   					$logreimp->LogReimpPunVenId=$refreimp->venta->PuntosventaId;
+   				}
+   				else{
+   					$logreimp->LogReimpPunVenId=$this->pv;
+   					
+   				}
+   				$logreimp->EventoId=$refreimp->ventalevel1->EventoId;
+   				$logreimp->FuncionesId=$refreimp->ventalevel1->FuncionesId;
+   				$logreimp->ZonasId=$refreimp->ventalevel1->ZonasId;
+   				$logreimp->SubzonaId=$refreimp->ventalevel1->SubzonaId;
+   				$logreimp->FilasId=$refreimp->ventalevel1->FilasId;
+   				$logreimp->LugaresId=$refreimp->ventalevel1->LugaresId;
+   				$logreimp->save();
+   				#---------------------------------------------------[ Actualiza la contraseña]
+   				$contra=$refreimp->ventalevel1->VentasCon;
+   				$contrav=explode('R',$contra);
+   				if (sizeof($contrav)>1) {
+   					# Significa que la contraseña ya tenia reimpresiones previas
+   					$contrav[1]=(int)$contrav[1]+1;
+   					$contra=implode('R', $contrav);
+   				}
+   				else{
+					$contra.="R1";   					
+   				}
+   					$refreimp->ventalevel1->VentasCon=$contra;
+   					#------------------------------------------------[ Actualizar numero de boleto]
+   					$reimp=new Reimpresiones;
+   					$reimp->attributes=$refreimp->ventalevel1->getAttributes();
+   					$reimp->ReimpresionesMod="FARMATODO";
+   					$reimp->UsuarioId=2;
+   					$reimp->save(false);
+   					$refreimp->ventalevel1->LugaresNumBol=$this->generarCodigoBarras();
+   					$refreimp->ventalevel1->save(false);
+   					$numerosBoletos[]=$refreimp->ventalevel1->LugaresNumBol;
+   				#----------------------------[ Actualiza el estatus de reimpresion]
+   				$refreimp->RefReimpSta=0;
+   				$refreimp->save(false);
 
+   			}
+   			##-----------------------------------------------[ Escribe cambios en BD*]
+   			$transaction->commit();
+   			return $numerosBoletos;
 
+   		}
+
+   		
+   	} catch (Exception $e) {
+   		$this->registrarError($e);
+   		throw $e;
+   	}
    }
 
-    
+    public function buscarReimpresion($referencia)
+    {
+    	# Busca en refreimp los boletos que se les genero reimpresion que coincidan con la referencia de reimpresion y que aun no se hayan reimpreso
+    	$refreimps=Refreimp::model()->with(
+    		array(
+    			'venta'=>array('joinType'=>'INNER JOIN'),
+    			'ventalevel1'=>array('joinType'=>'INNER JOIN')
+    			))->findAllByAttributes(
+    		array(
+    			'RefReimpNumRes'=>$referencia,
+    			'RefReimpSta'=>1 #Aun no se reimprime
+    			)
+    		);
+    	return $refreimps;
+    }
+
+    public function foo()
+    {
+    	$this->validarEntrada($this->referencia,'reimpresion');
+    	return '00002005ZYQUZD02';
+    }
 }
 
 ?>

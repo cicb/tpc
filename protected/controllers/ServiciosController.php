@@ -44,16 +44,67 @@ class ServiciosController extends CController
      */
     public function insertarVenta($referencia,$pv){
     	$servicio=new Servicios($referencia,$pv);
-    	$error=array('codigo'=>0,'popsae'=>1,'msg'=>"No se encontro el error.","visible"=>0);
+    	$error=array('codigo'=>-1,'popsae'=>1,'msg'=>"No se encontro el error.","visible"=>0);
     	try {
     		$venta=$servicio->registrarVenta();
     	} catch (Exception $e) {
-    		$servicio->registrarError(
-    			new Exception('Error general al llamar a la funcion de registrar venta',500));
-    		$error=array('codigo'=>$e->getCode(),'popsae'=>1,'msg'=>$e->getMessage(),"visible"=>1);
+    		$servicio->registrarError($e);
+    		$error=array('codigo'=>$e->getCode(),'popsae'=>1,
+    			'msg'=>sprintf("Error %s: %s",$e->getCode(),$e->getMessage()),"visible"=>1);
     	    	return CJSON::encode(array("error"=>$error,"venta"=>array()));
     	}
     	return $this->verBoletos($referencia,$pv);
+    }  
+
+      /**
+     * @param str/string valor es una cadena con cualquier serie de simbolos
+     * @param int/integer valor es una cadena con cualquier serie de simbolos
+     * @return str/string      si es la entrada cumple con los requerimientos
+     * @soap
+     */
+    public function foo($referencia,$pv){
+    	$cad="";
+    	try {
+			$servicio=new Servicios($referencia,$pv);
+			$referencia=$servicio->foo();
+
+			$error=array('codigo'=>5,'popsae'=>1,
+    			'msg'=>$referencia,"visible"=>1);
+    	} catch (Exception $e) {
+    		$error=array('codigo'=>$e->getCode(),'popsae'=>1,
+    			'msg'=>sprintf("Error %s: %s",$e->getCode(),$e->getMessage()),"visible"=>1);
+
+    			    	}
+    		return CJSON::encode(array("error"=>$error,"venta"=>array()));
+
+
+    }
+      /**
+     * @param str/string valor es una cadena con cualquier serie de simbolos
+     * @param int/integer valor es una cadena con cualquier serie de simbolos
+     * @return str/string      si es la entrada cumple con los requerimientos
+     * @soap
+     */
+    public function reimprimir($refreimp,$pv){
+    	$error=array('codigo'=>-1,'popsae'=>1,'msg'=>"No se encontro el error.","visible"=>0);
+    	try {
+    		$servicio=new Servicios($refreimp,$pv);
+    		$numeroBoletos=$servicio->reimprimir();
+    		if (is_array($numeroBoletos)){
+    			return $this->verBoletos(false,$numeroBoletos);
+    		}
+    		else 
+    			$error= array('codigo'=>1,'popsae'=>1,'msg'=>"No hay boletos por reimprimir.","visible"=>1);
+    	} catch (Exception $e) {
+    		$error=array(
+    			'codigo'=>$e->getCode(),
+    			'popsae'=>1,
+    			'msg'=>sprintf("Error %s: %s",$e->getCode(),
+    				$e->getMessage()),
+    			"visible"=>1);
+    	}
+    	return CJSON::encode(array("error"=>$error,"venta"=>array()));
+    	
     }
 
     /**
@@ -62,13 +113,13 @@ class ServiciosController extends CController
      * @return str/string      si es la entrada cumple con los requerimientos
      * @soap
      */
-    public function verBoletos($referencia,$pv)
+    public function verBoletos($referencia=false,$numeroBoletos=false)
     {
-    	$error=array('codigo'=>0,'popsae'=>1,'msg'=>"No se encontro el error.","visible"=>0);
+    	$error=array('codigo'=>-1,'popsae'=>1,'msg'=>"No se encontro el error.","visible"=>0);
 
-    	$servicios=new Servicios($referencia,$pv);
+    	$servicios=new Servicios($referencia);
     	// echo CHtml::openTag("pre");
-    	$lugares=$servicios->buscarBoletos();
+    	$lugares=$servicios->buscarBoletos($referencia,$numeroBoletos);
     	$tickets=array();
     	$coords=Formatosimpresionlevel1::model()->findAllByAttributes(array('FormatoId'=>3));
     	$matrizCoord=array();
@@ -142,7 +193,16 @@ class ServiciosController extends CController
     	return CJSON::encode(array("error"=>$error,"venta"=>$ret));
     }
 
+    public function imprimir($value='')
+    {
+    	# code...
+    }
 
+
+    public function actionReimprimir($refreimp,$pv)
+    {
+    	echo $this->reimprimir($refreimp,$pv);
+    }
 
     public function actionVerBoletos($referencia,$pv)
     {

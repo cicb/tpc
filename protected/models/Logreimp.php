@@ -20,6 +20,8 @@
  */
 class Logreimp extends CActiveRecord
 {
+			public $maxId;
+
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @param string $className active record class name.
@@ -30,6 +32,20 @@ class Logreimp extends CActiveRecord
 		return parent::model($className);
 	}
 
+	public static function getMaxId()
+	{
+		$row = Logreimp::model()->find(array('select'=>'MAX(LogReimpId) as maxId'));
+		return $row['maxId'];
+	}
+
+	public function beforeSave()
+	{
+		if ($this->scenario=='insert') {
+			$this->LogReimpId=self::getMaxId()+1;
+			$this->LogReimpFecHor=new CDbExpression('NOW()');
+		}	
+		return parent::beforeSave();
+	}
 	/**
 	 * @return string the associated database table name
 	 */
