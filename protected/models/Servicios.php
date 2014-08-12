@@ -268,7 +268,7 @@ class Servicios extends CFormModel{
     	}
     }
 
-    public function generarCodigoBarras($codigo=0,$intentos=0)
+    public function generarCodigoBarras($codigo=123456789012,$intentos=0)
     {
     	# Genera un codigo  de barras aleatorio de EAN 12 
     	// if (!is_null($codigo)) {
@@ -309,24 +309,32 @@ class Servicios extends CFormModel{
    		$criteria=new CDbCriteria;
    		$criteria->limit=10;
    		if ($numerosBoletos and is_array($numerosBoletos)) {
-   		# Si pasan un arreglo de numeros de boletos
-   			$criteria->addInCondition('t.LugaresNumBol',$numerosBoletos);
-   		}
-   		if ($referencia and is_string($referencia)) {
+   		# Si pasan un arr1eglo de numeros de boletos
+              #Valida que todos los numero de referencia sean validos
+        foreach ($numerosBoletos as $LugaresNumBol) {
+        # Si al menos uno no es valido se detiene la operacion
+          if (empty($LugaresNumBol) or !is_numeric($LugaresNumBol)
+            or strlen($LugaresNumBol)!=12) {
+            return array();
+        }
+      }
+      $criteria->addInCondition('t.LugaresNumBol',$numerosBoletos);
+    }
+    if ($referencia and is_string($referencia)) {
    		# Si le pasan una referencia
-   			$criteria->compare('venta.VentasNumRef',$referencia);
-   		}
+      $criteria->compare('venta.VentasNumRef',$referencia);
+    }
    	# Busca los boletos de la venta y los devuelve en el formato de impresion de boletos
    		// $criteria=new CDbCriteria;
    		// $criteria->limit=10;
    		// $criteria->select='subzona.SubzonaAcc , zona.ZonasAli, fila.FilasAli, lugar.LugaresLug, VentasBolTip, precios.VentasCosBol, VentasCarSer, EventoDesBol, EventoNom, ForoNom, funcionesTexto, VentasCon, LugaresNumBol';
-   		$boletos=Ventaslevel1::model()
-   		->with(array('venta','evento','funcion', 'zona','subzona','fila','lugar','precios', 'foro'))
-   		->findAll($criteria);
-   		return $boletos;
-   	}
+    $boletos=Ventaslevel1::model()
+    ->with(array('venta','evento','funcion', 'zona','subzona','fila','lugar','precios', 'foro'))
+    ->findAll($criteria);
+    return $boletos;
+  }
 
-   }
+}
 
    // REIMPRESION---------------------------REIMPRESION--------------------REIMPRESION
 

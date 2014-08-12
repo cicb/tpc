@@ -88,7 +88,7 @@ $('#btn-desasignar').on('click',function(){
 				$.ajax({
 						url:obj.attr('href'),
 								type:'post',
-								dataType:'json'
+								dataType:'json',
 						success:function(resp){alert(resp);if(resp){window.location='".$this->createUrl('evento/actualizar',array('id'=>$EventoId))."'}}
 						
 });

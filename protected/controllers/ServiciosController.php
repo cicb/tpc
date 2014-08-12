@@ -30,7 +30,8 @@ class ServiciosController extends CController
     	try {
     		print_r($servicio->registrarVenta());
     	} catch (Exception $e) {
-    		$servicio->registrarError(new Exception('Error general al llamar a la funcion de registrar venta',500));
+    		// $servicio->registrarError(new Exception('Error general al llamar a la funcion de registrar venta',500));
+    		echo $e->getMessage();
     	}
     	
     	echo CHtml::closeTag("pre");
@@ -135,14 +136,17 @@ class ServiciosController extends CController
     		$fali=array_pop($fila);
     		$imaBol="";
     		try {
-    			$imaBol=base64_encode(
-    				file_get_contents(
-    					'http://taquillacero.com/imagesbd/'.$lugar->evento->EventoImaBol
-    					));
+                if (strlen($lugar->evento->EventoImaBol)>0) {
+                 $imaBol=base64_encode(
+                    @file_get_contents(
+                       'http://taquillacero.com/imagesbd/'.$lugar->evento->EventoImaBol
+                       ));
+                    
+                }
     		} catch (Exception $e) {
-    			$error['codigo']=601;
-    			$error['msg']="No se encontro la imagen del boleto.";
-    			$error['popsae']=2;
+    			// $error['codigo']=601;
+    			// $error['msg']="No se encontro la imagen del boleto.";
+    			// $error['popsae']=2;
     		}
     		$tickets[]=	array(
     			// 'subzona.SubzonaAcc , zona.ZonasAli, fila.FilasAli,
