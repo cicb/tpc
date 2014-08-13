@@ -293,7 +293,7 @@ class DistribucionesController extends Controller
                 $query = "eventoId=$eventoId AND FuncionId=$funcionId";
                 if($escenario=="todas"){
                     $query = "eventoId=$eventoId";
-                    $configUrlMapaGrande = ConfigUrlFuncionesMapaGrande::model()->findAll($query);
+                    $configUrlMapaGrande = ConfigurlFuncionesMapaGrande::model()->findAll($query);
                     foreach($configUrlMapaGrande as $key => $mapaGrande):
                         $coordenadasMapaGrande = ConfigurlMapaGrandeCoordenadas::model()->find("configurl_funcion_mapa_grande_id=$mapaGrande->id AND ZonasId=$zonaId AND SubzonaId=$subzonaId");
                         if(empty($coordenadasMapaGrande)){
@@ -306,7 +306,7 @@ class DistribucionesController extends Controller
                     endforeach;
                     
                 }else{
-                    $configUrlMapaGrande = ConfigUrlFuncionesMapaGrande::model()->find($query);
+                    $configUrlMapaGrande = ConfigurlFuncionesMapaGrande::model()->find($query);
                     $coordenadasMapaGrande = ConfigurlMapaGrandeCoordenadas::model()->find("configurl_funcion_mapa_grande_id=$configUrlMapaGrande->id AND ZonasId=$zonaId AND SubzonaId=$subzonaId");
                         if(empty($coordenadasMapaGrande)){
                             $nuevaCoordenada = new ConfigurlMapaGrandeCoordenadas;
