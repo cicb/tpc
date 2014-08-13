@@ -5,7 +5,7 @@ class ServiciosController extends CController
 	public function actions()
 	{
 		return array(
-			'ventas'=>array(
+			'venta'=>array(
 				'class'=>'CWebServiceAction',
 				'classMap'=>array(
                     'Templugares'=>'Templugares',  
