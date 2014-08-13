@@ -270,16 +270,17 @@ class Servicios extends CFormModel{
 
     public function generarCodigoBarras($codigo=123456789012,$intentos=0)
     {
-    	# Genera un codigo  de barras aleatorio de EAN 12 
-    	// if (!is_null($codigo)) {
-    		$unico=Ventaslevel1::model()->count("LugaresNumBol = '$codigo' ");
-    		if ($unico==0) {
-    			# Si no existe ese codigo entonces es UNICO
-    			return $codigo;
-    		}    			
-    	// }
-    		return $this->generarCodigoBarras(mt_rand(100000000000,999999999999),$intentos+1);    		
-    	}
+      # Genera un codigo  de barras aleatorio de EAN 12 
+      if (strlen($codigo)==12) {
+        $unico=Ventaslevel1::model()->count("LugaresNumBol = '$codigo' ");
+        if ($unico==0) {
+          # Si no existe ese codigo entonces es UNICO
+          return $codigo;
+        }         
+      }
+        $rnd=mt_rand(100000,999999)."".mt_rand(100000,999999);
+        return $this->generarCodigoBarras($rnd,$intentos+1);        
+      }
 
 
    public function registrarError($error)
@@ -393,7 +394,7 @@ class Servicios extends CFormModel{
    					$reimp->ReimpresionesMod="FARMATODO";
    					$reimp->UsuarioId=2;
    					$reimp->save(false);
-   					$refreimp->ventalevel1->LugaresNumBol=$this->generarCodigoBarras();
+   					$refreimp->ventalevel1->LugaresNumBol=$this->generarCodigoBarras($refreimp->ventalevel1->LugaresNumBol);
    					$refreimp->ventalevel1->save(false);
    					$numerosBoletos[]=$refreimp->ventalevel1->LugaresNumBol;
    				#----------------------------[ Actualiza el estatus de reimpresion]

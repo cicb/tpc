@@ -5,7 +5,7 @@ class ServiciosController extends CController
 	public function actions()
 	{
 		return array(
-			'venta'=>array(
+			'ventas'=>array(
 				'class'=>'CWebServiceAction',
 				'classMap'=>array(
                     'Templugares'=>'Templugares',  
@@ -51,7 +51,7 @@ class ServiciosController extends CController
     	} catch (Exception $e) {
     		$servicio->registrarError($e);
     		$error=array('codigo'=>$e->getCode(),'popsae'=>1,
-    			'msg'=>sprintf("Error %s: %s",$e->getCode(),$e->getMessage()),"visible"=>1);
+    			'msg'=>sprintf("Error %s: %s",$e->getCode(),$e->getMessage()),"visible"=>0);
     	    	return CJSON::encode(array("error"=>$error,"venta"=>array()));
     	}
     	return $this->verBoletos($referencia,$pv);
@@ -73,7 +73,7 @@ class ServiciosController extends CController
     			'msg'=>$referencia,"visible"=>1);
     	} catch (Exception $e) {
     		$error=array('codigo'=>$e->getCode(),'popsae'=>1,
-    			'msg'=>sprintf("Error %s: %s",$e->getCode(),$e->getMessage()),"visible"=>1);
+    			'msg'=>sprintf("Error %s: %s",$e->getCode(),$e->getMessage()),"visible"=>0);
 
     			    	}
     		return CJSON::encode(array("error"=>$error,"venta"=>array()));
@@ -95,7 +95,7 @@ class ServiciosController extends CController
     			return $this->verBoletos(false,$numeroBoletos);
     		}
     		else 
-    			$error= array('codigo'=>1,'popsae'=>1,'msg'=>"No hay boletos por reimprimir.","visible"=>1);
+    			$error= array('codigo'=>1,'popsae'=>1,'msg'=>"No hay boletos por reimprimir.","visible"=>0);
     	} catch (Exception $e) {
     		$error=array(
     			'codigo'=>$e->getCode(),
