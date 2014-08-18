@@ -1,25 +1,48 @@
-<?php class UserIdentity extends CUserIdentity
-{
-    private $_id;
-    public function authenticate()
-    {
-        $record=Usuarios::model()->findByAttributes(array('username'=>$this->username));
-        if($record===null)
-            $this->errorCode=self::ERROR_USERNAME_INVALID;
-        else if($record->password!==crypt($this->password,$record->password))
-            $this->errorCode=self::ERROR_PASSWORD_INVALID;
-        else
+<?php 
+class Usuario extends CWebUser {
+    // Store model to not repeat query.
+    private $_model;
+    // Return first name.
+    // access it by Yii::app()->user->first_name
+    function getFirstName(){
+        $user = $this->loadUser(Yii::app()->user->id);
+        return $user->firstname;
+    }
+    function getFullName(){
+        $user = $this->loadUser(Yii::app()->user->id);
+        return $user->fullName();
+    }
+    function getRole(){
+        $user = $this->loadUser(Yii::app()->user->id);
+        return $user->role;
+    }
+    function getPage(){
+        $user = $this->loadUser(Yii::app()->user->id);
+        return $user->pagination;
+    }
+    function getPasswordExpires(){
+        $user = $this->loadUser(Yii::app()->user->id);
+        return $user->checkExpiryDate();        
+    }
+    // This is a function that checks the field 'role'
+    // in the User model to be equal to constant defined in our User class
+    // that means it's admin
+    // access it by Yii::app()->user->isAdmin()
+    function isAdmin(){
+        $user = $this->loadUser(Yii::app()->user->id);
+        if ($user!==null)
+            return intval($user->role) == Users::ROLE_ADMIN;
+        else return false;
+    }
+    // Load user model.
+    protected function loadUser($id=null) {
+        if($this->_model===null)
         {
-            $this->_id=$record->id;
-            $this->setState('title', $record->title);
-            $this->errorCode=self::ERROR_NONE;
+            if($id!==null)
+            $this->_model=Users::model()->findByPk($id);
         }
-        return !$this->errorCode;
-    }
+        return $this->_model;
+    }        
  
-    public function getId()
-    {
-        return $this->_id;
-    }
 }
 ?>

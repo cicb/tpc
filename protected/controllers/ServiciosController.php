@@ -45,13 +45,14 @@ class ServiciosController extends CController
      */
     public function insertarVenta($referencia,$pv){
     	$servicio=new Servicios($referencia,$pv);
-    	$error=array('codigo'=>-1,'popsae'=>1,'msg'=>"No se encontro el error.","visible"=>0);
+    	$error=array('codigo'=>-1,'popsae'=>1,'msg'=>"No se encontro el error.","visible"=>1);
     	try {
     		$venta=$servicio->registrarVenta();
     	} catch (Exception $e) {
     		$servicio->registrarError($e);
+            // "Error al insertar la venta"
     		$error=array('codigo'=>$e->getCode(),'popsae'=>1,
-    			'msg'=>sprintf("Error %s: %s",$e->getCode(),$e->getMessage()),"visible"=>0);
+    			'msg'=>sprintf("Error %s: %s",$e->getCode(),$e->getMessage()),"visible"=>1);
     	    	return CJSON::encode(array("error"=>$error,"venta"=>array()));
     	}
     	return $this->verBoletos($referencia,$pv);
@@ -73,7 +74,7 @@ class ServiciosController extends CController
     			'msg'=>$referencia,"visible"=>1);
     	} catch (Exception $e) {
     		$error=array('codigo'=>$e->getCode(),'popsae'=>1,
-    			'msg'=>sprintf("Error %s: %s",$e->getCode(),$e->getMessage()),"visible"=>0);
+    			'msg'=>sprintf("Error %s: %s",$e->getCode(),$e->getMessage()),"visible"=>1);
 
     			    	}
     		return CJSON::encode(array("error"=>$error,"venta"=>array()));
@@ -87,15 +88,16 @@ class ServiciosController extends CController
      * @soap
      */
     public function reimprimir($refreimp,$pv){
-    	$error=array('codigo'=>-1,'popsae'=>1,'msg'=>"No se encontro el error.","visible"=>0);
+    	$error=array('codigo'=>-1,'popsae'=>1,'msg'=>"No se encontro el error.","visible"=>1);
     	try {
     		$servicio=new Servicios($refreimp,$pv);
     		$numeroBoletos=$servicio->reimprimir();
     		if (is_array($numeroBoletos)){
+                //Validar que el numero de boletos que se vendieron sea igual al de la referencia xxxxxxxxxxNN
     			return $this->verBoletos(false,$numeroBoletos);
     		}
     		else 
-    			$error= array('codigo'=>1,'popsae'=>1,'msg'=>"No hay boletos por reimprimir.","visible"=>0);
+    			$error= array('codigo'=>1,'popsae'=>1,'msg'=>"No hay boletos por reimprimir.","visible"=>1);
     	} catch (Exception $e) {
     		$error=array(
     			'codigo'=>$e->getCode(),
@@ -116,10 +118,12 @@ class ServiciosController extends CController
      */
     public function verBoletos($referencia=false,$numeroBoletos=false)
     {
-    	$error=array('codigo'=>-1,'popsae'=>1,'msg'=>"No se encontro el error.","visible"=>0);
+    	$error=array('codigo'=>-1,'popsae'=>1,'msg'=>"No se encontro el error.","visible"=>1);
 
     	$servicios=new Servicios($referencia);
     	// echo CHtml::openTag("pre");
+        //Validar que el numero de boletos que se vendieron sea igual al de la referencia xxxxxxxxxxNN
+
     	$lugares=$servicios->buscarBoletos($referencia,$numeroBoletos);
     	$tickets=array();
     	$coords=Formatosimpresionlevel1::model()->findAllByAttributes(array('FormatoId'=>3));

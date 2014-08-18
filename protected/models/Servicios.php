@@ -323,6 +323,7 @@ class Servicios extends CFormModel{
     }
     if ($referencia and is_string($referencia)) {
    		# Si le pasan una referencia
+      $this->validarEntrada($referencia,'referencia');
       $criteria->compare('venta.VentasNumRef',$referencia);
     }
    	# Busca los boletos de la venta y los devuelve en el formato de impresion de boletos
