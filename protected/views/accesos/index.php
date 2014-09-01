@@ -234,7 +234,7 @@
              </div>
 <br />
              <div id="botonagrega" class="buttonsagrega" style="display: none;">
-                   <?php //echo CHtml::link("+",array('evento/create'),array('title'=>'','class'=>'btn','style'=>'margin-left:0px;margin-bottom: 15px;','id'=>'boton_agregar')); ?>
+                   <?php //echo CHtml::link("+",array('accesos/create'),array('title'=>'','class'=>'btn','style'=>'margin-left:0px;margin-bottom: 15px;','id'=>'boton_agregar')); ?>
 
                    <?php echo CHtml::button('+ Nuevo',array('class'=>'btn btn-success','id'=>'boton_agregar')); ?>
              </div>
@@ -320,7 +320,7 @@
                                    else
                                      funciones[index] = this.value;
                                    });
-                                   window.location.href='<?php echo $this->createUrl('evento/create'); ?>'+'&EventoId='+eventoId+'&EventoDistribucionId='+id_evento_distribucion+'&funcionId=1'+'&funciones='+funciones+'&IdDistribucion='+id_distribucion+"&ForoId="+ForoId+"&ForoMapIntId="+ForoMapIntId;
+                                   window.location.href='<?php echo $this->createUrl('accesos/create'); ?>'+'&EventoId='+eventoId+'&EventoDistribucionId='+id_evento_distribucion+'&funcionId=1'+'&funciones='+funciones+'&IdDistribucion='+id_distribucion+"&ForoId="+ForoId+"&ForoMapIntId="+ForoMapIntId;
                             }     
                           });
                           
@@ -346,7 +346,7 @@
                                      ForoMapIntId = $(this).attr("data-mapintid");
                                      ForoId       = $(this).attr("data-foroid");
                                    });
-                                   window.location.href='<?php echo $this->createUrl('evento/create'); ?>'+'&EventoId='+eventoId+'&EventoDistribucionId=0&funcionId=1'+'&funciones='+funciones+'&IdDistribucion=0&ForoId='+ForoId+"&ForoMapIntId="+ForoMapIntId
+                                   window.location.href='<?php echo $this->createUrl('accesos/create'); ?>'+'&EventoId='+eventoId+'&EventoDistribucionId=0&funcionId=1'+'&funciones='+funciones+'&IdDistribucion=0&ForoId='+ForoId+"&ForoMapIntId="+ForoMapIntId
                                 }
                       });
                    </script>
