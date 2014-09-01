@@ -84,7 +84,7 @@ $cs = Yii::app()->getClientScript();
                    $("select.puertas").change(function(){
                         var funciones = '<?php echo $_GET['funciones'];?>';
                         $.ajax({
-                            url:'<?php echo Yii::app()->createUrl('evento/GetCoordPuerta'); ?>',
+                            url:'<?php echo Yii::app()->createUrl('accesos/GetCoordPuerta'); ?>',
                             dataType:'json',
                             beforeSend:function(){
                                 $("#loading").show();    
@@ -209,7 +209,7 @@ $cs = Yii::app()->getClientScript();
                         }else if(nombre_puerta == null){
                         }else{
                             $.ajax({
-                                url:'<?php echo Yii::app()->createUrl('evento/PuertaNueva'); ?>',
+                                url:'<?php echo Yii::app()->createUrl('accesos/PuertaNueva'); ?>',
                                 dataType:'json',
                                 beforeSend:function(){
                                      $("#loading").show();
@@ -246,7 +246,7 @@ $cs = Yii::app()->getClientScript();
                             var confirmar = confirm("Desea eliminar el acceso seleccionado");
                             if(confirmar==true){
                                 $.ajax({
-                                url:'<?php echo Yii::app()->createUrl('evento/DeletePuerta'); ?>',
+                                url:'<?php echo Yii::app()->createUrl('accesos/DeletePuerta'); ?>',
                                 dataType:'json',
                                 beforeSend:function(){
                                      $("#loading").show();
@@ -403,7 +403,7 @@ $("a#resumen_desplegable").click(function(event){
                                         }else{
                                             $("body").attr('onbeforeunload','');
                                             //$("#boton_guardar").show();
-                                            window.location.href = '<?php echo Yii::app()->createUrl('evento/Index&EventoId='.$_GET['EventoId']); ?>';
+                                            window.location.href = '<?php echo Yii::app()->createUrl('accesos/Index&EventoId='.$_GET['EventoId']); ?>';
                                         }
                                         
                                     }
@@ -520,7 +520,7 @@ endforeach;
     }
     else if(data_delete=="0"){
         $.ajax({
-            url:'<?php echo Yii::app()->createUrl('evento/AddZona'); ?>',
+            url:'<?php echo Yii::app()->createUrl('accesos/AddZona'); ?>',
             data:'id_puerta='+id_puerta+'&id_distribucion_nueva='+id_distribucion_nueva+'&id_evento='+id_evento+'&funciones='+funciones.split(",")+'&id_zona='+id_zona+'&id_subzona='+id_subzona,
             beforeSend:function(){
                 $("#loading").show();
@@ -610,7 +610,7 @@ endforeach;
         $(this).attr('data-delete',"1");
     }else{
         $.ajax({
-            url:'<?php echo Yii::app()->createUrl('evento/DeleteZona'); ?>',
+            url:'<?php echo Yii::app()->createUrl('accesos/DeleteZona'); ?>',
             data:'id_puerta='+id_puerta+'&id_distribucion_nueva='+id_distribucion_nueva+'&id_evento='+id_evento+'&funciones='+funciones.split(",")+'&id_zona='+id_zona+'&id_subzona='+id_subzona,
             beforeSend:function(){
                 $("#content-img").css({'visibility':'hidden'});

@@ -10,6 +10,7 @@ class ConfigurlMapaGrandeCoordenadas extends BaseConfigurlMapaGrandeCoordenadas
     public function relations() {
 		return array(
             'mapagrande'=>  array(self::BELONGS_TO, 'MapaGrande', 'configurl_funcion_mapa_grande_id'),
+            'mapa'=>  array(self::BELONGS_TO, 'MapaGrande', 'configurl_funcion_mapa_grande_id'),
 		);
 	}
     public function rules() {
