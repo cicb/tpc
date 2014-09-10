@@ -119,7 +119,8 @@ class ServiciosController extends CController
     public function verBoletos($referencia=false,$numeroBoletos=false)
     {
     	$error=array('codigo'=>-1,'popsae'=>1,'msg'=>"No se encontro el error.","visible"=>1);
-
+        $formatoInterno='BoletoFormatoSimple';
+        $eventos=array(539);
     	$servicios=new Servicios($referencia);
     	// echo CHtml::openTag("pre");
         //Validar que el numero de boletos que se vendieron sea igual al de la referencia xxxxxxxxxxNN
@@ -140,6 +141,9 @@ class ServiciosController extends CController
     		$fali=array_pop($fila);
     		$imaBol="";
     		try {
+                if (in_array($lugar->EventoId,$eventos)){
+                    $formatoInterno='BoletoFormatoUdlap';
+                }
                 if (strlen($lugar->evento->EventoImaBol)>0) {
                  $imaBol=base64_encode(
                     @file_get_contents(
@@ -176,7 +180,7 @@ class ServiciosController extends CController
     	}
     	$boletos=array('boletos'=>$tickets);
     	// echo "<pre>";
-    	$e=Yii::app()->mustache->render('BoletoFormatoSimple', $boletos, null,null,false);
+    	$e=Yii::app()->mustache->render($formatoInterno, $boletos, null,null,false);
     	$jes=CJSON::decode($e);
     	$ret=array();
     	array_pop($jes);

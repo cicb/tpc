@@ -1354,6 +1354,29 @@ $objWriter->save('php://output');
         }
         
     }
+
+    public function actionInconsistencias(){
+    	$boletos=array('70182964699',
+    		 '0103875289497','1726565439985','00185205198797','203649164637',
+    		 '228752538227','2311341751208','2406354565123','2615212674826','2693422095792', '2714584935648','353121807382','370874480886','3921323231506','4493003155697','4804792079710','482643791645','6135458826682','619313763942','6880644607858','701829646997','7055957808097','7828248747425','8662124364912','8773721912410','9434049877971','9462669052607','9871131532699','360099704808','9906112730518','5092522751947'
+    		);
+    	$reportes=new Reportes;
+    	foreach ($boletos as $boleto) {
+    		// $this->renderPartial('inconsistencias',compact($boletos));
+    		$boleto=substr($boleto,0,12);
+    		$level1=Ventaslevel1::model()->findByAttributes(array('LugaresNumBol'=>$boleto));
+    		// if (is_object($level1)) {
+    		// 	echo "$boleto : OK <br>";
+    		// }
+    		// else
+    		// 	echo "$boleto no OK <br>";
+
+    		$this->renderPartial('/reportes/widgets/tablaHistorico',compact(array('boleto','reportes')));
+    	}
+
+
+    }
+
     public function filters() { 
 			return array ( 
 					'accessControl' 

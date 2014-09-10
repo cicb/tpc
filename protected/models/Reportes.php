@@ -73,5 +73,61 @@ class Reportes extends CFormModel{
 				}
 				return new CArrayDataProvider(array_values($matrix),array('pagination'=>false));
 		}
+
+		public function historial($numeroBoleto)
+		{
+			// $criteria=new CDbCriteria;
+			// $criteria->addCondition('');
+			// $BoletosValidos=null;
+			// $matrix=Ventaslevel1::model()
+			return  new CSqlDataProvider("
+					SELECT * FROM impresiones where NumBol='$numeroBoleto' or LugaresNumBol='$numeroBoleto' 
+				", array(
+					'pagination'=>false,
+					'keyField'=>'VentasId'));
+		}
+			public function historicoPorBoleto($numerosBoleto)
+	{
+			$sql=sprintf("(SELECT  t1.VentasId, t1.VentasSta, t2.UsuariosNom, ReimpresionesFecHor as fecha, 'REIMPRESION' as tipo, 
+				t1.LugaresNumBol, t3.PuntosventaId, LogReimpPunVenId as pv,
+				CONCAT(t.EventoId,t.FuncionesId,t.ZonasId,t.SubzonaId,t.FilasId,t.LugaresId) as boleto,   
+				'' as CancelFecHor,CancelUsuarioId, '' as Cancelo,
+				t.LugaresNumBol as NumBol, PuntosventaNom as punto
+				FROM reimpresiones as t
+					INNER JOIN ventaslevel1 as t1 on t1.EventoId=t.EventoId
+						AND t1.FuncionesId=t.FuncionesId
+						AND t1.ZonasId=t.ZonasId
+						AND t1.SubzonaId=t.SubzonaId
+						AND t1.FilasId=t.FilasId
+						AND t1.LugaresId=t.LugaresId
+					LEFT JOIN logreimp as t5 on t5.EventoId=t.EventoId
+						AND t5.FuncionesId=t.FuncionesId
+						AND t5.ZonasId=t.ZonasId
+						AND t5.SubzonaId=t.SubzonaId
+						AND t5.FilasId=t.FilasId
+						AND t5.LugaresId=t.LugaresId
+				INNER JOIN ventas 		as	t3 on t3.VentasId=t1.VentasId
+				LEFT JOIN usuarios 	as	t2 on t2.UsuariosId=t.UsuarioId
+				LEFT JOIN puntosventa as t4 ON t4.PuntosventaId=LogReimpPunVenId
+				WHERE t.LugaresNumBol='%s'
+		) UNION(
+				SELECT t.VentasId, t.VentasSta, t5.UsuariosNom, t2.VentasFecHor as fecha, 'VENTA' as tipo,
+				t.LugaresNumBol, t2.PuntosventaId, t2.PuntosventaId as pv,
+				CONCAT(t.EventoId,t.FuncionesId,t.ZonasId,t.SubzonaId,t.FilasId,t.LugaresId) as boleto,   
+				CancelFecHor,CancelUsuarioId, t3.UsuariosNom as Cancelo,
+				t.LugaresNumBol as NumBol, PuntosventaNom
+				FROM ventaslevel1 as  t 
+				INNER JOIN ventas as t2	ON t2.VentasId=t.VentasId
+				LEFT JOIN usuarios 	as t5 ON t5.UsuariosId=t2.UsuariosId
+				LEFT JOIN usuarios 	as	t3 on t3.UsuariosId=t.CancelUsuarioId
+				LEFT JOIN puntosventa as t4 ON t4.PuntosventaId=t2.PuntosventaId
+				WHERE  t.LugaresNumBol='%s'
+		)
+		ORDER BY  boleto,VentasId,fecha",$numerosBoleto,$numerosBoleto
+);
+			return new CSqlDataProvider($sql, array(
+					'pagination'=>false,
+					'keyField'=>'VentasId'));
+	}
 }
 ?>
