@@ -114,4 +114,9 @@ class SiteController extends Controller
 	{
 		$this->render('pages/about');
 	}
+	// Demo del formulario para el evento de la carrera UDLAP
+	public function actionFormularioUdlap()
+	{
+		$this->renderPartial('formularios/carreraUdlap');
+	}
 }
