@@ -120,7 +120,7 @@ class ServiciosController extends CController
     {
     	$error=array('codigo'=>-1,'popsae'=>1,'msg'=>"No se encontro el error.","visible"=>1);
         $formatoInterno='BoletoFormatoSimple';
-        $eventos=array(539);
+        $eventos=array(539, 558);
     	$servicios=new Servicios($referencia);
     	// echo CHtml::openTag("pre");
         //Validar que el numero de boletos que se vendieron sea igual al de la referencia xxxxxxxxxxNN
