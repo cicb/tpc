@@ -119,4 +119,24 @@ class SiteController extends Controller
 	{
 		$this->renderPartial('formularios/carreraUdlap');
 	}
+	public function actionValidarBoleto($boleto)
+	{
+		# Verifica si se trata de un numero de referencia o de un numero de boleto
+		if (is_numeric($boleto)) {
+				$lugarVendido=Ventaslevel1::model()->with('lugar')->findByAttributes(
+					array(
+						'LugaresNumBol'=>$boleto)
+					);
+				if (is_object($lugarVendido)) {
+					# Si se encontro el lugarVendido vendido se busca si no se ha registrado ya.
+					$numeroCompuesto=$lugarVendido->lugar->numeroCompuesto;
+					echo $numeroCompuesto;
+
+				}
+		}
+		else{
+			echo "Es referencia";
+		}
+	}
+
 }
