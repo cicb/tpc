@@ -140,4 +140,30 @@ class Corredores extends CActiveRecord
 	{
 		return parent::model($className);
 	}
+
+	public function beforeSave()
+	{
+		if ($this->scenario=='insert') {
+			$this->numero=rand(1,300);
+			}
+		parent::beforeSave();
+	}
+	public function getLugar()
+	{
+		$lugar=null;
+		if (!empty($this->boleto)) {
+			$pk=explode('-',$this->boleto);
+			if(sizeof($pk)==6)
+				$lugar=Lugares::model()->findByPk(array(
+					'EventoId'=>$pk[0],
+					'FuncionesId'=>$pk[1],
+					'ZonasId'=>$pk[2],
+					'SubzonaId'=>$pk[3],
+					'FilasId'=>$pk[4],
+					'LugaresId'=>$pk[5],
+					)
+			);
+		}
+		return $lugar;
+	}
 }

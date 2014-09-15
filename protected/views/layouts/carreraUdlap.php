@@ -8,8 +8,6 @@
     <meta name="author" content="">
     <title>Taquillacero :: Registro de corredores</title>
     <script src="js/jquery.js"></script>
-    <script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
-
     <!-- Bootstrap core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
 
@@ -85,7 +83,24 @@
     </div> <!-- /container -->
 
     <div class="container" style="display:none" id="resultado" >
-
+    <div class="row">
+      <div class="col-xs-5">
+                <img src="images/carrera_udlap.png"  alt="">
+      </div>
+      <div class="col-xs-5">
+        <div class="panel panel-success">
+          <div class="panel-heading">Registro completo</div>
+          <div class="panel-body">
+            <p>El registro se ha completado exitosamente. </p>
+            <h1 class="center text-success">Eres el corredor <strong>#305</strong></h1>
+          </div>
+          <div class="panel-footer">
+            <p class="help-block">
+              Anota tu numero de corredor.
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
 
 
@@ -120,10 +135,7 @@
             $('#formularios').html(data);
             $('#ingreso').hide();
             $('#formulario').fadeIn();
-          },
-          error:function(){ 
-            $('.alert').removeClass('hidden');
-            return false;}
+          }
           // else{
           //   $('.alert').removeClass('hidden');
           // }
@@ -131,35 +143,38 @@
       });
     return false;
     });
-    $('.registrar').live("click",function(){
+    $('#enviar').bind("click",function(){
+      alert('xxxxx');
+      // var id=$(this).data('id');
+      // // console.log($('#formulario-'+id).serialize());
+      // // $.ajax({
+      // //   url:url,
+      // //   type:'get',
+      // //   dataType:'html',
+      // //   data:{corredor:$('#formulario-'+id).serialize()},
+      // //   success:function(data){
+      // //     // if(data.length>0){
+      // //       // for (var boleto in data){
+      // //         console.log(data);
+      // //       // }
+      // //       $('#formularios').html(data);
+      // //       $('#ingreso').hide();
+      // //       $('#formulario').fadeIn();
+      // //     }
 
-      var url=$(this).attr('href');
-      var id=$(this).data('id');
-      // console.log('#formulario-'+id);
-      $.ajax({
-        url:url,
-        type:'post',
-        dataType:'html',
-        data:$('#formulario-'+id).serialize(),
-        success:function(data){
-          // if(data.length>0){
-            // for (var boleto in data){
-              console.log(data);
-            // }
-            $('#div-formulario-'+id).html(data);
-            // $('#ingreso').hide();
-            // $('#formulario').fadeIn();
-          }
-
-      });      
+      // // });      
       // $('#formulario').hide();
-      $('#resultado').fadeIn();
+      // $('#resultado').fadeIn();
     return false;
     });
         });
 
     </script>
 
+    <?php Yii::app()->clientScript->registerScript('acciones',"
+
+       $('.registrar').bind('click',function(){ alert(1)});
+") ?>
 <style>
   
   body {

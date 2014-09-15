@@ -168,5 +168,10 @@ class Ventaslevel1 extends CActiveRecord
 		)); 
 	}
 
-
+	public function getLlaveCompuesta()
+	{
+		# Regresa un un numero unico identificador
+		return sprintf("%d-%d-%d-%d-%d-%d",$this->EventoId,$this->FuncionesId,$this->ZonasId,
+			$this->SubzonaId,$this->FilasId,$this->LugaresId);
+	}
 }

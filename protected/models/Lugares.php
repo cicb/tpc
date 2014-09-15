@@ -163,11 +163,11 @@ class Lugares extends CActiveRecord
 	{
 		return sprintf("%s, %s",$this->fila->FilasAli,$this->LugaresLug);
 	}
-	public function getNumeroCompuesto()
+	public function getLlaveCompuesta()
 	{
 		# Regresa un un numero unico identificador
-		return vsprintf("%04d%02d%02d%03d%04d",array_values($this->getPrimaryKey()));
-	}
+		return sprintf("%d-%d-%d-%d-%d-%d",$this->EventoId,$this->FuncionesId,$this->ZonasId,
+			$this->SubzonaId,$this->FilasId,$this->LugaresId);	}
 
 
 }

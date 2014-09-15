@@ -114,29 +114,68 @@ class SiteController extends Controller
 	{
 		$this->render('pages/about');
 	}
-	// Demo del formulario para el evento de la carrera UDLAP
+	// Demo del formulario para el evento de la carrera UDLAP -------------------------------------------------------------
 	public function actionFormularioUdlap()
 	{
+		if (isset($_GET['boleto'])) {
+			
+		}
 		$this->renderPartial('formularios/carreraUdlap');
 	}
-	public function actionValidarBoleto($boleto)
+
+	public function actionValidarBoletos($boleto)
 	{
 		# Verifica si se trata de un numero de referencia o de un numero de boleto
-		if (is_numeric($boleto)) {
-				$lugarVendido=Ventaslevel1::model()->with('lugar')->findByAttributes(
-					array(
-						'LugaresNumBol'=>$boleto)
-					);
-				if (is_object($lugarVendido)) {
-					# Si se encontro el lugarVendido vendido se busca si no se ha registrado ya.
-					$numeroCompuesto=$lugarVendido->lugar->numeroCompuesto;
-					echo $numeroCompuesto;
-
-				}
+		$service=new Servicios($boleto);
+		$lugaresVendidos=array();
+		try{
+			if (is_numeric($boleto)) 
+				$lugaresVendidos=$service->buscarBoletos(false,array($boleto));
+			else
+				$lugaresVendidos=$service->buscarBoletos($boleto);
+		} catch (Exception $e) {
+			// echo $e->getMessage();
 		}
-		else{
-			echo "Es referencia";
+		foreach ($lugaresVendidos as $lugar) {
+			$corredor=Corredores::model()->findByPk($lugar->getPrimaryKey());
+			if (is_null($corredor)) {
+				$corredor=new Corredores('insert');
+			}
+			$this->renderPartial('formularios/corredor',compact('lugar','corredor'));
 		}
+		if (empty($lugaresVendidos)) {
+			throw new Exception("Boletos no encontrados", 503);
+			
+			// echo CHtml::tag('div',array('class'=>'alert alert-danger'),'Numero de boleto/referencia invalido.');
+		}
+		// echo CJSON::encode($boletos);
 	}
+	public function actionRegistrarCorredor()
+	{
+		if (isset($_POST, $_POST['Corredores'])) {
+			$corredor=Corredores::model()->findByAttributes(array('boleto'=>$_POST['Corredores']['boleto']));
+			if(empty($corredor))
+				$corredor=new Corredores();
+			$corredor->attributes=$_POST['Corredores'];
+			if ($corredor->save())
+				$this->renderPartial('formularios',compact('corredor'));
+			else{
+				$lugar=$corredor->lugar;
+				$this->renderPartial('formularios/corredor',compact('lugar','corredor'));
+			}
+		}
+
+
+			// if ($corredor->validate()) {
+			// 	# code...
+			// }
+		// print_r($corredor->attributes) ;
+		
+		else
+			throw new Exception("Datos incompletos", 404);
+		
+	}
+	// Demo del formulario para el evento de la carrera UDLAP -------------------------------------------------------------
+
 
 }
